@@ -8,11 +8,11 @@ Angular frontend for Homely property list web application.
 
 - **Framework:** Angular 19+
 - **Styling:** Tailwind CSS
-- **State Management:** NgRx (Store, Effects, Entity)
+- **State Management:** Angular Signals + Signal Stores
 - **Real-time:** RxJS WebSocket
 - **HTTP:** Angular HttpClient with interceptors
-- **Forms:** Reactive Forms
-- **Routing:** Angular Router with guards
+- **Forms:** Reactive Forms with Signal integration
+- **Routing:** Angular Router with functional guards
 - **Build:** Angular CLI
 
 ---
@@ -25,13 +25,14 @@ Angular frontend for Homely property list web application.
 - **Feature Modules:** Property lists, properties, context reports, ratings
 
 ### State Management Strategy
-- **NgRx Store:** Central state for property lists, properties, context data, ratings
-- **NgRx Effects:** Side effects for API calls, WebSocket events
-- **NgRx Entity:** Normalized entity management for properties, lists, criteria
+- **Signal Stores:** Feature-based signal stores for property lists, properties, context data, ratings
+- **Computed Signals:** Derived state for filtering, sorting, aggregations
+- **RxJS Integration:** Handle async operations (API calls, WebSocket events) via `rxMethod()`
+- **Entity Management:** Custom entity adapters using signals for normalized data
 
 ### Component Structure
-- **Smart Components:** Connect to store, dispatch actions
-- **Presentational Components:** Pure display, emit events
+- **Smart Components:** Inject signal stores, read signals, call store methods
+- **Presentational Components:** Signal inputs, output events
 - **Layout Components:** Shell, navigation, headers
 
 ---
@@ -45,25 +46,29 @@ Angular frontend for Homely property list web application.
 - [ ] Initialize Angular project with Tailwind CSS
 - [ ] Configure ESLint, Prettier, Git hooks
 - [ ] Set up project structure (core, shared, feature modules)
-- [ ] Install dependencies (NgRx, RxJS, date-fns, etc.)
+- [ ] Install dependencies (RxJS, date-fns, @ngrx/signals, etc.)
 - [ ] Configure environment files (API URLs, WebSocket endpoints)
 - [ ] Create core services:
-  - [ ] AuthService (login, register, token management)
+  - [ ] AuthService (login, register, token management with signals)
   - [ ] ApiService (base HTTP service with interceptors)
   - [ ] WebSocketService (connection management, reconnection logic)
   - [ ] NotificationService (toast/snackbar notifications)
+- [ ] Create core signal stores:
+  - [ ] AuthStore (user, token, loading, error signals)
+  - [ ] UiStore (sidebar, theme, notifications)
 - [ ] HTTP interceptors:
   - [ ] Auth interceptor (add JWT tokens)
   - [ ] Error interceptor (global error handling)
-- [ ] Auth guards:
-  - [ ] AuthGuard (route protection)
-  - [ ] GuestGuard (redirect authenticated users)
+- [ ] Functional guards:
+  - [ ] authGuard (route protection using signals)
+  - [ ] guestGuard (redirect authenticated users)
 - [ ] Create shared utilities:
   - [ ] Address normalization
   - [ ] Date formatting
   - [ ] Currency pipes
+  - [ ] Signal helper utilities
 - [ ] Set up routing structure:
-  - [ ] Root routing module
+  - [ ] Root routing with functional guards
   - [ ] Lazy-loaded feature modules
 
 **Deliverables:**
@@ -81,11 +86,12 @@ Angular frontend for Homely property list web application.
 
 #### Tasks
 - [ ] Create PropertyList feature module
-- [ ] NgRx setup:
-  - [ ] Actions (load, create, update, delete, select)
-  - [ ] Reducers (property list entity state)
-  - [ ] Selectors (list queries, selected list)
-  - [ ] Effects (API calls for CRUD operations)
+- [ ] Signal store setup:
+  - [ ] PropertyListStore with entity management
+  - [ ] Signals: lists, selectedList, loading, error
+  - [ ] Computed signals: listsCount, activeListsOnly
+  - [ ] Methods: load(), create(), update(), delete(), select()
+  - [ ] RxMethod for API calls with loading/error handling
 - [ ] Components:
   - [ ] PropertyListListComponent (dashboard view)
   - [ ] PropertyListDetailComponent (single list view)
@@ -107,11 +113,12 @@ Angular frontend for Homely property list web application.
 
 #### Tasks
 - [ ] Create Property feature module
-- [ ] NgRx setup:
-  - [ ] Actions (load, create, update, delete, select)
-  - [ ] Reducers (property entity state)
-  - [ ] Selectors (properties by list, selected property)
-  - [ ] Effects (API calls, deduplication checks)
+- [ ] Signal store setup:
+  - [ ] PropertyStore with entity management
+  - [ ] Signals: properties, selectedProperty, loading, error
+  - [ ] Computed signals: propertiesByList, propertiesByState, selectedListProperties
+  - [ ] Methods: load(), create(), update(), delete(), select(), checkDuplicate()
+  - [ ] RxMethod for API calls and deduplication checks
 - [ ] Components:
   - [ ] PropertyListComponent (properties in a list)
   - [ ] PropertyDetailComponent (single property view)
@@ -202,16 +209,17 @@ Angular frontend for Homely property list web application.
 ### 3.1 Context Data State Management
 
 #### Tasks
-- [ ] NgRx setup:
-  - [ ] Actions (trigger services, update progress, complete, fail, retry)
-  - [ ] Reducers (context data entity state, service states)
-  - [ ] Selectors (context by property, service status, progress)
-  - [ ] Effects (API calls, WebSocket listeners)
+- [ ] Signal store setup:
+  - [ ] ContextDataStore with entity management
+  - [ ] Signals: contextDataByProperty, serviceStates, loading, error
+  - [ ] Computed signals: progressByProperty, completedServices, failedServices
+  - [ ] Methods: triggerServices(), retryService(), updateProgress()
+  - [ ] RxMethod for API calls and WebSocket event handling
 - [ ] WebSocket integration:
   - [ ] Subscribe to property list channel
-  - [ ] Handle service_update events
-  - [ ] Dispatch actions on events
-  - [ ] Auto-update UI on event
+  - [ ] Handle service_update events via RxJS
+  - [ ] Update signal store state on events
+  - [ ] Auto-update UI reactively
 
 ### 3.2 Context Reports UI
 
@@ -266,14 +274,15 @@ Angular frontend for Homely property list web application.
 ### 4.1 Rating State Management
 
 #### Tasks
-- [ ] NgRx setup:
-  - [ ] Actions (calculate rating, update scores, disqualify)
-  - [ ] Reducers (ratings, criterion scores)
-  - [ ] Selectors (ratings by property, sorted properties, disqualified)
-  - [ ] Effects (API calls, automatic re-rating)
+- [ ] Signal store setup:
+  - [ ] RatingStore with entity management
+  - [ ] Signals: ratingsByProperty, criterionScores, loading, error
+  - [ ] Computed signals: sortedProperties, disqualifiedProperties, topRatedProperties
+  - [ ] Methods: calculateRating(), updateScores(), sortBy(), filterBy()
+  - [ ] RxMethod for API calls and automatic re-rating
 - [ ] WebSocket integration:
-  - [ ] Handle rating_complete events
-  - [ ] Auto-update ratings display
+  - [ ] Handle rating_complete events via RxJS
+  - [ ] Auto-update signal store reactively
 
 ### 4.2 Rating Display UI
 
@@ -338,8 +347,8 @@ Angular frontend for Homely property list web application.
 - [ ] Implement lazy loading for all feature modules
 - [ ] Virtual scrolling for long property lists
 - [ ] Image lazy loading
-- [ ] OnPush change detection strategy
-- [ ] Memoized selectors
+- [ ] OnPush change detection strategy (automatic with signals)
+- [ ] Memoized computed signals
 - [ ] Debounce search/filter inputs
 - [ ] Optimize bundle size (analyze with webpack-bundle-analyzer)
 
@@ -383,8 +392,8 @@ Angular frontend for Homely property list web application.
 #### Tasks
 - [ ] Unit tests:
   - [ ] Services (auth, API, WebSocket)
-  - [ ] Components (snapshot, behavior)
-  - [ ] Reducers, selectors, effects
+  - [ ] Components (snapshot, behavior, signal inputs)
+  - [ ] Signal stores (state updates, computed signals, methods)
   - [ ] Pipes, directives
 - [ ] Integration tests:
   - [ ] Feature workflows (create property → retrieve context → calculate rating)
@@ -459,54 +468,85 @@ AppComponent
 
 ---
 
-## State Shape (NgRx Store)
+## State Shape (Signal Stores)
 
 ```typescript
-interface AppState {
-  auth: {
-    user: User | null;
-    token: string | null;
-    loading: boolean;
-    error: string | null;
-  };
-  propertyLists: {
-    entities: { [id: string]: PropertyList };
-    ids: string[];
-    selectedId: string | null;
-    loading: boolean;
-    error: string | null;
-  };
-  properties: {
-    entities: { [id: string]: Property };
-    ids: string[];
-    selectedId: string | null;
-    loading: boolean;
-    error: string | null;
-  };
-  contextData: {
-    entities: { [id: string]: ContextData };
-    ids: string[];
-    byProperty: { [propertyId: string]: string[] }; // context data IDs
-    loading: boolean;
-    error: string | null;
-  };
-  ratings: {
-    entities: { [propertyId: string]: PropertyRating };
-    ids: string[];
-    loading: boolean;
-    error: string | null;
-  };
-  ui: {
-    sidebarOpen: boolean;
-    activeFilters: FilterState;
-    sortBy: string;
-    viewMode: 'grid' | 'list';
-  };
-  webSocket: {
-    connected: boolean;
-    subscribedChannels: string[];
-  };
-}
+// AuthStore (global)
+type AuthStore = {
+  user: Signal<User | null>;
+  token: Signal<string | null>;
+  loading: Signal<boolean>;
+  error: Signal<string | null>;
+  isAuthenticated: Signal<boolean>; // computed
+};
+
+// PropertyListStore (feature)
+type PropertyListStore = {
+  entities: Signal<Record<string, PropertyList>>;
+  ids: Signal<string[]>;
+  selectedId: Signal<string | null>;
+  loading: Signal<boolean>;
+  error: Signal<string | null>;
+  // Computed signals
+  all: Signal<PropertyList[]>;
+  selected: Signal<PropertyList | null>;
+  count: Signal<number>;
+  activeLists: Signal<PropertyList[]>;
+};
+
+// PropertyStore (feature)
+type PropertyStore = {
+  entities: Signal<Record<string, Property>>;
+  ids: Signal<string[]>;
+  selectedId: Signal<string | null>;
+  loading: Signal<boolean>;
+  error: Signal<string | null>;
+  // Computed signals
+  all: Signal<Property[]>;
+  selected: Signal<Property | null>;
+  byList: Signal<(listId: string) => Property[]>;
+  byState: Signal<(state: string) => Property[]>;
+};
+
+// ContextDataStore (feature)
+type ContextDataStore = {
+  entities: Signal<Record<string, ContextData>>;
+  byProperty: Signal<Record<string, string[]>>;
+  loading: Signal<boolean>;
+  error: Signal<string | null>;
+  // Computed signals
+  progressByProperty: Signal<(propId: string) => { total: number; complete: number; failed: number }>;
+  completedServices: Signal<(propId: string) => ContextData[]>;
+  failedServices: Signal<(propId: string) => ContextData[]>;
+};
+
+// RatingStore (feature)
+type RatingStore = {
+  entities: Signal<Record<string, PropertyRating>>;
+  loading: Signal<boolean>;
+  error: Signal<string | null>;
+  sortBy: Signal<string>;
+  sortOrder: Signal<'asc' | 'desc'>;
+  // Computed signals
+  sorted: Signal<PropertyRating[]>;
+  disqualified: Signal<PropertyRating[]>;
+  topRated: Signal<PropertyRating[]>;
+};
+
+// UiStore (global)
+type UiStore = {
+  sidebarOpen: Signal<boolean>;
+  theme: Signal<'light' | 'dark'>;
+  viewMode: Signal<'grid' | 'list'>;
+  activeFilters: Signal<FilterState>;
+};
+
+// WebSocketStore (global)
+type WebSocketStore = {
+  connected: Signal<boolean>;
+  subscribedChannels: Signal<string[]>;
+  reconnecting: Signal<boolean>;
+};
 ```
 
 ---
@@ -537,20 +577,23 @@ interface AppState {
 
 ## Key Decisions
 
-### Decision #1: NgRx for State Management
-**Rationale:** Complex async workflows, WebSocket integration, collaborative features require centralized state
+### Decision #1: Angular Signals for State Management
+**Rationale:** Native Angular reactive primitives, simpler than NgRx, better DX, automatic change detection, smaller bundle size
 
-### Decision #2: WebSocket Auto-Reconnection
+### Decision #2: Signal Stores Pattern
+**Rationale:** Encapsulate state logic in feature-based stores using `@ngrx/signals` or custom implementation
+
+### Decision #3: WebSocket Auto-Reconnection
 **Rationale:** Critical for progressive loading; implement exponential backoff + event replay
 
-### Decision #3: Lazy Loading for Feature Modules
+### Decision #4: Lazy Loading for Feature Modules
 **Rationale:** Large app; improve initial load time
 
-### Decision #4: OnPush Change Detection
-**Rationale:** Performance optimization for large property lists
+### Decision #5: OnPush Change Detection with Signals
+**Rationale:** Signals provide automatic performance optimization; OnPush + signals = optimal change detection
 
-### Decision #5: Reactive Forms
-**Rationale:** Complex validation, dynamic forms (rating criteria, context options)
+### Decision #6: Reactive Forms with Signal Integration
+**Rationale:** Complex validation, dynamic forms; integrate with signals via `toSignal()` for form value changes
 
 ---
 
@@ -574,10 +617,8 @@ interface AppState {
 - @angular/forms: ^19.x
 
 ### State Management
-- @ngrx/store: ^19.x
-- @ngrx/effects: ^19.x
-- @ngrx/entity: ^19.x
-- @ngrx/store-devtools: ^19.x
+- @ngrx/signals: ^19.x (optional, for signal store utilities)
+- rxjs: ^7.x
 
 ### UI
 - tailwindcss: ^3.x
@@ -585,7 +626,6 @@ interface AppState {
 - lucide-angular: ^0.x (icons)
 
 ### Utilities
-- rxjs: ^7.x
 - date-fns: ^4.x
 - lodash-es: ^4.x
 
@@ -602,5 +642,64 @@ interface AppState {
 
 1. Resolve `.gitignore` merge conflict
 2. Complete Angular project initialization
-3. Install dependencies (NgRx, Tailwind CSS utilities)
+3. Install dependencies (@ngrx/signals, Tailwind CSS utilities)
 4. Begin Phase 1: Foundation & Setup
+
+---
+
+## Signal Store Example Pattern
+
+```typescript
+// property-list.store.ts
+import { computed, inject } from '@angular/core';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { pipe, switchMap, tap } from 'rxjs';
+import { PropertyListService } from './property-list.service';
+
+type PropertyListState = {
+  entities: Record<string, PropertyList>;
+  ids: string[];
+  selectedId: string | null;
+  loading: boolean;
+  error: string | null;
+};
+
+const initialState: PropertyListState = {
+  entities: {},
+  ids: [],
+  selectedId: null,
+  loading: false,
+  error: null,
+};
+
+export const PropertyListStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withComputed(({ entities, ids, selectedId }) => ({
+    all: computed(() => ids().map(id => entities()[id])),
+    selected: computed(() => {
+      const id = selectedId();
+      return id ? entities()[id] : null;
+    }),
+    count: computed(() => ids().length),
+  })),
+  withMethods((store, service = inject(PropertyListService)) => ({
+    load: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        switchMap(() => service.getAll()),
+        tap({
+          next: (lists) => {
+            const entities = lists.reduce((acc, list) => ({ ...acc, [list.id]: list }), {});
+            const ids = lists.map(list => list.id);
+            patchState(store, { entities, ids, loading: false });
+          },
+          error: (error) => patchState(store, { error: error.message, loading: false }),
+        })
+      )
+    ),
+    select: (id: string) => patchState(store, { selectedId: id }),
+  }))
+);
+```
