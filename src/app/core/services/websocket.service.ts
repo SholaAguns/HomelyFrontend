@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, timer } from 'rxjs';
+import {Observable, retry, Subject, timer} from 'rxjs';
 import { retryWhen, tap, delayWhen } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
@@ -18,18 +18,15 @@ export class WebSocketService {
     }
 
     return this.messageSubject.asObservable().pipe(
-      retryWhen((errors) =>
-        errors.pipe(
-          tap(() => {
-            this.reconnectAttempts++;
-            console.log(`WebSocket reconnect attempt ${this.reconnectAttempts}`);
-          }),
-          delayWhen(() => {
-            const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-            return timer(delay);
-          })
-        )
-      )
+      retry({
+        count: this.maxReconnectAttempts,
+        delay: () => {
+          this.reconnectAttempts++;
+          console.log(`WebSocket reconnect attempt ${this.reconnectAttempts}`);
+          const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+          return timer(delay);
+        }
+      })
     );
   }
 

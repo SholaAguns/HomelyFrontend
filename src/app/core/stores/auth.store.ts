@@ -2,14 +2,9 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
-import {
-  AuthService,
-  type AuthResponse,
-  type LoginCredentials,
-  type RegisterData,
-  type User,
-} from '../services/auth.service';
+import {LoginCredentials, LoginResponse, RegisterData, User} from '../../shared/models/auth-models';
 import { NotificationService } from '../services/notification.service';
+import {AuthService} from '../services/auth.service';
 
 type AuthState = {
   user: User | null;
@@ -38,7 +33,7 @@ export const AuthStore = signalStore(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap((credentials) => authService.login(credentials)),
           tap({
-            next: (response: AuthResponse) => {
+            next: (response: LoginResponse) => {
               patchState(store, {
                 user: response.user,
                 token: response.token,

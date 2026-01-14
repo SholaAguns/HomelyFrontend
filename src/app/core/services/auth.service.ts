@@ -1,69 +1,101 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { ApiService } from './api.service';
-
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterData extends LoginCredentials {
-  firstName: string;
-  lastName: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  token: string;
-}
+import {LoginCredentials, LoginResponse, RegisterData, RegisterResponse} from '../../shared/models/auth-models';
+import {EditUserProfileRequest, User, UserProfile} from '../../shared/models/user-models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private api = inject(ApiService);
-  private readonly TOKEN_KEY = 'auth_token';
+  private readonly ACCESS_TOKEN_KEY = 'access_token';
+  private readonly REFRESH_TOKEN_KEY = 'refresh_token';
+  private readonly AUTH_ENDPOINT = 'accounts/';
 
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.api.post<AuthResponse>('auth/login', credentials).pipe(
+  login(credentials: LoginCredentials): Observable<LoginResponse> {
+    let endpoint = this.AUTH_ENDPOINT + 'login';
+
+    return this.api.post<LoginResponse>(endpoint, credentials).pipe(
       tap((response) => {
-        this.setToken(response.token);
+        this.setToken(this.ACCESS_TOKEN_KEY, response.accessToken);
+        this.setToken(this.REFRESH_TOKEN_KEY, response.refreshToken);
       })
     );
   }
 
-  register(data: RegisterData): Observable<AuthResponse> {
-    return this.api.post<AuthResponse>('auth/register', data).pipe(
+  register(data: RegisterData): Observable<RegisterResponse> {
+    let endpoint = this.AUTH_ENDPOINT + 'register';
+
+    return this.api.post<RegisterResponse>(endpoint, data).pipe(
       tap((response) => {
-        this.setToken(response.token);
+        this.setToken(this.ACCESS_TOKEN_KEY, response.accessToken);
+        this.setToken(this.REFRESH_TOKEN_KEY, response.refreshToken);
       })
     );
   }
 
   logout(): void {
-    this.removeToken();
+    if(!this.isAuthenticated()) return;
+
+    let endpoint = this.AUTH_ENDPOINT + 'logout';
+    let data = {
+      refresh: this.getRefreshToken()
+    };
+
+    this.api.post<string>(endpoint, data).pipe(
+      tap(() => {
+        this.removeToken(this.ACCESS_TOKEN_KEY);
+        this.removeToken(this.REFRESH_TOKEN_KEY);
+      })
+    );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+  refreshToken(): Observable<RegisterResponse> {
+
+    let endpoint = this.AUTH_ENDPOINT + 'token/refresh';
+    let data = {
+      refresh: this.getRefreshToken()
+    }
+
+    return this.api.post<RegisterResponse>(endpoint, data).pipe(
+      tap((response) => {
+        this.setToken(this.ACCESS_TOKEN_KEY, response.accessToken);
+        this.setToken(this.REFRESH_TOKEN_KEY, response.refreshToken);
+      })
+    );
   }
 
-  private setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+  getUser(userId: string): Observable<User> {
+    let endpoint = this.AUTH_ENDPOINT + `users/${userId}`;
+
+    return this.api.get<User>(endpoint);
   }
 
-  private removeToken(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+  editUserProfile(requestData: EditUserProfileRequest): Observable<UserProfile> {
+
+    let endpoint = this.AUTH_ENDPOINT + 'users/profile';
+
+    return this.api.put<UserProfile>(endpoint, requestData);
+  }
+
+  getAccessToken(): string | null {
+    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+  }
+
+  private setToken(key: string, token: string): void {
+    localStorage.setItem(key, token);
+  }
+
+  private removeToken(key: string): void {
+    localStorage.removeItem(key);
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return !!this.getAccessToken();
   }
 }

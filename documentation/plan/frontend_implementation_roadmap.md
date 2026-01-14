@@ -50,7 +50,7 @@ Angular frontend for Homely property list web application.
 - [ ] Configure environment files (API URLs, WebSocket endpoints)
 - [ ] Create core services:
   - [ ] AuthService (login, register, token management with signals)
-  - [ ] ApiService (base HTTP service with interceptors)
+  - [ ] AuthRepository (base HTTP service with interceptors)
   - [ ] WebSocketService (connection management, reconnection logic)
   - [ ] NotificationService (toast/snackbar notifications)
 - [ ] Create core signal stores:
@@ -430,7 +430,7 @@ Angular frontend for Homely property list web application.
 AppComponent
 ├── CoreModule
 │   ├── AuthService
-│   ├── ApiService
+│   ├── AuthRepository
 │   ├── WebSocketService
 │   └── NotificationService
 ├── SharedModule
