@@ -35,20 +35,15 @@ export class AuthService {
     );
   }
 
-  logout(): void {
-    if(!this.isAuthenticated()) return;
+  logout(): Observable<void> {
+    if(!this.isAuthenticated()) return of(undefined);
 
     let endpoint = this.AUTH_ENDPOINT + 'logout';
     let data = {
       refresh: this.getRefreshToken()
     };
 
-    this.api.post<string>(endpoint, data).pipe(
-      tap(() => {
-        this.removeToken(this.ACCESS_TOKEN_KEY);
-        this.removeToken(this.REFRESH_TOKEN_KEY);
-      })
-    );
+    return this.api.post<void>(endpoint, data);
   }
 
   refreshToken(): Observable<RegisterResponse> {
@@ -91,7 +86,7 @@ export class AuthService {
     localStorage.setItem(key, token);
   }
 
-  private removeToken(key: string): void {
+  removeToken(key: string): void {
     localStorage.removeItem(key);
   }
 
