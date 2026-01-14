@@ -43,29 +43,29 @@ Angular frontend for Homely property list web application.
 **Goal:** Angular project scaffolding, core infrastructure, authentication
 
 ### Tasks
-- [ ] Initialize Angular project with Tailwind CSS
+- [X] Initialize Angular project with Tailwind CSS
 - [ ] Configure ESLint, Prettier, Git hooks
-- [ ] Set up project structure (core, shared, feature modules)
-- [ ] Install dependencies (RxJS, date-fns, @ngrx/signals, etc.)
-- [ ] Configure environment files (API URLs, WebSocket endpoints)
-- [ ] Create core services:
-  - [ ] AuthService (login, register, token management with signals)
-  - [ ] AuthRepository (base HTTP service with interceptors)
-  - [ ] WebSocketService (connection management, reconnection logic)
-  - [ ] NotificationService (toast/snackbar notifications)
-- [ ] Create core signal stores:
-  - [ ] AuthStore (user, token, loading, error signals)
-  - [ ] UiStore (sidebar, theme, notifications)
-- [ ] HTTP interceptors:
-  - [ ] Auth interceptor (add JWT tokens)
-  - [ ] Error interceptor (global error handling)
-- [ ] Functional guards:
-  - [ ] authGuard (route protection using signals)
-  - [ ] guestGuard (redirect authenticated users)
-- [ ] Create shared utilities:
-  - [ ] Address normalization
-  - [ ] Date formatting
-  - [ ] Currency pipes
+- [X] Set up project structure (core, shared, feature modules)
+- [X] Install dependencies (RxJS, date-fns, @ngrx/signals, etc.)
+- [X] Configure environment files (API URLs, WebSocket endpoints)
+- [X] Create core services:
+  - [X] AuthService (login, register, token management with signals)
+  - [X] AuthRepository (base HTTP service with interceptors)
+  - [X] WebSocketService (connection management, reconnection logic)
+  - [X] NotificationService (toast/snackbar notifications)
+- [X] Create core signal stores:
+  - [X] AuthStore (user, token, loading, error signals)
+  - [X] UiStore (sidebar, theme, notifications)
+- [X] HTTP interceptors:
+  - [X] Auth interceptor (add JWT tokens)
+  - [X] Error interceptor (global error handling)
+- [X] Functional guards:
+  - [X] authGuard (route protection using signals)
+  - [X] guestGuard (redirect authenticated users)
+- [X] Create shared utilities:
+  - [X] Address normalization
+  - [X] Date formatting
+  - [X] Currency pipes
   - [ ] Signal helper utilities
 - [ ] Set up routing structure:
   - [ ] Root routing with functional guards
@@ -75,7 +75,7 @@ Angular frontend for Homely property list web application.
 - Functional Angular app with authentication flow
 - API service layer with interceptors
 - WebSocket service with reconnection
-- Basic layout shell (header, sidebar, main content area)
+- [X] Basic layout shell (header, sidebar, main content area)
 
 ---
 

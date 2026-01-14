@@ -8,23 +8,23 @@ export const routes: Routes = [
     redirectTo: 'lists',
     pathMatch: 'full',
   },
-  {
-    path: 'login',
-    canActivate: [guestGuard],
-    loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent),
-  },
-  {
-    path: 'register',
-    canActivate: [guestGuard],
-    loadComponent: () =>
-      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
-  },
-  {
-    path: 'lists',
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./features/property-lists/property-lists.routes').then((m) => m.PROPERTY_LIST_ROUTES),
-  },
+  // {
+  //   path: 'login',
+  //   canActivate: [guestGuard],
+  //   loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+  // },
+  // {
+  //   path: 'register',
+  //   canActivate: [guestGuard],
+  //   loadComponent: () =>
+  //     import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
+  // },
+  // {
+  //   path: 'lists',
+  //   canActivate: [authGuard],
+  //   loadChildren: () =>
+  //     import('./features/property-lists/property-lists.routes').then((m) => m.PROPERTY_LIST_ROUTES),
+  // },
   {
     path: '**',
     redirectTo: 'lists',
