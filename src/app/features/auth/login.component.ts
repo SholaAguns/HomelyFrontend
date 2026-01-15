@@ -32,7 +32,7 @@ export class LoginComponent {
         if (this.authStore.isAuthenticated()) {
           this.router.navigate(['/']);
         }
-      }, 1000);
+      }, 2000);
     }
   }
 

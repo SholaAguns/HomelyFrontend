@@ -42,7 +42,7 @@ export class RegisterComponent {
         if (this.authStore.isAuthenticated()) {
           this.router.navigate(['/']);
         }
-      }, 1000);
+      }, 2000);
     }
   }
 
