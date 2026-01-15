@@ -39,8 +39,8 @@ export const AuthStore = signalStore(
             next: (response: LoginResponse) => {
               patchState(store, {
                 user: response.user,
-                accessToken: response.accessToken,
-                refreshToken: response.refreshToken,
+                accessToken: response.access,
+                refreshToken: response.refresh,
                 loading: false,
               });
               notificationService.success('Login successful');
@@ -64,8 +64,8 @@ export const AuthStore = signalStore(
             next: (response: RegisterResponse) => {
               patchState(store, {
                 user: null,
-                accessToken: response.accessToken,
-                refreshToken: response.refreshToken,
+                accessToken: response.access,
+                refreshToken: response.refresh,
                 loading: false,
               });
               notificationService.success('Registration successful');

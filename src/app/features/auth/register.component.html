@@ -1,0 +1,140 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
+  <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
+      <p class="text-gray-600 dark:text-gray-300">Sign up for your Homely account</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          First Name
+        </label>
+        <input
+          id="firstName"
+          type="text"
+          formControlName="firstName"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          placeholder="John"
+        />
+        @if (firstName?.invalid && firstName?.touched) {
+          <p class="mt-1 text-sm text-red-600">
+            @if (firstName?.errors?.['required']) { First name is required }
+            @if (firstName?.errors?.['minlength']) { First name must be at least 2 characters }
+          </p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Last Name
+        </label>
+        <input
+          id="lastName"
+          type="text"
+          formControlName="lastName"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          placeholder="Doe"
+        />
+        @if (lastName?.invalid && lastName?.touched) {
+          <p class="mt-1 text-sm text-red-600">
+            @if (lastName?.errors?.['required']) { Last name is required }
+            @if (lastName?.errors?.['minlength']) { Last name must be at least 2 characters }
+          </p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Email Address
+        </label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          placeholder="you@example.com"
+        />
+        @if (email?.invalid && email?.touched) {
+          <p class="mt-1 text-sm text-red-600">
+            @if (email?.errors?.['required']) { Email is required }
+            @if (email?.errors?.['email']) { Please enter a valid email }
+          </p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          placeholder="At least 6 characters"
+        />
+        @if (password?.invalid && password?.touched) {
+          <p class="mt-1 text-sm text-red-600">
+            @if (password?.errors?.['required']) { Password is required }
+            @if (password?.errors?.['minlength']) { Password must be at least 6 characters }
+          </p>
+        }
+      </div>
+
+      <div class="mb-6">
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Confirm Password
+        </label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          placeholder="Re-enter your password"
+        />
+        @if (confirmPassword?.invalid && confirmPassword?.touched) {
+          <p class="mt-1 text-sm text-red-600">
+            @if (confirmPassword?.errors?.['required']) { Please confirm your password }
+          </p>
+        }
+        @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
+          <p class="mt-1 text-sm text-red-600">Passwords do not match</p>
+        }
+      </div>
+
+      @if (authStore.error()) {
+        <div class="mb-4 p-3 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-200 rounded-lg">
+          {{ authStore.error() }}
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="!registerForm.valid || authStore.loading()"
+        class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-semibold"
+      >
+        @if (authStore.loading()) {
+          <span>Creating account...</span>
+        } @else {
+          <span>Sign Up</span>
+        }
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <p class="text-gray-600 dark:text-gray-300">
+        Already have an account?
+        <a routerLink="/login" class="text-indigo-600 hover:text-indigo-700 font-semibold">
+          Sign in
+        </a>
+      </p>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a routerLink="/" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+        ← Back to Home
+      </a>
+    </div>
+  </div>
+</div>

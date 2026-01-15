@@ -1,0 +1,50 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+  <div class="container mx-auto px-4 py-16">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-6">
+        Welcome to Homely
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+        Your intelligent property search companion. Find, compare, and rate properties with comprehensive context reports.
+      </p>
+
+      @if (!authStore.isAuthenticated()) {
+        <div class="flex gap-4 justify-center">
+          <a routerLink="/login"
+             class="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+            Login
+          </a>
+          <a routerLink="/register"
+             class="px-8 py-3 bg-white text-indigo-600 rounded-lg hover:bg-gray-50 transition-colors font-semibold border-2 border-indigo-600">
+            Sign Up
+          </a>
+        </div>
+      } @else {
+        <div class="flex gap-4 justify-center">
+          <a routerLink="/lists"
+             class="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+            View Property Lists
+          </a>
+        </div>
+      }
+
+      <div class="mt-16 grid md:grid-cols-3 gap-8">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <div class="text-indigo-600 text-4xl mb-4">🏠</div>
+          <h3 class="text-xl font-semibold mb-2 dark:text-white">Property Management</h3>
+          <p class="text-gray-600 dark:text-gray-300">Create lists and add properties from multiple sources</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <div class="text-indigo-600 text-4xl mb-4">📊</div>
+          <h3 class="text-xl font-semibold mb-2 dark:text-white">Context Reports</h3>
+          <p class="text-gray-600 dark:text-gray-300">Get detailed insights on crime, schools, broadband & more</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <div class="text-indigo-600 text-4xl mb-4">⭐</div>
+          <h3 class="text-xl font-semibold mb-2 dark:text-white">Smart Rating</h3>
+          <p class="text-gray-600 dark:text-gray-300">Rate properties based on your custom criteria</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

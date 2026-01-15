@@ -13,12 +13,12 @@ export interface RegisterData extends LoginCredentials {
 
 export interface LoginResponse {
   user: User;
-  accessToken: string;
-  refreshToken: string;
+  access: string;
+  refresh: string;
 }
 
 export interface LogoutRequest {
-  refreshToken: string;
+  refresh: string;
 }
 
 export interface LogoutResponse {
@@ -26,6 +26,6 @@ export interface LogoutResponse {
 }
 
 export interface RegisterResponse {
-  accessToken: string;
-  refreshToken: string;
+  access: string;
+  refresh: string;
 }

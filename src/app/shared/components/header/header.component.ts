@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { UiStore } from '../../../core/stores/ui.store';
+import { AuthStore } from '../../../core/stores/auth.store';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +12,8 @@ import { UiStore } from '../../../core/stores/ui.store';
 })
 export class HeaderComponent {
   protected readonly uiStore = inject(UiStore);
+  protected readonly authStore = inject(AuthStore);
+  private router = inject(Router);
 
   onToggleSidebar(): void {
     this.uiStore.toggleSidebar();
@@ -17,5 +21,10 @@ export class HeaderComponent {
 
   onToggleTheme(): void {
     this.uiStore.toggleTheme();
+  }
+
+  onLogout(): void {
+    this.authStore.logout();
+    this.router.navigate(['/']);
   }
 }

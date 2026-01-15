@@ -14,23 +14,23 @@ export class AuthService {
   private readonly AUTH_ENDPOINT = 'accounts/';
 
   login(credentials: LoginCredentials): Observable<LoginResponse> {
-    let endpoint = this.AUTH_ENDPOINT + 'login';
+    let endpoint = this.AUTH_ENDPOINT + 'login/';
 
     return this.api.post<LoginResponse>(endpoint, credentials).pipe(
       tap((response) => {
-        this.setToken(this.ACCESS_TOKEN_KEY, response.accessToken);
-        this.setToken(this.REFRESH_TOKEN_KEY, response.refreshToken);
+        this.setToken(this.ACCESS_TOKEN_KEY, response.access);
+        this.setToken(this.REFRESH_TOKEN_KEY, response.refresh);
       })
     );
   }
 
   register(data: RegisterData): Observable<RegisterResponse> {
-    let endpoint = this.AUTH_ENDPOINT + 'register';
+    let endpoint = this.AUTH_ENDPOINT + 'register/';
 
     return this.api.post<RegisterResponse>(endpoint, data).pipe(
       tap((response) => {
-        this.setToken(this.ACCESS_TOKEN_KEY, response.accessToken);
-        this.setToken(this.REFRESH_TOKEN_KEY, response.refreshToken);
+        this.setToken(this.ACCESS_TOKEN_KEY, response.access);
+        this.setToken(this.REFRESH_TOKEN_KEY, response.refresh);
       })
     );
   }
@@ -38,7 +38,7 @@ export class AuthService {
   logout(): Observable<void> {
     if(!this.isAuthenticated()) return of(undefined);
 
-    let endpoint = this.AUTH_ENDPOINT + 'logout';
+    let endpoint = this.AUTH_ENDPOINT + 'logout/';
     let data = {
       refresh: this.getRefreshToken()
     };
@@ -48,28 +48,28 @@ export class AuthService {
 
   refreshToken(): Observable<RegisterResponse> {
 
-    let endpoint = this.AUTH_ENDPOINT + 'token/refresh';
+    let endpoint = this.AUTH_ENDPOINT + 'token/refresh/';
     let data = {
       refresh: this.getRefreshToken()
     }
 
     return this.api.post<RegisterResponse>(endpoint, data).pipe(
       tap((response) => {
-        this.setToken(this.ACCESS_TOKEN_KEY, response.accessToken);
-        this.setToken(this.REFRESH_TOKEN_KEY, response.refreshToken);
+        this.setToken(this.ACCESS_TOKEN_KEY, response.access);
+        this.setToken(this.REFRESH_TOKEN_KEY, response.refresh);
       })
     );
   }
 
   getUser(userId: string): Observable<User> {
-    let endpoint = this.AUTH_ENDPOINT + `users/${userId}`;
+    let endpoint = this.AUTH_ENDPOINT + `users/${userId}/`;
 
     return this.api.get<User>(endpoint);
   }
 
   editUserProfile(requestData: EditUserProfileRequest): Observable<UserProfile> {
 
-    let endpoint = this.AUTH_ENDPOINT + 'users/profile';
+    let endpoint = this.AUTH_ENDPOINT + 'users/profile/';
 
     return this.api.put<UserProfile>(endpoint, requestData);
   }
