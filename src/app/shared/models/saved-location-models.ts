@@ -1,5 +1,4 @@
 export interface SavedLocation {
-  id: number;
   uuid: string;
   user: string;
   name: string;

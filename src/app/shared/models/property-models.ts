@@ -6,10 +6,8 @@ export type PropertyState =
   | 'STAGE3_COMPLETE';
 
 export interface Property {
-  id: number;
   uuid: string;
-  property_list: number;
-  property_list_uuid: string;
+  property_list: string;
   property_list_title: string;
   state: PropertyState;
   state_display: string;
@@ -67,7 +65,7 @@ export interface PropertyDetail extends Property {
 }
 
 export interface CreatePropertyDto {
-  property_list: number;
+  property_list: string;
   title: string;
   address_line_1: string;
   address_line_2?: string;

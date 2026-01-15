@@ -3,15 +3,14 @@ import { Property } from './property-models';
 export type PropertyListState = 'DRAFT' | 'ACTIVE';
 
 export interface PropertyList {
-  id: number;
   uuid: string;
   owner: string;
   title: string;
   state: PropertyListState;
-  rating_criteria: number | null;
-  rating_criteria_source: number | null;
-  viewers: number[];
-  contributors: number[];
+  rating_criteria: string | null;
+  rating_criteria_source: string | null;
+  viewers: string[];
+  contributors: string[];
   properties_count: number;
   status_summary: PropertyListStatusSummary;
   created_at: string;
@@ -33,14 +32,14 @@ export interface PropertyListDetail extends PropertyList {
 
 export interface CreatePropertyListDto {
   title: string;
-  rating_criteria?: number | null;
-  viewers?: number[];
-  contributors?: number[];
+  rating_criteria?: string | null;
+  viewers?: string[];
+  contributors?: string[];
 }
 
 export interface UpdatePropertyListDto {
   title?: string;
-  rating_criteria?: number | null;
-  viewers?: number[];
-  contributors?: number[];
+  rating_criteria?: string | null;
+  viewers?: string[];
+  contributors?: string[];
 }
