@@ -1,0 +1,79 @@
+<div
+  class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-200"
+>
+  <div class="flex justify-between items-start mb-4">
+    <div class="flex-1">
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        <a
+          [routerLink]="['/lists', list().uuid]"
+          class="hover:text-blue-600 transition-colors"
+        >
+          {{ list().title }}
+        </a>
+      </h3>
+      <div class="flex gap-2 items-center">
+        <span
+          [class]="
+            list().state === 'ACTIVE'
+              ? 'bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium'
+              : 'bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium'
+          "
+        >
+          {{ list().state }}
+        </span>
+        <span class="text-sm text-gray-600">
+          {{ list().properties_count }}
+          {{ list().properties_count === 1 ? 'property' : 'properties' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+    <div>
+      <span class="text-gray-600">New:</span>
+      <span class="ml-1 font-medium">{{ list().status_summary.new }}</span>
+    </div>
+    <div>
+      <span class="text-gray-600">Stage 2 Complete:</span>
+      <span class="ml-1 font-medium">{{
+        list().status_summary.stage2_complete
+      }}</span>
+    </div>
+    <div>
+      <span class="text-gray-600">Stage 2 In Progress:</span>
+      <span class="ml-1 font-medium">{{
+        list().status_summary.stage2_in_progress
+      }}</span>
+    </div>
+    <div>
+      <span class="text-gray-600">Stage 3 Complete:</span>
+      <span class="ml-1 font-medium">{{
+        list().status_summary.stage3_complete
+      }}</span>
+    </div>
+  </div>
+
+  <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+    <a
+      [routerLink]="['/lists', list().uuid]"
+      class="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-center text-sm font-medium"
+    >
+      View Details
+    </a>
+    @if (list().state === 'DRAFT') {
+    <button
+      (click)="onActivate($event)"
+      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium"
+    >
+      Activate
+    </button>
+    }
+    <button
+      (click)="onDelete($event)"
+      class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors text-sm font-medium"
+    >
+      Delete
+    </button>
+  </div>
+</div>

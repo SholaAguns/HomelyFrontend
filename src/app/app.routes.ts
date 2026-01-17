@@ -5,6 +5,11 @@ import { guestGuard } from './core/guards/guest.guard';
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'lists',
+    pathMatch: 'full',
+  },
+  {
+    path: 'home',
     loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
   },
   {
@@ -17,12 +22,12 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/register.component').then((m) => m.RegisterComponent),
   },
-  // {
-  //   path: 'lists',
-  //   canActivate: [authGuard],
-  //   loadChildren: () =>
-  //     import('./features/property-lists/property-lists.routes').then((m) => m.PROPERTY_LIST_ROUTES),
-  // },
+  {
+    path: 'lists',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/property-lists/property-lists.routes').then((m) => m.PROPERTY_LIST_ROUTES),
+  },
   {
     path: '**',
     redirectTo: '',

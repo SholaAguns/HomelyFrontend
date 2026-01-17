@@ -1,0 +1,63 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">My Property Lists</h1>
+    <button
+      (click)="navigateToCreate()"
+      class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md"
+    >
+      + Create New List
+    </button>
+  </div>
+
+  @if (store.loading()) {
+  <div class="flex justify-center items-center py-16">
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
+    ></div>
+  </div>
+  } @else if (store.error()) {
+  <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+    <h3 class="font-semibold mb-2">Error loading property lists</h3>
+    <p>{{ store.error() }}</p>
+  </div>
+  } @else if (store.count() === 0) {
+  <div class="text-center py-16">
+    <svg
+      class="mx-auto h-24 w-24 text-gray-400 mb-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      />
+    </svg>
+    <h3 class="text-xl font-semibold text-gray-900 mb-2">
+      No property lists yet
+    </h3>
+    <p class="text-gray-600 mb-6">
+      Get started by creating your first property list
+    </p>
+    <button
+      (click)="navigateToCreate()"
+      class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+    >
+      Create Your First List
+    </button>
+  </div>
+  } @else {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @for (list of store.all(); track list.uuid) {
+    <app-property-list-card
+      [list]="list"
+      (delete)="onDelete($event)"
+      (activate)="onActivate($event)"
+    />
+    }
+  </div>
+  }
+</div>
