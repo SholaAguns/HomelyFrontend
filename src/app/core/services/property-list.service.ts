@@ -28,16 +28,16 @@ export class PropertyListService {
   }
 
   update(uuid: string, data: UpdatePropertyListDto): Observable<PropertyList> {
-    return this.api.patch<PropertyList>(`${this.endpoint}${uuid}`, data);
+    return this.api.patch<PropertyList>(`${this.endpoint}${uuid}/`, data);
   }
 
   delete(uuid: string): Observable<void> {
-    return this.api.delete<void>(`${this.endpoint}${uuid}`);
+    return this.api.delete<void>(`${this.endpoint}${uuid}/`);
   }
 
   activate(uuid: string): Observable<{ status: string; state: string }> {
     return this.api.post<{ status: string; state: string }>(
-      `${this.endpoint}${uuid}/activate`,
+      `${this.endpoint}${uuid}/activate/`,
       {}
     );
   }

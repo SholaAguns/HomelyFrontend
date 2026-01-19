@@ -7,7 +7,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { pipe, switchMap, tap, exhaustMap } from 'rxjs';
 import { PropertyListService } from '../../../core/services/property-list.service';
 import {
   PropertyList,
@@ -70,7 +70,7 @@ export const PropertyListStore = signalStore(
     create: rxMethod<CreatePropertyListDto>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((data) => service.create(data)),
+        exhaustMap((data) => service.create(data)),
         tap({
           next: (list) => {
             const entities = { ...store.entities(), [list.uuid]: list };
@@ -85,7 +85,7 @@ export const PropertyListStore = signalStore(
     update: rxMethod<{ uuid: string; data: UpdatePropertyListDto }>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        switchMap(({ uuid, data }) => service.update(uuid, data)),
+        exhaustMap(({ uuid, data }) => service.update(uuid, data)),
         tap({
           next: (list) => {
             const entities = { ...store.entities(), [list.uuid]: list };

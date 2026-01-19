@@ -31,6 +31,8 @@ export class PropertyListFormComponent {
     rating_criteria: [null],
   });
 
+  isSubmitting = false;
+
   constructor() {
     effect(() => {
       const listValue = this.list();
@@ -44,7 +46,8 @@ export class PropertyListFormComponent {
   }
 
   onSubmit() {
-    if (this.form.valid) {
+    if (this.form.valid && !this.isSubmitting) {
+      this.isSubmitting = true;
       this.submit.emit(this.form.value);
     }
   }
