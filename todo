@@ -1,0 +1,7 @@
+- Follow plist creation path
+- Error handling
+- Property creation feature
+
+
+# Bugs
+- Slow redirect after login or register

@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthStore } from '../../core/stores/auth.store';
-import { RegisterData } from '../../shared/models/auth-models';
+import { AuthStore } from '../../../core/stores/auth.store';
+import { RegisterData } from '../../../shared/models/auth-models';
 
 @Component({
   selector: 'app-register',

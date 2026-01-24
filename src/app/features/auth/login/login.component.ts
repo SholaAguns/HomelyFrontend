@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthStore } from '../../core/stores/auth.store';
-import { LoginCredentials } from '../../shared/models/auth-models';
+import { AuthStore } from '../../../core/stores/auth.store';
+import { LoginCredentials } from '../../../shared/models/auth-models';
 
 @Component({
   selector: 'app-login',
@@ -12,11 +12,11 @@ import { LoginCredentials } from '../../shared/models/auth-models';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   protected readonly authStore = inject(AuthStore);
 
-  loginForm: FormGroup = this.fb.group({
+  loginForm: FormGroup = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
