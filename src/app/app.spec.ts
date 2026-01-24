@@ -1,26 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { App } from './app';
 import { Router, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { createRouterMock, createActivatedRouteMock } from './shared/mocks/router.mock';
 
 describe('App', () => {
   beforeEach(async () => {
-    const routerMock = {
-      navigate: vi.fn(),
-      events: of(),
-      createUrlTree: vi.fn(),
-      serializeUrl: vi.fn()
-    };
-
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
-        { provide: Router, useValue: routerMock },
-        { provide: ActivatedRoute, useValue: {
-          params: of({}),
-          snapshot: { params: {}, queryParams: {}, data: {}, url: [], outlet: 'primary', routeConfig: null, root: {} as any, parent: null, firstChild: null, children: [], pathFromRoot: [], paramMap: of({} as any), queryParamMap: of({} as any) }
-        }}
+        { provide: Router, useValue: createRouterMock() },
+        { provide: ActivatedRoute, useValue: createActivatedRouteMock() }
       ]
     }).compileComponents();
   });

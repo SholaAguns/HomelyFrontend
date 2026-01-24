@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegisterComponent } from './register.component';
 import { AuthStore } from '../../../core/stores/auth-store/auth.store';
-import { signal } from '@angular/core';
-import { Component, Directive, HostListener, Input } from '@angular/core';
-import { of } from 'rxjs';
+import { Directive, HostListener, Input } from '@angular/core';
+import { createRouterMock, createActivatedRouteMock } from '../../../shared/mocks/router.mock';
+import { createAuthStoreMock } from '../../../shared/mocks/auth-store.mock';
 
 @Directive({
   selector: '[routerLink]',
@@ -29,31 +29,14 @@ describe('RegisterComponent', () => {
   let mockAuthStore: any;
 
   beforeEach(async () => {
-    routerMock = {
-      navigate: vi.fn(),
-      events: of(),
-      createUrlTree: vi.fn(),
-      serializeUrl: vi.fn()
-    };
-
-    mockAuthStore = {
-      register: vi.fn(),
-      isAuthenticated: signal(false),
-      user: signal(null),
-      loading: signal(false),
-      error: signal(null),
-      accessToken: signal(null),
-      refreshToken: signal(null)
-    };
+    routerMock = createRouterMock();
+    mockAuthStore = createAuthStoreMock();
 
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, ReactiveFormsModule, RouterLinkStubDirective],
       providers: [
         { provide: Router, useValue: routerMock },
-        { provide: ActivatedRoute, useValue: {
-          params: of({}),
-          snapshot: { params: {}, queryParams: {}, data: {}, url: [], outlet: 'primary', routeConfig: null, root: {} as any, parent: null, firstChild: null, children: [], pathFromRoot: [], paramMap: of({} as any), queryParamMap: of({} as any) }
-        }},
+        { provide: ActivatedRoute, useValue: createActivatedRouteMock() },
         { provide: AuthStore, useValue: mockAuthStore }
       ]
     })
