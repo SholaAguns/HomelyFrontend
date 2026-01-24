@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthStore } from '../../../core/stores/auth.store';
+import { AuthStore } from '../../../core/stores/auth-store/auth.store';
 import { RegisterData } from '../../../shared/models/auth-models';
 import { interval, take, takeWhile } from 'rxjs';
 

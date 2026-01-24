@@ -15,3 +15,7 @@
 - when beginning work on a task mark it as "- in progress" and once comeplete mark it as "- done"
 
 - always seek my explicit approval before running any migrations
+
+- use descriptive names for variables e.g. authService instead of just service
+
+- use descriptive names for tests that explain the consequence and action taken. e.g. "should call createUser request on register"

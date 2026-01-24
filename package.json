@@ -17,7 +17,9 @@
     "trailingComma": "es5",
     "tabWidth": 2,
     "semi": true,
-    "plugins": ["prettier-plugin-tailwindcss"],
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ],
     "overrides": [
       {
         "files": "*.html",
@@ -50,9 +52,11 @@
     "@angular/cli": "^21.0.5",
     "@angular/compiler-cli": "^21.0.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "@types/jasmine": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.53.0",
     "@typescript-eslint/parser": "^8.53.0",
     "eslint": "^9.39.2",
+    "jasmine-core": "^6.0.1",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.3",
     "prettier": "^3.7.4",
