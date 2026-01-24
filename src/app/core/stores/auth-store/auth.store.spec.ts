@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AuthStore } from './auth.store';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { NotificationService } from '../../services/notification.service';
@@ -7,24 +8,35 @@ import { mockLoginCredentials, mockLoginResponse, mockRegisterData, mockRegister
 
 describe('AuthStore', () => {
   let service: InstanceType<typeof AuthStore>;
-  let authServiceMock: jasmine.SpyObj<AuthService>;
-  let notificationServiceMock: jasmine.SpyObj<NotificationService>;
+  let authServiceMock: {
+    login: ReturnType<typeof vi.fn>;
+    register: ReturnType<typeof vi.fn>;
+    logout: ReturnType<typeof vi.fn>;
+    getAccessToken: ReturnType<typeof vi.fn>;
+    getRefreshToken: ReturnType<typeof vi.fn>;
+    removeToken: ReturnType<typeof vi.fn>;
+  };
+  let notificationServiceMock: {
+    success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+    info: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
-    authServiceMock = jasmine.createSpyObj('AuthService', [
-      'login',
-      'register',
-      'logout',
-      'getAccessToken',
-      'getRefreshToken',
-      'removeToken'
-    ]);
-    
-    notificationServiceMock = jasmine.createSpyObj('NotificationService', [
-      'success',
-      'error',
-      'info'
-    ]);
+    authServiceMock = {
+      login: vi.fn(),
+      register: vi.fn(),
+      logout: vi.fn(),
+      getAccessToken: vi.fn(),
+      getRefreshToken: vi.fn(),
+      removeToken: vi.fn()
+    };
+
+    notificationServiceMock = {
+      success: vi.fn(),
+      error: vi.fn(),
+      info: vi.fn()
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -35,8 +47,6 @@ describe('AuthStore', () => {
     });
 
     service = TestBed.inject(AuthStore);
-    authServiceMock = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
-    notificationServiceMock = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
   });
 
   it('should be created with initial state', () => {
@@ -50,91 +60,86 @@ describe('AuthStore', () => {
   });
 
   describe('login', () => {
-    it('should update state on successful login', (done) => {
-      authServiceMock.login.and.returnValue(of(mockLoginResponse));
+    it('should update state on successful login', async () => {
+      authServiceMock.login.mockReturnValue(of(mockLoginResponse));
 
       service.login(mockLoginCredentials);
 
-      setTimeout(() => {
-        expect(service.user()).toEqual(mockLoginResponse.user);
-        expect(service.accessToken()).toBe(mockLoginResponse.access);
-        expect(service.refreshToken()).toBe(mockLoginResponse.refresh);
-        expect(service.loading()).toBe(false);
-        expect(service.isAuthenticated()).toBe(true);
-        expect(notificationServiceMock.success).toHaveBeenCalledWith('Login successful');
-        done();
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      expect(service.user()).toEqual(mockLoginResponse.user);
+      expect(service.accessToken()).toBe(mockLoginResponse.access);
+      expect(service.refreshToken()).toBe(mockLoginResponse.refresh);
+      expect(service.loading()).toBe(false);
+      expect(service.isAuthenticated()).toBe(true);
+      expect(notificationServiceMock.success).toHaveBeenCalledWith('Login successful');
     });
 
-    it('should handle login error', (done) => {
+    it('should handle login error', async () => {
       const error = new Error('Invalid credentials');
-      authServiceMock.login.and.returnValue(throwError(() => error));
+      authServiceMock.login.mockReturnValue(throwError(() => error));
 
       service.login(mockLoginCredentials);
 
-      setTimeout(() => {
-        expect(service.error()).toBe('Invalid credentials');
-        expect(service.loading()).toBe(false);
-        expect(service.isAuthenticated()).toBe(false);
-        expect(notificationServiceMock.error).toHaveBeenCalledWith('Login failed: Invalid credentials');
-        done();
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      expect(service.error()).toBe('Invalid credentials');
+      expect(service.loading()).toBe(false);
+      expect(service.isAuthenticated()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('Login failed: Invalid credentials');
     });
   });
 
   describe('register', () => {
-    it('should update state on successful registration', (done) => {
-      authServiceMock.register.and.returnValue(of(mockRegisterResponse));
+    it('should update state on successful registration', async () => {
+      authServiceMock.register.mockReturnValue(of(mockRegisterResponse));
 
       service.register(mockRegisterData);
 
-      setTimeout(() => {
-        expect(service.user()).toBeNull();
-        expect(service.accessToken()).toBe(mockRegisterResponse.access);
-        expect(service.refreshToken()).toBe(mockRegisterResponse.refresh);
-        expect(service.loading()).toBe(false);
-        expect(notificationServiceMock.success).toHaveBeenCalledWith('Registration successful');
-        done();
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      expect(service.user()).toBeNull();
+      expect(service.accessToken()).toBe(mockRegisterResponse.access);
+      expect(service.refreshToken()).toBe(mockRegisterResponse.refresh);
+      expect(service.loading()).toBe(false);
+      expect(notificationServiceMock.success).toHaveBeenCalledWith('Registration successful');
     });
 
-    it('should handle registration error', (done) => {
+    it('should handle registration error', async () => {
       const error = new Error('Email already exists');
-      authServiceMock.register.and.returnValue(throwError(() => error));
+      authServiceMock.register.mockReturnValue(throwError(() => error));
 
       service.register(mockRegisterData);
 
-      setTimeout(() => {
-        expect(service.error()).toBe('Email already exists');
-        expect(service.loading()).toBe(false);
-        expect(notificationServiceMock.error).toHaveBeenCalledWith('Registration failed: Email already exists');
-        done();
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      expect(service.error()).toBe('Email already exists');
+      expect(service.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('Registration failed: Email already exists');
     });
   });
 
   describe('logout', () => {
-    it('should reset state on logout', (done) => {
-      authServiceMock.logout.and.returnValue(of(void 0));
+    it('should reset state on logout', async () => {
+      authServiceMock.logout.mockReturnValue(of(void 0));
 
       service.logout();
 
-      setTimeout(() => {
-        expect(service.user()).toBeNull();
-        expect(service.accessToken()).toBeNull();
-        expect(service.refreshToken()).toBeNull();
-        expect(authServiceMock.removeToken).toHaveBeenCalledWith('access_token');
-        expect(authServiceMock.removeToken).toHaveBeenCalledWith('refresh_token');
-        expect(notificationServiceMock.info).toHaveBeenCalledWith('Logged out successfully');
-        done();
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      expect(service.user()).toBeNull();
+      expect(service.accessToken()).toBeNull();
+      expect(service.refreshToken()).toBeNull();
+      expect(authServiceMock.removeToken).toHaveBeenCalledWith('access_token');
+      expect(authServiceMock.removeToken).toHaveBeenCalledWith('refresh_token');
+      expect(notificationServiceMock.info).toHaveBeenCalledWith('Logged out successfully');
     });
   });
 
   describe('initializeFromStorage', () => {
     it('should load tokens from storage', () => {
-      authServiceMock.getAccessToken.and.returnValue('serviced-access-token');
-      authServiceMock.getRefreshToken.and.returnValue('serviced-refresh-token');
+      authServiceMock.getAccessToken.mockReturnValue('serviced-access-token');
+      authServiceMock.getRefreshToken.mockReturnValue('serviced-refresh-token');
 
       service.initializeFromStorage();
 
@@ -143,8 +148,8 @@ describe('AuthStore', () => {
     });
 
     it('should not update state when no tokens in storage', () => {
-      authServiceMock.getAccessToken.and.returnValue(null);
-      authServiceMock.getRefreshToken.and.returnValue(null);
+      authServiceMock.getAccessToken.mockReturnValue(null);
+      authServiceMock.getRefreshToken.mockReturnValue(null);
 
       service.initializeFromStorage();
 

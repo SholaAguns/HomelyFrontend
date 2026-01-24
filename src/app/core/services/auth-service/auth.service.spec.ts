@@ -1,31 +1,38 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AuthService } from './auth.service';
 import { ApiService } from '../api-service/api.service';
 import { of } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { mockLoginCredentials, mockLoginResponse, mockRegisterData, mockRegisterResponse } from '../../../shared/mocks/models/auth-models.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let apiServiceMock: jasmine.SpyObj<ApiService>;
+  let apiServiceMock: {
+    get: ReturnType<typeof vi.fn>;
+    post: ReturnType<typeof vi.fn>;
+    put: ReturnType<typeof vi.fn>;
+    patch: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
-    apiServiceMock = jasmine.createSpyObj<ApiService>('ApiService', [
-      'get',
-      'post',
-      'put',
-      'patch',
-      'delete',
-    ]);
+    apiServiceMock = {
+      get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+      patch: vi.fn(),
+      delete: vi.fn()
+    };
 
     TestBed.configureTestingModule({
       providers: [
-        service,
+        AuthService,
         { provide: ApiService, useValue: apiServiceMock }
       ]
     });
 
     service = TestBed.inject(AuthService);
-    apiServiceMock = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     localStorage.clear();
   });
 
@@ -38,65 +45,60 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should call API and store tokens on login', (done) => {
-      apiServiceMock.post.and.returnValue(of(mockLoginResponse));
+    it('should call API and store tokens on login', async () => {
+      apiServiceMock.post.mockReturnValue(of(mockLoginResponse));
 
-      service.login(mockLoginCredentials).subscribe(response => {
-        expect(response).toEqual(mockLoginResponse);
-        expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/login/', mockLoginCredentials);
-        expect(localStorage.getItem('access_token')).toBe(mockLoginResponse.access);
-        expect(localStorage.getItem('refresh_token')).toBe(mockLoginResponse.refresh);
-        done();
-      });
+      const response = await firstValueFrom(service.login(mockLoginCredentials));
+
+      expect(response).toEqual(mockLoginResponse);
+      expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/login/', mockLoginCredentials);
+      expect(localStorage.getItem('access_token')).toBe(mockLoginResponse.access);
+      expect(localStorage.getItem('refresh_token')).toBe(mockLoginResponse.refresh);
     });
   });
 
   describe('register', () => {
-    it('should call API and store tokens on register', (done) => {
-      apiServiceMock.post.and.returnValue(of(mockRegisterResponse));
+    it('should call API and store tokens on register', async () => {
+      apiServiceMock.post.mockReturnValue(of(mockRegisterResponse));
 
-      service.register(mockRegisterData).subscribe(response => {
-        expect(response).toEqual(mockRegisterResponse);
-        expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/register/', mockRegisterData);
-        expect(localStorage.getItem('access_token')).toBe(mockRegisterResponse.access);
-        expect(localStorage.getItem('refresh_token')).toBe(mockRegisterResponse.refresh);
-        done();
-      });
+      const response = await firstValueFrom(service.register(mockRegisterData));
+
+      expect(response).toEqual(mockRegisterResponse);
+      expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/register/', mockRegisterData);
+      expect(localStorage.getItem('access_token')).toBe(mockRegisterResponse.access);
+      expect(localStorage.getItem('refresh_token')).toBe(mockRegisterResponse.refresh);
     });
   });
 
   describe('logout', () => {
-    it('should call API with refresh token on logout when authenticated', (done) => {
+    it('should call API with refresh token on logout when authenticated', async () => {
       localStorage.setItem('access_token', 'test-token');
       localStorage.setItem('refresh_token', 'test-refresh');
-      apiServiceMock.post.and.returnValue(of(void 0));
+      apiServiceMock.post.mockReturnValue(of(void 0));
 
-      service.logout().subscribe(() => {
-        expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/logout/', { refresh: 'test-refresh' });
-        done();
-      });
+      await firstValueFrom(service.logout());
+
+      expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/logout/', { refresh: 'test-refresh' });
     });
 
-    it('should return empty observable when not authenticated', (done) => {
-      service.logout().subscribe(() => {
-        expect(apiServiceMock.post).not.toHaveBeenCalled();
-        done();
-      });
+    it('should return empty observable when not authenticated', async () => {
+      await firstValueFrom(service.logout());
+
+      expect(apiServiceMock.post).not.toHaveBeenCalled();
     });
   });
 
   describe('refreshToken', () => {
-    it('should call API and update tokens on refreshToken', (done) => {
+    it('should call API and update tokens on refreshToken', async () => {
       localStorage.setItem('refresh_token', 'old-refresh');
-      apiServiceMock.post.and.returnValue(of(mockRegisterResponse));
+      apiServiceMock.post.mockReturnValue(of(mockRegisterResponse));
 
-      service.refreshToken().subscribe(response => {
-        expect(response).toEqual(mockRegisterResponse);
-        expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/token/refresh/', { refresh: 'old-refresh' });
-        expect(localStorage.getItem('access_token')).toBe(mockRegisterResponse.access);
-        expect(localStorage.getItem('refresh_token')).toBe(mockRegisterResponse.refresh);
-        done();
-      });
+      const response = await firstValueFrom(service.refreshToken());
+
+      expect(response).toEqual(mockRegisterResponse);
+      expect(apiServiceMock.post).toHaveBeenCalledWith('accounts/token/refresh/', { refresh: 'old-refresh' });
+      expect(localStorage.getItem('access_token')).toBe(mockRegisterResponse.access);
+      expect(localStorage.getItem('refresh_token')).toBe(mockRegisterResponse.refresh);
     });
   });
 

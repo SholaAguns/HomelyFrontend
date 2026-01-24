@@ -1,7 +1,7 @@
 import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
 import { LoginCredentials, LoginResponse, RegisterData, RegisterResponse } from '../../../shared/models/auth-models';
 import { User } from '../../../shared/models/user-models';
 import { NotificationService } from '../../services/notification.service';
@@ -34,9 +34,8 @@ export const AuthStore = signalStore(
       login: rxMethod<LoginCredentials>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((credentials) => authService.login(credentials)),
-          tap({
-            next: (response: LoginResponse) => {
+          switchMap((credentials) => authService.login(credentials).pipe(
+            tap((response: LoginResponse) => {
               patchState(store, {
                 user: response.user,
                 accessToken: response.access,
@@ -44,24 +43,24 @@ export const AuthStore = signalStore(
                 loading: false,
               });
               notificationService.success('Login successful');
-            },
-            error: (error: Error) => {
+            }),
+            catchError((error: Error) => {
               patchState(store, {
                 error: error.message,
                 loading: false,
               });
               notificationService.error('Login failed: ' + error.message);
-            },
-          })
+              return EMPTY;
+            })
+          ))
         )
       ),
 
       register: rxMethod<RegisterData>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((data) => authService.register(data)),
-          tap({
-            next: (response: RegisterResponse) => {
+          switchMap((data) => authService.register(data).pipe(
+            tap((response: RegisterResponse) => {
               patchState(store, {
                 user: null,
                 accessToken: response.access,
@@ -70,15 +69,16 @@ export const AuthStore = signalStore(
               });
               notificationService.success('Registration successful');
               // TODO: Fetch user data after registration
-            },
-            error: (error: Error) => {
+            }),
+            catchError((error: Error) => {
               patchState(store, {
                 error: error.message,
                 loading: false,
               });
               notificationService.error('Registration failed: ' + error.message);
-            },
-          })
+              return EMPTY;
+            })
+          ))
         )
       ),
 

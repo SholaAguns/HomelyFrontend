@@ -1,21 +1,43 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RegisterComponent } from './register.component';
 import { AuthStore } from '../../../core/stores/auth-store/auth.store';
 import { signal } from '@angular/core';
+import { Component, Directive, HostListener, Input } from '@angular/core';
+import { of } from 'rxjs';
+
+@Directive({
+  selector: '[routerLink]',
+  standalone: true
+})
+class RouterLinkStubDirective {
+  @Input() routerLink: any;
+  navigatedTo: any = null;
+
+  @HostListener('click')
+  onClick() {
+    this.navigatedTo = this.routerLink;
+  }
+}
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let routerMock: any;
   let mockAuthStore: any;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerMock = {
+      navigate: vi.fn(),
+      events: of(),
+      createUrlTree: vi.fn(),
+      serializeUrl: vi.fn()
+    };
 
     mockAuthStore = {
-      register: jasmine.createSpy('register'),
+      register: vi.fn(),
       isAuthenticated: signal(false),
       user: signal(null),
       loading: signal(false),
@@ -25,12 +47,21 @@ describe('RegisterComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent, ReactiveFormsModule],
+      imports: [RegisterComponent, ReactiveFormsModule, RouterLinkStubDirective],
       providers: [
-        { provide: Router, useValue: routerSpy },
+        { provide: Router, useValue: routerMock },
+        { provide: ActivatedRoute, useValue: {
+          params: of({}),
+          snapshot: { params: {}, queryParams: {}, data: {}, url: [], outlet: 'primary', routeConfig: null, root: {} as any, parent: null, firstChild: null, children: [], pathFromRoot: [], paramMap: of({} as any), queryParamMap: of({} as any) }
+        }},
         { provide: AuthStore, useValue: mockAuthStore }
       ]
-    }).compileComponents();
+    })
+    .overrideComponent(RegisterComponent, {
+      remove: { imports: [] },
+      add: { imports: [ReactiveFormsModule, RouterLinkStubDirective] }
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
@@ -196,7 +227,7 @@ describe('RegisterComponent', () => {
       });
     });
 
-    it('should navigate to home on successful authentication', fakeAsync(() => {
+    it('should navigate to home on successful authentication', async () => {
       component.registerForm.setValue({
         firstName: 'John',
         lastName: 'Doe',
@@ -209,12 +240,12 @@ describe('RegisterComponent', () => {
 
       // Simulate authentication success
       mockAuthStore.isAuthenticated.set(true);
-      tick(250);
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
-    }));
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
+    });
 
-    it('should retry polling if not authenticated immediately', fakeAsync(() => {
+    it('should retry polling if not authenticated immediately', async () => {
       component.registerForm.setValue({
         firstName: 'John',
         lastName: 'Doe',
@@ -226,17 +257,17 @@ describe('RegisterComponent', () => {
       component.onSubmit();
 
       // Not authenticated after first poll
-      tick(250);
-      expect(routerSpy.navigate).not.toHaveBeenCalled();
+      await new Promise(resolve => setTimeout(resolve, 300));
+      expect(routerMock.navigate).not.toHaveBeenCalled();
 
       // Authenticated on second poll
       mockAuthStore.isAuthenticated.set(true);
-      tick(250);
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
-    }));
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
+    });
 
-    it('should stop polling after max attempts', fakeAsync(() => {
+    it('should stop polling after max attempts', async () => {
       component.registerForm.setValue({
         firstName: 'John',
         lastName: 'Doe',
@@ -248,10 +279,10 @@ describe('RegisterComponent', () => {
       component.onSubmit();
 
       // Wait for all 5 attempts (5 * 250ms = 1250ms)
-      tick(1500);
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      expect(routerSpy.navigate).not.toHaveBeenCalled();
-    }));
+      expect(routerMock.navigate).not.toHaveBeenCalled();
+    });
   });
 
   describe('form getters', () => {
