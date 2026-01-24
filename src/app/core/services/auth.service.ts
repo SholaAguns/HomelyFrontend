@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
-import { ApiService } from './api.service';
+import { ApiService } from './api-service/api.service';
 import {LoginCredentials, LoginResponse, RegisterData, RegisterResponse} from '../../shared/models/auth-models';
 import {EditUserProfileRequest, User, UserProfile} from '../../shared/models/user-models';
 

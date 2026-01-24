@@ -4,6 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthStore } from '../../../core/stores/auth.store';
 import { LoginCredentials } from '../../../shared/models/auth-models';
+import { interval, take, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -26,13 +27,26 @@ export class LoginComponent {
       const credentials: LoginCredentials = this.loginForm.value;
       this.authStore.login(credentials);
 
-      // Navigate to homepage after successful login
-      // TODO: Better way to handle navigation after login
-      setTimeout(() => {
-        if (this.authStore.isAuthenticated()) {
-          this.router.navigate(['/']);
-        }
-      }, 2000);
+      // Poll authentication status with retry
+      let attempts = 0;
+      const maxAttempts = 5;
+      interval(250)
+        .pipe(
+          take(maxAttempts),
+          takeWhile(() => !this.authStore.isAuthenticated() && attempts++ < maxAttempts)
+        )
+        .subscribe({
+          next: () => {
+            if (this.authStore.isAuthenticated()) {
+              this.router.navigate(['/']);
+            }
+          },
+          complete: () => {
+            if (this.authStore.isAuthenticated()) {
+              this.router.navigate(['/']);
+            }
+          }
+        });
     }
   }
 

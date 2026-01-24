@@ -1,6 +1,7 @@
 - Follow plist creation path
 - Error handling
 - Property creation feature
+- formBuilder.group is deprecated
 
 
 # Bugs
