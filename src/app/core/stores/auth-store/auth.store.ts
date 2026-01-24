@@ -4,7 +4,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
 import { LoginCredentials, LoginResponse, RegisterData, RegisterResponse } from '../../../shared/models/auth-models';
 import { User } from '../../../shared/models/user-models';
-import { NotificationService } from '../../services/notification.service';
+import { NotificationService } from '../../services/notification-service/notification.service';
 import {AuthService} from '../../services/auth-service/auth.service';
 
 type AuthState = {

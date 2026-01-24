@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AuthStore } from './auth.store';
 import { AuthService } from '../../services/auth-service/auth.service';
-import { NotificationService } from '../../services/notification.service';
+import { NotificationService } from '../../services/notification-service/notification.service';
 import { of, throwError } from 'rxjs';
 import { mockLoginCredentials, mockLoginResponse, mockRegisterData, mockRegisterResponse } from '../../../shared/mocks/models/auth-models.mock';
 
