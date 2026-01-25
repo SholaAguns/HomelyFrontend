@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from './api-service/api.service';
+import { ApiService } from '../api-service/api.service';
 import {
   Property,
   PropertyDetail,
   CreatePropertyDto,
   UpdatePropertyDto,
   PropertyStateTransition,
-} from '../../shared/models/property-models';
+} from '../../../shared/models/property-models';
 
 @Injectable({
   providedIn: 'root',

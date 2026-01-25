@@ -8,7 +8,7 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, exhaustMap } from 'rxjs';
-import { PropertyListService } from '../../../core/services/property-list.service';
+import { PropertyListService } from '../../../core/services/property-list-service/property-list.service';
 import {
   PropertyList,
   CreatePropertyListDto,

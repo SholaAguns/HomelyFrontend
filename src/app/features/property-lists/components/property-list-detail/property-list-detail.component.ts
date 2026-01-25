@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { PropertyListService } from '../../../../core/services/property-list.service';
+import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
 import { PropertyListDetail } from '../../../../shared/models/property-list-models';
 import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
 
