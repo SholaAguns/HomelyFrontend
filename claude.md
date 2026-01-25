@@ -16,6 +16,6 @@
 
 - always seek my explicit approval before running any migrations
 
-- use descriptive names for variables e.g. authService instead of just service
+- use descriptive names for variables e.g. authService instead of just service, propertyIds not just ids etc
 
 - use descriptive names for tests that explain the consequence and action taken. e.g. "should call createUser request on register"
