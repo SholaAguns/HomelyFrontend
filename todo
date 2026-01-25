@@ -2,15 +2,10 @@
 - Error handling
 - Property creation feature
 - formBuilder.group is deprecated
+- animations method are deprecated
 
 
 # Bugs
 - Slow redirect after login or register
+- Can't retry after error
 
-
-Lets write tests for all our auth/login/register services, stores and components. Mock dependencies and create any new model mocks required in the shared/mocks/models folder with ovverides and import them into tests where needed
-
-- Do we need localStorage.clear(); in both beforeEach and after
-- Explain done();
-- Explain setTimeout, what it does, how, any alternatives?
-- Explain why fakeAsync is needed in some login tests

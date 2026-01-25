@@ -5,25 +5,14 @@ import { ApiService } from '../api-service/api.service';
 import { of } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { mockLoginCredentials, mockLoginResponse, mockRegisterData, mockRegisterResponse } from '../../../shared/mocks/models/auth-models.mock';
+import { createApiServiceMock } from '../../../shared/mocks/api-service.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let apiServiceMock: {
-    get: ReturnType<typeof vi.fn>;
-    post: ReturnType<typeof vi.fn>;
-    put: ReturnType<typeof vi.fn>;
-    patch: ReturnType<typeof vi.fn>;
-    delete: ReturnType<typeof vi.fn>;
-  };
+  let apiServiceMock: ReturnType<typeof createApiServiceMock>;
 
   beforeEach(() => {
-    apiServiceMock = {
-      get: vi.fn(),
-      post: vi.fn(),
-      put: vi.fn(),
-      patch: vi.fn(),
-      delete: vi.fn()
-    };
+    apiServiceMock = createApiServiceMock();
 
     TestBed.configureTestingModule({
       providers: [
