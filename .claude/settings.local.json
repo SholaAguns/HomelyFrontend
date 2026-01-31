@@ -5,7 +5,10 @@
       "Bash(npm run build:*)",
       "Bash(npm test:*)",
       "Bash(findstr:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(npx eslint:*)",
+      "Bash(git add:*)",
+      "Bash(npm run lint)"
     ]
   }
 }

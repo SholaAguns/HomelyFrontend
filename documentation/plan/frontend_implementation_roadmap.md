@@ -44,7 +44,7 @@ Angular frontend for Homely property list web application.
 
 ### Tasks
 - [X] Initialize Angular project with Tailwind CSS
-- [ ] Configure ESLint, Prettier, Git hooks
+- [X] Configure ESLint, Prettier, Git hooks
 - [X] Set up project structure (core, shared, feature modules)
 - [X] Install dependencies (RxJS, date-fns, @ngrx/signals, etc.)
 - [X] Configure environment files (API URLs, WebSocket endpoints)
@@ -66,10 +66,10 @@ Angular frontend for Homely property list web application.
   - [X] Address normalization
   - [X] Date formatting
   - [X] Currency pipes
-  - [ ] Signal helper utilities
-- [ ] Set up routing structure:
-  - [ ] Root routing with functional guards
-  - [ ] Lazy-loaded feature modules
+  - [X] Signal helper utilities
+- [X] Set up routing structure:
+  - [X] Root routing with functional guards
+  - [X] Lazy-loaded feature modules
 
 **Deliverables:**
 - Functional Angular app with authentication flow
