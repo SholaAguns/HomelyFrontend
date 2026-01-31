@@ -25,7 +25,7 @@ export type PropertyFormMode = 'create' | 'edit' | 'review';
   styleUrl: './property-form.component.css',
 })
 export class PropertyFormComponent implements OnInit {
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
 
   // Inputs
   initialData = input<Partial<CreatePropertyDto>>();
@@ -57,7 +57,7 @@ export class PropertyFormComponent implements OnInit {
   private initForm() {
     const data = this.initialData() || {};
 
-    this.form = this.fb.group({
+    this.form = this.formBuilder.group({
       title: [data.title || '', Validators.required],
       address_line_1: [data.address_line_1 || '', Validators.required],
       address_line_2: [data.address_line_2 || ''],

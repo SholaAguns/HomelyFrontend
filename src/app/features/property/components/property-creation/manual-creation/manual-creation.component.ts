@@ -38,9 +38,9 @@ export class ManualCreationComponent implements OnInit {
         // Navigate back to property list
         this.router.navigate(['/lists', this.propertyListUuid()]);
       },
-      error: (err) => {
+      error: (error) => {
         this.loading.set(false);
-        this.error.set(err.message || 'Failed to create property');
+        this.error.set(error.message || 'Failed to create property');
       },
     });
   }

@@ -85,57 +85,62 @@ Angular frontend for Homely property list web application.
 ### 2.1 Property List Module
 
 #### Tasks
-- [ ] Create PropertyList feature module
-- [ ] Signal store setup:
-  - [ ] PropertyListStore with entity management
-  - [ ] Signals: lists, selectedList, loading, error
-  - [ ] Computed signals: listsCount, activeListsOnly
-  - [ ] Methods: load(), create(), update(), delete(), select()
-  - [ ] RxMethod for API calls with loading/error handling
-- [ ] Components:
-  - [ ] PropertyListListComponent (dashboard view)
-  - [ ] PropertyListDetailComponent (single list view)
-  - [ ] PropertyListFormComponent (create/edit form)
-  - [ ] PropertyListCardComponent (list card display)
-- [ ] Routing:
-  - [ ] /lists (all lists)
-  - [ ] /lists/:id (single list detail)
-  - [ ] /lists/new (create list)
+- [X] Create PropertyList feature module
+- [X] Signal store setup:
+  - [X] PropertyListStore with entity management
+  - [X] Signals: lists, selectedList, loading, error
+  - [X] Computed signals: listsCount, activeListsOnly, selectedDetail
+  - [X] Methods: load(), create(), update(), delete(), select(), activate(), loadDetail()
+  - [X] RxMethod for API calls with loading/error handling
+- [X] Components:
+  - [X] PropertyListListComponent (dashboard view)
+  - [X] PropertyListDetailComponent (single list view)
+  - [X] PropertyListFormComponent (create/edit form)
+  - [X] PropertyListCardComponent (list card display)
+  - [X] PropertyListCreateComponent (create wrapper)
+- [X] Routing:
+  - [X] /lists (all lists)
+  - [X] /lists/:id (single list detail)
+  - [X] /lists/new (create list)
 
 #### UI Features
-- [ ] Property list creation form
-- [ ] Property list grid/card display
+- [X] Property list creation form
+- [X] Property list grid/card display
+- [X] State badges (Draft, Active)
 - [ ] Delete confirmation dialogs
-- [ ] State badges (Draft, Active)
 - [ ] Empty states (no lists)
 
 ### 2.2 Property Module
 
 #### Tasks
-- [ ] Create Property feature module
-- [ ] Signal store setup:
-  - [ ] PropertyStore with entity management
-  - [ ] Signals: properties, selectedProperty, loading, error
-  - [ ] Computed signals: propertiesByList, propertiesByState, selectedListProperties
-  - [ ] Methods: load(), create(), update(), delete(), select(), checkDuplicate()
-  - [ ] RxMethod for API calls and deduplication checks
-- [ ] Components:
+- [X] Create Property feature module
+- [X] Signal store setup:
+  - [X] PropertyStore with entity management
+  - [X] Signals: properties, selectedProperty, loading, error
+  - [X] Computed signals: propertiesByList, propertiesByState
+  - [X] Methods: load(), create(), update(), delete(), select(), runStage2(), runStage3(), createFromInput()
+  - [X] RxMethod for API calls
+- [X] Components:
+  - [X] PropertyFormComponent (manual entry form)
+  - [X] PropertyCreationComponent (creation parent component)
+  - [X] CreationOptionsComponent (creation method selection)
+  - [X] ManualCreationComponent (manual entry flow)
+  - [ ] UrlTextCreationComponent (text/URL extraction) - placeholder created
+  - [ ] SearchCreationComponent (search creation) - placeholder created
   - [ ] PropertyListComponent (properties in a list)
   - [ ] PropertyDetailComponent (single property view)
-  - [ ] PropertyFormComponent (manual entry form)
   - [ ] PropertyCardComponent (property card display)
-  - [ ] PropertyExtractionFormComponent (text/URL extraction)
   - [ ] DeduplicationWarningComponent (duplicate detection dialog)
 - [ ] Routing:
   - [ ] /lists/:listId/properties (properties in list)
   - [ ] /properties/:id (property detail)
-  - [ ] /lists/:listId/properties/new (add property)
+  - [X] /lists/:listId/properties/new (add property)
 
 #### Property Creation Methods
-- [ ] Manual form entry:
+- [X] Manual form entry:
+  - [X] Validation (required fields, formats)
+  - [X] Field type handling (enums, booleans)
   - [ ] Address autocomplete (Ideal Postcodes API)
-  - [ ] Validation (required fields, formats)
-  - [ ] Field type handling (enums, booleans)
 - [ ] Text extraction:
   - [ ] Textarea input
   - [ ] Backend parsing call

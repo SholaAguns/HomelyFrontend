@@ -18,6 +18,7 @@ import {
 
 type PropertyListState = {
   entities: Record<string, PropertyList>;
+  detailEntities: Record<string, PropertyListDetail>;
   ids: string[];
   selectedId: string | null;
   loading: boolean;
@@ -26,6 +27,7 @@ type PropertyListState = {
 
 const initialState: PropertyListState = {
   entities: {},
+  detailEntities: {},
   ids: [],
   selectedId: null,
   loading: false,
@@ -35,11 +37,15 @@ const initialState: PropertyListState = {
 export const PropertyListStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ entities, ids, selectedId }) => ({
+  withComputed(({ entities, detailEntities, ids, selectedId }) => ({
     all: computed(() => ids().map((id) => entities()[id])),
     selected: computed(() => {
       const id = selectedId();
       return id ? entities()[id] : null;
+    }),
+    selectedDetail: computed(() => {
+      const id = selectedId();
+      return id ? detailEntities()[id] : null;
     }),
     count: computed(() => ids().length),
     activeLists: computed(() =>
@@ -55,7 +61,7 @@ export const PropertyListStore = signalStore(
         switchMap(() => service.getAll().pipe(
           tap((lists) => {
             const entities = lists.reduce(
-              (acc, list) => ({ ...acc, [list.uuid]: list }),
+              (accumulator, list) => ({ ...accumulator, [list.uuid]: list }),
               {}
             );
             const ids = lists.map((list) => list.uuid);
@@ -132,6 +138,30 @@ export const PropertyListStore = signalStore(
                 };
                 const entities = { ...store.entities(), [uuid]: updatedEntity };
                 patchState(store, { entities, loading: false });
+              }
+            }),
+            catchError((error) => {
+              patchState(store, { error: error.message, loading: false });
+              return EMPTY;
+            })
+          )
+        )
+      )
+    ),
+    loadDetail: rxMethod<string>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        switchMap((uuid) =>
+          service.getByUuid(uuid).pipe(
+            tap((detail) => {
+              const detailEntities = { ...store.detailEntities(), [uuid]: detail };
+              const { properties, ...entity } = detail;
+              const entities = { ...store.entities(), [uuid]: entity };
+              if (!store.ids().includes(uuid)) {
+                const ids = [...store.ids(), uuid];
+                patchState(store, { entities, detailEntities, ids, loading: false });
+              } else {
+                patchState(store, { entities, detailEntities, loading: false });
               }
             }),
             catchError((error) => {
