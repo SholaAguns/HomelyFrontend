@@ -7,6 +7,8 @@ import {
   CreatePropertyDto,
   UpdatePropertyDto,
   PropertyStateTransition,
+  CreateFromInputRequest,
+  CreateFromInputResponse,
 } from '../../../shared/models/property-models';
 
 @Injectable({
@@ -57,6 +59,13 @@ export class PropertyService {
     return this.api.post<PropertyStateTransition>(
       `${this.endpoint}/${uuid}/rerun_services`,
       {}
+    );
+  }
+
+  createFromInput(request: CreateFromInputRequest): Observable<CreateFromInputResponse> {
+    return this.api.post<CreateFromInputResponse>(
+      `${this.endpoint}/create-from-input`,
+      request
     );
   }
 }

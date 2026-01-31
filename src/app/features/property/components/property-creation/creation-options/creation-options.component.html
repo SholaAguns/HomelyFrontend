@@ -1,0 +1,30 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-3xl font-bold text-gray-900">Add Properties</h1>
+    <p class="mt-2 text-gray-600">Choose how you would like to add properties to this list</p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    @for (option of options; track option.route) {
+      <button
+        (click)="selectOption(option)"
+        class="relative block p-6 bg-white border border-gray-200 rounded-lg hover:border-blue-500 
+              hover:shadow-md transition-all duration-200 text-left group"
+      >
+        <div class="flex items-center space-x-3 mb-3">
+          <span class="text-4xl">{{ option.icon }}</span>
+          <h3 class="text-xl font-semibold text-gray-900 group-hover:text-blue-600">
+            {{ option.title }}
+          </h3>
+        </div>
+        <p class="text-gray-600">{{ option.description }}</p>
+        <div class="mt-4 flex items-center text-blue-600 font-medium">
+          <span>Choose this option</span>
+          <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </button>
+    }
+  </div>
+</div>

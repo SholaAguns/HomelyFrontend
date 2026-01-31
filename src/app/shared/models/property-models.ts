@@ -121,3 +121,18 @@ export interface PropertyStateTransition {
   state: PropertyState;
   message: string;
 }
+
+export interface CreateFromInputRequest {
+  input_data: string;
+  input_type: 'url' | 'text';
+  property_list_uuid?: string;
+}
+
+export interface CreateFromInputResponse {
+  success: boolean;
+  property_data?: Partial<CreatePropertyDto>;
+  property?: Property;
+  created?: boolean;
+  updated?: boolean;
+  message: string;
+}

@@ -1,0 +1,20 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-3xl font-bold text-gray-900">Manual Property Entry</h1>
+    <p class="mt-2 text-gray-600">Enter property details manually using the form below</p>
+  </div>
+
+  @if (error()) {
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+      <p class="font-medium">Error</p>
+      <p class="text-sm">{{ error() }}</p>
+    </div>
+  }
+
+  <app-property-form
+    [propertyListUuid]="propertyListUuid()"
+    [mode]="'create'"
+    (formSubmit)="onFormSubmit($event)"
+    (formCancel)="onFormCancel()"
+  />
+</div>

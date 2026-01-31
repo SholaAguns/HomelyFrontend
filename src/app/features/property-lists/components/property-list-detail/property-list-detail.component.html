@@ -131,12 +131,18 @@
     </div>
 
     <div class="mt-8 border-t border-gray-200 pt-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">
-        Properties (Coming in Phase 2.2)
-      </h2>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">Properties</h2>
+        <a
+          [routerLink]="['/lists', list()!.uuid, 'properties', 'new']"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm font-medium"
+        >
+          Add Properties
+        </a>
+      </div>
       <div class="text-center py-8 bg-gray-50 rounded-lg">
         <p class="text-gray-600">
-          Property management will be available in the next phase.
+          No properties yet. Click "Add Properties" to get started.
         </p>
       </div>
     </div>

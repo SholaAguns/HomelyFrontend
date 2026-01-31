@@ -1,0 +1,350 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+  <!-- Basic Information -->
+  <div class="bg-white p-6 rounded-lg border border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div class="sm:col-span-2">
+        <label for="title" class="block text-sm font-medium text-gray-700">
+          Title <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('title')?.invalid && form.get('title')?.touched"
+        />
+        @if (form.get('title')?.invalid && form.get('title')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Title is required</p>
+        }
+      </div>
+
+      <div class="sm:col-span-2">
+        <label for="address_line_1" class="block text-sm font-medium text-gray-700">
+          Address Line 1 <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="address_line_1"
+          formControlName="address_line_1"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched"
+        />
+        @if (form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Address Line 1 is required</p>
+        }
+      </div>
+
+      <div class="sm:col-span-2">
+        <label for="address_line_2" class="block text-sm font-medium text-gray-700">
+          Address Line 2
+        </label>
+        <input
+          type="text"
+          id="address_line_2"
+          formControlName="address_line_2"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+        <input
+          type="text"
+          id="city"
+          formControlName="city"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="postcode" class="block text-sm font-medium text-gray-700">
+          Postcode <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="postcode"
+          formControlName="postcode"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('postcode')?.invalid && form.get('postcode')?.touched"
+        />
+        @if (form.get('postcode')?.invalid && form.get('postcode')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Postcode is required</p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Property Details -->
+  <div class="bg-white p-6 rounded-lg border border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Property Details</h3>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div>
+        <label for="price" class="block text-sm font-medium text-gray-700">
+          Price (£/month) <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="number"
+          id="price"
+          formControlName="price"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('price')?.invalid && form.get('price')?.touched"
+        />
+        @if (form.get('price')?.invalid && form.get('price')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Valid price is required</p>
+        }
+      </div>
+
+      <div>
+        <label for="bedrooms" class="block text-sm font-medium text-gray-700">
+          Bedrooms <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="number"
+          id="bedrooms"
+          formControlName="bedrooms"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('bedrooms')?.invalid && form.get('bedrooms')?.touched"
+        />
+        @if (form.get('bedrooms')?.invalid && form.get('bedrooms')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Bedrooms is required</p>
+        }
+      </div>
+
+      <div>
+        <label for="bathrooms" class="block text-sm font-medium text-gray-700">
+          Bathrooms <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="number"
+          id="bathrooms"
+          formControlName="bathrooms"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('bathrooms')?.invalid && form.get('bathrooms')?.touched"
+        />
+        @if (form.get('bathrooms')?.invalid && form.get('bathrooms')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Bathrooms is required</p>
+        }
+      </div>
+
+      <div>
+        <label for="square_area" class="block text-sm font-medium text-gray-700">
+          Square Area (sq ft)
+        </label>
+        <input
+          type="number"
+          id="square_area"
+          formControlName="square_area"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="furnished_status" class="block text-sm font-medium text-gray-700">
+          Furnished Status
+        </label>
+        <select
+          id="furnished_status"
+          formControlName="furnished_status"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        >
+          @for (option of furnishedStatusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="floor_level" class="block text-sm font-medium text-gray-700">
+          Floor Level
+        </label>
+        <input
+          type="number"
+          id="floor_level"
+          formControlName="floor_level"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div class="flex items-center space-x-6">
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            id="garden"
+            formControlName="garden"
+            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <label for="garden" class="ml-2 block text-sm text-gray-700">
+            Garden
+          </label>
+        </div>
+
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            id="parking"
+            formControlName="parking"
+            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <label for="parking" class="ml-2 block text-sm text-gray-700">
+            Parking
+          </label>
+        </div>
+
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            id="child_suitable"
+            formControlName="child_suitable"
+            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <label for="child_suitable" class="ml-2 block text-sm text-gray-700">
+            Child Suitable
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Information -->
+  <div class="bg-white p-6 rounded-lg border border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div>
+        <label for="council_tax_band" class="block text-sm font-medium text-gray-700">
+          Council Tax Band
+        </label>
+        <select
+          id="council_tax_band"
+          formControlName="council_tax_band"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        >
+          <option value="">Select band</option>
+          @for (band of councilTaxBands; track band) {
+            <option [value]="band">{{ band }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="epc_rating" class="block text-sm font-medium text-gray-700">
+          EPC Rating
+        </label>
+        <select
+          id="epc_rating"
+          formControlName="epc_rating"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        >
+          <option value="">Select rating</option>
+          @for (rating of epcRatings; track rating) {
+            <option [value]="rating">{{ rating }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="lease_length" class="block text-sm font-medium text-gray-700">
+          Lease Length (months)
+        </label>
+        <input
+          type="number"
+          id="lease_length"
+          formControlName="lease_length"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="completion_date" class="block text-sm font-medium text-gray-700">
+          Completion Date
+        </label>
+        <input
+          type="date"
+          id="completion_date"
+          formControlName="completion_date"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="external_url" class="block text-sm font-medium text-gray-700">
+          External URL
+        </label>
+        <input
+          type="url"
+          id="external_url"
+          formControlName="external_url"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="external_id" class="block text-sm font-medium text-gray-700">
+          External ID
+        </label>
+        <input
+          type="text"
+          id="external_id"
+          formControlName="external_id"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Location Coordinates (Optional) -->
+  <div class="bg-white p-6 rounded-lg border border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Location Coordinates (Optional)</h3>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div>
+        <label for="latitude" class="block text-sm font-medium text-gray-700">
+          Latitude
+        </label>
+        <input
+          type="number"
+          step="any"
+          id="latitude"
+          formControlName="latitude"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="longitude" class="block text-sm font-medium text-gray-700">
+          Longitude
+        </label>
+        <input
+          type="number"
+          step="any"
+          id="longitude"
+          formControlName="longitude"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="flex justify-end space-x-4">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    >
+      Cancel
+    </button>
+    @if (!readOnly()) {
+      <button
+        type="submit"
+        [disabled]="!isValid || loading()"
+        class="px-6 py-2 border border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+      >
+        @if (loading()) {
+          <span>Submitting...</span>
+        } @else {
+          <span>{{ mode() === 'review' ? 'Confirm & Create' : 'Create Property' }}</span>
+        }
+      </button>
+    }
+  </div>
+</form>
