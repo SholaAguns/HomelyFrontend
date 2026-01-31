@@ -40,41 +40,42 @@ PropertyCreationComponent (Route: /lists/:listId/properties/new)
 
 ## Implementation Phases
 
-### Phase 1: Core Property Components (2-3 days)
+### Phase 1: Core Property Components (2-3 days) - DONE
 **Goal:** Manual creation + shared form component
 
 #### Tasks
-- [ ] Create PropertyCreationComponent (router outlet + option selection)
-- [ ] Create CreationOptionsComponent
-  - [ ] 3 option cards: Manual | From URL/Text | Search Rightmove
-  - [ ] Route to respective creation components
-- [ ] Create PropertyFormComponent (reusable)
-  - [ ] Reactive form with all Property model fields
-  - [ ] Address autocomplete (Ideal Postcodes API)
-  - [ ] Validation (required, formats, enums)
-  - [ ] Signal inputs: `initialData`, `readOnly`, `mode` ('create'|'edit'|'review')
-  - [ ] Output: `formSubmit`, `formCancel`
-- [ ] Create ManualCreationComponent
-  - [ ] Embeds PropertyFormComponent
-  - [ ] Calls `PropertyService.create()`
-  - [ ] Handles success/error
-  - [ ] Redirects to property list
-- [ ] Update PropertyStore
-  - [ ] Methods: `create()`, `update()`, `delete()`, `checkDuplicate()`
-  - [ ] RxMethod for API calls
+- [X] Create PropertyCreationComponent (router outlet + option selection)
+- [X] Create CreationOptionsComponent
+  - [X] 3 option cards: Manual | From URL/Text | Search Rightmove
+  - [X] Route to respective creation components
+- [X] Create PropertyFormComponent (reusable)
+  - [X] Reactive form with all Property model fields
+  - [ ] Address autocomplete (Ideal Postcodes API) - deferred to Phase 5
+  - [X] Validation (required, formats, enums)
+  - [X] Signal inputs: `initialData`, `readOnly`, `mode` ('create'|'edit'|'review')
+  - [X] Output: `formSubmit`, `formCancel`
+- [X] Create ManualCreationComponent
+  - [X] Embeds PropertyFormComponent
+  - [X] Calls `PropertyService.create()`
+  - [X] Handles success/error
+  - [X] Redirects to property list
+- [X] Update PropertyStore
+  - [X] Methods: `create()`, `update()`, `delete()`, `createFromInput()`, `runStage2()`, `runStage3()`
+  - [X] RxMethod for API calls
+  - [ ] `checkDuplicate()` - deferred to Phase 2
 
-**Files:**
+**Files:** ✓ COMPLETE
 - `src/app/features/property/components/property-creation/`
-  - `property-creation.component.ts`
-  - `creation-options/creation-options.component.ts`
-  - `manual-creation/manual-creation.component.ts`
-- `src/app/features/property/components/property-form/property-form.component.ts`
-- Update `src/app/features/property/services/property.store.ts`
+  - `property-creation.component.ts` ✓
+  - `creation-options/creation-options.component.ts` ✓
+  - `manual-creation/manual-creation.component.ts` ✓
+- `src/app/features/property/components/property-form/property-form.component.ts` ✓
+- `src/app/features/property/store/property.store.ts` ✓
 
-**Deliverables:**
-- Property creation route `/lists/:listId/properties/new`
-- Manual creation working end-to-end
-- Reusable PropertyFormComponent
+**Deliverables:** ✓ COMPLETE
+- Property creation route `/lists/:listId/properties/new` ✓
+- Manual creation working end-to-end ✓
+- Reusable PropertyFormComponent ✓
 
 ---
 
