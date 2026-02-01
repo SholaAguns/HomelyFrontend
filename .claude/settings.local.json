@@ -15,7 +15,8 @@
       "Bash(where:*)",
       "Bash(Select-String -Pattern \"\\\\.\\(txt|log|md\\)$\")",
       "Bash(Select-Object -First 10)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npx vitest run:*)"
     ]
   }
 }

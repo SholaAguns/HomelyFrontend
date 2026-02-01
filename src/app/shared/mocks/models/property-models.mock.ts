@@ -6,6 +6,11 @@ import {
   PropertyStateTransition,
   CreateFromInputRequest,
   CreateFromInputResponse,
+  SearchCriteria,
+  CreateFromSearchRequest,
+  CreateFromSearchResponse,
+  PropertyListTask,
+  ScrapeProgressEvent,
 } from '../../models/property-models';
 
 export const mockProperty: Property = {
@@ -130,4 +135,96 @@ export const mockCreateFromInputResponseWithProperty: CreateFromInputResponse = 
   property: mockProperty,
   created: true,
   message: 'Property created successfully',
+};
+
+export const mockSearchCriteria: SearchCriteria = {
+  area: 'Manchester',
+  bedrooms_min: 2,
+  bedrooms_max: 4,
+  price_min: 1000,
+  price_max: 2000,
+  radius: 5,
+  property_types: ['flat', 'house'],
+  max_days_since_added: 7,
+};
+
+export const mockCreateFromSearchRequest: CreateFromSearchRequest = {
+  search_criteria: mockSearchCriteria,
+  max_properties: 100,
+};
+
+export const mockPropertyListTask: PropertyListTask = {
+  uuid: 'task-uuid-1',
+  property_list: 'list-uuid-1',
+  task_type: 'SCRAPE_SEARCH',
+  status: 'IN_PROGRESS',
+  celery_task_id: 'celery-task-123',
+  total_items: 50,
+  completed_items: 25,
+  failed_items: 2,
+  progress_percentage: 50,
+  errors: ['Failed to scrape property 123', 'Timeout on property 456'],
+  metadata: { search_criteria: mockSearchCriteria },
+  websocket_url: 'ws://localhost:8000/ws/property_list.list-uuid-1',
+  created_at: '2024-01-15T10:00:00Z',
+  updated_at: '2024-01-15T10:30:00Z',
+};
+
+export const mockPropertyListTaskQueued: PropertyListTask = {
+  ...mockPropertyListTask,
+  uuid: 'task-uuid-2',
+  status: 'QUEUED',
+  completed_items: 0,
+  progress_percentage: 0,
+  errors: [],
+};
+
+export const mockPropertyListTaskCompleted: PropertyListTask = {
+  ...mockPropertyListTask,
+  uuid: 'task-uuid-3',
+  status: 'COMPLETED',
+  completed_items: 50,
+  failed_items: 3,
+  progress_percentage: 100,
+};
+
+export const mockPropertyListTaskFailed: PropertyListTask = {
+  ...mockPropertyListTask,
+  uuid: 'task-uuid-4',
+  status: 'FAILED',
+  errors: ['Failed to connect to Rightmove', 'API rate limit exceeded'],
+};
+
+export const mockCreateFromSearchResponse: CreateFromSearchResponse = {
+  uuid: 'task-uuid-1',
+  task_type: 'SCRAPE_SEARCH',
+  status: 'QUEUED',
+  websocket_url: 'ws://localhost:8000/ws/property_list.list-uuid-1',
+  property_list: 'list-uuid-1',
+  celery_task_id: 'celery-task-123',
+  total_items: 0,
+  completed_items: 0,
+  failed_items: 0,
+  progress_percentage: 0,
+  errors: [],
+  metadata: { search_criteria: mockSearchCriteria },
+  created_at: '2024-01-15T10:00:00Z',
+  updated_at: '2024-01-15T10:00:00Z',
+};
+
+export const mockScrapeProgressEvent: ScrapeProgressEvent = {
+  uuid: 'task-uuid-1',
+  status: 'IN_PROGRESS',
+  completed_items: 25,
+  total_items: 50,
+  failed_items: 2,
+  progress_percentage: 50,
+  errors: ['Failed to scrape property 123'],
+};
+
+export const mockScrapeProgressEventCompleted: ScrapeProgressEvent = {
+  ...mockScrapeProgressEvent,
+  status: 'COMPLETED',
+  completed_items: 50,
+  progress_percentage: 100,
 };

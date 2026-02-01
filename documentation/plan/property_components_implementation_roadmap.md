@@ -343,11 +343,11 @@ type SearchTaskStore = {
 
 ### Unit Tests
 - [X] PropertyFormComponent (validation, signals, outputs) - Phase 1
-- [ ] PropertyService (API calls, error handling)
-- [ ] PropertyCreationService (task submission, status polling)
-- [ ] PropertyWebSocketService (connection, reconnection, event handling)
+- [X] PropertyService (API calls, error handling) - Phase 1
+- [X] PropertyCreationService (task submission, status polling) - Phase 3
+- [X] PropertyWebSocketService (connection, reconnection, event handling) - Phase 3
 - [X] PropertyStore (state updates, computed signals, checkDuplicate) - Phase 1 + Phase 2
-- [ ] SearchTaskStore (progress updates, status transitions)
+- [X] SearchTaskStore (progress updates, status transitions) - Phase 3
 - [X] UrlTextCreationComponent (extraction flow, duplicate detection) - Phase 2
 - [X] DeduplicationWarningComponent (modal actions) - Phase 2
 
