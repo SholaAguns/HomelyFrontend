@@ -356,4 +356,44 @@ describe('PropertyStore', () => {
       expect(propertyStore.selectedId()).toBeNull();
     });
   });
+
+  describe('checkDuplicate', () => {
+    it('should return null when no properties exist', () => {
+      const duplicate = propertyStore.checkDuplicate('rightmove-123456');
+
+      expect(duplicate).toBeNull();
+    });
+
+    it('should return null when no duplicate found', async () => {
+      propertyServiceMock.getAll.mockReturnValue(of([mockProperty]));
+      propertyStore.load(undefined);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const duplicate = propertyStore.checkDuplicate('non-existent-id');
+
+      expect(duplicate).toBeNull();
+    });
+
+    it('should return property when duplicate found by external_id', async () => {
+      propertyServiceMock.getAll.mockReturnValue(of([mockProperty]));
+      propertyStore.load(undefined);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const duplicate = propertyStore.checkDuplicate('rightmove-123456');
+
+      expect(duplicate).toEqual(mockProperty);
+    });
+
+    it('should find duplicate among multiple properties', async () => {
+      const mockProperties = [mockProperty, mockPropertyStage2Complete, mockPropertyStage3Complete];
+      propertyServiceMock.getAll.mockReturnValue(of(mockProperties));
+      propertyStore.load(undefined);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const duplicate = propertyStore.checkDuplicate('rightmove-123456');
+
+      expect(duplicate).toEqual(mockProperty);
+      expect(duplicate?.uuid).toBe('property-uuid-1');
+    });
+  });
 });

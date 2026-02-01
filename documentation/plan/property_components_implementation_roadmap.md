@@ -5,6 +5,8 @@ Backend property creation supports 3 methods:
 1. Manual entry via `create_property_endpoint`
 2. Single property from URL/text via `create_from_input_endpoint`
 3. Bulk search (Rightmove) via `create_from_search_endpoint` with async task tracking
+4. Read following files for context: ..\HomelyBackend\documentation\plan\detail\property_creation_flow.md and
+..\HomelyBackend\documentation\plan\detail\rightmove_creation_options_evaluation.md
 
 All backend endpoints are complete. Frontend components needed.
 
@@ -62,7 +64,7 @@ PropertyCreationComponent (Route: /lists/:listId/properties/new)
 - [X] Update PropertyStore
   - [X] Methods: `create()`, `update()`, `delete()`, `createFromInput()`, `runStage2()`, `runStage3()`
   - [X] RxMethod for API calls
-  - [ ] `checkDuplicate()` - deferred to Phase 2
+  - [X] `checkDuplicate()` - completed in Phase 2
 
 **Files:** ✓ COMPLETE
 - `src/app/features/property/components/property-creation/`
@@ -79,40 +81,40 @@ PropertyCreationComponent (Route: /lists/:listId/properties/new)
 
 ---
 
-### Phase 2: URL/Text Extraction (1-2 days)
+### Phase 2: URL/Text Extraction (1-2 days) - DONE
 **Goal:** Create from URL or text input with extraction
 
 #### Tasks
-- [ ] Create UrlTextCreationComponent
-  - [ ] Toggle: URL | Text
-  - [ ] Input field (URL or textarea)
-  - [ ] "Extract" button → calls `createFromInput()`
-  - [ ] Loading spinner during extraction
-  - [ ] Error handling (invalid URL, scraping failed)
-- [ ] Extraction flow:
-  - [ ] Step 1: Input URL/text
-  - [ ] Step 2: Backend extracts data → returns PropertyCreationRequest
-  - [ ] Step 3: Display PropertyFormComponent in 'review' mode
-  - [ ] Step 4: User edits/confirms → submit to `create_property_endpoint`
-- [ ] Update PropertyService
-  - [ ] Add `createFromInput(inputData, inputType, propertyListUuid?)` method
-  - [ ] Maps to `POST /api/properties/create-from-input/`
-  - [ ] Returns extracted property data
-- [ ] Duplicate detection
-  - [ ] Backend returns `external_id`
-  - [ ] Frontend checks if exists in PropertyStore
-  - [ ] Show DeduplicationWarningComponent modal
-  - [ ] Options: View existing | Force create | Cancel
+- [X] Create UrlTextCreationComponent
+  - [X] Toggle: URL | Text
+  - [X] Input field (URL or textarea)
+  - [X] "Extract" button → calls `createFromInput()`
+  - [X] Loading spinner during extraction
+  - [X] Error handling (invalid URL, scraping failed)
+- [X] Extraction flow:
+  - [X] Step 1: Input URL/text
+  - [X] Step 2: Backend extracts data → returns PropertyCreationRequest
+  - [X] Step 3: Display PropertyFormComponent in 'review' mode
+  - [X] Step 4: User edits/confirms → submit to `create_property_endpoint`
+- [X] Update PropertyService
+  - [X] Add `createFromInput(inputData, inputType, propertyListUuid?)` method (already exists)
+  - [X] Maps to `POST /api/properties/create-from-input/`
+  - [X] Returns extracted property data
+- [X] Duplicate detection
+  - [X] Backend returns `external_id`
+  - [X] Frontend checks if exists in PropertyStore
+  - [X] Show DeduplicationWarningComponent modal
+  - [X] Options: View existing | Force create | Cancel
 
-**Files:**
-- `src/app/features/property/components/property-creation/url-text-creation/url-text-creation.component.ts`
-- `src/app/features/property/components/deduplication-warning/deduplication-warning.component.ts`
-- Update `src/app/features/property/services/property.service.ts`
+**Files:** ✓ COMPLETE
+- `src/app/features/property/components/property-creation/url-text-creation/url-text-creation.component.ts` ✓
+- `src/app/features/property/components/deduplication-warning/deduplication-warning.component.ts` ✓
+- Update `src/app/features/property/services/property.service.ts` ✓ (already existed)
 
-**Deliverables:**
-- URL/text extraction working
-- Review/edit extracted data before submission
-- Duplicate detection modal
+**Deliverables:** ✓ COMPLETE
+- URL/text extraction working ✓
+- Review/edit extracted data before submission ✓
+- Duplicate detection modal ✓
 
 ---
 
@@ -339,18 +341,20 @@ type SearchTaskStore = {
 ## Testing Strategy
 
 ### Unit Tests
-- [ ] PropertyFormComponent (validation, signals, outputs)
+- [X] PropertyFormComponent (validation, signals, outputs) - Phase 1
 - [ ] PropertyService (API calls, error handling)
 - [ ] PropertyCreationService (task submission, status polling)
 - [ ] PropertyWebSocketService (connection, reconnection, event handling)
-- [ ] PropertyStore (state updates, computed signals)
+- [X] PropertyStore (state updates, computed signals, checkDuplicate) - Phase 1 + Phase 2
 - [ ] SearchTaskStore (progress updates, status transitions)
+- [X] UrlTextCreationComponent (extraction flow, duplicate detection) - Phase 2
+- [X] DeduplicationWarningComponent (modal actions) - Phase 2
 
 ### Integration Tests
-- [ ] Manual creation flow (form → submit → API → success)
-- [ ] URL extraction flow (input → extract → review → create)
+- [X] Manual creation flow (form → submit → API → success) - covered in unit tests
+- [X] URL extraction flow (input → extract → review → create) - covered in unit tests
 - [ ] Search flow (criteria → submit → progress → complete)
-- [ ] Duplicate detection (check → modal → navigate)
+- [X] Duplicate detection (check → modal → navigate) - covered in unit tests
 - [ ] WebSocket progress updates (mock events → UI updates)
 
 ### E2E Tests (Cypress)

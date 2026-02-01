@@ -1,17 +1,10 @@
 import { computed, inject } from '@angular/core';
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, exhaustMap, catchError, EMPTY } from 'rxjs';
 import { PropertyService } from '../../../core/services/property-service/property.service';
 import {
   Property,
-  PropertyDetail,
   CreatePropertyDto,
   UpdatePropertyDto,
   CreateFromInputRequest,
@@ -43,15 +36,17 @@ export const PropertyStore = signalStore(
       return id ? entities()[id] : null;
     }),
     count: computed(() => ids().length),
-    propertiesByList: computed(() => (listId: string) =>
-      ids()
-        .map((id) => entities()[id])
-        .filter((property) => property.property_list === listId)
+    propertiesByList: computed(
+      () => (listId: string) =>
+        ids()
+          .map((id) => entities()[id])
+          .filter((property) => property.property_list === listId)
     ),
-    propertiesByState: computed(() => (state: string) =>
-      ids()
-        .map((id) => entities()[id])
-        .filter((property) => property.state === state)
+    propertiesByState: computed(
+      () => (state: string) =>
+        ids()
+          .map((id) => entities()[id])
+          .filter((property) => property.state === state)
     ),
   })),
   withMethods((store, propertyService = inject(PropertyService)) => ({
@@ -198,5 +193,12 @@ export const PropertyStore = signalStore(
       )
     ),
     select: (uuid: string | null) => patchState(store, { selectedId: uuid }),
+    checkDuplicate: (externalId: string): Property | null => {
+      const duplicateEntity = store
+        .ids()
+        .map((id) => store.entities()[id])
+        .find((property) => property.external_id === externalId);
+      return duplicateEntity || null;
+    },
   }))
 );
