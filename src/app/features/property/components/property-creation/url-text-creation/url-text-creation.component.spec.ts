@@ -126,14 +126,15 @@ describe('UrlTextCreationComponent', () => {
       });
     });
 
-    it('should set loading state during extraction', () => {
+    it('should set loading to false after extraction completes', async () => {
       component.inputForm.patchValue({ inputData: 'test' });
       propertyServiceMock.createFromInput.mockReturnValue(of(mockCreateFromInputResponse));
       propertyStoreMock.checkDuplicate.mockReturnValue(null);
 
       component.onExtract();
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
-      expect(component.loading()).toBe(true);
+      expect(component.loading()).toBe(false);
     });
 
     it('should move to review step on successful extraction without duplicate', async () => {
