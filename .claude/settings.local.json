@@ -8,7 +8,9 @@
       "Bash(git checkout:*)",
       "Bash(npx eslint:*)",
       "Bash(git add:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(ls:*)",
+      "Bash(node -e:*)"
     ]
   }
 }
