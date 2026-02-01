@@ -118,38 +118,39 @@ PropertyCreationComponent (Route: /lists/:listId/properties/new)
 
 ---
 
-### Phase 3: Bulk Search Infrastructure (2 days)
+### Phase 3: Bulk Search Infrastructure (2 days) - DONE
 **Goal:** Async task management + WebSocket progress updates
 
 #### Tasks
-- [ ] Create PropertyCreationService (new service for bulk operations)
-  - [ ] `createFromSearch(propertyListUuid, searchCriteria)` → returns task uuid
-  - [ ] `getSearchStatus(propertyListUuid, taskUuid)` → polling fallback
-  - [ ] Maps to `POST /api/property-lists/{uuid}/create-from-search/`
-  - [ ] Maps to `GET /api/property-lists/{uuid}/scrape-status/{taskUuid}/`
-- [ ] Create SearchTaskStore (signal store)
-  - [ ] State: `currentTask`, `status`, `completedItems`, `totalItems`, `failedItems`, `errors`, `loading`
-  - [ ] Methods: `startSearch()`, `updateProgress()`, `reset()`
-  - [ ] RxMethod for WebSocket subscription
-- [ ] Create PropertyWebSocketService (or extend existing WebSocketService)
-  - [ ] Connect to property list channel: `property_list.{uuid}`
-  - [ ] Handle `scrape_progress` events
-  - [ ] Observable stream for progress updates
-  - [ ] Auto-reconnect with exponential backoff
-  - [ ] Update SearchTaskStore on events
-- [ ] Polling fallback
-  - [ ] If WebSocket fails, poll `getSearchStatus()` every 2 seconds
-  - [ ] Stop polling when status = 'completed' | 'failed'
+- [X] Create PropertyCreationService (new service for bulk operations)
+  - [X] `createFromSearch(propertyListUuid, searchCriteria)` → returns task uuid
+  - [X] `getSearchStatus(propertyListUuid, taskUuid)` → polling fallback
+  - [X] Maps to `POST /api/property-lists/{uuid}/create-from-search/`
+  - [X] Maps to `GET /api/property-lists/{uuid}/scrape-status/{taskUuid}/`
+- [X] Create SearchTaskStore (signal store)
+  - [X] State: `currentTask`, `status`, `completedItems`, `totalItems`, `failedItems`, `errors`, `loading`
+  - [X] Methods: `startSearch()`, `updateProgress()`, `reset()`
+  - [X] RxMethod for WebSocket subscription
+- [X] Create PropertyWebSocketService (or extend existing WebSocketService)
+  - [X] Connect to property list channel: `property_list.{uuid}`
+  - [X] Handle `scrape_progress` events
+  - [X] Observable stream for progress updates
+  - [X] Auto-reconnect with exponential backoff (inherited from base WebSocketService)
+  - [X] Update SearchTaskStore on events
+- [X] Polling fallback
+  - [X] If WebSocket fails, poll `getSearchStatus()` every 2 seconds
+  - [X] Stop polling when status = 'completed' | 'failed'
 
-**Files:**
-- `src/app/features/property/services/property-creation.service.ts` (new)
-- `src/app/features/property/services/search-task.store.ts` (new)
-- `src/app/core/services/property-websocket.service.ts` (new or extend existing)
+**Files:** ✓ COMPLETE
+- `src/app/core/services/property-creation-service/property-creation.service.ts` ✓
+- `src/app/features/property/store/search-task.store.ts` ✓
+- `src/app/core/services/property-websocket-service/property-websocket.service.ts` ✓
+- `src/app/shared/models/property-models.ts` (updated with search models) ✓
 
-**Deliverables:**
-- Async task submission
-- WebSocket progress tracking
-- Polling fallback
+**Deliverables:** ✓ COMPLETE
+- Async task submission ✓
+- WebSocket progress tracking ✓
+- Polling fallback ✓
 
 ---
 

@@ -10,7 +10,12 @@
       "Bash(git add:*)",
       "Bash(npm run lint)",
       "Bash(ls:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(dir:*)",
+      "Bash(where:*)",
+      "Bash(Select-String -Pattern \"\\\\.\\(txt|log|md\\)$\")",
+      "Bash(Select-Object -First 10)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

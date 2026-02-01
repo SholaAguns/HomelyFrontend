@@ -136,3 +136,66 @@ export interface CreateFromInputResponse {
   updated?: boolean;
   message: string;
 }
+
+// Search criteria for bulk property creation
+export interface SearchCriteria {
+  area: string;
+  bedrooms_min?: number;
+  bedrooms_max?: number;
+  price_min?: number;
+  price_max?: number;
+  radius?: number;
+  property_types?: string[];
+  max_days_since_added?: number;
+}
+
+export interface CreateFromSearchRequest {
+  search_criteria: SearchCriteria;
+  max_properties?: number;
+}
+
+export type TaskStatus = 'QUEUED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
+
+export interface PropertyListTask {
+  uuid: string;
+  property_list: string;
+  task_type: string;
+  status: TaskStatus;
+  celery_task_id: string | null;
+  total_items: number;
+  completed_items: number;
+  failed_items: number;
+  progress_percentage: number;
+  errors: string[];
+  metadata: Record<string, any>;
+  websocket_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateFromSearchResponse {
+  uuid: string;
+  task_type: string;
+  status: TaskStatus;
+  websocket_url: string;
+  property_list: string;
+  celery_task_id: string | null;
+  total_items: number;
+  completed_items: number;
+  failed_items: number;
+  progress_percentage: number;
+  errors: string[];
+  metadata: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ScrapeProgressEvent {
+  uuid: string;
+  status: TaskStatus;
+  completed_items: number;
+  total_items: number;
+  failed_items: number;
+  progress_percentage: number;
+  errors: string[];
+}

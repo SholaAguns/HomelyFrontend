@@ -3,8 +3,11 @@
 - Property creation feature
 - formBuilder.group is deprecated
 - animations method are deprecated
+
+Issues
 - propertyStore.load(undefined); rather then undefined woudl it be better to pass in nothing or an empty stirng rather than undefined?
 - should set loading to true during create - doesn't actuallt check that loading is set to true
+- In search-tasks.store startSearch method we are intialisaing setting created_dt and updated_dt when we receive a response, this should be done in thye backend and passed back like everything else
 
 
 # Bugs
