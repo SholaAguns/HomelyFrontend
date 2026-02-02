@@ -350,13 +350,17 @@ type SearchTaskStore = {
 - [X] SearchTaskStore (progress updates, status transitions) - Phase 3
 - [X] UrlTextCreationComponent (extraction flow, duplicate detection) - Phase 2
 - [X] DeduplicationWarningComponent (modal actions) - Phase 2
+- [X] SearchCreationComponent (view switching, search submission, retry) - Phase 4
+- [X] SearchCriteriaForm (form validation, criteria conversion) - Phase 4
+- [X] SearchProgress (status display, computed signals) - Phase 4
+- [X] SearchResultsList (results calculation, navigation) - Phase 4
 
 ### Integration Tests
 - [X] Manual creation flow (form → submit → API → success) - covered in unit tests
 - [X] URL extraction flow (input → extract → review → create) - covered in unit tests
-- [ ] Search flow (criteria → submit → progress → complete)
+- [X] Search flow (criteria → submit → progress → complete) - covered in unit tests
 - [X] Duplicate detection (check → modal → navigate) - covered in unit tests
-- [ ] WebSocket progress updates (mock events → UI updates)
+- [X] WebSocket progress updates (mock events → UI updates) - covered in unit tests
 
 ### E2E Tests (Cypress)
 - [ ] Create property manually

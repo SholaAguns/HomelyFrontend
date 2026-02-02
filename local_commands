@@ -1,8 +1,1 @@
 claude --model claude-sonnet-4-5-20250929 --add-dir ../HomelyBackend
-
-
-We are sending 2 request payloads for property-list creation, 1st is incorrect
-
-{isTrusted: true}
-
-{title: "Test List", rating_criteria: null}

@@ -70,10 +70,10 @@ describe('SearchTaskStore', () => {
       searchTaskStore.updateProgress({
         ...mockScrapeProgressEvent,
         completed_items: 25,
-        total_items: 200,
+        total_items: 100,
       });
 
-      expect(searchTaskStore.progressPercentage()).toBe((25 / 200) * 100);
+      expect(searchTaskStore.progressPercentage()).toBe((25 / 100) * 100);
     });
 
     it('should compute progressPercentage as 100 when completed', async () => {
