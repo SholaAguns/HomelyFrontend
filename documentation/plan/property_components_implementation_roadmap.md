@@ -198,17 +198,17 @@ PropertyCreationComponent (Route: /lists/:listId/properties/new)
 
 ---
 
-### Phase 5: Integration & Polish (1 day)
+### Phase 5: Integration & Polish (1 day) - in progress
 
 #### Tasks
-- [ ] Update PropertyListDetailComponent
-  - [ ] "Add Properties" button → routes to `/lists/:listId/properties/new`
-- [ ] Update routing
-  - [ ] `/lists/:listId/properties/new` → PropertyCreationComponent
-  - [ ] Child routes:
-    - `/lists/:listId/properties/new/manual` → ManualCreationComponent
-    - `/lists/:listId/properties/new/url-text` → UrlTextCreationComponent
-    - `/lists/:listId/properties/new/search` → SearchCreationComponent
+- [X] Update PropertyListDetailComponent
+  - [X] "Add Properties" button → routes to `/lists/:uuid/properties/new`
+- [X] Update routing
+  - [X] `/lists/:uuid/properties/new` → PropertyCreationComponent
+  - [X] Child routes:
+    - [X] `/lists/:uuid/properties/new/manual` → ManualCreationComponent
+    - [X] `/lists/:uuid/properties/new/url-text` → UrlTextCreationComponent
+    - [X] `/lists/:uuid/properties/new/search` → SearchCreationComponent
 - [ ] Breadcrumbs
   - [ ] Lists > List Name > Add Properties > [Creation Method]
 - [ ] Navigation guards

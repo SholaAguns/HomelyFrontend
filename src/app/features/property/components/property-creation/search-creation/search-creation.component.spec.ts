@@ -13,14 +13,18 @@ describe('SearchCreationComponent', () => {
   let component: SearchCreationComponent;
   let fixture: ComponentFixture<SearchCreationComponent>;
   let searchTaskStoreMock: ReturnType<typeof createSearchTaskStoreMock>;
-  let activatedRouteMock: { snapshot: { paramMap: { get: ReturnType<typeof vi.fn> } } };
+  let activatedRouteMock: {
+    parent: { snapshot: { paramMap: { get: ReturnType<typeof vi.fn> } } };
+  };
 
   beforeEach(async () => {
     searchTaskStoreMock = createSearchTaskStoreMock();
     activatedRouteMock = {
-      snapshot: {
-        paramMap: {
-          get: vi.fn().mockReturnValue('list-uuid-1'),
+      parent: {
+        snapshot: {
+          paramMap: {
+            get: vi.fn().mockReturnValue('list-uuid-1'),
+          },
         },
       },
     };
@@ -44,7 +48,7 @@ describe('SearchCreationComponent', () => {
 
   it('should initialize with propertyListUuid from route params', () => {
     expect(component.propertyListUuid).toBe('list-uuid-1');
-    expect(activatedRouteMock.snapshot.paramMap.get).toHaveBeenCalledWith('listId');
+    expect(activatedRouteMock.parent.snapshot.paramMap.get).toHaveBeenCalledWith('uuid');
   });
 
   it('should initialize lastSearchCriteria to null', () => {
@@ -161,8 +165,8 @@ describe('SearchCreationComponent', () => {
   });
 
   describe('propertyListUuid initialization', () => {
-    it('should handle missing listId in route params', () => {
-      activatedRouteMock.snapshot.paramMap.get = vi.fn().mockReturnValue(null);
+    it('should handle missing uuid in route params', () => {
+      activatedRouteMock.parent.snapshot.paramMap.get = vi.fn().mockReturnValue(null);
 
       const newFixture = TestBed.createComponent(SearchCreationComponent);
       const newComponent = newFixture.componentInstance;

@@ -39,7 +39,7 @@ export class SearchCreationComponent {
   });
 
   constructor() {
-    this.propertyListUuid = this.route.snapshot.paramMap.get('listId') || '';
+    this.propertyListUuid = this.route.parent?.snapshot.paramMap.get('uuid') || '';
   }
 
   onSearchSubmit(searchCriteria: SearchCriteria): void {
