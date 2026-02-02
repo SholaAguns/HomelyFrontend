@@ -1,0 +1,73 @@
+<div class="search-progress">
+  <h3>Search Progress</h3>
+
+  <!-- Status Badge -->
+  <div class="status-badge" [ngClass]="statusClass()">
+    <span class="status-label">{{ statusLabel() }}</span>
+  </div>
+
+  <!-- Connection Status -->
+  @if (usingPollingFallback()) {
+    <div class="connection-info polling">
+      <span class="icon">⚠️</span>
+      <span>Using polling fallback (WebSocket unavailable)</span>
+    </div>
+  } @else if (websocketConnected()) {
+    <div class="connection-info connected">
+      <span class="icon">✓</span>
+      <span>Real-time updates active</span>
+    </div>
+  }
+
+  <!-- Progress Bar -->
+  <div class="progress-section">
+    <div class="progress-stats">
+      <span class="stat">
+        <strong>{{ completedItems() }}</strong> / {{ totalItems() }} properties processed
+      </span>
+      @if (failedItems() > 0) {
+        <span class="stat failed">
+          <strong>{{ failedItems() }}</strong> failed
+        </span>
+      }
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar" [style.width.%]="progressPercentage()"></div>
+    </div>
+
+    <div class="progress-percentage">{{ progressPercentage() }}%</div>
+  </div>
+
+  <!-- Errors Section -->
+  @if (errors().length > 0) {
+    <div class="errors-section">
+      <button class="error-toggle" (click)="toggleErrors()">
+        <span class="icon">{{ showErrors ? '▼' : '▶' }}</span>
+        <span>{{ errors().length }} error(s) occurred</span>
+      </button>
+
+      @if (showErrors) {
+        <div class="error-list">
+          @for (error of errors(); track $index) {
+            <div class="error-item">{{ error }}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Actions -->
+  <div class="actions">
+    @if (status() === 'IN_PROGRESS' || status() === 'QUEUED') {
+      <button
+        class="btn btn-secondary"
+        (click)="onCancel()"
+        disabled
+        title="Cancel feature coming soon"
+      >
+        Cancel Search
+      </button>
+    }
+  </div>
+</div>

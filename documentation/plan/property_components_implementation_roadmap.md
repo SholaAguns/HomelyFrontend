@@ -154,47 +154,47 @@ PropertyCreationComponent (Route: /lists/:listId/properties/new)
 
 ---
 
-### Phase 4: Search Creation UI (2 days)
+### Phase 4: Search Creation UI (2 days) - DONE
 **Goal:** Rightmove search with real-time progress
 
 #### Tasks
-- [ ] Create SearchCreationComponent
-  - [ ] Embeds SearchCriteriaFormComponent
-  - [ ] Shows SearchProgressComponent when task running
-  - [ ] Shows SearchResultsListComponent when complete
-- [ ] Create SearchCriteriaFormComponent
-  - [ ] Fields: area (text), bedrooms_min/max, price_min/max, radius, property_types (checkboxes), max_days_since_added
-  - [ ] Validation (at least area required)
-  - [ ] "Start Search" button
-  - [ ] Submits to `PropertyCreationService.createFromSearch()`
-- [ ] Create SearchProgressComponent
-  - [ ] Progress bar: `completedItems / totalItems`
-  - [ ] Percentage display
-  - [ ] Live updates via SearchTaskStore signals
-  - [ ] Status badges: QUEUED | IN_PROGRESS | COMPLETED | FAILED
-  - [ ] Error list (expandable)
-  - [ ] "Cancel" button (future: calls cancel endpoint)
-  - [ ] Reconnecting indicator if WebSocket drops
-- [ ] Create SearchResultsListComponent
-  - [ ] Summary: "Created X properties, Y duplicates skipped, Z failed"
-  - [ ] Link to property list
-  - [ ] Option to start new search
-- [ ] Error handling
-  - [ ] Display errors from SearchTaskStore
-  - [ ] Retry button (restarts search with same criteria)
-  - [ ] Graceful WebSocket failure → show "Using polling fallback" message
+- [X] Create SearchCreationComponent
+  - [X] Embeds SearchCriteriaFormComponent
+  - [X] Shows SearchProgressComponent when task running
+  - [X] Shows SearchResultsListComponent when complete
+- [X] Create SearchCriteriaFormComponent
+  - [X] Fields: area (text), bedrooms_min/max, price_min/max, radius, property_types (checkboxes), max_days_since_added
+  - [X] Validation (at least area required)
+  - [X] "Start Search" button
+  - [X] Submits to `PropertyCreationService.createFromSearch()`
+- [X] Create SearchProgressComponent
+  - [X] Progress bar: `completedItems / totalItems`
+  - [X] Percentage display
+  - [X] Live updates via SearchTaskStore signals
+  - [X] Status badges: QUEUED | IN_PROGRESS | COMPLETED | FAILED
+  - [X] Error list (expandable)
+  - [X] "Cancel" button (future: calls cancel endpoint)
+  - [X] Reconnecting indicator if WebSocket drops
+- [X] Create SearchResultsListComponent
+  - [X] Summary: "Created X properties, Y duplicates skipped, Z failed"
+  - [X] Link to property list
+  - [X] Option to start new search
+- [X] Error handling
+  - [X] Display errors from SearchTaskStore
+  - [X] Retry button (restarts search with same criteria)
+  - [X] Graceful WebSocket failure → show "Using polling fallback" message
 
-**Files:**
-- `src/app/features/property/components/property-creation/search-creation/search-creation.component.ts`
-- `src/app/features/property/components/property-creation/search-creation/search-criteria-form/search-criteria-form.component.ts`
-- `src/app/features/property/components/property-creation/search-creation/search-progress/search-progress.component.ts`
-- `src/app/features/property/components/property-creation/search-creation/search-results-list/search-results-list.component.ts`
+**Files:** ✓ COMPLETE
+- `src/app/features/property/components/property-creation/search-creation/search-creation.component.ts` ✓
+- `src/app/features/property/components/property-creation/search-creation/search-criteria-form/search-criteria-form.ts` ✓
+- `src/app/features/property/components/property-creation/search-creation/search-progress/search-progress.ts` ✓
+- `src/app/features/property/components/property-creation/search-creation/search-results-list/search-results-list.ts` ✓
 
-**Deliverables:**
-- Rightmove search form
-- Real-time progress tracking
-- Error handling + retry
-- Summary screen
+**Deliverables:** ✓ COMPLETE
+- Rightmove search form ✓
+- Real-time progress tracking ✓
+- Error handling + retry ✓
+- Summary screen ✓
 
 ---
 

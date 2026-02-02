@@ -1,6 +1,30 @@
-<div class="space-y-6">
-  <div>
-    <h1 class="text-3xl font-bold text-gray-900">Search Rightmove</h1>
-    <p class="mt-2 text-gray-600">Coming soon - Phase 3-4</p>
+<div class="search-creation-container">
+  <div class="header">
+    <h2>Bulk Search from Rightmove</h2>
+    <p class="subtitle">Search Rightmove for properties and add them to your list</p>
   </div>
+
+  <!-- Search Criteria Form -->
+  @if (currentView() === 'criteria') {
+    <app-search-criteria-form (searchSubmit)="onSearchSubmit($event)"></app-search-criteria-form>
+  }
+
+  <!-- Progress View -->
+  @if (currentView() === 'progress') {
+    <app-search-progress></app-search-progress>
+
+    @if (status() === 'FAILED') {
+      <div class="retry-section">
+        <button class="btn btn-primary" (click)="onRetry()">Retry Search</button>
+      </div>
+    }
+  }
+
+  <!-- Results View -->
+  @if (currentView() === 'results') {
+    <app-search-results-list
+      [propertyListUuid]="propertyListUuid"
+      (newSearchRequested)="onNewSearchRequested()"
+    ></app-search-results-list>
+  }
 </div>

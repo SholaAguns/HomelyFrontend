@@ -16,7 +16,8 @@
       "Bash(Select-String -Pattern \"\\\\.\\(txt|log|md\\)$\")",
       "Bash(Select-Object -First 10)",
       "Bash(npx tsc:*)",
-      "Bash(npx vitest run:*)"
+      "Bash(npx vitest run:*)",
+      "Bash(ng generate:*)"
     ]
   }
 }

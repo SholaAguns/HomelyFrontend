@@ -1,0 +1,116 @@
+<div class="search-criteria-form">
+  <h3>Rightmove Search Criteria</h3>
+
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <!-- Area (Required) -->
+    <div class="form-group">
+      <label for="area">Area *</label>
+      <input
+        type="text"
+        id="area"
+        formControlName="area"
+        placeholder="e.g., London, SW1A 1AA, or postcode"
+        class="form-control"
+      />
+      @if (searchForm.get('area')?.invalid && searchForm.get('area')?.touched) {
+        <small class="error">Area is required</small>
+      }
+    </div>
+
+    <!-- Bedrooms -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="bedrooms_min">Min Bedrooms</label>
+        <input
+          type="number"
+          id="bedrooms_min"
+          formControlName="bedrooms_min"
+          min="0"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="bedrooms_max">Max Bedrooms</label>
+        <input
+          type="number"
+          id="bedrooms_max"
+          formControlName="bedrooms_max"
+          min="0"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <!-- Price -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="price_min">Min Price (£)</label>
+        <input
+          type="number"
+          id="price_min"
+          formControlName="price_min"
+          min="0"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="price_max">Max Price (£)</label>
+        <input
+          type="number"
+          id="price_max"
+          formControlName="price_max"
+          min="0"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <!-- Radius -->
+    <div class="form-group">
+      <label for="radius">Search Radius (miles)</label>
+      <select id="radius" formControlName="radius" class="form-control">
+        <option [value]="0">This area only</option>
+        <option [value]="0.25">Within 1/4 mile</option>
+        <option [value]="0.5">Within 1/2 mile</option>
+        <option [value]="1">Within 1 mile</option>
+        <option [value]="3">Within 3 miles</option>
+        <option [value]="5">Within 5 miles</option>
+        <option [value]="10">Within 10 miles</option>
+        <option [value]="15">Within 15 miles</option>
+        <option [value]="20">Within 20 miles</option>
+        <option [value]="30">Within 30 miles</option>
+        <option [value]="40">Within 40 miles</option>
+      </select>
+    </div>
+
+    <!-- Property Types -->
+    <div class="form-group">
+      <label>Property Types</label>
+      <div formGroupName="property_types" class="checkbox-group">
+        @for (type of propertyTypes; track type.value) {
+          <label class="checkbox-label">
+            <input type="checkbox" [formControlName]="type.value" />
+            <span>{{ type.label }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <!-- Max Days Since Added -->
+    <div class="form-group">
+      <label for="max_days_since_added">Added within (days)</label>
+      <select id="max_days_since_added" formControlName="max_days_since_added" class="form-control">
+        <option [value]="1">Last 24 hours</option>
+        <option [value]="3">Last 3 days</option>
+        <option [value]="7">Last 7 days</option>
+        <option [value]="14">Last 14 days</option>
+        <option [value]="null">Anytime</option>
+      </select>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="!isFormValid" class="btn btn-primary">Start Search</button>
+    </div>
+  </form>
+</div>
