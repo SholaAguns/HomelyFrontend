@@ -51,7 +51,8 @@ export class SearchCriteriaForm {
       // Convert property_types from object to array
       const selectedPropertyTypes = Object.entries(formValue.property_types)
         .filter(([_, selected]) => selected)
-        .map(([type, _]) => type);
+        .map(([type, _]) => type)
+        .join(',');
 
       const searchCriteria: SearchCriteria = {
         area: formValue.area,

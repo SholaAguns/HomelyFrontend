@@ -144,7 +144,7 @@ export const mockSearchCriteria: SearchCriteria = {
   price_min: 1000,
   price_max: 2000,
   radius: 5,
-  property_types: ['flat', 'house'],
+  property_types: "flat,house",
   max_days_since_added: 7,
 };
 

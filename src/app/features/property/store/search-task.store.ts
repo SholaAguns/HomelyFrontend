@@ -90,9 +90,9 @@ export const SearchTaskStore = signalStore(
                     propertyListUuid: listUuid,
                   });
                 }),
-                tap(({ property_list }) => {
+                tap(() => {
                   // Try WebSocket first (called after state update)
-                  methods.subscribeToWebSocket(property_list);
+                  methods.subscribeToWebSocket(listUuid);
                 }),
                 catchError((error) => {
                   patchState(store, {

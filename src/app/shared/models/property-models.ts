@@ -145,7 +145,7 @@ export interface SearchCriteria {
   price_min?: number;
   price_max?: number;
   radius?: number;
-  property_types?: string[];
+  property_types?: string;
   max_days_since_added?: number;
 }
 
