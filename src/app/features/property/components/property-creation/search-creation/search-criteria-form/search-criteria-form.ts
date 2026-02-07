@@ -34,7 +34,7 @@ export class SearchCriteriaForm {
       price_max: [null],
       radius: [5],
       property_types: [''],
-      max_days_since_added: [''],
+      max_days_since_added: [14],
     });
   }
 

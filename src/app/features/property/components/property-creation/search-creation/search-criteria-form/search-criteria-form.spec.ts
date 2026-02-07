@@ -28,17 +28,8 @@ describe('SearchCriteriaForm', () => {
     expect(component.searchForm.get('price_min')?.value).toBeNull();
     expect(component.searchForm.get('price_max')?.value).toBeNull();
     expect(component.searchForm.get('radius')?.value).toBe(5);
+    expect(component.searchForm.get('property_types')?.value).toBe('');
     expect(component.searchForm.get('max_days_since_added')?.value).toBe(14);
-  });
-
-  it('should initialize property_types with house and flat checked', () => {
-    const propertyTypes = component.searchForm.get('property_types')?.value;
-    expect(propertyTypes.house).toBe(true);
-    expect(propertyTypes.flat).toBe(true);
-    expect(propertyTypes.bungalow).toBe(false);
-    expect(propertyTypes.land).toBe(false);
-    expect(propertyTypes['commercial-property']).toBe(false);
-    expect(propertyTypes.other).toBe(false);
   });
 
   describe('form validation', () => {
@@ -81,6 +72,7 @@ describe('SearchCriteriaForm', () => {
         price_min: 1000,
         price_max: 2000,
         radius: 10,
+        property_types: 'house',
         max_days_since_added: 7,
       });
 
@@ -93,47 +85,18 @@ describe('SearchCriteriaForm', () => {
         price_min: 1000,
         price_max: 2000,
         radius: 10,
-        property_types: ['house', 'flat'],
+        property_types: 'house',
         max_days_since_added: 7,
       });
     });
 
-    it('should convert property_types object to array of selected types', () => {
-      const submitSpy = vi.fn();
-      component.searchSubmit.subscribe(submitSpy);
-
-      component.searchForm.patchValue({
-        area: 'London',
-        property_types: {
-          house: false,
-          flat: true,
-          bungalow: true,
-          land: false,
-          'commercial-property': false,
-          other: false,
-        },
-      });
-
-      component.onSubmit();
-
-      const emittedCriteria = submitSpy.mock.calls[0][0];
-      expect(emittedCriteria.property_types).toEqual(['flat', 'bungalow']);
-    });
-
-    it('should omit property_types when none selected', () => {
+    it('should omit property_types when empty string', () => {
       const submitSpy = vi.fn();
       component.searchSubmit.subscribe(submitSpy);
 
       component.searchForm.patchValue({
         area: 'Birmingham',
-        property_types: {
-          house: false,
-          flat: false,
-          bungalow: false,
-          land: false,
-          'commercial-property': false,
-          other: false,
-        },
+        property_types: '',
       });
 
       component.onSubmit();
@@ -153,6 +116,7 @@ describe('SearchCriteriaForm', () => {
         price_min: null,
         price_max: null,
         radius: null,
+        property_types: null,
         max_days_since_added: null,
       });
 
@@ -164,6 +128,7 @@ describe('SearchCriteriaForm', () => {
       expect(emittedCriteria.price_min).toBeUndefined();
       expect(emittedCriteria.price_max).toBeUndefined();
       expect(emittedCriteria.radius).toBeUndefined();
+      expect(emittedCriteria.property_types).toBeUndefined();
       expect(emittedCriteria.max_days_since_added).toBeUndefined();
     });
   });
@@ -183,6 +148,7 @@ describe('SearchCriteriaForm', () => {
   describe('propertyTypes array', () => {
     it('should have correct property type options', () => {
       expect(component.propertyTypes).toEqual([
+        { value: '', label: 'Any' },
         { value: 'house', label: 'House' },
         { value: 'flat', label: 'Flat/Apartment' },
         { value: 'bungalow', label: 'Bungalow' },
