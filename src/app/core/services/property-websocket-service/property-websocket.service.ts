@@ -10,12 +10,16 @@ export class PropertyWebSocketService {
   private webSocketService = inject(WebSocketService);
 
   connectToPropertyList(propertyListUuid: string): Observable<ScrapeProgressEvent> {
-    const channel = `property_list.${propertyListUuid}`;
+    const channel = `property-list/${propertyListUuid}/`;
 
     return this.webSocketService.connect(channel).pipe(
       map((data: any) => {
-        if (data.type === 'scrape_progress') {
-          return data.payload as ScrapeProgressEvent;
+        if (
+          data.type === 'scrape_progress' ||
+          data.type === 'scrape_complete' ||
+          data.type === 'scrape_failed'
+        ) {
+          return data.data as ScrapeProgressEvent;
         }
         throw new Error('Unknown message type');
       }),
