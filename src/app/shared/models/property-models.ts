@@ -5,6 +5,16 @@ export type PropertyState =
   | 'STAGE3_IN_PROGRESS'
   | 'STAGE3_COMPLETE';
 
+export interface PropertyImage {
+  id: number;
+  source_url: string;
+  url: string;
+  caption: string;
+  order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Property {
   uuid: string;
   property_list: string;
@@ -53,6 +63,10 @@ export interface Property {
   rating_breakdown: Record<string, any> | null;
   disqualified: boolean;
   disqualification_reason: string;
+
+  // Images
+  images: PropertyImage[];
+  primary_image: PropertyImage | null;
 
   // Timestamps
   created_at: string;

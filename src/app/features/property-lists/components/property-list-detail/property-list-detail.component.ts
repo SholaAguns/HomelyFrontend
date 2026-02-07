@@ -4,11 +4,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
 import { PropertyListDetail } from '../../../../shared/models/property-list-models';
 import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
+import { PropertyPreviewCard } from '../property-preview-card/property-preview-card';
 
 @Component({
   selector: 'app-property-list-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, PropertyListFormComponent],
+  imports: [CommonModule, RouterLink, PropertyListFormComponent, PropertyPreviewCard],
   templateUrl: './property-list-detail.component.html',
   styleUrl: './property-list-detail.component.css',
 })
@@ -87,9 +88,7 @@ export class PropertyListDetailComponent implements OnInit {
     if (list) {
       this.service.update(list.uuid, data).subscribe({
         next: (updated) => {
-          this.list.update((current) =>
-            current ? { ...current, ...updated } : null
-          );
+          this.list.update((current) => (current ? { ...current, ...updated } : null));
           this.editMode.set(false);
         },
         error: (err) => {

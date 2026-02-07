@@ -11,7 +11,18 @@ import {
   CreateFromSearchResponse,
   PropertyListTask,
   ScrapeProgressEvent,
+  PropertyImage,
 } from '../../models/property-models';
+
+export const mockPropertyImage: PropertyImage = {
+  id: 121,
+  source_url: 'https:mock-url.jpg',
+  url: 'http://test-urls.pg',
+  caption: 'test-caption',
+  order: 1,
+  created_at: '2024-01-15T10:00:00Z',
+  updated_at: '2024-01-15T10:00:00Z',
+};
 
 export const mockProperty: Property = {
   uuid: 'property-uuid-1',
@@ -49,6 +60,8 @@ export const mockProperty: Property = {
   disqualification_reason: '',
   created_at: '2024-01-15T10:00:00Z',
   updated_at: '2024-01-15T10:00:00Z',
+  images: [mockPropertyImage],
+  primary_image: mockPropertyImage,
 };
 
 export const mockPropertyStage2Complete: Property = {
@@ -144,7 +157,7 @@ export const mockSearchCriteria: SearchCriteria = {
   price_min: 1000,
   price_max: 2000,
   radius: 5,
-  property_types: "flat,house",
+  property_types: 'flat,house',
   max_days_since_added: 7,
 };
 

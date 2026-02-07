@@ -1,151 +1,148 @@
 <div class="container mx-auto px-4 py-8">
   @if (loading()) {
-  <div class="flex justify-center items-center py-16">
-    <div
-      class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
-    ></div>
-  </div>
+    <div class="flex items-center justify-center py-16">
+      <div class="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+    </div>
   } @else if (error()) {
-  <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
-    <h3 class="font-semibold mb-2">Error loading property list</h3>
-    <p>{{ error() }}</p>
-    <a
-      routerLink="/lists"
-      class="inline-block mt-4 text-blue-600 hover:underline"
-    >
-      Back to lists
-    </a>
-  </div>
-  } @else if (list()) { @if (editMode()) {
-  <app-property-list-form
-    [list]="list()"
-    (submit)="onUpdate($event)"
-    (cancel)="onCancelEdit()"
-  />
-  } @else {
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <div class="flex justify-between items-start mb-6">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">
-          {{ list()!.title }}
-        </h1>
-        <div class="flex gap-3 items-center">
-          <span
-            [class]="
-              list()!.state === 'ACTIVE'
-                ? 'bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium'
-                : 'bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium'
-            "
-          >
-            {{ list()!.state }}
-          </span>
-          <span class="text-gray-600">
-            {{ list()!.properties_count }}
-            {{ list()!.properties_count === 1 ? 'property' : 'properties' }}
-          </span>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button
-          (click)="onEdit()"
-          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm font-medium"
-        >
-          Edit
-        </button>
-        @if (list()!.state === 'DRAFT') {
-        <button
-          (click)="onActivate()"
-          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium"
-        >
-          Activate
-        </button>
-        }
-        <button
-          (click)="onDelete()"
-          class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors text-sm font-medium"
-        >
-          Delete
-        </button>
-        <a
-          routerLink="/lists"
-          class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors text-sm font-medium"
-        >
-          Back
-        </a>
-      </div>
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+      <h3 class="mb-2 font-semibold">Error loading property list</h3>
+      <p>{{ error() }}</p>
+      <a routerLink="/lists" class="mt-4 inline-block text-blue-600 hover:underline">
+        Back to lists
+      </a>
     </div>
+  } @else if (list()) {
+    @if (editMode()) {
+      <app-property-list-form
+        [list]="list()"
+        (submit)="onUpdate($event)"
+        (cancel)="onCancelEdit()"
+      />
+    } @else {
+      <div class="rounded-lg bg-white p-6 shadow-md">
+        <div class="mb-6 flex items-start justify-between">
+          <div>
+            <h1 class="mb-2 text-3xl font-bold text-gray-900">
+              {{ list()!.title }}
+            </h1>
+            <div class="flex items-center gap-3">
+              <span
+                [class]="
+                  list()!.state === 'ACTIVE'
+                    ? 'rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800'
+                    : 'rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800'
+                "
+              >
+                {{ list()!.state }}
+              </span>
+              <span class="text-gray-600">
+                {{ list()!.properties_count }}
+                {{ list()!.properties_count === 1 ? 'property' : 'properties' }}
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              (click)="onEdit()"
+              class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              Edit
+            </button>
+            @if (list()!.state === 'DRAFT') {
+              <button
+                (click)="onActivate()"
+                class="rounded bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+              >
+                Activate
+              </button>
+            }
+            <button
+              (click)="onDelete()"
+              class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
+            >
+              Delete
+            </button>
+            <a
+              routerLink="/lists"
+              class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300"
+            >
+              Back
+            </a>
+          </div>
+        </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div class="bg-gray-50 rounded-lg p-4">
-        <div class="text-sm text-gray-600 mb-1">New</div>
-        <div class="text-2xl font-bold text-gray-900">
-          {{ list()!.status_summary.new }}
+        <div class="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div class="rounded-lg bg-gray-50 p-4">
+            <div class="mb-1 text-sm text-gray-600">New</div>
+            <div class="text-2xl font-bold text-gray-900">
+              {{ list()!.status_summary.new }}
+            </div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4">
+            <div class="mb-1 text-sm text-gray-600">Stage 2 In Progress</div>
+            <div class="text-2xl font-bold text-blue-900">
+              {{ list()!.status_summary.stage2_in_progress }}
+            </div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4">
+            <div class="mb-1 text-sm text-gray-600">Stage 2 Complete</div>
+            <div class="text-2xl font-bold text-green-900">
+              {{ list()!.status_summary.stage2_complete }}
+            </div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4">
+            <div class="mb-1 text-sm text-gray-600">Stage 3 Complete</div>
+            <div class="text-2xl font-bold text-purple-900">
+              {{ list()!.status_summary.stage3_complete }}
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="bg-blue-50 rounded-lg p-4">
-        <div class="text-sm text-gray-600 mb-1">Stage 2 In Progress</div>
-        <div class="text-2xl font-bold text-blue-900">
-          {{ list()!.status_summary.stage2_in_progress }}
-        </div>
-      </div>
-      <div class="bg-green-50 rounded-lg p-4">
-        <div class="text-sm text-gray-600 mb-1">Stage 2 Complete</div>
-        <div class="text-2xl font-bold text-green-900">
-          {{ list()!.status_summary.stage2_complete }}
-        </div>
-      </div>
-      <div class="bg-purple-50 rounded-lg p-4">
-        <div class="text-sm text-gray-600 mb-1">Stage 3 Complete</div>
-        <div class="text-2xl font-bold text-purple-900">
-          {{ list()!.status_summary.stage3_complete }}
-        </div>
-      </div>
-    </div>
 
-    <div class="border-t border-gray-200 pt-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Metadata</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-        <div>
-          <span class="text-gray-600">Owner:</span>
-          <span class="ml-2 font-medium">{{ list()!.owner }}</span>
+        <div class="border-t border-gray-200 pt-6">
+          <h2 class="mb-4 text-xl font-semibold text-gray-900">Metadata</h2>
+          <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
+            <div>
+              <span class="text-gray-600">Owner:</span>
+              <span class="ml-2 font-medium">{{ list()!.owner }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Created:</span>
+              <span class="ml-2 font-medium">{{ list()!.created_at | date: 'medium' }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Updated:</span>
+              <span class="ml-2 font-medium">{{ list()!.updated_at | date: 'medium' }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Rating Criteria:</span>
+              <span class="ml-2 font-medium">{{ list()!.rating_criteria || 'None' }}</span>
+            </div>
+          </div>
         </div>
-        <div>
-          <span class="text-gray-600">Created:</span>
-          <span class="ml-2 font-medium">{{
-            list()!.created_at | date : 'medium'
-          }}</span>
-        </div>
-        <div>
-          <span class="text-gray-600">Updated:</span>
-          <span class="ml-2 font-medium">{{
-            list()!.updated_at | date : 'medium'
-          }}</span>
-        </div>
-        <div>
-          <span class="text-gray-600">Rating Criteria:</span>
-          <span class="ml-2 font-medium">{{
-            list()!.rating_criteria || 'None'
-          }}</span>
-        </div>
-      </div>
-    </div>
 
-    <div class="mt-8 border-t border-gray-200 pt-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold text-gray-900">Properties</h2>
-        <a
-          [routerLink]="['/lists', list()!.uuid, 'properties', 'new']"
-          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm font-medium"
-        >
-          Add Properties
-        </a>
+        <div class="mt-8 border-t border-gray-200 pt-6">
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-900">Properties</h2>
+            <a
+              [routerLink]="['/lists', list()!.uuid, 'properties', 'new']"
+              class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              Add Properties
+            </a>
+          </div>
+          @if (list()!.properties.length === 0) {
+            <div class="rounded-lg bg-gray-50 py-8 text-center">
+              <p class="text-gray-600">No properties yet. Click "Add Properties" to get started.</p>
+            </div>
+          } @else {
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              @for (property of list()!.properties; track property.uuid) {
+                <app-property-preview-card [property]="property" />
+              }
+            </div>
+          }
+        </div>
       </div>
-      <div class="text-center py-8 bg-gray-50 rounded-lg">
-        <p class="text-gray-600">
-          No properties yet. Click "Add Properties" to get started.
-        </p>
-      </div>
-    </div>
-  </div>
-  } }
+    }
+  }
 </div>

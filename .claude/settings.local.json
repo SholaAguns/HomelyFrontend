@@ -17,7 +17,8 @@
       "Bash(Select-Object -First 10)",
       "Bash(npx tsc:*)",
       "Bash(npx vitest run:*)",
-      "Bash(ng generate:*)"
+      "Bash(ng generate:*)",
+      "Bash(ren:*)"
     ]
   }
 }
