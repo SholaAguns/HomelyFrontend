@@ -16,6 +16,7 @@ export class SearchCriteriaForm {
   searchSubmit = output<SearchCriteria>();
 
   propertyTypes = [
+    { value: '', label: 'Any' },
     { value: 'house', label: 'House' },
     { value: 'flat', label: 'Flat/Apartment' },
     { value: 'bungalow', label: 'Bungalow' },
@@ -32,27 +33,14 @@ export class SearchCriteriaForm {
       price_min: [null],
       price_max: [null],
       radius: [5],
-      property_types: this.formBuilder.group({
-        house: [true],
-        flat: [true],
-        bungalow: [false],
-        land: [false],
-        'commercial-property': [false],
-        other: [false],
-      }),
-      max_days_since_added: [14],
+      property_types: [''],
+      max_days_since_added: [''],
     });
   }
 
   onSubmit(): void {
     if (this.searchForm.valid) {
       const formValue = this.searchForm.value;
-
-      // Convert property_types from object to array
-      const selectedPropertyTypes = Object.entries(formValue.property_types)
-        .filter(([_, selected]) => selected)
-        .map(([type, _]) => type)
-        .join(',');
 
       const searchCriteria: SearchCriteria = {
         area: formValue.area,
@@ -61,7 +49,7 @@ export class SearchCriteriaForm {
         price_min: formValue.price_min || undefined,
         price_max: formValue.price_max || undefined,
         radius: formValue.radius || undefined,
-        property_types: selectedPropertyTypes.length > 0 ? selectedPropertyTypes : undefined,
+        property_types: formValue.property_types || undefined,
         max_days_since_added: formValue.max_days_since_added || undefined,
       };
 

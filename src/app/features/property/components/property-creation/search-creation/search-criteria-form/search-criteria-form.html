@@ -85,26 +85,23 @@
 
     <!-- Property Types -->
     <div class="form-group">
-      <label>Property Types</label>
-      <div formGroupName="property_types" class="checkbox-group">
+      <label for="property_types">Property Type</label>
+      <select id="property_types" formControlName="property_types" class="form-control">
         @for (type of propertyTypes; track type.value) {
-          <label class="checkbox-label">
-            <input type="checkbox" [formControlName]="type.value" />
-            <span>{{ type.label }}</span>
-          </label>
+          <option [value]="type.value">{{ type.label }}</option>
         }
-      </div>
+      </select>
     </div>
 
     <!-- Max Days Since Added -->
     <div class="form-group">
-      <label for="max_days_since_added">Added within (days)</label>
+      <label for="max_days_since_added">Added within</label>
       <select id="max_days_since_added" formControlName="max_days_since_added" class="form-control">
+        <option value="">Anytime</option>
         <option [value]="1">Last 24 hours</option>
         <option [value]="3">Last 3 days</option>
         <option [value]="7">Last 7 days</option>
         <option [value]="14">Last 14 days</option>
-        <option value="">Anytime</option>
       </select>
     </div>
 
