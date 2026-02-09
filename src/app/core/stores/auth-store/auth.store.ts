@@ -1,11 +1,17 @@
 import { computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
-import { LoginCredentials, LoginResponse, RegisterData, RegisterResponse } from '../../../shared/models/auth-models';
+import {
+  LoginCredentials,
+  LoginResponse,
+  RegisterData,
+  RegisterResponse,
+} from '../../../shared/models/auth-models';
 import { User } from '../../../shared/models/user-models';
 import { NotificationService } from '../../services/notification-service/notification.service';
-import {AuthService} from '../../services/auth-service/auth.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 type AuthState = {
   user: User | null;
@@ -30,55 +36,65 @@ export const AuthStore = signalStore(
     isAuthenticated: computed(() => !!user() && !!accessToken()),
   })),
   withMethods(
-    (store, authService = inject(AuthService), notificationService = inject(NotificationService)) => ({
+    (
+      store,
+      authService = inject(AuthService),
+      notificationService = inject(NotificationService),
+      router = inject(Router)
+    ) => ({
       login: rxMethod<LoginCredentials>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((credentials) => authService.login(credentials).pipe(
-            tap((response: LoginResponse) => {
-              patchState(store, {
-                user: response.user,
-                accessToken: response.access,
-                refreshToken: response.refresh,
-                loading: false,
-              });
-              notificationService.success('Login successful');
-            }),
-            catchError((error: Error) => {
-              patchState(store, {
-                error: error.message,
-                loading: false,
-              });
-              notificationService.error('Login failed: ' + error.message);
-              return EMPTY;
-            })
-          ))
+          switchMap((credentials) =>
+            authService.login(credentials).pipe(
+              tap((response: LoginResponse) => {
+                patchState(store, {
+                  user: response.user,
+                  accessToken: response.access,
+                  refreshToken: response.refresh,
+                  loading: false,
+                });
+                notificationService.success('Login successful');
+                router.navigate(['/']);
+              }),
+              catchError((error: Error) => {
+                patchState(store, {
+                  error: error.message,
+                  loading: false,
+                });
+                notificationService.error('Login failed: ' + error.message);
+                return EMPTY;
+              })
+            )
+          )
         )
       ),
 
       register: rxMethod<RegisterData>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((data) => authService.register(data).pipe(
-            tap((response: RegisterResponse) => {
-              patchState(store, {
-                user: null,
-                accessToken: response.access,
-                refreshToken: response.refresh,
-                loading: false,
-              });
-              notificationService.success('Registration successful');
-              // TODO: Fetch user data after registration
-            }),
-            catchError((error: Error) => {
-              patchState(store, {
-                error: error.message,
-                loading: false,
-              });
-              notificationService.error('Registration failed: ' + error.message);
-              return EMPTY;
-            })
-          ))
+          switchMap((data) =>
+            authService.register(data).pipe(
+              tap((response: RegisterResponse) => {
+                patchState(store, {
+                  user: null,
+                  accessToken: response.access,
+                  refreshToken: response.refresh,
+                  loading: false,
+                });
+                notificationService.success('Registration successful');
+                router.navigate(['/login']);
+              }),
+              catchError((error: Error) => {
+                patchState(store, {
+                  error: error.message,
+                  loading: false,
+                });
+                notificationService.error('Registration failed: ' + error.message);
+                return EMPTY;
+              })
+            )
+          )
         )
       ),
 
