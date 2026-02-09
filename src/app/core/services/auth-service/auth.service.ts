@@ -1,8 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { ApiService } from '../api-service/api.service';
-import {LoginCredentials, LoginResponse, RegisterData, RegisterResponse} from '../../../shared/models/auth-models';
-import {EditUserProfileRequest, User, UserProfile} from '../../../shared/models/user-models';
+import {
+  LoginCredentials,
+  LoginResponse,
+  RegisterData,
+  RegisterResponse,
+} from '../../../shared/models/auth-models';
+import { EditUserProfileRequest, User, UserProfile } from '../../../shared/models/user-models';
 
 @Injectable({
   providedIn: 'root',
@@ -36,22 +41,21 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
-    if(!this.isAuthenticated()) return of(undefined);
+    if (!this.isAuthenticated()) return of(undefined);
 
     let endpoint = this.AUTH_ENDPOINT + 'logout/';
     let data = {
-      refresh: this.getRefreshToken()
+      refresh: this.getRefreshToken(),
     };
 
     return this.api.post<void>(endpoint, data);
   }
 
   refreshToken(): Observable<RegisterResponse> {
-
     let endpoint = this.AUTH_ENDPOINT + 'token/refresh/';
     let data = {
-      refresh: this.getRefreshToken()
-    }
+      refresh: this.getRefreshToken(),
+    };
 
     return this.api.post<RegisterResponse>(endpoint, data).pipe(
       tap((response) => {
@@ -67,8 +71,13 @@ export class AuthService {
     return this.api.get<User>(endpoint);
   }
 
-  editUserProfile(requestData: EditUserProfileRequest): Observable<UserProfile> {
+  getCurrentUser(): Observable<User> {
+    let endpoint = this.AUTH_ENDPOINT + 'users/me/';
 
+    return this.api.get<User>(endpoint);
+  }
+
+  editUserProfile(requestData: EditUserProfileRequest): Observable<UserProfile> {
     let endpoint = this.AUTH_ENDPOINT + 'users/profile/';
 
     return this.api.put<UserProfile>(endpoint, requestData);

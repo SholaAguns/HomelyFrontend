@@ -113,9 +113,20 @@ export const AuthStore = signalStore(
       initializeFromStorage: () => {
         const accessToken = authService.getAccessToken();
         const refreshToken = authService.getRefreshToken();
-        if (accessToken) {
-          patchState(store, { accessToken, refreshToken });
-          // TODO: Fetch user data from API using token
+        if (accessToken && refreshToken) {
+          patchState(store, { accessToken, refreshToken, loading: true });
+
+          authService.getCurrentUser().subscribe({
+            next: (user) => {
+              patchState(store, { user, loading: false });
+            },
+            error: () => {
+              // Invalid token, clear storage
+              authService.removeToken('access_token');
+              authService.removeToken('refresh_token');
+              patchState(store, initialState);
+            },
+          });
         }
       },
     })
