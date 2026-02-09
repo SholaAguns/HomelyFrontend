@@ -1,4 +1,5 @@
 import { computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY, interval, takeUntil, Subject } from 'rxjs';
@@ -51,7 +52,8 @@ export const SearchTaskStore = signalStore(
     (
       store,
       propertyCreationService = inject(PropertyCreationService),
-      propertyWebSocketService = inject(PropertyWebSocketService)
+      propertyWebSocketService = inject(PropertyWebSocketService),
+      router = inject(Router)
     ) => {
       const stopPolling$ = new Subject<void>();
 
@@ -87,12 +89,11 @@ export const SearchTaskStore = signalStore(
                     failedItems: response.failed_items,
                     errors: response.errors,
                     loading: false,
-                    propertyListUuid: listUuid,
+                    propertyListUuid: response.property_list_uuid,
                   });
-                }),
-                tap(() => {
-                  // Try WebSocket first (called after state update)
-                  methods.subscribeToWebSocket(listUuid);
+
+                  // Navigate to property list detail page
+                  router.navigate(['/lists', response.property_list_uuid]);
                 }),
                 catchError((error) => {
                   patchState(store, {

@@ -1,10 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
 import { PropertyListDetail } from '../../../../shared/models/property-list-models';
 import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
 import { PropertyPreviewCard } from '../property-preview-card/property-preview-card';
+import { SearchTaskStore } from '../../../property/store/search-task.store';
 
 @Component({
   selector: 'app-property-list-detail',
@@ -13,21 +14,56 @@ import { PropertyPreviewCard } from '../property-preview-card/property-preview-c
   templateUrl: './property-list-detail.component.html',
   styleUrl: './property-list-detail.component.css',
 })
-export class PropertyListDetailComponent implements OnInit {
+export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private service = inject(PropertyListService);
+  searchTaskStore = inject(SearchTaskStore);
 
   list = signal<PropertyListDetail | null>(null);
   loading = signal(false);
   error = signal<string | null>(null);
   editMode = signal(false);
 
+  constructor() {
+    // Reload properties when task progress updates
+    effect(() => {
+      const status = this.searchTaskStore.status();
+      const completedItems = this.searchTaskStore.completedItems();
+
+      // Reload when items are completed or task finishes
+      if (status && completedItems > 0) {
+        const uuid = this.route.snapshot.paramMap.get('uuid');
+        if (uuid) {
+          this.loadList(uuid);
+        }
+      }
+    });
+  }
+
   ngOnInit() {
     const uuid = this.route.snapshot.paramMap.get('uuid');
     if (uuid) {
       this.loadList(uuid);
+
+      // Connect to WebSocket if there's an active task for this list
+      const currentTask = this.searchTaskStore.currentTask();
+      const taskListUuid = this.searchTaskStore.propertyListUuid();
+      const taskStatus = this.searchTaskStore.status();
+
+      if (
+        currentTask &&
+        taskListUuid === uuid &&
+        (taskStatus === 'QUEUED' || taskStatus === 'IN_PROGRESS')
+      ) {
+        this.searchTaskStore.subscribeToWebSocket(uuid);
+      }
     }
+  }
+
+  ngOnDestroy() {
+    // Clear task state when navigating away
+    this.searchTaskStore.reset();
   }
 
   loadList(uuid: string) {

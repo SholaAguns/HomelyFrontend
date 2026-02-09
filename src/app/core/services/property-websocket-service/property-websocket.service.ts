@@ -13,13 +13,13 @@ export class PropertyWebSocketService {
     const channel = `property-list/${propertyListUuid}/`;
 
     return this.webSocketService.connect(channel).pipe(
-      map((data: any) => {
+      map((message: any) => {
         if (
-          data.type === 'scrape_progress' ||
-          data.type === 'scrape_complete' ||
-          data.type === 'scrape_failed'
+          message.type === 'scrape_progress' ||
+          message.type === 'scrape_complete' ||
+          message.type === 'scrape_failed'
         ) {
-          return data.payload as ScrapeProgressEvent;
+          return message.data as ScrapeProgressEvent;
         }
         throw new Error('Unknown message type');
       }),

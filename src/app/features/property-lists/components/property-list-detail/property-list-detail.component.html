@@ -120,6 +120,34 @@
           </div>
         </div>
 
+        @if (searchTaskStore.status() === 'QUEUED' || searchTaskStore.status() === 'IN_PROGRESS') {
+          <div class="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <h3 class="mb-2 font-semibold text-blue-900">Creating Properties from Search</h3>
+            <div class="flex gap-4 text-sm">
+              <div>
+                <span class="text-blue-700">In Progress:</span>
+                <span class="ml-2 font-medium text-blue-900">{{
+                  searchTaskStore.completedItems()
+                }}</span>
+              </div>
+              <div>
+                <span class="text-blue-700">Total:</span>
+                <span class="ml-2 font-medium text-blue-900">{{
+                  searchTaskStore.totalItems()
+                }}</span>
+              </div>
+              @if (searchTaskStore.failedItems() > 0) {
+                <div>
+                  <span class="text-red-700">Failed:</span>
+                  <span class="ml-2 font-medium text-red-900">{{
+                    searchTaskStore.failedItems()
+                  }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
         <div class="mt-8 border-t border-gray-200 pt-6">
           <div class="mb-4 flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-900">Properties</h2>

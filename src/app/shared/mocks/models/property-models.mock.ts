@@ -210,6 +210,7 @@ export const mockPropertyListTaskFailed: PropertyListTask = {
 
 export const mockCreateFromSearchResponse: CreateFromSearchResponse = {
   uuid: 'task-uuid-1',
+  property_list_uuid: 'list-uuid-1',
   task_type: 'SCRAPE_SEARCH',
   status: 'QUEUED',
   websocket_url: 'ws://localhost:8000/ws/property_list.list-uuid-1',

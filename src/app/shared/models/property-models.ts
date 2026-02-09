@@ -189,6 +189,7 @@ export interface PropertyListTask {
 
 export interface CreateFromSearchResponse {
   uuid: string;
+  property_list_uuid: string;
   task_type: string;
   status: TaskStatus;
   websocket_url: string;
