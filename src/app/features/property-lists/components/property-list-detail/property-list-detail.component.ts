@@ -26,13 +26,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   editMode = signal(false);
 
   constructor() {
-    // Reload properties when task progress updates
+    // Reload properties only when scraping completes
     effect(() => {
       const status = this.searchTaskStore.status();
-      const completedItems = this.searchTaskStore.completedItems();
 
-      // Reload when items are completed or task finishes
-      if (status && completedItems > 0) {
+      if (status === 'COMPLETED') {
         const uuid = this.route.snapshot.paramMap.get('uuid');
         if (uuid) {
           this.loadList(uuid);
