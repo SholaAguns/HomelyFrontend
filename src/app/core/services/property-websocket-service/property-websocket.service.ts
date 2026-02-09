@@ -10,7 +10,7 @@ export class PropertyWebSocketService {
   private webSocketService = inject(WebSocketService);
 
   connectToPropertyList(propertyListUuid: string): Observable<ScrapeProgressEvent> {
-    const channel = `property_list.${propertyListUuid}`;
+    const channel = `property-list/${propertyListUuid}/`;
 
     return this.webSocketService.connect(channel).pipe(
       map((data: any) => {

@@ -3,7 +3,7 @@
 >
   @if (property().primary_image) {
     <img
-      [src]="property()?.primary_image?.source_url"
+      [src]="property().primary_image?.source_url"
       [alt]="property().title"
       class="h-48 w-full object-cover"
     />
