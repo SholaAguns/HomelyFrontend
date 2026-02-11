@@ -78,7 +78,7 @@ describe('PropertyStore', () => {
     it('should filter propertiesByList', async () => {
       const mockProperties = [
         mockProperty,
-        { ...mockPropertyStage2Complete, property_list: 'list-uuid-2' },
+        { ...mockPropertyStage2Complete, property_lists: { 'list-uuid-2': 'List 2' } },
       ];
       propertyServiceMock.getAll.mockReturnValue(of(mockProperties));
 

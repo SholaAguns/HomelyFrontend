@@ -216,7 +216,7 @@ describe('PropertyFormComponent', () => {
 
       expect(submitSpy).toHaveBeenCalledWith({
         ...formData,
-        property_list: 'list-uuid-1',
+        property_lists_input: ['list-uuid-1'],
       });
     });
 
