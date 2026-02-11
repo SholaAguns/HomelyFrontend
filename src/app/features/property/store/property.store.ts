@@ -40,7 +40,7 @@ export const PropertyStore = signalStore(
       () => (listId: string) =>
         ids()
           .map((id) => entities()[id])
-          .filter((property) => property.property_list === listId)
+          .filter((property) => listId in property.property_lists)
     ),
     propertiesByState: computed(
       () => (state: string) =>

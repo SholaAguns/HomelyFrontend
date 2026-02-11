@@ -17,8 +17,7 @@ export interface PropertyImage {
 
 export interface Property {
   uuid: string;
-  property_list: string;
-  property_list_title: string;
+  property_lists: Record<string, string>; // { uuid: title }
   state: PropertyState;
   state_display: string;
 
@@ -79,7 +78,7 @@ export interface PropertyDetail extends Property {
 }
 
 export interface CreatePropertyDto {
-  property_list: string;
+  property_lists_input: string[]; // Array of PropertyList UUIDs
   title: string;
   address_line_1: string;
   address_line_2?: string;

@@ -26,8 +26,7 @@ export const mockPropertyImage: PropertyImage = {
 
 export const mockProperty: Property = {
   uuid: 'property-uuid-1',
-  property_list: 'list-uuid-1',
-  property_list_title: 'My Property List',
+  property_lists: { 'list-uuid-1': 'My Property List' },
   state: 'NEW',
   state_display: 'New',
   title: '2 Bedroom Flat',
@@ -93,7 +92,7 @@ export const mockPropertyDetail: PropertyDetail = {
 };
 
 export const mockCreatePropertyDto: CreatePropertyDto = {
-  property_list: 'list-uuid-1',
+  property_lists_input: ['list-uuid-1'],
   title: '2 Bedroom Flat',
   address_line_1: '123 Main Street',
   address_line_2: 'Apartment 4B',

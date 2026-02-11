@@ -1,18 +1,6 @@
-import {
-  Component,
-  input,
-  output,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, input, output, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreatePropertyDto } from '../../../../shared/models/property-models';
 
 export type PropertyFormMode = 'create' | 'edit' | 'review';
@@ -65,18 +53,9 @@ export class PropertyFormComponent implements OnInit {
       postcode: [data.postcode || '', Validators.required],
       latitude: [data.latitude || null],
       longitude: [data.longitude || null],
-      price: [
-        data.price || null,
-        [Validators.required, Validators.min(0)],
-      ],
-      bedrooms: [
-        data.bedrooms || null,
-        [Validators.required, Validators.min(0)],
-      ],
-      bathrooms: [
-        data.bathrooms || null,
-        [Validators.required, Validators.min(0)],
-      ],
+      price: [data.price || null, [Validators.required, Validators.min(0)]],
+      bedrooms: [data.bedrooms || null, [Validators.required, Validators.min(0)]],
+      bathrooms: [data.bathrooms || null, [Validators.required, Validators.min(0)]],
       square_area: [data.square_area || null, Validators.min(0)],
       garden: [data.garden ?? false],
       parking: [data.parking ?? false],
@@ -101,7 +80,7 @@ export class PropertyFormComponent implements OnInit {
       const formValue = this.form.value;
       const propertyData: CreatePropertyDto = {
         ...formValue,
-        property_list: this.propertyListUuid(),
+        property_lists_input: [this.propertyListUuid()],
       };
       this.formSubmit.emit(propertyData);
     }
