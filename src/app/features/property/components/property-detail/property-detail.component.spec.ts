@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { PropertyDetailComponent } from './property-detail.component';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { createRouterMock, createActivatedRouteMock } from '../../../../shared/mocks/router.mock';
 
 describe('PropertyDetailComponent', () => {
@@ -12,6 +13,7 @@ describe('PropertyDetailComponent', () => {
   let routerMock: any;
   let activatedRouteMock: any;
   let propertyServiceMock: any;
+  let notificationServiceMock: any;
 
   const mockPropertyDetail = {
     uuid: 'prop-123',
@@ -65,6 +67,11 @@ describe('PropertyDetailComponent', () => {
       runStage2: vi.fn(),
       runStage3: vi.fn(),
     };
+    notificationServiceMock = {
+      success: vi.fn(),
+      error: vi.fn(),
+      info: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [PropertyDetailComponent],
@@ -72,6 +79,7 @@ describe('PropertyDetailComponent', () => {
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: PropertyService, useValue: propertyServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
       ],
     }).compileComponents();
 
@@ -98,7 +106,7 @@ describe('PropertyDetailComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.error()).toBe('Load failed');
+    expect(notificationServiceMock.error).toHaveBeenCalledWith('Load failed');
     expect(component.loading()).toBe(false);
   });
 
@@ -118,6 +126,7 @@ describe('PropertyDetailComponent', () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(propertyServiceMock.runStage2).toHaveBeenCalledWith('prop-123');
+    expect(notificationServiceMock.success).toHaveBeenCalledWith('Stage 2 started successfully');
     expect(propertyServiceMock.getByUuid).toHaveBeenCalledTimes(2);
   });
 
@@ -131,6 +140,7 @@ describe('PropertyDetailComponent', () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(propertyServiceMock.runStage3).toHaveBeenCalledWith('prop-123');
+    expect(notificationServiceMock.success).toHaveBeenCalledWith('Stage 3 started successfully');
     expect(propertyServiceMock.getByUuid).toHaveBeenCalledTimes(2);
   });
 
@@ -143,7 +153,7 @@ describe('PropertyDetailComponent', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    expect(component.error()).toBe('Stage 2 failed');
+    expect(notificationServiceMock.error).toHaveBeenCalledWith('Stage 2 failed');
   });
 
   it('should handle missing uuid', () => {
@@ -151,7 +161,7 @@ describe('PropertyDetailComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.error()).toBe('No property UUID provided');
+    expect(notificationServiceMock.error).toHaveBeenCalledWith('No property UUID provided');
     expect(component.loading()).toBe(false);
   });
 });
