@@ -1,5 +1,6 @@
 <div
-  class="overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md"
+  (click)="viewDetails()"
+  class="cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md"
 >
   @if (property().primary_image) {
     <img
@@ -47,6 +48,7 @@
         <a
           [href]="property().external_url"
           target="_blank"
+          (click)="$event.stopPropagation()"
           class="text-sm text-blue-600 hover:underline"
         >
           View
