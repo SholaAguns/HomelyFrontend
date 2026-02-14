@@ -41,25 +41,48 @@
       <!-- Images Section -->
       <div>
         @if (property()!.primary_image) {
-          <img
-            [src]="property()!.primary_image!.source_url"
-            [alt]="property()!.title"
-            class="mb-4 h-96 w-full rounded-lg object-cover"
-          />
+          <div class="relative mb-4">
+            <img
+              [src]="property()!.primary_image!.source_url"
+              [alt]="property()!.title"
+              class="h-96 w-full cursor-pointer rounded-lg object-cover transition-opacity hover:opacity-90"
+              (click)="openGallery(0)"
+            />
+            @if (property()!.images && property()!.images.length > 1) {
+              <div
+                class="bg-opacity-60 absolute right-4 bottom-4 rounded-full bg-black px-3 py-1 text-sm text-white"
+              >
+                {{ property()!.images.length }} photos
+              </div>
+            }
+          </div>
         } @else {
           <div class="mb-4 flex h-96 w-full items-center justify-center rounded-lg bg-gray-200">
             <span class="text-gray-400">No image available</span>
           </div>
         }
 
-        @if (property()!.images && property()!.images.length > 1) {
-          <div class="grid grid-cols-4 gap-2">
-            @for (image of property()!.images; track image.id) {
-              <img
-                [src]="image.source_url"
-                [alt]="image.caption || 'Property image'"
-                class="h-24 w-full cursor-pointer rounded object-cover hover:opacity-75"
-              />
+        @if (displayedImages().length > 0) {
+          <div class="grid grid-cols-3 gap-2">
+            @for (image of displayedImages(); track image.id; let i = $index) {
+              <div class="relative">
+                <img
+                  [src]="image.source_url"
+                  [alt]="image.caption || 'Property image'"
+                  class="h-24 w-full cursor-pointer rounded object-cover transition-opacity hover:opacity-75"
+                  (click)="openGallery(i + 1)"
+                />
+                @if (i === 2 && hasMoreImages()) {
+                  <div
+                    class="bg-opacity-60 hover:bg-opacity-70 absolute inset-0 flex cursor-pointer items-center justify-center rounded bg-black text-white transition-opacity"
+                    (click)="openGallery(i + 1)"
+                  >
+                    <span class="text-lg font-semibold">
+                      +{{ property()!.images.length - 4 }} more
+                    </span>
+                  </div>
+                }
+              </div>
             }
           </div>
         }
@@ -217,5 +240,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Image Gallery -->
+    @if (galleryOpen() && property()!.images && property()!.images.length > 0) {
+      <app-image-gallery
+        [images]="property()!.images"
+        [initialIndex]="galleryInitialIndex()"
+        (close)="closeGallery()"
+      />
+    }
   }
 </div>
