@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, effect } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
@@ -24,6 +24,25 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   loading = signal(false);
   error = signal<string | null>(null);
   editMode = signal(false);
+  currentPage = signal(1);
+  itemsPerPage = 20;
+
+  paginatedProperties = computed(() => {
+    const listData = this.list();
+    if (!listData) return [];
+
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return listData.properties.slice(startIndex, endIndex);
+  });
+
+  totalPages = computed(() => {
+    const listData = this.list();
+    if (!listData) return 0;
+    return Math.ceil(listData.properties.length / this.itemsPerPage);
+  });
+
+  protected readonly Math = Math;
 
   constructor() {
     // Reload properties when scraping completes or fails
@@ -70,6 +89,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.service.getByUuid(uuid).subscribe({
       next: (list) => {
         this.list.set(list);
+        this.currentPage.set(1);
         this.loading.set(false);
       },
       error: (err) => {
@@ -77,6 +97,20 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
     });
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
+  }
+
+  nextPage() {
+    this.goToPage(this.currentPage() + 1);
+  }
+
+  previousPage() {
+    this.goToPage(this.currentPage() - 1);
   }
 
   onDelete() {

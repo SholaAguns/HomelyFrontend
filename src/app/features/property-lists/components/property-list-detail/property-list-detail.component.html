@@ -164,10 +164,51 @@
             </div>
           } @else {
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              @for (property of list()!.properties; track property.uuid) {
+              @for (property of paginatedProperties(); track property.uuid) {
                 <app-property-preview-card [property]="property" />
               }
             </div>
+
+            @if (totalPages() > 1) {
+              <div class="mt-6 flex items-center justify-center gap-2">
+                <button
+                  (click)="previousPage()"
+                  [disabled]="currentPage() === 1"
+                  class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Previous
+                </button>
+
+                <div class="flex gap-1">
+                  @for (pageNum of [].constructor(totalPages()); track $index; let i = $index) {
+                    <button
+                      (click)="goToPage(i + 1)"
+                      [class]="
+                        currentPage() === i + 1
+                          ? 'rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white'
+                          : 'rounded bg-gray-200 px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300'
+                      "
+                    >
+                      {{ i + 1 }}
+                    </button>
+                  }
+                </div>
+
+                <button
+                  (click)="nextPage()"
+                  [disabled]="currentPage() === totalPages()"
+                  class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+
+              <div class="mt-2 text-center text-sm text-gray-600">
+                Showing {{ (currentPage() - 1) * itemsPerPage + 1 }} -
+                {{ Math.min(currentPage() * itemsPerPage, list()!.properties.length) }}
+                of {{ list()!.properties.length }} properties
+              </div>
+            }
           }
         </div>
       </div>
