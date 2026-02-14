@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { Router } from '@angular/router';
 import { SearchTaskStore } from './search-task.store';
 import { PropertyCreationService } from '../../../core/services/property-creation-service/property-creation.service';
 import { PropertyWebSocketService } from '../../../core/services/property-websocket-service/property-websocket.service';
@@ -14,19 +15,23 @@ import {
 } from '../../../shared/mocks/models/property-models.mock';
 import { createPropertyCreationServiceMock } from '../../../shared/mocks/property-creation-service.mock';
 import { createPropertyWebSocketServiceMock } from '../../../shared/mocks/property-websocket-service.mock';
+import { createRouterMock } from '../../../shared/mocks/router.mock';
 
 describe('SearchTaskStore', () => {
   let searchTaskStore: InstanceType<typeof SearchTaskStore>;
+  let routerMock: any;
   let propertyCreationServiceMock: ReturnType<typeof createPropertyCreationServiceMock>;
   let propertyWebSocketServiceMock: ReturnType<typeof createPropertyWebSocketServiceMock>;
 
   beforeEach(() => {
+    routerMock = createRouterMock();
     propertyCreationServiceMock = createPropertyCreationServiceMock();
     propertyWebSocketServiceMock = createPropertyWebSocketServiceMock();
 
     TestBed.configureTestingModule({
       providers: [
         SearchTaskStore,
+        { provide: Router, useValue: routerMock },
         { provide: PropertyCreationService, useValue: propertyCreationServiceMock },
         { provide: PropertyWebSocketService, useValue: propertyWebSocketServiceMock },
       ],

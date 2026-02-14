@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { Router } from '@angular/router';
 import { AuthStore } from './auth.store';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { NotificationService } from '../../services/notification-service/notification.service';
@@ -10,9 +11,11 @@ import {
   mockRegisterData,
   mockRegisterResponse,
 } from '../../../shared/mocks/models/auth-models.mock';
+import { createRouterMock } from '../../../shared/mocks/router.mock';
 
 describe('AuthStore', () => {
   let service: InstanceType<typeof AuthStore>;
+  let routerMock: any;
   let authServiceMock: {
     login: ReturnType<typeof vi.fn>;
     register: ReturnType<typeof vi.fn>;
@@ -29,6 +32,8 @@ describe('AuthStore', () => {
   };
 
   beforeEach(() => {
+    routerMock = createRouterMock();
+
     authServiceMock = {
       login: vi.fn(),
       register: vi.fn(),
@@ -48,6 +53,7 @@ describe('AuthStore', () => {
     TestBed.configureTestingModule({
       providers: [
         AuthStore,
+        { provide: Router, useValue: routerMock },
         { provide: AuthService, useValue: authServiceMock },
         { provide: NotificationService, useValue: notificationServiceMock },
       ],
