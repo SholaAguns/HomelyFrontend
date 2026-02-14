@@ -6,7 +6,11 @@
 
   <!-- Search Criteria Form -->
   @if (currentView() === 'criteria') {
-    <app-search-criteria-form (searchSubmit)="onSearchSubmit($event)"></app-search-criteria-form>
+    <app-search-criteria-form
+      [searchCriteria]="existingSearchCriteria()"
+      (searchSubmit)="onSearchSubmit($event)"
+    >
+    </app-search-criteria-form>
   }
 
   <!-- Progress View -->

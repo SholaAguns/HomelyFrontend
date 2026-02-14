@@ -2,6 +2,7 @@ import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { SearchTaskStore } from '../../../store/search-task.store';
+import { PropertyListStore } from '../../../../property-lists/store/property-list.store';
 import { SearchCriteriaForm } from './search-criteria-form/search-criteria-form';
 import { SearchProgress } from './search-progress/search-progress';
 import { SearchResultsList } from './search-results-list/search-results-list';
@@ -19,12 +20,18 @@ type SearchView = 'criteria' | 'progress' | 'results';
 export class SearchCreationComponent {
   private route = inject(ActivatedRoute);
   searchTaskStore = inject(SearchTaskStore);
+  propertyListStore = inject(PropertyListStore);
 
   propertyListUuid: string = '';
   lastSearchCriteria: SearchCriteria | null = null;
 
   status = this.searchTaskStore.status;
   loading = this.searchTaskStore.loading;
+
+  existingSearchCriteria = computed<SearchCriteria | null>(() => {
+    const selectedList = this.propertyListStore.selected();
+    return selectedList?.search_criteria || null;
+  });
 
   currentView = computed<SearchView>(() => {
     const currentStatus = this.status();
@@ -40,6 +47,7 @@ export class SearchCreationComponent {
 
   constructor() {
     this.propertyListUuid = this.route.parent?.snapshot.paramMap.get('uuid') || '';
+    this.propertyListStore.select(this.propertyListUuid);
   }
 
   onSearchSubmit(searchCriteria: SearchCriteria): void {

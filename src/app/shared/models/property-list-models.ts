@@ -1,4 +1,4 @@
-import { Property } from './property-models';
+import { Property, SearchCriteria } from './property-models';
 
 export type PropertyListState = 'DRAFT' | 'ACTIVE';
 
@@ -9,6 +9,7 @@ export interface PropertyList {
   state: PropertyListState;
   rating_criteria: string | null;
   rating_criteria_source: string | null;
+  search_criteria: SearchCriteria | null;
   viewers: string[];
   contributors: string[];
   properties_count: number;

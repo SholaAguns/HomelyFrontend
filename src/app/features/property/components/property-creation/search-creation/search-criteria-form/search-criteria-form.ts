@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { Component, output, input, effect } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SearchCriteria } from '../../../../../../shared/models/property-models';
@@ -12,6 +12,7 @@ import { SearchCriteria } from '../../../../../../shared/models/property-models'
 export class SearchCriteriaForm {
   private formBuilder = new FormBuilder();
 
+  searchCriteria = input<SearchCriteria | null>(null);
   searchForm: FormGroup;
   searchSubmit = output<SearchCriteria>();
 
@@ -35,6 +36,22 @@ export class SearchCriteriaForm {
       radius: [5],
       property_types: [''],
       max_days_since_added: [null],
+    });
+
+    effect(() => {
+      const criteria = this.searchCriteria();
+      if (criteria) {
+        this.searchForm.patchValue({
+          area: criteria.area || '',
+          bedrooms_min: criteria.bedrooms_min || null,
+          bedrooms_max: criteria.bedrooms_max || null,
+          price_min: criteria.price_min || null,
+          price_max: criteria.price_max || null,
+          radius: criteria.radius || 5,
+          property_types: criteria.property_types || '',
+          max_days_since_added: criteria.max_days_since_added || null,
+        });
+      }
     });
   }
 
