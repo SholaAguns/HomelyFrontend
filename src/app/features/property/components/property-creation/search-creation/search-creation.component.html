@@ -12,4 +12,9 @@
     >
     </app-search-criteria-form>
   }
+
+  <!-- Progress View -->
+  @if (currentView() === 'progress') {
+    <app-loading-spinner message="Creating properties from search results..." size="large" />
+  }
 </div>

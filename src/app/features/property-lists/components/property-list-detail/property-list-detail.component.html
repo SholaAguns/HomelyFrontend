@@ -120,28 +120,37 @@
 
         @if (searchTaskStore.status() === 'QUEUED' || searchTaskStore.status() === 'IN_PROGRESS') {
           <div class="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <h3 class="mb-2 font-semibold text-blue-900">Creating Properties from Search</h3>
-            <div class="flex gap-4 text-sm">
-              <div>
-                <span class="text-blue-700">In Progress:</span>
-                <span class="ml-2 font-medium text-blue-900">{{
-                  searchTaskStore.completedItems()
-                }}</span>
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0">
+                <div
+                  class="h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"
+                ></div>
               </div>
-              <div>
-                <span class="text-blue-700">Total:</span>
-                <span class="ml-2 font-medium text-blue-900">{{
-                  searchTaskStore.totalItems()
-                }}</span>
-              </div>
-              @if (searchTaskStore.failedItems() > 0) {
-                <div>
-                  <span class="text-red-700">Failed:</span>
-                  <span class="ml-2 font-medium text-red-900">{{
-                    searchTaskStore.failedItems()
-                  }}</span>
+              <div class="flex-1">
+                <h3 class="mb-2 font-semibold text-blue-900">Creating Properties from Search</h3>
+                <div class="flex gap-4 text-sm">
+                  <div>
+                    <span class="text-blue-700">In Progress:</span>
+                    <span class="ml-2 font-medium text-blue-900">{{
+                      searchTaskStore.completedItems()
+                    }}</span>
+                  </div>
+                  <div>
+                    <span class="text-blue-700">Total:</span>
+                    <span class="ml-2 font-medium text-blue-900">{{
+                      searchTaskStore.totalItems()
+                    }}</span>
+                  </div>
+                  @if (searchTaskStore.failedItems() > 0) {
+                    <div>
+                      <span class="text-red-700">Failed:</span>
+                      <span class="ml-2 font-medium text-red-900">{{
+                        searchTaskStore.failedItems()
+                      }}</span>
+                    </div>
+                  }
                 </div>
-              }
+              </div>
             </div>
           </div>
         }

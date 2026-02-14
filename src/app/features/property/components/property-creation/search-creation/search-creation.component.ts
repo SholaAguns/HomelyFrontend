@@ -5,13 +5,14 @@ import { SearchTaskStore } from '../../../store/search-task.store';
 import { PropertyListStore } from '../../../../property-lists/store/property-list.store';
 import { SearchCriteriaForm } from './search-criteria-form/search-criteria-form';
 import { SearchCriteria } from '../../../../../shared/models/property-models';
+import { LoadingSpinnerComponent } from '../../../../../shared/components/loading-spinner/loading-spinner.component';
 
 type SearchView = 'criteria' | 'progress' | 'results';
 
 @Component({
   selector: 'app-search-creation',
   standalone: true,
-  imports: [CommonModule, SearchCriteriaForm],
+  imports: [CommonModule, SearchCriteriaForm, LoadingSpinnerComponent],
   templateUrl: './search-creation.component.html',
   styleUrl: './search-creation.component.css',
 })
