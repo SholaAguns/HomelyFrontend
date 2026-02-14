@@ -12,23 +12,4 @@
     >
     </app-search-criteria-form>
   }
-
-  <!-- Progress View -->
-  @if (currentView() === 'progress') {
-    <app-search-progress></app-search-progress>
-
-    @if (status() === 'FAILED') {
-      <div class="retry-section">
-        <button class="btn btn-primary" (click)="onRetry()">Retry Search</button>
-      </div>
-    }
-  }
-
-  <!-- Results View -->
-  @if (currentView() === 'results') {
-    <app-search-results-list
-      [propertyListUuid]="propertyListUuid"
-      (newSearchRequested)="onNewSearchRequested()"
-    ></app-search-results-list>
-  }
 </div>

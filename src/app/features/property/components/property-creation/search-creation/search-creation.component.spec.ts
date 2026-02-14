@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { SearchCreationComponent } from './search-creation.component';
 import { SearchTaskStore } from '../../../store/search-task.store';
 import { SearchCriteriaForm } from './search-criteria-form/search-criteria-form';
-import { SearchProgress } from './search-progress/search-progress';
-import { SearchResultsList } from './search-results-list/search-results-list';
 import { createSearchTaskStoreMock } from '../../../../../shared/mocks/search-task-store.mock';
 import { mockSearchCriteria } from '../../../../../shared/mocks/models/property-models.mock';
 
@@ -30,7 +28,7 @@ describe('SearchCreationComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SearchCreationComponent, SearchCriteriaForm, SearchProgress, SearchResultsList],
+      imports: [SearchCreationComponent, SearchCriteriaForm],
       providers: [
         { provide: SearchTaskStore, useValue: searchTaskStoreMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },

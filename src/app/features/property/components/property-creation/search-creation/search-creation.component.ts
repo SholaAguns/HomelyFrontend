@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { SearchTaskStore } from '../../../store/search-task.store';
 import { PropertyListStore } from '../../../../property-lists/store/property-list.store';
 import { SearchCriteriaForm } from './search-criteria-form/search-criteria-form';
-import { SearchProgress } from './search-progress/search-progress';
-import { SearchResultsList } from './search-results-list/search-results-list';
 import { SearchCriteria } from '../../../../../shared/models/property-models';
 
 type SearchView = 'criteria' | 'progress' | 'results';
@@ -13,7 +11,7 @@ type SearchView = 'criteria' | 'progress' | 'results';
 @Component({
   selector: 'app-search-creation',
   standalone: true,
-  imports: [CommonModule, SearchCriteriaForm, SearchProgress, SearchResultsList],
+  imports: [CommonModule, SearchCriteriaForm],
   templateUrl: './search-creation.component.html',
   styleUrl: './search-creation.component.css',
 })
