@@ -10,7 +10,7 @@ describe('PropertyListFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PropertyListFormComponent, ReactiveFormsModule]
+      imports: [PropertyListFormComponent, ReactiveFormsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PropertyListFormComponent);
@@ -55,7 +55,7 @@ describe('PropertyListFormComponent', () => {
     it('should validate form when title is valid', () => {
       component.form.setValue({
         title: 'Valid Title',
-        rating_criteria: null
+        rating_criteria: null,
       });
       expect(component.form.valid).toBe(true);
     });
@@ -76,7 +76,7 @@ describe('PropertyListFormComponent', () => {
       fixture.componentRef.setInput('list', mockPropertyList);
       fixture.detectChanges();
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await fixture.whenStable();
 
       expect(component.form.get('title')?.value).toBe(mockPropertyList.title);
       expect(component.form.get('rating_criteria')?.value).toBe(mockPropertyList.rating_criteria);
@@ -90,7 +90,7 @@ describe('PropertyListFormComponent', () => {
 
       component.form.setValue({
         title: 'ab',
-        rating_criteria: null
+        rating_criteria: null,
       });
 
       component.onSubmit();
@@ -104,7 +104,7 @@ describe('PropertyListFormComponent', () => {
 
       const formData = {
         title: 'New Property List',
-        rating_criteria: 'Location, Price'
+        rating_criteria: 'Location, Price',
       };
       component.form.setValue(formData);
 
@@ -116,7 +116,7 @@ describe('PropertyListFormComponent', () => {
     it('should set isSubmitting to true on submit', () => {
       component.form.setValue({
         title: 'Valid Title',
-        rating_criteria: null
+        rating_criteria: null,
       });
 
       expect(component.isSubmitting).toBe(false);
@@ -132,7 +132,7 @@ describe('PropertyListFormComponent', () => {
 
       component.form.setValue({
         title: 'Valid Title',
-        rating_criteria: null
+        rating_criteria: null,
       });
 
       component.isSubmitting = true;
