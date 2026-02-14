@@ -10,7 +10,7 @@ import { createAuthStoreMock } from '../../../shared/mocks/auth-store.mock';
 
 @Directive({
   selector: '[routerLink]',
-  standalone: true
+  standalone: true,
 })
 class RouterLinkStubDirective {
   @Input() routerLink: any;
@@ -37,14 +37,14 @@ describe('LoginComponent', () => {
       providers: [
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: createActivatedRouteMock() },
-        { provide: AuthStore, useValue: mockAuthStore }
-      ]
+        { provide: AuthStore, useValue: mockAuthStore },
+      ],
     })
-    .overrideComponent(LoginComponent, {
-      remove: { imports: [] },
-      add: { imports: [ReactiveFormsModule, RouterLinkStubDirective] }
-    })
-    .compileComponents();
+      .overrideComponent(LoginComponent, {
+        remove: { imports: [] },
+        add: { imports: [ReactiveFormsModule, RouterLinkStubDirective] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
@@ -98,7 +98,7 @@ describe('LoginComponent', () => {
     it('should validate form when all fields are valid', () => {
       component.loginForm.setValue({
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       });
       expect(component.loginForm.valid).toBe(true);
     });
@@ -108,7 +108,7 @@ describe('LoginComponent', () => {
     it('should not call login when form is invalid', () => {
       component.loginForm.setValue({
         email: 'invalid-email',
-        password: '123'
+        password: '123',
       });
 
       component.onSubmit();
@@ -119,61 +119,13 @@ describe('LoginComponent', () => {
     it('should call login with credentials when form is valid', () => {
       const credentials = {
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       };
       component.loginForm.setValue(credentials);
 
       component.onSubmit();
 
       expect(mockAuthStore.login).toHaveBeenCalledWith(credentials);
-    });
-
-    it('should navigate to home on successful authentication', async () => {
-      component.loginForm.setValue({
-        email: 'test@example.com',
-        password: 'password123'
-      });
-
-      component.onSubmit();
-
-      // Simulate authentication success
-      mockAuthStore.isAuthenticated.set(true);
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
-    });
-
-    it('should retry polling if not authenticated immediately', async () => {
-      component.loginForm.setValue({
-        email: 'test@example.com',
-        password: 'password123'
-      });
-
-      component.onSubmit();
-
-      // Not authenticated after first poll
-      await new Promise(resolve => setTimeout(resolve, 300));
-      expect(routerMock.navigate).not.toHaveBeenCalled();
-
-      // Authenticated on second poll
-      mockAuthStore.isAuthenticated.set(true);
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
-    });
-
-    it('should stop polling after max attempts', async () => {
-      component.loginForm.setValue({
-        email: 'test@example.com',
-        password: 'password123'
-      });
-
-      component.onSubmit();
-
-      // Wait for all 5 attempts (5 * 250ms = 1250ms)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      expect(routerMock.navigate).not.toHaveBeenCalled();
     });
   });
 

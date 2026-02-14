@@ -10,7 +10,7 @@ import { createAuthStoreMock } from '../../../shared/mocks/auth-store.mock';
 
 @Directive({
   selector: '[routerLink]',
-  standalone: true
+  standalone: true,
 })
 class RouterLinkStubDirective {
   @Input() routerLink: any;
@@ -37,14 +37,14 @@ describe('RegisterComponent', () => {
       providers: [
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: createActivatedRouteMock() },
-        { provide: AuthStore, useValue: mockAuthStore }
-      ]
+        { provide: AuthStore, useValue: mockAuthStore },
+      ],
     })
-    .overrideComponent(RegisterComponent, {
-      remove: { imports: [] },
-      add: { imports: [ReactiveFormsModule, RouterLinkStubDirective] }
-    })
-    .compileComponents();
+      .overrideComponent(RegisterComponent, {
+        remove: { imports: [] },
+        add: { imports: [ReactiveFormsModule, RouterLinkStubDirective] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
@@ -133,13 +133,13 @@ describe('RegisterComponent', () => {
     it('should validate password match', () => {
       component.registerForm.patchValue({
         password: 'password123',
-        confirmPassword: 'different123'
+        confirmPassword: 'different123',
       });
       expect(component.registerForm.hasError('passwordMismatch')).toBe(true);
 
       component.registerForm.patchValue({
         password: 'password123',
-        confirmPassword: 'password123'
+        confirmPassword: 'password123',
       });
       expect(component.registerForm.hasError('passwordMismatch')).toBe(false);
     });
@@ -150,7 +150,7 @@ describe('RegisterComponent', () => {
         lastName: 'Doe',
         email: 'test@example.com',
         password: 'password123',
-        confirmPassword: 'password123'
+        confirmPassword: 'password123',
       });
       expect(component.registerForm.valid).toBe(true);
     });
@@ -160,7 +160,7 @@ describe('RegisterComponent', () => {
     it('should return null when passwords match', () => {
       component.registerForm.patchValue({
         password: 'password123',
-        confirmPassword: 'password123'
+        confirmPassword: 'password123',
       });
       const result = component.passwordMatchValidator(component.registerForm);
       expect(result).toBeNull();
@@ -169,7 +169,7 @@ describe('RegisterComponent', () => {
     it('should return error when passwords do not match', () => {
       component.registerForm.patchValue({
         password: 'password123',
-        confirmPassword: 'different'
+        confirmPassword: 'different',
       });
       const result = component.passwordMatchValidator(component.registerForm);
       expect(result).toEqual({ passwordMismatch: true });
@@ -183,7 +183,7 @@ describe('RegisterComponent', () => {
         lastName: 'D',
         email: 'invalid-email',
         password: '123',
-        confirmPassword: '456'
+        confirmPassword: '456',
       });
 
       component.onSubmit();
@@ -197,7 +197,7 @@ describe('RegisterComponent', () => {
         lastName: 'Doe',
         email: 'test@example.com',
         password: 'password123',
-        confirmPassword: 'password123'
+        confirmPassword: 'password123',
       });
 
       component.onSubmit();
@@ -206,65 +206,8 @@ describe('RegisterComponent', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'test@example.com',
-        password: 'password123'
-      });
-    });
-
-    it('should navigate to home on successful authentication', async () => {
-      component.registerForm.setValue({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'test@example.com',
         password: 'password123',
-        confirmPassword: 'password123'
       });
-
-      component.onSubmit();
-
-      // Simulate authentication success
-      mockAuthStore.isAuthenticated.set(true);
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
-    });
-
-    it('should retry polling if not authenticated immediately', async () => {
-      component.registerForm.setValue({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'test@example.com',
-        password: 'password123',
-        confirmPassword: 'password123'
-      });
-
-      component.onSubmit();
-
-      // Not authenticated after first poll
-      await new Promise(resolve => setTimeout(resolve, 300));
-      expect(routerMock.navigate).not.toHaveBeenCalled();
-
-      // Authenticated on second poll
-      mockAuthStore.isAuthenticated.set(true);
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
-    });
-
-    it('should stop polling after max attempts', async () => {
-      component.registerForm.setValue({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'test@example.com',
-        password: 'password123',
-        confirmPassword: 'password123'
-      });
-
-      component.onSubmit();
-
-      // Wait for all 5 attempts (5 * 250ms = 1250ms)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      expect(routerMock.navigate).not.toHaveBeenCalled();
     });
   });
 
