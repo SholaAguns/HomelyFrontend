@@ -6,11 +6,18 @@ import { PropertyListDetail } from '../../../../shared/models/property-list-mode
 import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
 import { PropertyPreviewCard } from '../property-preview-card/property-preview-card';
 import { SearchTaskStore } from '../../../property/store/search-task.store';
+import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-property-list-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, PropertyListFormComponent, PropertyPreviewCard],
+  imports: [
+    CommonModule,
+    RouterLink,
+    PropertyListFormComponent,
+    PropertyPreviewCard,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './property-list-detail.component.html',
   styleUrl: './property-list-detail.component.css',
 })

@@ -4,11 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { PropertyDetail } from '../../../../shared/models/property-models';
+import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-property-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   templateUrl: './property-detail.component.html',
   styleUrl: './property-detail.component.css',
 })
