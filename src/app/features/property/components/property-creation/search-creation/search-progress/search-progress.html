@@ -9,13 +9,8 @@
   <!-- Connection Status -->
   @if (usingPollingFallback()) {
     <div class="connection-info polling">
-      <span class="icon">⚠️</span>
-      <span>Using polling fallback (WebSocket unavailable)</span>
-    </div>
-  } @else if (websocketConnected()) {
-    <div class="connection-info connected">
-      <span class="icon">✓</span>
-      <span>Real-time updates active</span>
+      <span class="icon">🔄</span>
+      <span>Checking for updates...</span>
     </div>
   }
 

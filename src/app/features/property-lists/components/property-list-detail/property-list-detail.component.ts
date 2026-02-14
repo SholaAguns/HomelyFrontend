@@ -26,11 +26,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   editMode = signal(false);
 
   constructor() {
-    // Reload properties only when scraping completes
+    // Reload properties when scraping completes or fails
     effect(() => {
       const status = this.searchTaskStore.status();
 
-      if (status === 'COMPLETED') {
+      if (status === 'COMPLETED' || status === 'FAILED') {
         const uuid = this.route.snapshot.paramMap.get('uuid');
         if (uuid) {
           this.loadList(uuid);
@@ -44,7 +44,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     if (uuid) {
       this.loadList(uuid);
 
-      // Connect to WebSocket if there's an active task for this list
+      // Start polling if there's an active task for this list
       const currentTask = this.searchTaskStore.currentTask();
       const taskListUuid = this.searchTaskStore.propertyListUuid();
       const taskStatus = this.searchTaskStore.status();
@@ -54,7 +54,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         taskListUuid === uuid &&
         (taskStatus === 'QUEUED' || taskStatus === 'IN_PROGRESS')
       ) {
-        this.searchTaskStore.subscribeToWebSocket(uuid);
+        this.searchTaskStore.startPolling(uuid);
       }
     }
   }

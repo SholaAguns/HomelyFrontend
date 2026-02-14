@@ -33,7 +33,6 @@ describe('SearchProgress', () => {
     expect(component.failedItems).toBe(searchTaskStoreMock.failedItems);
     expect(component.progressPercentage).toBe(searchTaskStoreMock.progressPercentage);
     expect(component.errors).toBe(searchTaskStoreMock.errors);
-    expect(component.websocketConnected).toBe(searchTaskStoreMock.websocketConnected);
     expect(component.usingPollingFallback).toBe(searchTaskStoreMock.usingPollingFallback);
   });
 

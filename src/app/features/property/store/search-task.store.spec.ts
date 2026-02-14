@@ -44,7 +44,6 @@ describe('SearchTaskStore', () => {
     expect(searchTaskStore.failedItems()).toBe(0);
     expect(searchTaskStore.errors()).toEqual([]);
     expect(searchTaskStore.loading()).toBe(false);
-    expect(searchTaskStore.websocketConnected()).toBe(false);
     expect(searchTaskStore.usingPollingFallback()).toBe(false);
   });
 
@@ -172,52 +171,6 @@ describe('SearchTaskStore', () => {
     });
   });
 
-  describe('subscribeToWebSocket', () => {
-    it('should subscribe to websocket and update state on events', async () => {
-      const websocketSubject = new Subject();
-      propertyWebSocketServiceMock.connectToPropertyList.mockReturnValue(websocketSubject);
-
-      searchTaskStore.subscribeToWebSocket('list-uuid-1');
-
-      websocketSubject.next(mockScrapeProgressEvent);
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(propertyWebSocketServiceMock.connectToPropertyList).toHaveBeenCalledWith(
-        'list-uuid-1'
-      );
-      expect(searchTaskStore.websocketConnected()).toBe(true);
-      expect(searchTaskStore.usingPollingFallback()).toBe(false);
-      expect(searchTaskStore.completedItems()).toBe(mockScrapeProgressEvent.completed_items);
-      expect(searchTaskStore.totalItems()).toBe(mockScrapeProgressEvent.total_items);
-    });
-
-    // it('should fall back to polling when websocket fails', async () => {
-    //   propertyWebSocketServiceMock.connectToPropertyList.mockReturnValue(
-    //     throwError(() => new Error('WebSocket connection failed'))
-    //   );
-    //
-    //   // Mock polling
-    //   propertyCreationServiceMock.getSearchStatus.mockReturnValue(of(mockPropertyListTask));
-    //
-    //   // Create task first
-    //   propertyCreationServiceMock.createFromSearch.mockReturnValue(
-    //     of(mockCreateFromSearchResponse)
-    //   );
-    //   searchTaskStore.startSearch({
-    //     listUuid: 'list-uuid-1',
-    //     request: mockCreateFromSearchRequest,
-    //   });
-    //   await new Promise((resolve) => setTimeout(resolve, 100));
-    //
-    //   // Now subscribe to websocket which will fail and fallback
-    //   searchTaskStore.subscribeToWebSocket('list-uuid-1');
-    //   await new Promise((resolve) => setTimeout(resolve, 100));
-    //
-    //   expect(searchTaskStore.websocketConnected()).toBe(false);
-    //   expect(searchTaskStore.usingPollingFallback()).toBe(true);
-    // });
-  });
-
   describe('startPolling', () => {
     it('should poll getSearchStatus and update state', async () => {
       // Create task first
@@ -311,23 +264,6 @@ describe('SearchTaskStore', () => {
       expect(currentTask?.status).toBe('IN_PROGRESS');
       expect(currentTask?.completed_items).toBe(mockScrapeProgressEvent.completed_items);
     });
-
-    it('should disconnect websocket when status is COMPLETED', () => {
-      searchTaskStore.updateProgress(mockScrapeProgressEventCompleted);
-
-      expect(propertyWebSocketServiceMock.disconnect).toHaveBeenCalled();
-    });
-
-    it('should disconnect websocket when status is FAILED', () => {
-      const failedEvent = {
-        ...mockScrapeProgressEvent,
-        status: 'FAILED' as const,
-      };
-
-      searchTaskStore.updateProgress(failedEvent);
-
-      expect(propertyWebSocketServiceMock.disconnect).toHaveBeenCalled();
-    });
   });
 
   describe('reset', () => {
@@ -353,15 +289,8 @@ describe('SearchTaskStore', () => {
       expect(searchTaskStore.failedItems()).toBe(0);
       expect(searchTaskStore.errors()).toEqual([]);
       expect(searchTaskStore.loading()).toBe(false);
-      expect(searchTaskStore.websocketConnected()).toBe(false);
       expect(searchTaskStore.usingPollingFallback()).toBe(false);
       expect(searchTaskStore.propertyListUuid()).toBeNull();
-    });
-
-    it('should disconnect websocket when reset', () => {
-      searchTaskStore.reset();
-
-      expect(propertyWebSocketServiceMock.disconnect).toHaveBeenCalled();
     });
   });
 });

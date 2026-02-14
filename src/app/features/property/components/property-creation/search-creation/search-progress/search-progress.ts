@@ -17,7 +17,6 @@ export class SearchProgress {
   failedItems = this.searchTaskStore.failedItems;
   progressPercentage = this.searchTaskStore.progressPercentage;
   errors = this.searchTaskStore.errors;
-  websocketConnected = this.searchTaskStore.websocketConnected;
   usingPollingFallback = this.searchTaskStore.usingPollingFallback;
 
   showErrors = false;

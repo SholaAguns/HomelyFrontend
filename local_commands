@@ -1,3 +1,4 @@
 claude --model claude-sonnet-4-5-20250929 --add-dir ../HomelyBackend
 
 Run /install-github-app to tag @claude right from your Github issues and PRs
+Working with HTML/CSS? Add the frontend-design plugin:

@@ -4,7 +4,6 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY, interval, takeUntil, Subject } from 'rxjs';
 import { PropertyCreationService } from '../../../core/services/property-creation-service/property-creation.service';
-import { PropertyWebSocketService } from '../../../core/services/property-websocket-service/property-websocket.service';
 import {
   PropertyListTask,
   CreateFromSearchRequest,
@@ -20,7 +19,6 @@ type SearchTaskState = {
   failedItems: number;
   errors: string[];
   loading: boolean;
-  websocketConnected: boolean;
   usingPollingFallback: boolean;
   propertyListUuid: string | null;
 };
@@ -33,7 +31,6 @@ const initialState: SearchTaskState = {
   failedItems: 0,
   errors: [],
   loading: false,
-  websocketConnected: false,
   usingPollingFallback: false,
   propertyListUuid: null,
 };
@@ -49,12 +46,7 @@ export const SearchTaskStore = signalStore(
     }),
   })),
   withMethods(
-    (
-      store,
-      propertyCreationService = inject(PropertyCreationService),
-      propertyWebSocketService = inject(PropertyWebSocketService),
-      router = inject(Router)
-    ) => {
+    (store, propertyCreationService = inject(PropertyCreationService), router = inject(Router)) => {
       const stopPolling$ = new Subject<void>();
 
       const methods = {
@@ -90,7 +82,11 @@ export const SearchTaskStore = signalStore(
                     errors: response.errors,
                     loading: false,
                     propertyListUuid: response.property_list_uuid,
+                    usingPollingFallback: true,
                   });
+
+                  // Start polling for updates
+                  methods.startPolling(listUuid);
 
                   // Navigate to property list detail page
                   router.navigate(['/lists', response.property_list_uuid]);
@@ -107,24 +103,6 @@ export const SearchTaskStore = signalStore(
             )
           )
         ),
-
-        subscribeToWebSocket(listUuid: string): void {
-          propertyWebSocketService
-            .connectToPropertyList(listUuid)
-            .pipe(
-              tap((event: ScrapeProgressEvent) => {
-                methods.updateProgress(event);
-                patchState(store, { websocketConnected: true, usingPollingFallback: false });
-              }),
-              catchError((error) => {
-                console.error('WebSocket failed, falling back to polling', error);
-                patchState(store, { websocketConnected: false, usingPollingFallback: true });
-                methods.startPolling(listUuid);
-                return EMPTY;
-              })
-            )
-            .subscribe();
-        },
 
         startPolling(listUuid: string): void {
           const taskUuid = store.currentTask()?.uuid;
@@ -184,13 +162,11 @@ export const SearchTaskStore = signalStore(
 
           if (event.status === 'COMPLETED' || event.status === 'FAILED') {
             stopPolling$.next();
-            propertyWebSocketService.disconnect();
           }
         },
 
         reset(): void {
           stopPolling$.next();
-          propertyWebSocketService.disconnect();
           patchState(store, initialState);
         },
       };
