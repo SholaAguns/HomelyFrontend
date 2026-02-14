@@ -1,17 +1,17 @@
 <div class="container mx-auto px-4 py-8">
-  @if (loading) {
+  @if (loading()) {
     <div class="flex justify-center py-12">
       <div class="text-gray-600">Loading property...</div>
     </div>
   }
 
-  @if (error) {
+  @if (error()) {
     <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4">
-      <p class="text-red-800">{{ error }}</p>
+      <p class="text-red-800">{{ error() }}</p>
     </div>
   }
 
-  @if (property && !loading) {
+  @if (property() && !loading()) {
     <div class="mb-6 flex items-center justify-between">
       <button (click)="goBack()" class="flex items-center text-gray-600 hover:text-gray-900">
         <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,7 +26,7 @@
       </button>
 
       <div class="flex gap-2">
-        @if (property.available_transitions.includes('run_stage2')) {
+        @if (property()!.available_transitions.includes('run_stage2')) {
           <button
             (click)="runStage2()"
             class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
@@ -34,7 +34,7 @@
             Run Stage 2
           </button>
         }
-        @if (property.available_transitions.includes('run_stage3')) {
+        @if (property()!.available_transitions.includes('run_stage3')) {
           <button
             (click)="runStage3()"
             class="rounded bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"
@@ -48,10 +48,10 @@
     <div class="grid gap-6 lg:grid-cols-2">
       <!-- Images Section -->
       <div>
-        @if (property.primary_image) {
+        @if (property()!.primary_image) {
           <img
-            [src]="property.primary_image.source_url"
-            [alt]="property.title"
+            [src]="property()!.primary_image!.source_url"
+            [alt]="property()!.title"
             class="mb-4 h-96 w-full rounded-lg object-cover"
           />
         } @else {
@@ -60,9 +60,9 @@
           </div>
         }
 
-        @if (property.images && property.images.length > 1) {
+        @if (property()!.images && property()!.images.length > 1) {
           <div class="grid grid-cols-4 gap-2">
-            @for (image of property.images; track image.id) {
+            @for (image of property()!.images; track image.id) {
               <img
                 [src]="image.source_url"
                 [alt]="image.caption || 'Property image'"
@@ -77,40 +77,44 @@
       <div>
         <div class="mb-6">
           <h1 class="mb-2 text-3xl font-bold text-gray-900">
-            {{ property.title }}
+            {{ property()!.title }}
           </h1>
           <p class="text-xl text-gray-600">
-            {{ property.address_line_1 }}
-            @if (property.address_line_2) {
-              <br />{{ property.address_line_2 }}
+            {{ property()!.address_line_1 }}
+            @if (property()!.address_line_2) {
+              <br />{{ property()!.address_line_2 }}
             }
-            <br />{{ property.city }}, {{ property.postcode }}
+            <br />{{ property()!.city }}, {{ property()!.postcode }}
           </p>
         </div>
 
         <div class="mb-6">
           <div class="text-3xl font-bold text-green-600">
-            £{{ property.price.toLocaleString() }}
+            £{{ property()!.price.toLocaleString() }}
           </div>
         </div>
 
         <div class="mb-6 flex items-center gap-4">
           <span
             [class]="
-              property.state === 'NEW'
+              property()!.state === 'NEW'
                 ? 'rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800'
-                : property.state === 'STAGE2_IN_PROGRESS'
+                : property()!.state === 'STAGE2_IN_PROGRESS'
                   ? 'rounded bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800'
-                  : property.state === 'STAGE2_COMPLETE'
+                  : property()!.state === 'STAGE2_COMPLETE'
                     ? 'rounded bg-green-100 px-3 py-1 text-sm font-medium text-green-800'
                     : 'rounded bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800'
             "
           >
-            {{ property.state_display }}
+            {{ property()!.state_display }}
           </span>
 
-          @if (property.external_url) {
-            <a [href]="property.external_url" target="_blank" class="text-blue-600 hover:underline">
+          @if (property()!.external_url) {
+            <a
+              [href]="property()!.external_url"
+              target="_blank"
+              class="text-blue-600 hover:underline"
+            >
               View Original Listing →
             </a>
           }
@@ -122,29 +126,29 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <span class="text-sm text-gray-600">Bedrooms</span>
-              <div class="text-lg font-medium">{{ property.bedrooms }}</div>
+              <div class="text-lg font-medium">{{ property()!.bedrooms }}</div>
             </div>
             <div>
               <span class="text-sm text-gray-600">Bathrooms</span>
-              <div class="text-lg font-medium">{{ property.bathrooms }}</div>
+              <div class="text-lg font-medium">{{ property()!.bathrooms }}</div>
             </div>
-            @if (property.square_area) {
+            @if (property()!.square_area) {
               <div>
                 <span class="text-sm text-gray-600">Area</span>
-                <div class="text-lg font-medium">{{ property.square_area }} sq ft</div>
+                <div class="text-lg font-medium">{{ property()!.square_area }} sq ft</div>
               </div>
             }
             <div>
               <span class="text-sm text-gray-600">Furnished</span>
-              <div class="text-lg font-medium">{{ property.furnished_status || 'N/A' }}</div>
+              <div class="text-lg font-medium">{{ property()!.furnished_status || 'N/A' }}</div>
             </div>
             <div>
               <span class="text-sm text-gray-600">Garden</span>
-              <div class="text-lg font-medium">{{ property.garden ? 'Yes' : 'No' }}</div>
+              <div class="text-lg font-medium">{{ property()!.garden ? 'Yes' : 'No' }}</div>
             </div>
             <div>
               <span class="text-sm text-gray-600">Parking</span>
-              <div class="text-lg font-medium">{{ property.parking ? 'Yes' : 'No' }}</div>
+              <div class="text-lg font-medium">{{ property()!.parking ? 'Yes' : 'No' }}</div>
             </div>
           </div>
         </div>
@@ -153,54 +157,56 @@
         <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
           <h2 class="mb-4 text-xl font-semibold">Additional Details</h2>
           <div class="grid grid-cols-2 gap-4">
-            @if (property.council_tax_band) {
+            @if (property()!.council_tax_band) {
               <div>
                 <span class="text-sm text-gray-600">Council Tax Band</span>
-                <div class="text-lg font-medium">{{ property.council_tax_band }}</div>
+                <div class="text-lg font-medium">{{ property()!.council_tax_band }}</div>
               </div>
             }
-            @if (property.epc_rating) {
+            @if (property()!.epc_rating) {
               <div>
                 <span class="text-sm text-gray-600">EPC Rating</span>
-                <div class="text-lg font-medium">{{ property.epc_rating }}</div>
+                <div class="text-lg font-medium">{{ property()!.epc_rating }}</div>
               </div>
             }
-            @if (property.floor_level !== null) {
+            @if (property()!.floor_level !== null) {
               <div>
                 <span class="text-sm text-gray-600">Floor Level</span>
-                <div class="text-lg font-medium">{{ property.floor_level }}</div>
+                <div class="text-lg font-medium">{{ property()!.floor_level }}</div>
               </div>
             }
-            @if (property.lease_length) {
+            @if (property()!.lease_length) {
               <div>
                 <span class="text-sm text-gray-600">Lease Length</span>
-                <div class="text-lg font-medium">{{ property.lease_length }} years</div>
+                <div class="text-lg font-medium">{{ property()!.lease_length }} years</div>
               </div>
             }
             <div>
               <span class="text-sm text-gray-600">Child Suitable</span>
-              <div class="text-lg font-medium">{{ property.child_suitable ? 'Yes' : 'No' }}</div>
+              <div class="text-lg font-medium">{{ property()!.child_suitable ? 'Yes' : 'No' }}</div>
             </div>
-            @if (property.completion_date) {
+            @if (property()!.completion_date) {
               <div>
                 <span class="text-sm text-gray-600">Completion Date</span>
-                <div class="text-lg font-medium">{{ property.completion_date }}</div>
+                <div class="text-lg font-medium">{{ property()!.completion_date }}</div>
               </div>
             }
           </div>
         </div>
 
         <!-- Rating Information -->
-        @if (property.overall_rating !== null) {
+        @if (property()!.overall_rating !== null) {
           <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
             <h2 class="mb-4 text-xl font-semibold">Rating</h2>
             <div class="mb-4">
               <span class="text-sm text-gray-600">Overall Rating</span>
-              <div class="text-2xl font-bold text-green-600">{{ property.overall_rating }}/10</div>
+              <div class="text-2xl font-bold text-green-600">
+                {{ property()!.overall_rating }}/10
+              </div>
             </div>
-            @if (property.disqualified) {
+            @if (property()!.disqualified) {
               <div class="rounded bg-red-50 p-3 text-red-800">
-                <strong>Disqualified:</strong> {{ property.disqualification_reason }}
+                <strong>Disqualified:</strong> {{ property()!.disqualification_reason }}
               </div>
             }
           </div>
@@ -210,7 +216,7 @@
         <div class="rounded-lg border border-gray-200 bg-white p-6">
           <h2 class="mb-4 text-xl font-semibold">Property Lists</h2>
           <div class="flex flex-wrap gap-2">
-            @for (list of property.property_lists | keyvalue; track list.key) {
+            @for (list of property()!.property_lists | keyvalue; track list.key) {
               <span class="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
                 {{ list.value }}
               </span>

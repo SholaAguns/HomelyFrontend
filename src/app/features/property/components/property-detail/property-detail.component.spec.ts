@@ -89,8 +89,8 @@ describe('PropertyDetailComponent', () => {
     fixture.detectChanges();
 
     expect(propertyServiceMock.getByUuid).toHaveBeenCalledWith('prop-123');
-    expect(component.property).toEqual(mockPropertyDetail);
-    expect(component.loading).toBe(false);
+    expect(component.property()).toEqual(mockPropertyDetail);
+    expect(component.loading()).toBe(false);
   });
 
   it('should handle load error', () => {
@@ -98,8 +98,8 @@ describe('PropertyDetailComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.error).toBe('Load failed');
-    expect(component.loading).toBe(false);
+    expect(component.error()).toBe('Load failed');
+    expect(component.loading()).toBe(false);
   });
 
   it('should navigate back to lists', () => {
@@ -143,7 +143,7 @@ describe('PropertyDetailComponent', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    expect(component.error).toBe('Stage 2 failed');
+    expect(component.error()).toBe('Stage 2 failed');
   });
 
   it('should handle missing uuid', () => {
@@ -151,7 +151,7 @@ describe('PropertyDetailComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.error).toBe('No property UUID provided');
-    expect(component.loading).toBe(false);
+    expect(component.error()).toBe('No property UUID provided');
+    expect(component.loading()).toBe(false);
   });
 });

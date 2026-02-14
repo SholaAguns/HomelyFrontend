@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
@@ -16,33 +16,32 @@ export class PropertyDetailComponent implements OnInit {
   private router = inject(Router);
   private propertyService = inject(PropertyService);
 
-  property: PropertyDetail | null = null;
-  loading = true;
-  error: string | null = null;
+  property = signal<PropertyDetail | null>(null);
+  loading = signal(true);
+  error = signal<string | null>(null);
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
     if (uuid) {
       this.loadProperty(uuid);
     } else {
-      this.error = 'No property UUID provided';
-      this.loading = false;
+      this.error.set('No property UUID provided');
+      this.loading.set(false);
     }
   }
 
   loadProperty(uuid: string): void {
-    this.loading = true;
-    this.error = null;
+    this.loading.set(true);
+    this.error.set(null);
 
     this.propertyService.getByUuid(uuid).subscribe({
       next: (property) => {
-        this.property = property;
-        this.loading = false;
-        console.log('Loaded okay');
+        this.property.set(property);
+        this.loading.set(false);
       },
       error: (err) => {
-        this.error = err.message || 'Failed to load property';
-        this.loading = false;
+        this.error.set(err.message || 'Failed to load property');
+        this.loading.set(false);
       },
     });
   }
@@ -52,27 +51,29 @@ export class PropertyDetailComponent implements OnInit {
   }
 
   runStage2(): void {
-    if (!this.property) return;
+    const propertyValue = this.property();
+    if (!propertyValue) return;
 
-    this.propertyService.runStage2(this.property.uuid).subscribe({
+    this.propertyService.runStage2(propertyValue.uuid).subscribe({
       next: () => {
-        this.loadProperty(this.property!.uuid);
+        this.loadProperty(propertyValue.uuid);
       },
       error: (err) => {
-        this.error = err.message || 'Failed to run stage 2';
+        this.error.set(err.message || 'Failed to run stage 2');
       },
     });
   }
 
   runStage3(): void {
-    if (!this.property) return;
+    const propertyValue = this.property();
+    if (!propertyValue) return;
 
-    this.propertyService.runStage3(this.property.uuid).subscribe({
+    this.propertyService.runStage3(propertyValue.uuid).subscribe({
       next: () => {
-        this.loadProperty(this.property!.uuid);
+        this.loadProperty(propertyValue.uuid);
       },
       error: (err) => {
-        this.error = err.message || 'Failed to run stage 3';
+        this.error.set(err.message || 'Failed to run stage 3');
       },
     });
   }
