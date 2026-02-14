@@ -1,10 +1,11 @@
-- Login and register redirect
-- Follow plist creation path
+- ~~Login and register redirect~~
+- ~~Follow plist creation path~~
 - Error handling
 - Property creation feature
 - formBuilder.group is deprecated
 - animations method are deprecated
-- Add any to property type options and make dropdown
+- ~~Add any to property type options and make dropdown~~
+- loading spinner
 
 Issues
 - propertyStore.load(undefined); rather then undefined woudl it be better to pass in nothing or an empty stirng rather than undefined?

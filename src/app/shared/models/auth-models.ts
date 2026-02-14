@@ -1,4 +1,4 @@
-import {User} from './user-models';
+import { User } from './user-models';
 
 export interface LoginCredentials {
   email: string;
@@ -8,8 +8,8 @@ export interface LoginCredentials {
 export interface RegisterData extends LoginCredentials {
   firstName: string;
   lastName: string;
+  password2: string;
 }
-
 
 export interface LoginResponse {
   user: User;

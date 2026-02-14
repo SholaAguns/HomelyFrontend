@@ -191,7 +191,7 @@ describe('RegisterComponent', () => {
       expect(mockAuthStore.register).not.toHaveBeenCalled();
     });
 
-    it('should call register without confirmPassword when form is valid', () => {
+    it('should call register with password2 from confirmPassword when form is valid', () => {
       component.registerForm.setValue({
         firstName: 'John',
         lastName: 'Doe',
@@ -207,6 +207,7 @@ describe('RegisterComponent', () => {
         lastName: 'Doe',
         email: 'test@example.com',
         password: 'password123',
+        password2: 'password123',
       });
     });
   });

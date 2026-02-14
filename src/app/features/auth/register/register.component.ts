@@ -36,8 +36,12 @@ export class RegisterComponent {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      const { confirmPassword, ...registerData } = this.registerForm.value;
-      this.authStore.register(registerData as RegisterData);
+      const { confirmPassword, ...formData } = this.registerForm.value;
+      const registerData: RegisterData = {
+        ...formData,
+        password2: confirmPassword,
+      };
+      this.authStore.register(registerData);
     }
   }
 
