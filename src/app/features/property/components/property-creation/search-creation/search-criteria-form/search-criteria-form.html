@@ -72,14 +72,14 @@
         <option [value]="0">This area only</option>
         <option [value]="0.25">Within 1/4 mile</option>
         <option [value]="0.5">Within 1/2 mile</option>
-        <option [value]="1">Within 1 mile</option>
-        <option [value]="3">Within 3 miles</option>
-        <option [value]="5">Within 5 miles</option>
-        <option [value]="10">Within 10 miles</option>
-        <option [value]="15">Within 15 miles</option>
+        <option [value]="1.0">Within 1 mile</option>
+        <option [value]="3.0">Within 3 miles</option>
+        <option [value]="5.0">Within 5 miles</option>
+        <option [value]="10.0">Within 10 miles</option>
+        <option [value]="15.0">Within 15 miles</option>
         <option [value]="20">Within 20 miles</option>
-        <option [value]="30">Within 30 miles</option>
-        <option [value]="40">Within 40 miles</option>
+        <option [value]="30.0">Within 30 miles</option>
+        <option [value]="40.0">Within 40 miles</option>
       </select>
     </div>
 
@@ -97,7 +97,7 @@
     <div class="form-group">
       <label for="max_days_since_added">Added within</label>
       <select id="max_days_since_added" formControlName="max_days_since_added" class="form-control">
-        <option value="">Anytime</option>
+        <option [value]="null">Anytime</option>
         <option [value]="1">Last 24 hours</option>
         <option [value]="3">Last 3 days</option>
         <option [value]="7">Last 7 days</option>

@@ -7,7 +7,7 @@
 
 # Testing
 ## Rightmove search creation
-- Standard search creation - Expected: properties are created and user is navigated to property list page
+- ~~Standard search creation - Expected: properties are created and user is navigated to property list page~~
 - Search criteria load - Expected: existing search criteria values preloaded
 - Search creation different areas - Expected: properties are created and user is navigated to property list page
 - Search creation different property types - Expected: properties are created and user is navigated to property list page
