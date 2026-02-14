@@ -29,7 +29,7 @@ describe('SearchCriteriaForm', () => {
     expect(component.searchForm.get('price_max')?.value).toBeNull();
     expect(component.searchForm.get('radius')?.value).toBe(5);
     expect(component.searchForm.get('property_types')?.value).toBe('');
-    expect(component.searchForm.get('max_days_since_added')?.value).toBe(14);
+    expect(component.searchForm.get('max_days_since_added')?.value).toBeNull();
   });
 
   describe('form validation', () => {
@@ -156,6 +156,64 @@ describe('SearchCriteriaForm', () => {
         { value: 'commercial-property', label: 'Commercial' },
         { value: 'other', label: 'Other' },
       ]);
+    });
+  });
+
+  describe('search criteria pre-population', () => {
+    it('should pre-populate form when searchCriteria input provided', async () => {
+      fixture.componentRef.setInput('searchCriteria', {
+        area: 'London',
+        bedrooms_min: 3,
+        bedrooms_max: 5,
+        price_min: 1500,
+        price_max: 3000,
+        radius: 10,
+        property_types: 'flat',
+        max_days_since_added: 7,
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(component.searchForm.get('area')?.value).toBe('London');
+      expect(component.searchForm.get('bedrooms_min')?.value).toBe(3);
+      expect(component.searchForm.get('bedrooms_max')?.value).toBe(5);
+      expect(component.searchForm.get('price_min')?.value).toBe(1500);
+      expect(component.searchForm.get('price_max')?.value).toBe(3000);
+      expect(component.searchForm.get('radius')?.value).toBe(10);
+      expect(component.searchForm.get('property_types')?.value).toBe('flat');
+      expect(component.searchForm.get('max_days_since_added')?.value).toBe(7);
+    });
+
+    it('should use default values when searchCriteria fields undefined', async () => {
+      fixture.componentRef.setInput('searchCriteria', {
+        area: 'Manchester',
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(component.searchForm.get('area')?.value).toBe('Manchester');
+      expect(component.searchForm.get('bedrooms_min')?.value).toBeNull();
+      expect(component.searchForm.get('bedrooms_max')?.value).toBeNull();
+      expect(component.searchForm.get('price_min')?.value).toBeNull();
+      expect(component.searchForm.get('price_max')?.value).toBeNull();
+      expect(component.searchForm.get('radius')?.value).toBe(5);
+      expect(component.searchForm.get('property_types')?.value).toBe('');
+      expect(component.searchForm.get('max_days_since_added')?.value).toBeNull();
+    });
+
+    it('should not pre-populate when searchCriteria is null', async () => {
+      fixture.componentRef.setInput('searchCriteria', null);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(component.searchForm.get('area')?.value).toBe('');
+      expect(component.searchForm.get('bedrooms_min')?.value).toBeNull();
+      expect(component.searchForm.get('bedrooms_max')?.value).toBeNull();
+      expect(component.searchForm.get('price_min')?.value).toBeNull();
+      expect(component.searchForm.get('price_max')?.value).toBeNull();
+      expect(component.searchForm.get('radius')?.value).toBe(5);
+      expect(component.searchForm.get('property_types')?.value).toBe('');
+      expect(component.searchForm.get('max_days_since_added')?.value).toBeNull();
     });
   });
 });

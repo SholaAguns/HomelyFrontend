@@ -36,7 +36,7 @@ describe('PropertyWebSocketService', () => {
     it('should connect to property_list channel with propertyListUuid', async () => {
       const websocketData = {
         type: 'scrape_progress',
-        payload: mockScrapeProgressEvent,
+        data: mockScrapeProgressEvent,
       };
 
       webSocketServiceMock.connect.mockReturnValue(of(websocketData));
@@ -45,7 +45,7 @@ describe('PropertyWebSocketService', () => {
         propertyWebSocketService.connectToPropertyList('list-uuid-1').subscribe({
           next: (event) => {
             expect(event).toEqual(mockScrapeProgressEvent);
-            expect(webSocketServiceMock.connect).toHaveBeenCalledWith('property_list.list-uuid-1');
+            expect(webSocketServiceMock.connect).toHaveBeenCalledWith('property-list/list-uuid-1/');
             resolve();
           },
         });
@@ -55,7 +55,7 @@ describe('PropertyWebSocketService', () => {
     it('should map websocket data to ScrapeProgressEvent', async () => {
       const websocketData = {
         type: 'scrape_progress',
-        payload: mockScrapeProgressEvent,
+        data: mockScrapeProgressEvent,
       };
 
       webSocketServiceMock.connect.mockReturnValue(of(websocketData));
