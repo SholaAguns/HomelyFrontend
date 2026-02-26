@@ -143,11 +143,10 @@ export interface CreateFromInputRequest {
 
 export interface CreateFromInputResponse {
   success: boolean;
-  property_data?: Partial<CreatePropertyDto>;
-  property?: Property;
-  created?: boolean;
-  updated?: boolean;
+  property: Property;
+  created: boolean;
   message: string;
+  source?: string;
 }
 
 // Search criteria for bulk property creation

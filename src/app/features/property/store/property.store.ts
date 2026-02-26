@@ -131,7 +131,7 @@ export const PropertyStore = signalStore(
         exhaustMap((request) =>
           propertyService.createFromInput(request).pipe(
             tap((response) => {
-              if (response.property) {
+              if (response.success && response.property) {
                 const entities = {
                   ...store.entities(),
                   [response.property.uuid]: response.property,
@@ -193,6 +193,11 @@ export const PropertyStore = signalStore(
       )
     ),
     select: (uuid: string | null) => patchState(store, { selectedId: uuid }),
+    addProperty: (property: Property) => {
+      const entities = { ...store.entities(), [property.uuid]: property };
+      const ids = [...store.ids(), property.uuid];
+      patchState(store, { entities, ids });
+    },
     checkDuplicate: (externalId: string): Property | null => {
       const duplicateEntity = store
         .ids()
