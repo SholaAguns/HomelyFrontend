@@ -137,7 +137,7 @@ export const mockCreateFromInputRequest: CreateFromInputRequest = {
 
 export const mockCreateFromInputResponse: CreateFromInputResponse = {
   success: true,
-  property_data: mockCreatePropertyDto,
+  property: mockProperty,
   created: true,
   message: 'Property extracted successfully',
 };

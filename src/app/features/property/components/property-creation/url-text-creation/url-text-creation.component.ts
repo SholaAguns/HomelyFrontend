@@ -74,19 +74,17 @@ export class UrlTextCreationComponent implements OnInit {
           this.propertyStore.addProperty(response.property);
 
           // Navigate to property detail page
-          this.router.navigate([
-            '/lists',
-            this.propertyListUuid(),
-            'properties',
-            response.property.uuid,
-          ]);
+          this.router.navigate(['/properties', response.property.uuid]);
         } else {
           this.error.set(response.message || 'Failed to create property');
         }
       },
-      error: (error) => {
+      error: (err) => {
         this.loading.set(false);
-        this.error.set(error.message || 'Failed to create property');
+        console.error('Error creating property:', err);
+        // Check if error has response body with message
+        const errorMessage = err.error?.message || err.message || 'Failed to create property';
+        this.error.set(errorMessage);
       },
     });
   }
