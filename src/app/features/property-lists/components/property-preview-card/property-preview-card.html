@@ -1,7 +1,23 @@
 <div
   (click)="viewDetails()"
-  class="cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md"
+  [class]="
+    selectable()
+      ? 'relative overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow ' +
+        (selected() ? 'ring-2 ring-blue-500' : 'hover:shadow-md')
+      : 'cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md'
+  "
 >
+  @if (selectable()) {
+    <div class="absolute top-2 left-2 z-10">
+      <input
+        type="checkbox"
+        [checked]="selected()"
+        (change)="onCheckboxChange($event)"
+        class="h-5 w-5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  }
+
   @if (property().primary_image) {
     <img
       [src]="property().primary_image?.source_url"

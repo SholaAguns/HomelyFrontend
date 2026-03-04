@@ -107,6 +107,8 @@ Angular frontend for Homely property list web application.
 - [X] Property list creation form
 - [X] Property list grid/card display
 - [X] State badges (Draft, Active)
+- [X] Property selection on detail page
+- [X] Bulk delete properties
 - [ ] Delete confirmation dialogs
 - [ ] Empty states (no lists)
 

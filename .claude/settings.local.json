@@ -18,7 +18,8 @@
       "Bash(npx tsc:*)",
       "Bash(npx vitest run:*)",
       "Bash(ng generate:*)",
-      "Bash(ren:*)"
+      "Bash(ren:*)",
+      "Bash(npx ng:*)"
     ]
   }
 }

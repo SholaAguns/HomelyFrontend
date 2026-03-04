@@ -21,6 +21,11 @@
 ## Property navigation
 - ~~User can navigate to property detail page by clicking on card~~
 - Property detail page displays all info
-- 
+
+## Property management on list detail page
+- User can select properties via checkboxes
+- User can select/deselect all properties
+- User can delete selected properties with confirmation
+- Selection state clears when exiting selection mode
 
 

@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Property } from '../../../../shared/models/property-models';
@@ -14,8 +14,18 @@ export class PropertyPreviewCard {
   private router = inject(Router);
 
   property = input.required<Property>();
+  selectable = input<boolean>(false);
+  selected = input<boolean>(false);
+  selectionChange = output<void>();
 
   viewDetails(): void {
-    this.router.navigate(['/properties', this.property().uuid]);
+    if (!this.selectable()) {
+      this.router.navigate(['/properties', this.property().uuid]);
+    }
+  }
+
+  onCheckboxChange(event: Event): void {
+    event.stopPropagation();
+    this.selectionChange.emit();
   }
 }

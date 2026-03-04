@@ -158,13 +158,67 @@
         <div class="mt-8 border-t border-gray-200 pt-6">
           <div class="mb-4 flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-900">Properties</h2>
-            <a
-              [routerLink]="['/lists', list()!.uuid, 'properties', 'new']"
-              class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-            >
-              Add Properties
-            </a>
+            <div class="flex gap-2">
+              @if (list()!.properties.length > 0) {
+                <button
+                  (click)="toggleSelectionMode()"
+                  [class]="
+                    selectionMode()
+                      ? 'rounded bg-gray-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700'
+                      : 'rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300'
+                  "
+                >
+                  {{ selectionMode() ? 'Cancel Selection' : 'Select Properties' }}
+                </button>
+              }
+              <a
+                [routerLink]="['/lists', list()!.uuid, 'properties', 'new']"
+                class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              >
+                Add Properties
+              </a>
+            </div>
           </div>
+
+          @if (selectionMode() && list()!.properties.length > 0) {
+            <div class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                  <label class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      [checked]="allSelected()"
+                      (change)="allSelected() ? clearSelection() : selectAll()"
+                      class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span class="text-sm font-medium text-blue-900">Select All</span>
+                  </label>
+                  @if (selectedCount() > 0) {
+                    <span class="text-sm text-blue-700">
+                      {{ selectedCount() }} {{ selectedCount() === 1 ? 'property' : 'properties' }}
+                      selected
+                    </span>
+                  }
+                </div>
+                <div class="flex gap-2">
+                  @if (selectedCount() > 0) {
+                    <button
+                      (click)="deleteSelected()"
+                      class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
+                    >
+                      Delete Selected
+                    </button>
+                    <button
+                      (click)="clearSelection()"
+                      class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300"
+                    >
+                      Clear Selection
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
           @if (list()!.properties.length === 0) {
             <div class="rounded-lg bg-gray-50 py-8 text-center">
               <p class="text-gray-600">No properties yet. Click "Add Properties" to get started.</p>
@@ -172,7 +226,12 @@
           } @else {
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               @for (property of paginatedProperties(); track property.uuid) {
-                <app-property-preview-card [property]="property" />
+                <app-property-preview-card
+                  [property]="property"
+                  [selectable]="selectionMode()"
+                  [selected]="isPropertySelected(property.uuid)"
+                  (selectionChange)="togglePropertySelection(property.uuid)"
+                />
               }
             </div>
 
