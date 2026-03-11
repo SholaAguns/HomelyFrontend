@@ -1,5 +1,64 @@
 import { Property, SearchCriteria } from './property-models';
 
+export type PoiType =
+  | 'restaurant'
+  | 'supermarket'
+  | 'hospital'
+  | 'school'
+  | 'gym'
+  | 'park'
+  | 'pharmacy'
+  | 'bank'
+  | 'pub'
+  | 'cafe'
+  | 'train_station'
+  | 'bus_station'
+  | 'shopping_mall'
+  | 'dentist'
+  | 'doctor';
+
+export const POI_TYPE_LABELS: Record<PoiType, string> = {
+  restaurant: 'Restaurant',
+  supermarket: 'Supermarket',
+  hospital: 'Hospital',
+  school: 'School',
+  gym: 'Gym',
+  park: 'Park',
+  pharmacy: 'Pharmacy',
+  bank: 'Bank',
+  pub: 'Pub',
+  cafe: 'Cafe',
+  train_station: 'Train Station',
+  bus_station: 'Bus Station',
+  shopping_mall: 'Shopping Mall',
+  dentist: 'Dentist',
+  doctor: 'Doctor',
+};
+
+export interface ContextOptions {
+  uuid: string;
+  property_list_uuid: string;
+  enable_crime: boolean;
+  enable_schools: boolean;
+  enable_broadband: boolean;
+  enable_mobile: boolean;
+  enable_poi: boolean;
+  poi_types: PoiType[];
+  poi_search_radius_meters: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpdateContextOptionsDto {
+  enable_crime?: boolean;
+  enable_schools?: boolean;
+  enable_broadband?: boolean;
+  enable_mobile?: boolean;
+  enable_poi?: boolean;
+  poi_types?: PoiType[];
+  poi_search_radius_meters?: number;
+}
+
 export type PropertyListState = 'DRAFT' | 'ACTIVE';
 
 export interface PropertyList {

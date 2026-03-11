@@ -177,7 +177,7 @@ describe('UrlTextCreationComponent', () => {
     it('should not check duplicates when no external_id', async () => {
       const responseWithoutExternalId = {
         ...mockCreateFromInputResponse,
-        property_data: { ...mockCreatePropertyDto, external_id: undefined },
+        property: { ...mockProperty, external_id: '' },
       };
       component.inputForm.patchValue({ inputData: 'test' });
       propertyServiceMock.createFromInput.mockReturnValue(of(responseWithoutExternalId));

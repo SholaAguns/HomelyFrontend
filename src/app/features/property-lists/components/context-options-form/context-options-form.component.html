@@ -1,0 +1,149 @@
+<div class="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
+  <h2 class="mb-2 text-2xl font-bold text-gray-900">Configure Context Options</h2>
+  <p class="mb-6 text-sm text-gray-500">
+    Select which context services to run when retrieving data for properties in this list.
+  </p>
+
+  @if (error) {
+    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+      {{ error }}
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Service Toggles -->
+    <div class="mb-6">
+      <h3 class="mb-3 text-lg font-semibold text-gray-800">Context Services</h3>
+      <div class="space-y-3">
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+        >
+          <input
+            type="checkbox"
+            formControlName="enable_crime"
+            class="h-4 w-4 rounded text-blue-600"
+          />
+          <div>
+            <span class="font-medium text-gray-700">Crime Statistics</span>
+            <p class="text-xs text-gray-500">Local crime rate data from Police UK API</p>
+          </div>
+        </label>
+
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+        >
+          <input
+            type="checkbox"
+            formControlName="enable_schools"
+            class="h-4 w-4 rounded text-blue-600"
+          />
+          <div>
+            <span class="font-medium text-gray-700">Schools</span>
+            <p class="text-xs text-gray-500">Nearby school ratings from Ofsted</p>
+          </div>
+        </label>
+
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+        >
+          <input
+            type="checkbox"
+            formControlName="enable_broadband"
+            class="h-4 w-4 rounded text-blue-600"
+          />
+          <div>
+            <span class="font-medium text-gray-700">Broadband</span>
+            <p class="text-xs text-gray-500">Available broadband speeds at the property</p>
+          </div>
+        </label>
+
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+        >
+          <input
+            type="checkbox"
+            formControlName="enable_mobile"
+            class="h-4 w-4 rounded text-blue-600"
+          />
+          <div>
+            <span class="font-medium text-gray-700">Mobile Coverage</span>
+            <p class="text-xs text-gray-500">Indoor and outdoor mobile coverage by operator</p>
+          </div>
+        </label>
+
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+        >
+          <input
+            type="checkbox"
+            formControlName="enable_poi"
+            class="h-4 w-4 rounded text-blue-600"
+          />
+          <div>
+            <span class="font-medium text-gray-700">Places of Interest</span>
+            <p class="text-xs text-gray-500">Nearby amenities via Google Maps</p>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- POI Configuration (shown only when POI enabled) -->
+    @if (isPoiEnabled) {
+      <div class="mb-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
+        <h3 class="mb-3 text-base font-semibold text-gray-800">Places of Interest Settings</h3>
+
+        <div class="mb-4">
+          <label class="mb-2 block text-sm font-medium text-gray-700">
+            Search Radius (metres)
+          </label>
+          <select
+            formControlName="poi_search_radius_meters"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+          >
+            <option [value]="800">800m (~10 min walk)</option>
+            <option [value]="1600">1600m (~20 min walk)</option>
+            <option [value]="3200">3200m (~40 min walk)</option>
+            <option [value]="5000">5000m (cycling distance)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="mb-2 block text-sm font-medium text-gray-700">POI Types</label>
+          <div class="grid grid-cols-2 gap-2">
+            @for (entry of poiTypeEntries; track entry[0]) {
+              <label
+                class="flex cursor-pointer items-center gap-2 rounded border border-gray-200 bg-white p-2 text-sm hover:bg-gray-50"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="poiTypeSelections[entry[0]]"
+                  (change)="onPoiTypeToggle(entry[0])"
+                  class="h-3.5 w-3.5 rounded text-blue-600"
+                />
+                <span class="text-gray-700">{{ entry[1] }}</span>
+              </label>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="flex gap-3">
+      <button
+        type="submit"
+        [disabled]="saving"
+        class="flex-1 rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+      >
+        {{ saving ? 'Saving...' : 'Save Options' }}
+      </button>
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="rounded-lg border border-gray-300 px-6 py-2 font-medium transition-colors hover:bg-gray-50"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>
