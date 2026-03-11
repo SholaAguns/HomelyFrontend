@@ -40,6 +40,12 @@
             </div>
           </div>
           <div class="flex gap-2">
+            <a
+              [routerLink]="['/lists', list()!.uuid, 'context-options']"
+              class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+            >
+              Context Options
+            </a>
             <button
               (click)="onEdit()"
               class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
