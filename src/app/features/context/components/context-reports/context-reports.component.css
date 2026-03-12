@@ -1,0 +1,189 @@
+.context-reports {
+  padding: 1.5rem;
+}
+
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.reports-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #4338ca;
+}
+
+.progress-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.progress-bar {
+  width: 200px;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #10b981;
+  transition: width 0.3s ease;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.service-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  background-color: white;
+}
+
+.service-card[data-status='COMPLETE'] {
+  border-color: #10b981;
+}
+
+.service-card[data-status='FAILED'] {
+  border-color: #ef4444;
+}
+
+.service-card[data-status='IN_PROGRESS'],
+.service-card[data-status='PENDING'] {
+  border-color: #f59e0b;
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.service-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-badge[data-status='COMPLETE'] {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge[data-status='FAILED'] {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge[data-status='IN_PROGRESS'] {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge[data-status='PENDING'] {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.service-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid #e5e7eb;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.service-loading p {
+  margin-top: 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.service-error {
+  padding: 1rem;
+  background-color: #fee2e2;
+  border-radius: 0.25rem;
+}
+
+.error-message {
+  color: #991b1b;
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+}
+
+.btn-retry {
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-retry:hover {
+  background-color: #dc2626;
+}
+
+.service-content {
+  padding: 1rem 0;
+}
+
+.service-content p {
+  margin: 0;
+  color: #10b981;
+  font-weight: 500;
+}

@@ -1,0 +1,78 @@
+.broadband-report {
+  padding: 0;
+}
+
+.broadband-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.fibre-info {
+  margin-bottom: 1.5rem;
+}
+
+.fibre-info h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.fibre-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.fibre-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background-color: #eff6ff;
+  border-radius: 0.375rem;
+  text-align: center;
+}
+
+.fibre-label {
+  font-size: 0.75rem;
+  color: #1e40af;
+  margin-bottom: 0.25rem;
+}
+
+.fibre-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.data-source {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  line-height: 1.5;
+}

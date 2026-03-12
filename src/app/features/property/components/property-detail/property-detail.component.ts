@@ -6,11 +6,12 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { PropertyDetail } from '../../../../shared/models/property-models';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { ImageGalleryComponent } from '../../../../shared/components/image-gallery/image-gallery.component';
+import { ContextReportsComponent } from '../../../context/components/context-reports/context-reports.component';
 
 @Component({
   selector: 'app-property-detail',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, ImageGalleryComponent],
+  imports: [CommonModule, LoadingSpinnerComponent, ImageGalleryComponent, ContextReportsComponent],
   templateUrl: './property-detail.component.html',
   styleUrl: './property-detail.component.css',
 })

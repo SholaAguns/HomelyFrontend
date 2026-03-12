@@ -1,0 +1,41 @@
+<div class="poi-report">
+  <!-- Statistics -->
+  <div class="poi-stats">
+    <div class="stat-card">
+      <span class="stat-value">{{ data().total_places }}</span>
+      <span class="stat-label">Total Places</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ data().categories?.length || 0 }}</span>
+      <span class="stat-label">Categories</span>
+    </div>
+  </div>
+
+  <!-- Places by Category -->
+  <div class="category-section" *ngIf="data().by_category">
+    <div *ngFor="let category of data().categories" class="category-group">
+      <h4>{{ category }}</h4>
+      <div class="places-list">
+        <div *ngFor="let place of data().by_category[category]" class="place-card">
+          <div class="place-header">
+            <h5>{{ place.name }}</h5>
+            <span class="place-distance">{{ place.distance_km }}km</span>
+          </div>
+          <p class="place-address" *ngIf="place.address">{{ place.address }}</p>
+          <div class="place-meta">
+            <span *ngIf="place.rating" class="place-rating"> ⭐ {{ place.rating }} </span>
+            <span *ngIf="place.user_ratings_total" class="place-reviews">
+              ({{ place.user_ratings_total }} reviews)
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Source -->
+  <p class="data-source">
+    Data: {{ data().data_source }}<br />
+    Search radius: {{ data().search_radius_km }}km
+  </p>
+</div>

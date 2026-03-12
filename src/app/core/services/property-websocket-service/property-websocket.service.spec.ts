@@ -121,6 +121,78 @@ describe('PropertyWebSocketService', () => {
     });
   });
 
+  describe('subscribeToPropertyList', () => {
+    it('should subscribe to service_update events', async () => {
+      const websocketData = {
+        type: 'service_update',
+        service: 'crime',
+        status: 'COMPLETE',
+        property_id: 'prop-1',
+        data: { total: 10 },
+      };
+
+      webSocketServiceMock.connect.mockReturnValue(of(websocketData));
+
+      return new Promise<void>((resolve) => {
+        propertyWebSocketService.subscribeToPropertyList('list-uuid-1').subscribe({
+          next: (event) => {
+            expect(event.type).toBe('service_update');
+            expect(event.service).toBe('crime');
+            expect(event.property_id).toBe('prop-1');
+            expect(webSocketServiceMock.connect).toHaveBeenCalledWith('property-list/list-uuid-1/');
+            resolve();
+          },
+        });
+      });
+    });
+
+    it('should subscribe to stage2_complete events', async () => {
+      const websocketData = {
+        type: 'stage2_complete',
+        property_id: 'prop-1',
+        progress: {
+          total: 5,
+          complete: 5,
+          in_progress: 0,
+          failed: 0,
+          pending: 0,
+        },
+      };
+
+      webSocketServiceMock.connect.mockReturnValue(of(websocketData));
+
+      return new Promise<void>((resolve) => {
+        propertyWebSocketService.subscribeToPropertyList('list-uuid-1').subscribe({
+          next: (event) => {
+            expect(event.type).toBe('stage2_complete');
+            expect(event.property_id).toBe('prop-1');
+            resolve();
+          },
+        });
+      });
+    });
+
+    it('should filter out non-context events', async () => {
+      const websocketData = {
+        type: 'scrape_progress',
+        data: {},
+      };
+
+      webSocketServiceMock.connect.mockReturnValue(of(websocketData));
+
+      return new Promise<void>((resolve, reject) => {
+        propertyWebSocketService.subscribeToPropertyList('list-uuid-1').subscribe({
+          next: () => {
+            reject(new Error('Should not emit for scrape_progress'));
+          },
+          complete: () => {
+            resolve();
+          },
+        });
+      });
+    });
+  });
+
   describe('disconnect', () => {
     it('should call disconnect on WebSocketService', () => {
       propertyWebSocketService.disconnect();

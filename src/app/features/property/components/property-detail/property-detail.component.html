@@ -241,6 +241,11 @@
       </div>
     </div>
 
+    <!-- Context Reports Section -->
+    <div class="mt-8">
+      <app-context-reports [propertyId]="property()!.uuid" />
+    </div>
+
     <!-- Image Gallery -->
     @if (galleryOpen() && property()!.images && property()!.images.length > 0) {
       <app-image-gallery

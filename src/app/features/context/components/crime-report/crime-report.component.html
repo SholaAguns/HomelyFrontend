@@ -1,0 +1,30 @@
+<div class="crime-report">
+  <!-- Summary -->
+  <div class="crime-summary">
+    <div class="metric-card">
+      <span class="metric-label">Total Crimes</span>
+      <span class="metric-value">{{ data().total_crimes }}</span>
+      <span class="metric-period">{{ data().period }}</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-label">Crime Rating</span>
+      <span class="crime-rating" [ngClass]="ratingClass()">
+        {{ data().crime_rating }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Top Categories -->
+  <div class="top-categories">
+    <h4>Most Common Crimes</h4>
+    <div class="category-list">
+      <div *ngFor="let cat of data().top_categories" class="category-item">
+        <span class="category-name">{{ cat.category }}</span>
+        <span class="category-count">{{ cat.count }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Source -->
+  <p class="data-source">Data: {{ data().data_source }} ({{ data().postcode_sector }})</p>
+</div>
