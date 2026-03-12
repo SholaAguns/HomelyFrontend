@@ -52,6 +52,9 @@ error
 .obsidian/
 nul
 notes/
+drafts/
 giterror
 
 drafts/
+
+.claude/worktrees

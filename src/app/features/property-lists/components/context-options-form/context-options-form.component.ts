@@ -36,6 +36,7 @@ export class ContextOptionsFormComponent implements OnInit {
 
   poiTypeSelections: Record<PoiType, boolean> = {} as Record<PoiType, boolean>;
   private formPatched = false;
+  private previousSaving = false;
 
   constructor() {
     this.poiTypeEntries.forEach(([type]) => {
@@ -49,6 +50,17 @@ export class ContextOptionsFormComponent implements OnInit {
         this.formPatched = true;
         this.patchForm(contextOptions);
       }
+    });
+
+    effect(() => {
+      const currentSaving = this.contextOptionsStore.saving();
+      const currentError = this.contextOptionsStore.error();
+
+      if (this.previousSaving && !currentSaving && !currentError && this.propertyListUuid) {
+        this.router.navigate(['/lists', this.propertyListUuid]);
+      }
+
+      this.previousSaving = currentSaving;
     });
   }
 
