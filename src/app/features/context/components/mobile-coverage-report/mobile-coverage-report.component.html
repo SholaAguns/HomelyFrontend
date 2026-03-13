@@ -1,27 +1,33 @@
 <div class="mobile-coverage-report">
   <!-- Operator Coverage -->
   <div class="operator-grid">
-    <div *ngFor="let operator of data().operators" class="operator-card">
-      <h5>{{ operator.name }}</h5>
-      <div class="coverage-info">
-        <div class="coverage-item">
-          <span class="coverage-label">4G Indoor</span>
-          <span class="coverage-value">{{ operator.indoor_4g }}%</span>
-        </div>
-        <div class="coverage-item">
-          <span class="coverage-label">4G Outdoor</span>
-          <span class="coverage-value">{{ operator.outdoor_4g }}%</span>
-        </div>
-        <div class="coverage-item" *ngIf="operator.indoor_5g !== undefined">
-          <span class="coverage-label">5G Indoor</span>
-          <span class="coverage-value">{{ operator.indoor_5g }}%</span>
-        </div>
-        <div class="coverage-item" *ngIf="operator.outdoor_5g !== undefined">
-          <span class="coverage-label">5G Outdoor</span>
-          <span class="coverage-value">{{ operator.outdoor_5g }}%</span>
+    @for (operator of data().operators; track operator.name) {
+      <div class="operator-card">
+        <h5>{{ operator.name }}</h5>
+        <div class="coverage-info">
+          <div class="coverage-item">
+            <span class="coverage-label">4G Indoor</span>
+            <span class="coverage-value">{{ operator.indoor_4g }}%</span>
+          </div>
+          <div class="coverage-item">
+            <span class="coverage-label">4G Outdoor</span>
+            <span class="coverage-value">{{ operator.outdoor_4g }}%</span>
+          </div>
+          @if (operator.indoor_5g !== undefined) {
+            <div class="coverage-item">
+              <span class="coverage-label">5G Indoor</span>
+              <span class="coverage-value">{{ operator.indoor_5g }}%</span>
+            </div>
+          }
+          @if (operator.outdoor_5g !== undefined) {
+            <div class="coverage-item">
+              <span class="coverage-label">5G Outdoor</span>
+              <span class="coverage-value">{{ operator.outdoor_5g }}%</span>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
   </div>
 
   <!-- Source -->

@@ -18,10 +18,12 @@
   <div class="top-categories">
     <h4>Most Common Crimes</h4>
     <div class="category-list">
-      <div *ngFor="let cat of data().top_categories" class="category-item">
-        <span class="category-name">{{ cat.category }}</span>
-        <span class="category-count">{{ cat.count }}</span>
-      </div>
+      @for (cat of data().top_categories; track cat.category) {
+        <div class="category-item">
+          <span class="category-name">{{ cat.category }}</span>
+          <span class="category-count">{{ cat.count }}</span>
+        </div>
+      }
     </div>
   </div>
 

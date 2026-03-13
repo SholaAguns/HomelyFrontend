@@ -2,181 +2,185 @@
   <!-- Header -->
   <div class="reports-header">
     <h2>Context Reports</h2>
-    <button *ngIf="!hasStarted()" (click)="triggerStage2()" class="btn-primary">
-      Retrieve Context Reports
-    </button>
-    <div *ngIf="hasStarted()" class="progress-info">
-      <span class="progress-text">
-        {{ progress().complete }} / {{ progress().total }} services complete
-      </span>
-      <div class="progress-bar">
-        <div
-          class="progress-fill"
-          [style.width.%]="(progress().complete / progress().total) * 100"
-        ></div>
+    @if (!hasStarted()) {
+      <button (click)="triggerStage2()" class="btn-primary">Retrieve Context Reports</button>
+    }
+    @if (hasStarted()) {
+      <div class="progress-info">
+        <span class="progress-text">
+          {{ progress().complete }} / {{ progress().total }} services complete
+        </span>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="(progress().complete / progress().total) * 100"
+          ></div>
+        </div>
       </div>
-    </div>
+    }
   </div>
 
   <!-- Service Reports -->
-  <div *ngIf="hasStarted()" class="reports-grid">
-    <!-- Crime -->
-    <div class="service-card" [attr.data-status]="getServiceStatus('crime')">
-      <div class="service-header">
-        <h3>Crime Data</h3>
-        <span class="status-badge" [attr.data-status]="getServiceStatus('crime')">
-          {{ getServiceStatus('crime') || 'Not Started' }}
-        </span>
-      </div>
+  @if (hasStarted()) {
+    <div class="reports-grid">
+      <!-- Crime -->
+      <div class="service-card" [attr.data-status]="getServiceStatus('crime')">
+        <div class="service-header">
+          <h3>Crime Data</h3>
+          <span class="status-badge" [attr.data-status]="getServiceStatus('crime')">
+            {{ getServiceStatus('crime') || 'Not Started' }}
+          </span>
+        </div>
 
-      <div
-        *ngIf="
+        @if (
           getServiceStatus('crime') === 'PENDING' || getServiceStatus('crime') === 'IN_PROGRESS'
-        "
-        class="service-loading"
-      >
-        <div class="spinner"></div>
-        <p>Retrieving data...</p>
+        ) {
+          <div class="service-loading">
+            <div class="spinner"></div>
+            <p>Retrieving data...</p>
+          </div>
+        }
+
+        @if (getServiceStatus('crime') === 'FAILED') {
+          <div class="service-error">
+            <p class="error-message">{{ getServiceError('crime') }}</p>
+            <button (click)="retryService('crime')" class="btn-retry">Retry</button>
+          </div>
+        }
+
+        @if (getServiceStatus('crime') === 'COMPLETE' && getCrimeData()) {
+          <div class="service-content">
+            <app-crime-report [data]="getCrimeData()!" />
+          </div>
+        }
       </div>
 
-      <div *ngIf="getServiceStatus('crime') === 'FAILED'" class="service-error">
-        <p class="error-message">{{ getServiceError('crime') }}</p>
-        <button (click)="retryService('crime')" class="btn-retry">Retry</button>
-      </div>
+      <!-- Schools -->
+      <div class="service-card" [attr.data-status]="getServiceStatus('schools')">
+        <div class="service-header">
+          <h3>School Ratings</h3>
+          <span class="status-badge" [attr.data-status]="getServiceStatus('schools')">
+            {{ getServiceStatus('schools') || 'Not Started' }}
+          </span>
+        </div>
 
-      <div
-        *ngIf="getServiceStatus('crime') === 'COMPLETE' && getServiceData('crime')"
-        class="service-content"
-      >
-        <app-crime-report [data]="getServiceData('crime')" />
-      </div>
-    </div>
-
-    <!-- Schools -->
-    <div class="service-card" [attr.data-status]="getServiceStatus('schools')">
-      <div class="service-header">
-        <h3>School Ratings</h3>
-        <span class="status-badge" [attr.data-status]="getServiceStatus('schools')">
-          {{ getServiceStatus('schools') || 'Not Started' }}
-        </span>
-      </div>
-
-      <div
-        *ngIf="
+        @if (
           getServiceStatus('schools') === 'PENDING' || getServiceStatus('schools') === 'IN_PROGRESS'
-        "
-        class="service-loading"
-      >
-        <div class="spinner"></div>
-        <p>Retrieving data...</p>
+        ) {
+          <div class="service-loading">
+            <div class="spinner"></div>
+            <p>Retrieving data...</p>
+          </div>
+        }
+
+        @if (getServiceStatus('schools') === 'FAILED') {
+          <div class="service-error">
+            <p class="error-message">{{ getServiceError('schools') }}</p>
+            <button (click)="retryService('schools')" class="btn-retry">Retry</button>
+          </div>
+        }
+
+        @if (getServiceStatus('schools') === 'COMPLETE' && getSchoolsData()) {
+          <div class="service-content">
+            <app-schools-report [data]="getSchoolsData()!" />
+          </div>
+        }
       </div>
 
-      <div *ngIf="getServiceStatus('schools') === 'FAILED'" class="service-error">
-        <p class="error-message">{{ getServiceError('schools') }}</p>
-        <button (click)="retryService('schools')" class="btn-retry">Retry</button>
-      </div>
+      <!-- Broadband -->
+      <div class="service-card" [attr.data-status]="getServiceStatus('broadband')">
+        <div class="service-header">
+          <h3>Broadband Speeds</h3>
+          <span class="status-badge" [attr.data-status]="getServiceStatus('broadband')">
+            {{ getServiceStatus('broadband') || 'Not Started' }}
+          </span>
+        </div>
 
-      <div
-        *ngIf="getServiceStatus('schools') === 'COMPLETE' && getServiceData('schools')"
-        class="service-content"
-      >
-        <app-schools-report [data]="getServiceData('schools')" />
-      </div>
-    </div>
-
-    <!-- Broadband -->
-    <div class="service-card" [attr.data-status]="getServiceStatus('broadband')">
-      <div class="service-header">
-        <h3>Broadband Speeds</h3>
-        <span class="status-badge" [attr.data-status]="getServiceStatus('broadband')">
-          {{ getServiceStatus('broadband') || 'Not Started' }}
-        </span>
-      </div>
-
-      <div
-        *ngIf="
+        @if (
           getServiceStatus('broadband') === 'PENDING' ||
           getServiceStatus('broadband') === 'IN_PROGRESS'
-        "
-        class="service-loading"
-      >
-        <div class="spinner"></div>
-        <p>Retrieving data...</p>
+        ) {
+          <div class="service-loading">
+            <div class="spinner"></div>
+            <p>Retrieving data...</p>
+          </div>
+        }
+
+        @if (getServiceStatus('broadband') === 'FAILED') {
+          <div class="service-error">
+            <p class="error-message">{{ getServiceError('broadband') }}</p>
+            <button (click)="retryService('broadband')" class="btn-retry">Retry</button>
+          </div>
+        }
+
+        @if (getServiceStatus('broadband') === 'COMPLETE' && getBroadbandData()) {
+          <div class="service-content">
+            <app-broadband-report [data]="getBroadbandData()!" />
+          </div>
+        }
       </div>
 
-      <div *ngIf="getServiceStatus('broadband') === 'FAILED'" class="service-error">
-        <p class="error-message">{{ getServiceError('broadband') }}</p>
-        <button (click)="retryService('broadband')" class="btn-retry">Retry</button>
-      </div>
+      <!-- Mobile -->
+      <div class="service-card" [attr.data-status]="getServiceStatus('mobile')">
+        <div class="service-header">
+          <h3>Mobile Coverage</h3>
+          <span class="status-badge" [attr.data-status]="getServiceStatus('mobile')">
+            {{ getServiceStatus('mobile') || 'Not Started' }}
+          </span>
+        </div>
 
-      <div
-        *ngIf="getServiceStatus('broadband') === 'COMPLETE' && getServiceData('broadband')"
-        class="service-content"
-      >
-        <app-broadband-report [data]="getServiceData('broadband')" />
-      </div>
-    </div>
-
-    <!-- Mobile -->
-    <div class="service-card" [attr.data-status]="getServiceStatus('mobile')">
-      <div class="service-header">
-        <h3>Mobile Coverage</h3>
-        <span class="status-badge" [attr.data-status]="getServiceStatus('mobile')">
-          {{ getServiceStatus('mobile') || 'Not Started' }}
-        </span>
-      </div>
-
-      <div
-        *ngIf="
+        @if (
           getServiceStatus('mobile') === 'PENDING' || getServiceStatus('mobile') === 'IN_PROGRESS'
-        "
-        class="service-loading"
-      >
-        <div class="spinner"></div>
-        <p>Retrieving data...</p>
+        ) {
+          <div class="service-loading">
+            <div class="spinner"></div>
+            <p>Retrieving data...</p>
+          </div>
+        }
+
+        @if (getServiceStatus('mobile') === 'FAILED') {
+          <div class="service-error">
+            <p class="error-message">{{ getServiceError('mobile') }}</p>
+            <button (click)="retryService('mobile')" class="btn-retry">Retry</button>
+          </div>
+        }
+
+        @if (getServiceStatus('mobile') === 'COMPLETE' && getMobileData()) {
+          <div class="service-content">
+            <app-mobile-coverage-report [data]="getMobileData()!" />
+          </div>
+        }
       </div>
 
-      <div *ngIf="getServiceStatus('mobile') === 'FAILED'" class="service-error">
-        <p class="error-message">{{ getServiceError('mobile') }}</p>
-        <button (click)="retryService('mobile')" class="btn-retry">Retry</button>
-      </div>
+      <!-- POI -->
+      <div class="service-card" [attr.data-status]="getServiceStatus('poi')">
+        <div class="service-header">
+          <h3>Places of Interest</h3>
+          <span class="status-badge" [attr.data-status]="getServiceStatus('poi')">
+            {{ getServiceStatus('poi') || 'Not Started' }}
+          </span>
+        </div>
 
-      <div
-        *ngIf="getServiceStatus('mobile') === 'COMPLETE' && getServiceData('mobile')"
-        class="service-content"
-      >
-        <app-mobile-coverage-report [data]="getServiceData('mobile')" />
+        @if (getServiceStatus('poi') === 'PENDING' || getServiceStatus('poi') === 'IN_PROGRESS') {
+          <div class="service-loading">
+            <div class="spinner"></div>
+            <p>Retrieving data...</p>
+          </div>
+        }
+
+        @if (getServiceStatus('poi') === 'FAILED') {
+          <div class="service-error">
+            <p class="error-message">{{ getServiceError('poi') }}</p>
+            <button (click)="retryService('poi')" class="btn-retry">Retry</button>
+          </div>
+        }
+
+        @if (getServiceStatus('poi') === 'COMPLETE' && getPoiData()) {
+          <div class="service-content">
+            <app-poi-report [data]="getPoiData()!" />
+          </div>
+        }
       </div>
     </div>
-
-    <!-- POI -->
-    <div class="service-card" [attr.data-status]="getServiceStatus('poi')">
-      <div class="service-header">
-        <h3>Places of Interest</h3>
-        <span class="status-badge" [attr.data-status]="getServiceStatus('poi')">
-          {{ getServiceStatus('poi') || 'Not Started' }}
-        </span>
-      </div>
-
-      <div
-        *ngIf="getServiceStatus('poi') === 'PENDING' || getServiceStatus('poi') === 'IN_PROGRESS'"
-        class="service-loading"
-      >
-        <div class="spinner"></div>
-        <p>Retrieving data...</p>
-      </div>
-
-      <div *ngIf="getServiceStatus('poi') === 'FAILED'" class="service-error">
-        <p class="error-message">{{ getServiceError('poi') }}</p>
-        <button (click)="retryService('poi')" class="btn-retry">Retry</button>
-      </div>
-
-      <div
-        *ngIf="getServiceStatus('poi') === 'COMPLETE' && getServiceData('poi')"
-        class="service-content"
-      >
-        <app-poi-report [data]="getServiceData('poi')" />
-      </div>
-    </div>
-  </div>
+  }
 </div>

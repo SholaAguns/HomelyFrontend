@@ -6,7 +6,7 @@ import { ContextData } from '../../../shared/models/context-data.models';
 
 @Injectable({ providedIn: 'root' })
 export class ContextDataService {
-  private readonly baseUrl = `${environment.apiUrl}/properties`;
+  private readonly baseUrl = `${environment.apiUrl}/property/properties`;
 
   constructor(private httpClient: HttpClient) {}
 

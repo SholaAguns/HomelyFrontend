@@ -6,6 +6,13 @@ import { SchoolsReportComponent } from '../schools-report/schools-report.compone
 import { BroadbandReportComponent } from '../broadband-report/broadband-report.component';
 import { MobileCoverageReportComponent } from '../mobile-coverage-report/mobile-coverage-report.component';
 import { PoiReportComponent } from '../poi-report/poi-report.component';
+import {
+  CrimeReportData,
+  SchoolsReportData,
+  BroadbandReportData,
+  MobileCoverageReportData,
+  PoiReportData,
+} from '../../../../shared/models/context-data.models';
 
 @Component({
   selector: 'app-context-reports',
@@ -50,9 +57,9 @@ export class ContextReportsComponent {
     return contextData?.status || null;
   }
 
-  getServiceData(serviceName: string): unknown {
+  getServiceData<T = unknown>(serviceName: string): T | null {
     const contextData = this.contextData().find((d) => d.service_name === serviceName);
-    return contextData?.status === 'COMPLETE' ? contextData.data : null;
+    return contextData?.status === 'COMPLETE' ? (contextData.data as T) : null;
   }
 
   getServiceError(serviceName: string): string | null {
@@ -65,5 +72,25 @@ export class ContextReportsComponent {
       propertyId: this.propertyId(),
       service: serviceName,
     });
+  }
+
+  getCrimeData(): CrimeReportData | null {
+    return this.getServiceData<CrimeReportData>('crime');
+  }
+
+  getSchoolsData(): SchoolsReportData | null {
+    return this.getServiceData<SchoolsReportData>('schools');
+  }
+
+  getBroadbandData(): BroadbandReportData | null {
+    return this.getServiceData<BroadbandReportData>('broadband');
+  }
+
+  getMobileData(): MobileCoverageReportData | null {
+    return this.getServiceData<MobileCoverageReportData>('mobile');
+  }
+
+  getPoiData(): PoiReportData | null {
+    return this.getServiceData<PoiReportData>('poi');
   }
 }

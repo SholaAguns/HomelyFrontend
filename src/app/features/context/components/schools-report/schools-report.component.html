@@ -4,60 +4,74 @@
     <div class="stat-card">
       <span class="stat-value">{{ stats().primary_count }}</span>
       <span class="stat-label">Primary Schools</span>
-      <span class="stat-detail" *ngIf="stats().closest_primary_km">
-        Closest: {{ stats().closest_primary_km }}km
-      </span>
+      @if (stats().closest_primary_km) {
+        <span class="stat-detail"> Closest: {{ stats().closest_primary_km }}km </span>
+      }
     </div>
     <div class="stat-card">
       <span class="stat-value">{{ stats().secondary_count }}</span>
       <span class="stat-label">Secondary Schools</span>
-      <span class="stat-detail" *ngIf="stats().closest_secondary_km">
-        Closest: {{ stats().closest_secondary_km }}km
-      </span>
+      @if (stats().closest_secondary_km) {
+        <span class="stat-detail"> Closest: {{ stats().closest_secondary_km }}km </span>
+      }
     </div>
   </div>
 
   <!-- Primary Schools -->
-  <div class="school-section" *ngIf="data().primary_schools?.length > 0">
-    <h4>Primary Schools (Within 5km)</h4>
-    <div class="school-list">
-      <div *ngFor="let school of data().primary_schools" class="school-card">
-        <div class="school-header">
-          <h5>{{ school.name }}</h5>
-          <span class="school-distance"> {{ school.distance_miles }}mi </span>
-        </div>
-        <div class="school-info">
-          <span>{{ school.pupil_count }} pupils</span>
-          <span>{{ school.type }}</span>
-        </div>
-        <a *ngIf="school.ofsted_url" [href]="school.ofsted_url" target="_blank" class="ofsted-link">
-          View Ofsted Report →
-        </a>
+  @if (data().primary_schools && data().primary_schools!.length > 0) {
+    <div class="school-section">
+      <h4>Primary Schools (Within 5km)</h4>
+      <div class="school-list">
+        @for (school of data().primary_schools; track school.name) {
+          <div class="school-card">
+            <div class="school-header">
+              <h5>{{ school.name }}</h5>
+              <span class="school-distance"> {{ school.distance_miles }}mi </span>
+            </div>
+            <div class="school-info">
+              <span>{{ school.pupil_count }} pupils</span>
+              <span>{{ school.type }}</span>
+            </div>
+            @if (school.ofsted_url) {
+              <a [href]="school.ofsted_url" target="_blank" class="ofsted-link">
+                View Ofsted Report →
+              </a>
+            }
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 
   <!-- Secondary Schools -->
-  <div class="school-section" *ngIf="data().secondary_schools?.length > 0">
-    <h4>Secondary Schools (Within 5km)</h4>
-    <div class="school-list">
-      <div *ngFor="let school of data().secondary_schools" class="school-card">
-        <div class="school-header">
-          <h5>{{ school.name }}</h5>
-          <span class="school-distance"> {{ school.distance_miles }}mi </span>
-        </div>
-        <div class="school-info">
-          <span>{{ school.pupil_count }} pupils</span>
-          <span>{{ school.type }}</span>
-        </div>
-        <a *ngIf="school.ofsted_url" [href]="school.ofsted_url" target="_blank" class="ofsted-link">
-          View Ofsted Report →
-        </a>
+  @if (data().secondary_schools && data().secondary_schools!.length > 0) {
+    <div class="school-section">
+      <h4>Secondary Schools (Within 5km)</h4>
+      <div class="school-list">
+        @for (school of data().secondary_schools; track school.name) {
+          <div class="school-card">
+            <div class="school-header">
+              <h5>{{ school.name }}</h5>
+              <span class="school-distance"> {{ school.distance_miles }}mi </span>
+            </div>
+            <div class="school-info">
+              <span>{{ school.pupil_count }} pupils</span>
+              <span>{{ school.type }}</span>
+            </div>
+            @if (school.ofsted_url) {
+              <a [href]="school.ofsted_url" target="_blank" class="ofsted-link">
+                View Ofsted Report →
+              </a>
+            }
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 
-  <p class="data-note" *ngIf="data().note">
-    {{ data().note }}
-  </p>
+  @if (data().note) {
+    <p class="data-note">
+      {{ data().note }}
+    </p>
+  }
 </div>

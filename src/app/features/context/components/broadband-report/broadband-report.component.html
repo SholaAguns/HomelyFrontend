@@ -12,19 +12,21 @@
   </div>
 
   <!-- Full Fibre -->
-  <div class="fibre-info" *ngIf="data().full_fibre">
-    <h4>Full Fibre Availability</h4>
-    <div class="fibre-stats">
-      <div class="fibre-stat">
-        <span class="fibre-label">Availability</span>
-        <span class="fibre-value">{{ data().full_fibre.availability_pct }}%</span>
-      </div>
-      <div class="fibre-stat">
-        <span class="fibre-label">Take-up</span>
-        <span class="fibre-value">{{ data().full_fibre.take_up_pct }}%</span>
+  @if (data().full_fibre) {
+    <div class="fibre-info">
+      <h4>Full Fibre Availability</h4>
+      <div class="fibre-stats">
+        <div class="fibre-stat">
+          <span class="fibre-label">Availability</span>
+          <span class="fibre-value">{{ data().full_fibre!.availability_pct }}%</span>
+        </div>
+        <div class="fibre-stat">
+          <span class="fibre-label">Take-up</span>
+          <span class="fibre-value">{{ data().full_fibre!.take_up_pct }}%</span>
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   <!-- Source -->
   <p class="data-source">

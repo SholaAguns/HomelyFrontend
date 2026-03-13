@@ -12,26 +12,36 @@
   </div>
 
   <!-- Places by Category -->
-  <div class="category-section" *ngIf="data().by_category">
-    <div *ngFor="let category of data().categories" class="category-group">
-      <h4>{{ category }}</h4>
-      <div class="places-list">
-        <div *ngFor="let place of data().by_category[category]" class="place-card">
-          <div class="place-header">
-            <h5>{{ place.name }}</h5>
-            <span class="place-distance">{{ place.distance_km }}km</span>
-          </div>
-          <p class="place-address" *ngIf="place.address">{{ place.address }}</p>
-          <div class="place-meta">
-            <span *ngIf="place.rating" class="place-rating"> ⭐ {{ place.rating }} </span>
-            <span *ngIf="place.user_ratings_total" class="place-reviews">
-              ({{ place.user_ratings_total }} reviews)
-            </span>
+  @if (data().by_category && data().categories) {
+    <div class="category-section">
+      @for (category of data().categories; track category) {
+        <div class="category-group">
+          <h4>{{ category }}</h4>
+          <div class="places-list">
+            @for (place of data().by_category![category]; track place.name) {
+              <div class="place-card">
+                <div class="place-header">
+                  <h5>{{ place.name }}</h5>
+                  <span class="place-distance">{{ place.distance_km }}km</span>
+                </div>
+                @if (place.address) {
+                  <p class="place-address">{{ place.address }}</p>
+                }
+                <div class="place-meta">
+                  @if (place.rating) {
+                    <span class="place-rating"> ⭐ {{ place.rating }} </span>
+                  }
+                  @if (place.user_ratings_total) {
+                    <span class="place-reviews"> ({{ place.user_ratings_total }} reviews) </span>
+                  }
+                </div>
+              </div>
+            }
           </div>
         </div>
-      </div>
+      }
     </div>
-  </div>
+  }
 
   <!-- Source -->
   <p class="data-source">
