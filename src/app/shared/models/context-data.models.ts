@@ -80,18 +80,32 @@ export interface BroadbandReportData {
   granularity: string;
 }
 
-export interface MobileOperator {
-  name: string;
-  indoor_4g: number;
-  outdoor_4g: number;
-  indoor_5g?: number;
-  outdoor_5g?: number;
+export interface CoverageByNetwork {
+  all_4_networks: number;
+  '3_networks': number;
+  '2_networks': number;
+  '1_network': number;
+  no_coverage: number;
+}
+
+export interface CoverageScores {
+  '4g_coverage': number;
+  '5g_coverage': number;
+  overall_coverage: number;
 }
 
 export interface MobileCoverageReportData {
-  operators: MobileOperator[];
+  scores: CoverageScores;
+  '4g_coverage': {
+    indoor: CoverageByNetwork;
+    outdoor: CoverageByNetwork;
+  };
+  '5g_coverage_high_confidence'?: {
+    outdoor: CoverageByNetwork;
+  };
   data_source: string;
   granularity: string;
+  laua_name?: string;
 }
 
 export interface Place {
