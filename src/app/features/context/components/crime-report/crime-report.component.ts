@@ -1,5 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CrimeReportData } from '../../../../shared/models/context-data.models';
 
 @Component({
   selector: 'app-crime-report',
@@ -9,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './crime-report.component.css',
 })
 export class CrimeReportComponent {
-  data = input.required<unknown>();
+  data = input.required<CrimeReportData>();
 
   ratingClass = computed(() => {
     const rating = this.data().crime_rating?.toLowerCase();

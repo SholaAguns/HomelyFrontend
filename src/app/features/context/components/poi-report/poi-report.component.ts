@@ -1,5 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PoiReportData } from '../../../../shared/models/context-data.models';
 
 @Component({
   selector: 'app-poi-report',
@@ -9,5 +10,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './poi-report.component.css',
 })
 export class PoiReportComponent {
-  data = input.required<unknown>();
+  data = input.required<PoiReportData>();
 }

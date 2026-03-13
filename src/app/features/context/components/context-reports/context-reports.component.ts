@@ -1,4 +1,4 @@
-import { Component, inject, input, computed } from '@angular/core';
+import { Component, inject, input, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContextDataStore } from '../../store/context-data.store';
 import { CrimeReportComponent } from '../crime-report/crime-report.component';
@@ -25,6 +25,15 @@ export class ContextReportsComponent {
   propertyId = input.required<string>();
 
   private contextDataStore = inject(ContextDataStore);
+
+  constructor() {
+    effect(() => {
+      const currentPropertyId = this.propertyId();
+      if (currentPropertyId) {
+        this.contextDataStore.load(currentPropertyId);
+      }
+    });
+  }
 
   contextData = computed(() => this.contextDataStore.forProperty()(this.propertyId()));
 

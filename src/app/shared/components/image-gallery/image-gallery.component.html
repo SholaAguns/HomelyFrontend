@@ -63,8 +63,8 @@
 
     <!-- Image Counter and Caption -->
     <div class="absolute right-0 bottom-8 left-0 text-center">
-      @if (currentImage()?.caption) {
-        <p class="mb-2 text-white">{{ currentImage()!.caption }}</p>
+      @if (currentImage().caption) {
+        <p class="mb-2 text-white">{{ currentImage().caption }}</p>
       }
       <p class="text-opacity-80 text-sm text-white">
         {{ currentIndex() + 1 }} / {{ images.length }}

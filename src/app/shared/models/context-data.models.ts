@@ -29,3 +29,83 @@ export interface WebSocketServiceUpdate {
   data?: unknown;
   progress?: ServiceProgress;
 }
+
+// Report Data Types
+export interface School {
+  name: string;
+  distance_miles: number;
+  pupil_count: number;
+  type: string;
+  ofsted_url?: string;
+}
+
+export interface SchoolStatistics {
+  primary_count: number;
+  secondary_count: number;
+  closest_primary_km?: number;
+  closest_secondary_km?: number;
+}
+
+export interface SchoolsReportData {
+  statistics: SchoolStatistics;
+  primary_schools?: School[];
+  secondary_schools?: School[];
+  note?: string;
+}
+
+export interface CrimeCategory {
+  category: string;
+  count: number;
+}
+
+export interface CrimeReportData {
+  total_crimes: number;
+  period: string;
+  crime_rating: string;
+  top_categories: CrimeCategory[];
+  data_source: string;
+  postcode_sector: string;
+}
+
+export interface FullFibreData {
+  availability_pct: number;
+  take_up_pct: number;
+}
+
+export interface BroadbandReportData {
+  max_download_mbps: number;
+  max_upload_mbps: number;
+  full_fibre?: FullFibreData;
+  data_source: string;
+  granularity: string;
+}
+
+export interface MobileOperator {
+  name: string;
+  indoor_4g: number;
+  outdoor_4g: number;
+  indoor_5g?: number;
+  outdoor_5g?: number;
+}
+
+export interface MobileCoverageReportData {
+  operators: MobileOperator[];
+  data_source: string;
+  granularity: string;
+}
+
+export interface Place {
+  name: string;
+  distance_km: number;
+  address?: string;
+  rating?: number;
+  user_ratings_total?: number;
+}
+
+export interface PoiReportData {
+  total_places: number;
+  categories?: string[];
+  by_category?: Record<string, Place[]>;
+  data_source: string;
+  search_radius_km: number;
+}

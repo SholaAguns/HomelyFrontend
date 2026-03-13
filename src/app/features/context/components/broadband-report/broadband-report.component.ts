@@ -1,5 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BroadbandReportData } from '../../../../shared/models/context-data.models';
 
 @Component({
   selector: 'app-broadband-report',
@@ -9,5 +10,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './broadband-report.component.css',
 })
 export class BroadbandReportComponent {
-  data = input.required<unknown>();
+  data = input.required<BroadbandReportData>();
 }
