@@ -1,65 +1,136 @@
 <div class="mobile-coverage-report">
   <!-- Coverage Scores -->
-  <div class="scores-section">
-    <div class="score-card">
-      <span class="score-value">{{ data().scores.overall_coverage.toFixed(1) }}</span>
-      <span class="score-label">Overall Coverage</span>
+  <div class="scores-grid">
+    <div class="score-card overall">
+      <div class="score-header">
+        <span class="score-icon">📶</span>
+        <span class="score-label">Overall Coverage</span>
+      </div>
+      <div class="score-value">{{ data().scores.overall_coverage.toFixed(1) }}</div>
+      <div class="score-bar">
+        <div class="score-fill" [style.width.%]="data().scores.overall_coverage"></div>
+      </div>
     </div>
     <div class="score-card">
-      <span class="score-value">{{ data().scores['4g_coverage'].toFixed(1) }}</span>
-      <span class="score-label">4G Coverage</span>
+      <div class="score-header">
+        <span class="score-icon">4G</span>
+        <span class="score-label">4G Coverage</span>
+      </div>
+      <div class="score-value">{{ data().scores['4g_coverage'].toFixed(1) }}</div>
+      <div class="score-bar">
+        <div class="score-fill" [style.width.%]="data().scores['4g_coverage']"></div>
+      </div>
     </div>
     <div class="score-card">
-      <span class="score-value">{{ data().scores['5g_coverage'].toFixed(1) }}</span>
-      <span class="score-label">5G Coverage</span>
+      <div class="score-header">
+        <span class="score-icon">5G</span>
+        <span class="score-label">5G Coverage</span>
+      </div>
+      <div class="score-value">{{ data().scores['5g_coverage'].toFixed(1) }}</div>
+      <div class="score-bar">
+        <div class="score-fill" [style.width.%]="data().scores['5g_coverage']"></div>
+      </div>
     </div>
   </div>
 
   <!-- 4G Coverage Details -->
   <div class="coverage-section">
-    <h4>4G Coverage</h4>
-    <div class="coverage-grid">
-      <div class="coverage-type">
-        <h5>Indoor</h5>
-        <div class="coverage-breakdown">
-          <div class="coverage-row">
-            <span>All 4 networks:</span>
-            <span class="coverage-percent">{{ data()['4g_coverage'].indoor.all_4_networks }}%</span>
+    <h4 class="section-title">4G Coverage by Network Count</h4>
+    <div class="coverage-cards">
+      <div class="coverage-card">
+        <div class="coverage-card-header">
+          <span class="location-icon">🏠</span>
+          <h5>Indoor Coverage</h5>
+        </div>
+        <div class="network-breakdown">
+          <div class="network-item excellent">
+            <span class="network-label">All 4 networks</span>
+            <span class="network-value">{{ data()['4g_coverage'].indoor.all_4_networks }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill excellent"
+                [style.width.%]="data()['4g_coverage'].indoor.all_4_networks"
+              ></div>
+            </div>
           </div>
-          <div class="coverage-row">
-            <span>3 networks:</span>
-            <span class="coverage-percent">{{ data()['4g_coverage'].indoor['3_networks'] }}%</span>
+          <div class="network-item good">
+            <span class="network-label">3 networks</span>
+            <span class="network-value">{{ data()['4g_coverage'].indoor['3_networks'] }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill good"
+                [style.width.%]="data()['4g_coverage'].indoor['3_networks']"
+              ></div>
+            </div>
           </div>
-          <div class="coverage-row">
-            <span>2 networks:</span>
-            <span class="coverage-percent">{{ data()['4g_coverage'].indoor['2_networks'] }}%</span>
+          <div class="network-item fair">
+            <span class="network-label">2 networks</span>
+            <span class="network-value">{{ data()['4g_coverage'].indoor['2_networks'] }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill fair"
+                [style.width.%]="data()['4g_coverage'].indoor['2_networks']"
+              ></div>
+            </div>
           </div>
-          <div class="coverage-row">
-            <span>1 network:</span>
-            <span class="coverage-percent">{{ data()['4g_coverage'].indoor['1_network'] }}%</span>
+          <div class="network-item poor">
+            <span class="network-label">1 network</span>
+            <span class="network-value">{{ data()['4g_coverage'].indoor['1_network'] }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill poor"
+                [style.width.%]="data()['4g_coverage'].indoor['1_network']"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="coverage-type">
-        <h5>Outdoor</h5>
-        <div class="coverage-breakdown">
-          <div class="coverage-row">
-            <span>All 4 networks:</span>
-            <span class="coverage-percent"
-              >{{ data()['4g_coverage'].outdoor.all_4_networks }}%</span
-            >
+
+      <div class="coverage-card">
+        <div class="coverage-card-header">
+          <span class="location-icon">🌳</span>
+          <h5>Outdoor Coverage</h5>
+        </div>
+        <div class="network-breakdown">
+          <div class="network-item excellent">
+            <span class="network-label">All 4 networks</span>
+            <span class="network-value">{{ data()['4g_coverage'].outdoor.all_4_networks }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill excellent"
+                [style.width.%]="data()['4g_coverage'].outdoor.all_4_networks"
+              ></div>
+            </div>
           </div>
-          <div class="coverage-row">
-            <span>3 networks:</span>
-            <span class="coverage-percent">{{ data()['4g_coverage'].outdoor['3_networks'] }}%</span>
+          <div class="network-item good">
+            <span class="network-label">3 networks</span>
+            <span class="network-value">{{ data()['4g_coverage'].outdoor['3_networks'] }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill good"
+                [style.width.%]="data()['4g_coverage'].outdoor['3_networks']"
+              ></div>
+            </div>
           </div>
-          <div class="coverage-row">
-            <span>2 networks:</span>
-            <span class="coverage-percent">{{ data()['4g_coverage'].outdoor['2_networks'] }}%</span>
+          <div class="network-item fair">
+            <span class="network-label">2 networks</span>
+            <span class="network-value">{{ data()['4g_coverage'].outdoor['2_networks'] }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill fair"
+                [style.width.%]="data()['4g_coverage'].outdoor['2_networks']"
+              ></div>
+            </div>
           </div>
-          <div class="coverage-row">
-            <span>1 network:</span>
-            <span class="coverage-percent">{{ data()['4g_coverage'].outdoor['1_network'] }}%</span>
+          <div class="network-item poor">
+            <span class="network-label">1 network</span>
+            <span class="network-value">{{ data()['4g_coverage'].outdoor['1_network'] }}%</span>
+            <div class="network-bar">
+              <div
+                class="network-fill poor"
+                [style.width.%]="data()['4g_coverage'].outdoor['1_network']"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -69,34 +140,61 @@
   <!-- 5G Coverage Details -->
   @if (data()['5g_coverage_high_confidence']) {
     <div class="coverage-section">
-      <h4>5G Coverage (High Confidence)</h4>
-      <div class="coverage-grid">
-        <div class="coverage-type">
-          <h5>Outdoor</h5>
-          <div class="coverage-breakdown">
-            <div class="coverage-row">
-              <span>All 4 networks:</span>
-              <span class="coverage-percent">
+      <h4 class="section-title">5G Coverage (High Confidence)</h4>
+      <div class="coverage-cards single">
+        <div class="coverage-card">
+          <div class="coverage-card-header">
+            <span class="location-icon">🌳</span>
+            <h5>Outdoor Coverage</h5>
+          </div>
+          <div class="network-breakdown">
+            <div class="network-item excellent">
+              <span class="network-label">All 4 networks</span>
+              <span class="network-value">
                 {{ data()['5g_coverage_high_confidence']!.outdoor.all_4_networks }}%
               </span>
+              <div class="network-bar">
+                <div
+                  class="network-fill excellent"
+                  [style.width.%]="data()['5g_coverage_high_confidence']!.outdoor.all_4_networks"
+                ></div>
+              </div>
             </div>
-            <div class="coverage-row">
-              <span>3 networks:</span>
-              <span class="coverage-percent">
+            <div class="network-item good">
+              <span class="network-label">3 networks</span>
+              <span class="network-value">
                 {{ data()['5g_coverage_high_confidence']!.outdoor['3_networks'] }}%
               </span>
+              <div class="network-bar">
+                <div
+                  class="network-fill good"
+                  [style.width.%]="data()['5g_coverage_high_confidence']!.outdoor['3_networks']"
+                ></div>
+              </div>
             </div>
-            <div class="coverage-row">
-              <span>2 networks:</span>
-              <span class="coverage-percent">
+            <div class="network-item fair">
+              <span class="network-label">2 networks</span>
+              <span class="network-value">
                 {{ data()['5g_coverage_high_confidence']!.outdoor['2_networks'] }}%
               </span>
+              <div class="network-bar">
+                <div
+                  class="network-fill fair"
+                  [style.width.%]="data()['5g_coverage_high_confidence']!.outdoor['2_networks']"
+                ></div>
+              </div>
             </div>
-            <div class="coverage-row">
-              <span>1 network:</span>
-              <span class="coverage-percent">
+            <div class="network-item poor">
+              <span class="network-label">1 network</span>
+              <span class="network-value">
                 {{ data()['5g_coverage_high_confidence']!.outdoor['1_network'] }}%
               </span>
+              <div class="network-bar">
+                <div
+                  class="network-fill poor"
+                  [style.width.%]="data()['5g_coverage_high_confidence']!.outdoor['1_network']"
+                ></div>
+              </div>
             </div>
           </div>
         </div>
@@ -105,11 +203,20 @@
   }
 
   <!-- Source -->
-  <p class="data-source">
+  <div class="data-info">
     @if (data().laua_name) {
-      <strong>Area:</strong> {{ data().laua_name }}<br />
+      <div class="info-item">
+        <span class="info-label">Area:</span>
+        <span class="info-value">{{ data().laua_name }}</span>
+      </div>
     }
-    <strong>Data:</strong> {{ data().data_source }}<br />
-    <strong>Granularity:</strong> {{ data().granularity }}
-  </p>
+    <div class="info-item">
+      <span class="info-label">Data Source:</span>
+      <span class="info-value">{{ data().data_source }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Granularity:</span>
+      <span class="info-value">{{ data().granularity }}</span>
+    </div>
+  </div>
 </div>
