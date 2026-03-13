@@ -1,13 +1,26 @@
 <div class="poi-report">
   <!-- Statistics -->
   <div class="poi-stats">
-    <div class="stat-card">
-      <span class="stat-value">{{ data().total_places }}</span>
-      <span class="stat-label">Total Places</span>
+    <div class="stat-card primary">
+      <div class="stat-icon">📍</div>
+      <div class="stat-content">
+        <div class="stat-value">{{ data().total_places }}</div>
+        <div class="stat-label">Total Places</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <span class="stat-value">{{ data().categories?.length || 0 }}</span>
-      <span class="stat-label">Categories</span>
+    <div class="stat-card secondary">
+      <div class="stat-icon">🏷️</div>
+      <div class="stat-content">
+        <div class="stat-value">{{ data().categories?.length || 0 }}</div>
+        <div class="stat-label">Categories</div>
+      </div>
+    </div>
+    <div class="stat-card tertiary">
+      <div class="stat-icon">🔍</div>
+      <div class="stat-content">
+        <div class="stat-value">{{ data().search_radius_km }}</div>
+        <div class="stat-label">Radius (km)</div>
+      </div>
     </div>
   </div>
 
@@ -17,31 +30,49 @@
       @for (category of data().categories; track category) {
         <div class="category-group">
           <div class="category-header" (click)="toggleCategory(category)">
-            <h4>{{ category }}</h4>
+            <div class="category-title">
+              <span class="category-icon">{{ getCategoryIcon(category) }}</span>
+              <h4>{{ category | titlecase }}</h4>
+            </div>
             <div class="category-actions">
-              <span class="category-count">{{ data().by_category![category].length }} places</span>
+              <span class="category-badge">{{ data().by_category![category].length }}</span>
               <span class="toggle-icon">{{ isCategoryCollapsed(category) ? '▼' : '▲' }}</span>
             </div>
           </div>
           @if (!isCategoryCollapsed(category)) {
-            <div class="places-list">
+            <div class="places-grid">
               @for (place of data().by_category![category]; track place.name) {
                 <div class="place-card">
-                  <div class="place-header">
-                    <h5>{{ place.name }}</h5>
-                    <span class="place-distance">{{ place.distance_km }}km</span>
+                  <div class="place-main">
+                    <div class="place-name-section">
+                      <h5 class="place-name">{{ place.name }}</h5>
+                      <div class="place-distance-badge">
+                        <span class="distance-icon">📏</span>
+                        <span class="distance-value">{{ place.distance_km.toFixed(2) }}km</span>
+                      </div>
+                    </div>
+                    @if (place.address) {
+                      <div class="place-address">
+                        <span class="address-icon">📌</span>
+                        <span>{{ place.address }}</span>
+                      </div>
+                    }
                   </div>
-                  @if (place.address) {
-                    <p class="place-address">{{ place.address }}</p>
+                  @if (place.rating || place.user_ratings_total) {
+                    <div class="place-rating-section">
+                      @if (place.rating) {
+                        <div class="rating-stars">
+                          @for (star of [1, 2, 3, 4, 5]; track star) {
+                            <span class="star" [class.filled]="star <= place.rating!">⭐</span>
+                          }
+                          <span class="rating-value">{{ place.rating }}</span>
+                        </div>
+                      }
+                      @if (place.user_ratings_total) {
+                        <span class="review-count">{{ place.user_ratings_total }} reviews</span>
+                      }
+                    </div>
                   }
-                  <div class="place-meta">
-                    @if (place.rating) {
-                      <span class="place-rating"> ⭐ {{ place.rating }} </span>
-                    }
-                    @if (place.user_ratings_total) {
-                      <span class="place-reviews"> ({{ place.user_ratings_total }} reviews) </span>
-                    }
-                  </div>
                 </div>
               }
             </div>
@@ -52,8 +83,10 @@
   }
 
   <!-- Source -->
-  <p class="data-source">
-    Data: {{ data().data_source }}<br />
-    Search radius: {{ data().search_radius_km }}km
-  </p>
+  <div class="data-info">
+    <div class="info-badge">
+      <span class="info-icon">ℹ️</span>
+      <span class="info-text"> <strong>Data Source:</strong> {{ data().data_source }} </span>
+    </div>
+  </div>
 </div>

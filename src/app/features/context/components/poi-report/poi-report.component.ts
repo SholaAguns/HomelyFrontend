@@ -38,4 +38,30 @@ export class PoiReportComponent {
   isCategoryCollapsed(category: string): boolean {
     return this.collapsedCategories().has(category);
   }
+
+  getCategoryIcon(category: string): string {
+    const iconMap: Record<string, string> = {
+      gym: '💪',
+      hospital: '🏥',
+      school: '🏫',
+      restaurant: '🍽️',
+      cafe: '☕',
+      park: '🌳',
+      shopping: '🛍️',
+      supermarket: '🛒',
+      pharmacy: '💊',
+      bank: '🏦',
+      atm: '💳',
+      gas_station: '⛽',
+      parking: '🅿️',
+      library: '📚',
+      museum: '🏛️',
+      cinema: '🎬',
+      bar: '🍺',
+      nightclub: '🎵',
+      transit_station: '🚉',
+      bus_station: '🚌',
+    };
+    return iconMap[category.toLowerCase()] || '📍';
+  }
 }
