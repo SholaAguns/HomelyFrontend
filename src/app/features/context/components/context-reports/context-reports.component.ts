@@ -1,4 +1,4 @@
-import { Component, inject, input, computed, effect } from '@angular/core';
+import { Component, inject, input, computed, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContextDataStore } from '../../store/context-data.store';
 import { CrimeReportComponent } from '../crime-report/crime-report.component';
@@ -32,6 +32,13 @@ export class ContextReportsComponent {
   propertyId = input.required<string>();
 
   private contextDataStore = inject(ContextDataStore);
+
+  // Collapsed state for each service (true = collapsed)
+  crimeCollapsed = signal(true);
+  schoolsCollapsed = signal(true);
+  broadbandCollapsed = signal(true);
+  mobileCollapsed = signal(true);
+  poiCollapsed = signal(true);
 
   constructor() {
     effect(() => {
@@ -92,5 +99,25 @@ export class ContextReportsComponent {
 
   getPoiData(): PoiReportData | null {
     return this.getServiceData<PoiReportData>('poi');
+  }
+
+  toggleCollapsed(serviceName: string): void {
+    switch (serviceName) {
+      case 'crime':
+        this.crimeCollapsed.update((v) => !v);
+        break;
+      case 'schools':
+        this.schoolsCollapsed.update((v) => !v);
+        break;
+      case 'broadband':
+        this.broadbandCollapsed.update((v) => !v);
+        break;
+      case 'mobile':
+        this.mobileCollapsed.update((v) => !v);
+        break;
+      case 'poi':
+        this.poiCollapsed.update((v) => !v);
+        break;
+    }
   }
 }

@@ -37,11 +37,46 @@
   margin-bottom: 1.5rem;
 }
 
-.category-group h4 {
-  margin: 0 0 1rem 0;
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.75rem;
+  margin: -0.25rem -0.25rem 1rem -0.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.category-header:hover {
+  background-color: #f9fafb;
+}
+
+.category-header h4 {
+  margin: 0;
   font-size: 1rem;
   font-weight: 600;
   color: #111827;
+}
+
+.category-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.category-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.toggle-icon {
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 .places-list {
