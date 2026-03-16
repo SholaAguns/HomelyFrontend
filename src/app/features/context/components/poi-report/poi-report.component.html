@@ -57,6 +57,46 @@
                         <span>{{ place.address }}</span>
                       </div>
                     }
+
+                    <!-- Travel Times -->
+                    <div class="place-travel-times">
+                      @if (place.driving_time_min) {
+                        <div class="travel-time">
+                          <span class="travel-icon">🚗</span>
+                          <span class="travel-text">{{ place.driving_time_min }} min drive</span>
+                        </div>
+                      }
+                      @if (place.walking_time_min && place.walking_time_min < 30) {
+                        <div class="travel-time">
+                          <span class="travel-icon">🚶</span>
+                          <span class="travel-text">{{ place.walking_time_min }} min walk</span>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Links -->
+                    <div class="place-links">
+                      <a
+                        [href]="place.google_maps_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="place-link maps-link"
+                      >
+                        <span class="link-icon">🗺️</span>
+                        <span class="link-text">View on Maps</span>
+                      </a>
+                      @if (place.website_url) {
+                        <a
+                          [href]="place.website_url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="place-link website-link"
+                        >
+                          <span class="link-icon">🌐</span>
+                          <span class="link-text">Website</span>
+                        </a>
+                      }
+                    </div>
                   </div>
                   @if (place.rating || place.user_ratings_total) {
                     <div class="place-rating-section">

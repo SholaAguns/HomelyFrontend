@@ -218,6 +218,90 @@
   margin-top: 0.125rem;
 }
 
+/* Travel Times */
+.place-travel-times {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.travel-time {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: #166534;
+  font-weight: 500;
+}
+
+.travel-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.travel-text {
+  line-height: 1;
+}
+
+/* Links */
+.place-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.place-link {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.place-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.maps-link {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+}
+
+.maps-link:hover {
+  background-color: #bfdbfe;
+}
+
+.website-link {
+  background-color: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+}
+
+.website-link:hover {
+  background-color: #fde68a;
+}
+
+.link-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.link-text {
+  line-height: 1;
+}
+
 .place-rating-section {
   display: flex;
   flex-direction: column;

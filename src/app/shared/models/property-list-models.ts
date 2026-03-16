@@ -7,13 +7,17 @@ export type PoiType =
   | 'school'
   | 'gym'
   | 'park'
-  | 'pharmacy'
   | 'bank'
+  | 'pharmacy'
+  | 'airport'
+  | 'church'
+  | 'mosque'
+  | 'temple'
   | 'pub'
   | 'cafe'
-  | 'train_station'
-  | 'bus_station'
-  | 'shopping_mall'
+  | 'station'
+  | 'shopping'
+  | 'library'
   | 'dentist'
   | 'doctor';
 
@@ -26,13 +30,17 @@ export const POI_TYPE_LABELS: Record<PoiType, string> = {
   park: 'Park',
   pharmacy: 'Pharmacy',
   bank: 'Bank',
+  mosque: 'Mosque',
+  church: 'Church',
+  temple: 'Temple',
   pub: 'Pub',
   cafe: 'Cafe',
-  train_station: 'Train Station',
-  bus_station: 'Bus Station',
-  shopping_mall: 'Shopping Mall',
+  station: 'Bus or Train Station',
+  shopping: 'Shopping Mall',
   dentist: 'Dentist',
   doctor: 'Doctor',
+  airport: 'Airport',
+  library: 'Library',
 };
 
 export interface ContextOptions {

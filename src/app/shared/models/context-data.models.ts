@@ -109,9 +109,20 @@ export interface MobileCoverageReportData {
 }
 
 export interface Place {
+  place_id: string;
   name: string;
-  distance_km: number;
   address?: string;
+  latitude: number;
+  longitude: number;
+  distance_km: number;
+  straight_distance_km?: number;
+  walking_distance_km?: number;
+  walking_time_min?: number;
+  driving_distance_km?: number;
+  driving_time_min?: number;
+  website_url?: string;
+  phone_number?: string;
+  google_maps_url: string;
   rating?: number;
   user_ratings_total?: number;
 }
