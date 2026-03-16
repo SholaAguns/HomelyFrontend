@@ -62,10 +62,15 @@ export class ContextReportsComponent implements OnDestroy {
   private subscribeToUpdates(propertyId: string): void {
     this.wsSubscription?.unsubscribe();
 
+    console.log('🔌 WEBSOCKET: Connecting to property channel in 1 second...', propertyId);
+
     setTimeout(() => {
       this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
         next: (update) => {
+          console.log('📨 WEBSOCKET UPDATE RECEIVED:', update.type, update);
+
           if (update.type === 'service_update' && update.service && update.status) {
+            console.log(`✅ SERVICE UPDATE: ${update.service} → ${update.status}`);
             const contextData: ContextData = {
               id: `${propertyId}-${update.service}`,
               property_id: propertyId,
@@ -79,11 +84,21 @@ export class ContextReportsComponent implements OnDestroy {
             };
             this.contextDataStore.updateService(propertyId, contextData);
           } else if (update.type === 'stage2_complete') {
+            console.log('🎉 STAGE 2 COMPLETE - Reloading context data');
             this.contextDataStore.load(propertyId);
+            console.log('🔌 CLOSING WEBSOCKET CONNECTION (Stage 2 complete)');
+            this.wsSubscription?.unsubscribe();
+            this.propertyWebSocketService.disconnect();
           }
         },
-        error: (err) => console.error('WebSocket error:', err),
+        error: (err) => {
+          console.error('❌ WEBSOCKET ERROR:', err);
+        },
+        complete: () => {
+          console.log('🔌 WEBSOCKET CONNECTION CLOSED');
+        },
       });
+      console.log('🔌 WEBSOCKET: Connection established');
     }, 1000);
   }
 

@@ -110,22 +110,36 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private subscribeToListUpdates(listUuid: string): void {
     this.wsSubscription?.unsubscribe();
 
+    console.log('🔌 WEBSOCKET: Connecting to property list channel in 1 second...', listUuid);
+
     setTimeout(() => {
       this.wsSubscription = this.propertyWebSocketService
         .subscribeToPropertyList(listUuid)
         .subscribe({
           next: (update) => {
+            console.log('📨 WEBSOCKET UPDATE RECEIVED (LIST):', update.type, update);
+
             if (update.type === 'service_update') {
-              // Individual property service completed - could show notification
-              console.log('Service update for property:', update.property_id, update.service);
+              console.log(
+                `✅ SERVICE UPDATE (LIST): Property ${update.property_id}, ${update.service} → ${update.status}`
+              );
             } else if (update.type === 'stage2_complete') {
-              // Property stage 2 completed - reload list to update status summary
-              console.log('Stage 2 complete for property:', update.property_id);
+              console.log(
+                '🎉 STAGE 2 COMPLETE (LIST): Property',
+                update.property_id,
+                '- Reloading list'
+              );
               this.loadList(listUuid);
             }
           },
-          error: (err) => console.error('Property list WebSocket error:', err),
+          error: (err) => {
+            console.error('❌ WEBSOCKET ERROR (LIST):', err);
+          },
+          complete: () => {
+            console.log('🔌 WEBSOCKET CONNECTION CLOSED (LIST)');
+          },
         });
+      console.log('🔌 WEBSOCKET: List connection established');
     }, 1000);
   }
 
