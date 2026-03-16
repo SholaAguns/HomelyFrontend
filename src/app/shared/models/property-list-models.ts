@@ -18,8 +18,7 @@ export type PoiType =
   | 'station'
   | 'shopping'
   | 'library'
-  | 'dentist'
-  | 'doctor';
+  | 'dentist';
 
 export const POI_TYPE_LABELS: Record<PoiType, string> = {
   restaurant: 'Restaurant',
@@ -38,7 +37,6 @@ export const POI_TYPE_LABELS: Record<PoiType, string> = {
   station: 'Bus or Train Station',
   shopping: 'Shopping Mall',
   dentist: 'Dentist',
-  doctor: 'Doctor',
   airport: 'Airport',
   library: 'Library',
 };

@@ -205,5 +205,13 @@ export const PropertyStore = signalStore(
         .find((property) => property.external_id === externalId);
       return duplicateEntity || null;
     },
+    updatePropertyState: (uuid: string, state: string) => {
+      const entity = store.entities()[uuid];
+      if (entity) {
+        const updatedEntity = { ...entity, state: state as any };
+        const entities = { ...store.entities(), [uuid]: updatedEntity };
+        patchState(store, { entities });
+      }
+    },
   }))
 );

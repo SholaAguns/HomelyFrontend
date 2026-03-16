@@ -2,8 +2,8 @@
   <!-- Header -->
   <div class="reports-header">
     <h2>Context Reports</h2>
-    @if (!hasStarted()) {
-      <button (click)="triggerStage2()" class="btn-primary">Retrieve Context Reports</button>
+    @if (showTriggerButton()) {
+      <button (click)="triggerStage2()" class="btn-primary">Get reports</button>
     }
     @if (hasStarted()) {
       <div class="progress-info">

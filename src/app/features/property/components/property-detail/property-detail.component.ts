@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
+import { PropertyStore } from '../../store/property.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { PropertyDetail } from '../../../../shared/models/property-models';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
@@ -19,6 +20,7 @@ export class PropertyDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private propertyService = inject(PropertyService);
+  private propertyStore = inject(PropertyStore);
   private notificationService = inject(NotificationService);
 
   property = signal<PropertyDetail | null>(null);
@@ -59,6 +61,7 @@ export class PropertyDetailComponent implements OnInit {
     this.propertyService.getByUuid(uuid).subscribe({
       next: (property) => {
         this.property.set(property);
+        this.propertyStore.addProperty(property);
         this.loading.set(false);
       },
       error: (err) => {

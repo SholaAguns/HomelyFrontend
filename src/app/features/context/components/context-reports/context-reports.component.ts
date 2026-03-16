@@ -2,6 +2,7 @@ import { Component, inject, input, computed, effect, signal, OnDestroy } from '@
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ContextDataStore } from '../../store/context-data.store';
+import { PropertyStore } from '../../../property/store/property.store';
 import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
 import { CrimeReportComponent } from '../crime-report/crime-report.component';
 import { SchoolsReportComponent } from '../schools-report/schools-report.component';
@@ -35,6 +36,7 @@ export class ContextReportsComponent implements OnDestroy {
   propertyId = input.required<string>();
 
   private contextDataStore = inject(ContextDataStore);
+  private propertyStore = inject(PropertyStore);
   private propertyWebSocketService = inject(PropertyWebSocketService);
   private wsSubscription?: Subscription;
 
@@ -83,8 +85,9 @@ export class ContextReportsComponent implements OnDestroy {
           };
           this.contextDataStore.updateService(propertyId, contextData);
         } else if (update.type === 'stage2_complete') {
-          console.log('🎉 STAGE 2 COMPLETE - Reloading context data');
+          console.log('🎉 STAGE 2 COMPLETE - Reloading context data and updating property state');
           this.contextDataStore.load(propertyId);
+          this.propertyStore.updatePropertyState(propertyId, 'STAGE2_COMPLETE');
           console.log('🔌 CLOSING WEBSOCKET CONNECTION (Stage 2 complete)');
           this.wsSubscription?.unsubscribe();
           this.propertyWebSocketService.disconnect();
@@ -112,6 +115,13 @@ export class ContextReportsComponent implements OnDestroy {
   progress = computed(() => this.contextDataStore.progressFor()(this.propertyId()));
 
   hasStarted = computed(() => this.contextData().length > 0);
+
+  property = computed(() => this.propertyStore.entities()[this.propertyId()]);
+
+  showTriggerButton = computed(() => {
+    const currentProperty = this.property();
+    return !this.hasStarted() || currentProperty?.state === 'STAGE2_COMPLETE';
+  });
 
   triggerStage2(): void {
     const propertyId = this.propertyId();
