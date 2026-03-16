@@ -85,7 +85,6 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const uuid = this.route.snapshot.paramMap.get('uuid');
     if (uuid) {
       this.loadList(uuid);
-      this.subscribeToListUpdates(uuid);
 
       // Start polling if there's an active task for this list
       const currentTask = this.searchTaskStore.currentTask();
@@ -111,21 +110,23 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private subscribeToListUpdates(listUuid: string): void {
     this.wsSubscription?.unsubscribe();
 
-    this.wsSubscription = this.propertyWebSocketService
-      .subscribeToPropertyList(listUuid)
-      .subscribe({
-        next: (update) => {
-          if (update.type === 'service_update') {
-            // Individual property service completed - could show notification
-            console.log('Service update for property:', update.property_id, update.service);
-          } else if (update.type === 'stage2_complete') {
-            // Property stage 2 completed - reload list to update status summary
-            console.log('Stage 2 complete for property:', update.property_id);
-            this.loadList(listUuid);
-          }
-        },
-        error: (err) => console.error('Property list WebSocket error:', err),
-      });
+    setTimeout(() => {
+      this.wsSubscription = this.propertyWebSocketService
+        .subscribeToPropertyList(listUuid)
+        .subscribe({
+          next: (update) => {
+            if (update.type === 'service_update') {
+              // Individual property service completed - could show notification
+              console.log('Service update for property:', update.property_id, update.service);
+            } else if (update.type === 'stage2_complete') {
+              // Property stage 2 completed - reload list to update status summary
+              console.log('Stage 2 complete for property:', update.property_id);
+              this.loadList(listUuid);
+            }
+          },
+          error: (err) => console.error('Property list WebSocket error:', err),
+        });
+    }, 1000);
   }
 
   loadList(uuid: string) {
@@ -136,6 +137,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         this.list.set(list);
         this.currentPage.set(1);
         this.loading.set(false);
+
+        // Connect to WebSocket if any properties are in stage 2 progress
+        if (list.status_summary.stage2_in_progress > 0) {
+          this.subscribeToListUpdates(uuid);
+        }
       },
       error: (err) => {
         this.error.set(err.message);

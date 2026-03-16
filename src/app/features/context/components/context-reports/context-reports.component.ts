@@ -50,7 +50,6 @@ export class ContextReportsComponent implements OnDestroy {
       const currentPropertyId = this.propertyId();
       if (currentPropertyId) {
         this.contextDataStore.load(currentPropertyId);
-        this.subscribeToUpdates(currentPropertyId);
       }
     });
   }
@@ -63,27 +62,29 @@ export class ContextReportsComponent implements OnDestroy {
   private subscribeToUpdates(propertyId: string): void {
     this.wsSubscription?.unsubscribe();
 
-    this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
-      next: (update) => {
-        if (update.type === 'service_update' && update.service && update.status) {
-          const contextData: ContextData = {
-            id: `${propertyId}-${update.service}`,
-            property_id: propertyId,
-            service_name: update.service as any,
-            status: update.status as any,
-            data: update.data,
-            error_message: null,
-            started_at: null,
-            completed_at: update.status === 'COMPLETE' ? new Date().toISOString() : null,
-            cached: false,
-          };
-          this.contextDataStore.updateService(propertyId, contextData);
-        } else if (update.type === 'stage2_complete') {
-          this.contextDataStore.load(propertyId);
-        }
-      },
-      error: (err) => console.error('WebSocket error:', err),
-    });
+    setTimeout(() => {
+      this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
+        next: (update) => {
+          if (update.type === 'service_update' && update.service && update.status) {
+            const contextData: ContextData = {
+              id: `${propertyId}-${update.service}`,
+              property_id: propertyId,
+              service_name: update.service as any,
+              status: update.status as any,
+              data: update.data,
+              error_message: null,
+              started_at: null,
+              completed_at: update.status === 'COMPLETE' ? new Date().toISOString() : null,
+              cached: false,
+            };
+            this.contextDataStore.updateService(propertyId, contextData);
+          } else if (update.type === 'stage2_complete') {
+            this.contextDataStore.load(propertyId);
+          }
+        },
+        error: (err) => console.error('WebSocket error:', err),
+      });
+    }, 1000);
   }
 
   contextData = computed(() => this.contextDataStore.forProperty()(this.propertyId()));
@@ -93,7 +94,9 @@ export class ContextReportsComponent implements OnDestroy {
   hasStarted = computed(() => this.contextData().length > 0);
 
   triggerStage2(): void {
-    this.contextDataStore.triggerStage2(this.propertyId());
+    const propertyId = this.propertyId();
+    this.contextDataStore.triggerStage2(propertyId);
+    this.subscribeToUpdates(propertyId);
   }
 
   getServiceStatus(serviceName: string): string | null {
