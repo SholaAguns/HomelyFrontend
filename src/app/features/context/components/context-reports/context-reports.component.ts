@@ -59,47 +59,52 @@ export class ContextReportsComponent implements OnDestroy {
     this.propertyWebSocketService.disconnect();
   }
 
-  private subscribeToUpdates(propertyId: string): void {
+  private subscribeToUpdates(propertyId: string, onConnected?: () => void): void {
     this.wsSubscription?.unsubscribe();
 
-    console.log('🔌 WEBSOCKET: Connecting to property channel in 1 second...', propertyId);
+    console.log('🔌 WEBSOCKET: Connecting to property channel immediately...', propertyId);
 
-    setTimeout(() => {
-      this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
-        next: (update) => {
-          console.log('📨 WEBSOCKET UPDATE RECEIVED:', update.type, update);
+    this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
+      next: (update) => {
+        console.log('📨 WEBSOCKET UPDATE RECEIVED:', update.type, update);
 
-          if (update.type === 'service_update' && update.service && update.status) {
-            console.log(`✅ SERVICE UPDATE: ${update.service} → ${update.status}`);
-            const contextData: ContextData = {
-              id: `${propertyId}-${update.service}`,
-              property_id: propertyId,
-              service_name: update.service as any,
-              status: update.status as any,
-              data: update.data,
-              error_message: null,
-              started_at: null,
-              completed_at: update.status === 'COMPLETE' ? new Date().toISOString() : null,
-              cached: false,
-            };
-            this.contextDataStore.updateService(propertyId, contextData);
-          } else if (update.type === 'stage2_complete') {
-            console.log('🎉 STAGE 2 COMPLETE - Reloading context data');
-            this.contextDataStore.load(propertyId);
-            console.log('🔌 CLOSING WEBSOCKET CONNECTION (Stage 2 complete)');
-            this.wsSubscription?.unsubscribe();
-            this.propertyWebSocketService.disconnect();
-          }
-        },
-        error: (err) => {
-          console.error('❌ WEBSOCKET ERROR:', err);
-        },
-        complete: () => {
-          console.log('🔌 WEBSOCKET CONNECTION CLOSED');
-        },
-      });
-      console.log('🔌 WEBSOCKET: Connection established');
-    }, 1000);
+        if (update.type === 'service_update' && update.service && update.status) {
+          console.log(`✅ SERVICE UPDATE: ${update.service} → ${update.status}`);
+          const contextData: ContextData = {
+            id: `${propertyId}-${update.service}`,
+            property_id: propertyId,
+            service_name: update.service as any,
+            status: update.status as any,
+            data: update.data,
+            error_message: null,
+            started_at: null,
+            completed_at: update.status === 'COMPLETE' ? new Date().toISOString() : null,
+            cached: false,
+          };
+          this.contextDataStore.updateService(propertyId, contextData);
+        } else if (update.type === 'stage2_complete') {
+          console.log('🎉 STAGE 2 COMPLETE - Reloading context data');
+          this.contextDataStore.load(propertyId);
+          console.log('🔌 CLOSING WEBSOCKET CONNECTION (Stage 2 complete)');
+          this.wsSubscription?.unsubscribe();
+          this.propertyWebSocketService.disconnect();
+        }
+      },
+      error: (err) => {
+        console.error('❌ WEBSOCKET ERROR:', err);
+      },
+      complete: () => {
+        console.log('🔌 WEBSOCKET CONNECTION CLOSED');
+      },
+    });
+
+    // Call the callback after a short delay to ensure connection is established
+    if (onConnected) {
+      setTimeout(() => {
+        console.log('🔌 WEBSOCKET: Connection ready, calling callback');
+        onConnected();
+      }, 200);
+    }
   }
 
   contextData = computed(() => this.contextDataStore.forProperty()(this.propertyId()));
@@ -110,8 +115,11 @@ export class ContextReportsComponent implements OnDestroy {
 
   triggerStage2(): void {
     const propertyId = this.propertyId();
-    this.contextDataStore.triggerStage2(propertyId);
-    this.subscribeToUpdates(propertyId);
+    // Subscribe FIRST, then trigger stage 2 after connection established
+    this.subscribeToUpdates(propertyId, () => {
+      console.log('🚀 TRIGGERING STAGE 2');
+      this.contextDataStore.triggerStage2(propertyId);
+    });
   }
 
   getServiceStatus(serviceName: string): string | null {
