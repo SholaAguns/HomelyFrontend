@@ -36,6 +36,22 @@ export class PropertyWebSocketService {
     );
   }
 
+  connectToProperty(propertyUuid: string): Observable<WebSocketServiceUpdate> {
+    const channel = `property/${propertyUuid}/`;
+
+    return this.webSocketService.connect(channel).pipe(
+      filter(
+        (message: WebSocketServiceUpdate) =>
+          message.type === 'service_update' || message.type === 'stage2_complete'
+      ),
+      map((message: WebSocketServiceUpdate) => message),
+      catchError((error) => {
+        console.error('PropertyWebSocket error:', error);
+        return EMPTY;
+      })
+    );
+  }
+
   subscribeToPropertyList(propertyListUuid: string): Observable<WebSocketServiceUpdate> {
     const channel = `property-list/${propertyListUuid}/`;
 

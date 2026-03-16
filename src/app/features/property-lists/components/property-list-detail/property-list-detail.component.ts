@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
+import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
 import { PropertyListDetail } from '../../../../shared/models/property-list-models';
 import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
 import { PropertyPreviewCard } from '../property-preview-card/property-preview-card';
 import { SearchTaskStore } from '../../../property/store/search-task.store';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-property-list-detail',
@@ -28,6 +29,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private propertyListService = inject(PropertyListService);
   private propertyService = inject(PropertyService);
+  private propertyWebSocketService = inject(PropertyWebSocketService);
   searchTaskStore = inject(SearchTaskStore);
 
   list = signal<PropertyListDetail | null>(null);
@@ -38,6 +40,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   itemsPerPage = 20;
   selectionMode = signal(false);
   selectedPropertyUuids = signal<Set<string>>(new Set());
+  private wsSubscription?: Subscription;
 
   paginatedProperties = computed(() => {
     const listData = this.list();
@@ -82,6 +85,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const uuid = this.route.snapshot.paramMap.get('uuid');
     if (uuid) {
       this.loadList(uuid);
+      this.subscribeToListUpdates(uuid);
 
       // Start polling if there's an active task for this list
       const currentTask = this.searchTaskStore.currentTask();
@@ -99,8 +103,29 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Clear task state when navigating away
     this.searchTaskStore.reset();
+    this.wsSubscription?.unsubscribe();
+    this.propertyWebSocketService.disconnect();
+  }
+
+  private subscribeToListUpdates(listUuid: string): void {
+    this.wsSubscription?.unsubscribe();
+
+    this.wsSubscription = this.propertyWebSocketService
+      .subscribeToPropertyList(listUuid)
+      .subscribe({
+        next: (update) => {
+          if (update.type === 'service_update') {
+            // Individual property service completed - could show notification
+            console.log('Service update for property:', update.property_id, update.service);
+          } else if (update.type === 'stage2_complete') {
+            // Property stage 2 completed - reload list to update status summary
+            console.log('Stage 2 complete for property:', update.property_id);
+            this.loadList(listUuid);
+          }
+        },
+        error: (err) => console.error('Property list WebSocket error:', err),
+      });
   }
 
   loadList(uuid: string) {

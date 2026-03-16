@@ -1,6 +1,8 @@
-import { Component, inject, input, computed, effect, signal } from '@angular/core';
+import { Component, inject, input, computed, effect, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { ContextDataStore } from '../../store/context-data.store';
+import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
 import { CrimeReportComponent } from '../crime-report/crime-report.component';
 import { SchoolsReportComponent } from '../schools-report/schools-report.component';
 import { BroadbandReportComponent } from '../broadband-report/broadband-report.component';
@@ -12,6 +14,7 @@ import {
   BroadbandReportData,
   MobileCoverageReportData,
   PoiReportData,
+  ContextData,
 } from '../../../../shared/models/context-data.models';
 
 @Component({
@@ -28,10 +31,12 @@ import {
   templateUrl: './context-reports.component.html',
   styleUrl: './context-reports.component.css',
 })
-export class ContextReportsComponent {
+export class ContextReportsComponent implements OnDestroy {
   propertyId = input.required<string>();
 
   private contextDataStore = inject(ContextDataStore);
+  private propertyWebSocketService = inject(PropertyWebSocketService);
+  private wsSubscription?: Subscription;
 
   // Collapsed state for each service (true = collapsed)
   crimeCollapsed = signal(true);
@@ -45,7 +50,39 @@ export class ContextReportsComponent {
       const currentPropertyId = this.propertyId();
       if (currentPropertyId) {
         this.contextDataStore.load(currentPropertyId);
+        this.subscribeToUpdates(currentPropertyId);
       }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.wsSubscription?.unsubscribe();
+    this.propertyWebSocketService.disconnect();
+  }
+
+  private subscribeToUpdates(propertyId: string): void {
+    this.wsSubscription?.unsubscribe();
+
+    this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
+      next: (update) => {
+        if (update.type === 'service_update' && update.service && update.status) {
+          const contextData: ContextData = {
+            id: `${propertyId}-${update.service}`,
+            property_id: propertyId,
+            service_name: update.service as any,
+            status: update.status as any,
+            data: update.data,
+            error_message: null,
+            started_at: null,
+            completed_at: update.status === 'COMPLETE' ? new Date().toISOString() : null,
+            cached: false,
+          };
+          this.contextDataStore.updateService(propertyId, contextData);
+        } else if (update.type === 'stage2_complete') {
+          this.contextDataStore.load(propertyId);
+        }
+      },
+      error: (err) => console.error('WebSocket error:', err),
     });
   }
 
