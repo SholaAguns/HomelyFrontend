@@ -15,10 +15,12 @@ export type PoiType =
   | 'temple'
   | 'pub'
   | 'cafe'
-  | 'station'
+  | 'bus_station'
+  | 'train_station'
   | 'shopping'
   | 'library'
-  | 'dentist';
+  | 'dentist'
+  | 'petrol_station';
 
 export const POI_TYPE_LABELS: Record<PoiType, string> = {
   restaurant: 'Restaurant',
@@ -28,13 +30,15 @@ export const POI_TYPE_LABELS: Record<PoiType, string> = {
   gym: 'Gym',
   park: 'Park',
   pharmacy: 'Pharmacy',
+  petrol_station: 'Petrol Station',
   bank: 'Bank',
   mosque: 'Mosque',
   church: 'Church',
   temple: 'Temple',
   pub: 'Pub',
   cafe: 'Cafe',
-  station: 'Bus or Train Station',
+  bus_station: 'Bus Station',
+  train_station: 'Train Station',
   shopping: 'Shopping Mall',
   dentist: 'Dentist',
   airport: 'Airport',

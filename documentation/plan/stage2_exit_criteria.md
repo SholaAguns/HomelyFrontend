@@ -9,4 +9,6 @@
 - Display Name, address, distance, website url (if not nil), g maps url, driving time in min and walking time in min (if under 30)
 - If inof not available display N/A
 
+## Google maps places types often wrong e.g. returning post offices for banks, taxi and airfield for airport
+
 # Crime Rating
