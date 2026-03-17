@@ -32,7 +32,8 @@ export const ContextDataStore = signalStore(
       const contextDataList = byProperty()[propertyId]?.map((id) => entities()[id]) || [];
       return {
         total: contextDataList.length,
-        complete: contextDataList.filter((d) => d.status === 'COMPLETE').length,
+        complete: contextDataList.filter((d) => d.status === 'COMPLETE' || d.status === 'FAILED')
+          .length,
         in_progress: contextDataList.filter((d) => d.status === 'IN_PROGRESS').length,
         failed: contextDataList.filter((d) => d.status === 'FAILED').length,
         pending: contextDataList.filter((d) => d.status === 'PENDING').length,

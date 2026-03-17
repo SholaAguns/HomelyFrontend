@@ -24,189 +24,202 @@
   @if (hasStarted()) {
     <div class="reports-grid">
       <!-- Crime -->
-      <div class="service-card" [attr.data-status]="getServiceStatus('crime')">
-        <div class="service-header" (click)="toggleCollapsed('crime')">
-          <h3>Crime Data</h3>
-          <div class="header-actions">
-            <span class="status-badge" [attr.data-status]="getServiceStatus('crime')">
-              {{ getServiceStatus('crime') || 'Not Started' }}
-            </span>
-            <span class="toggle-icon">{{ crimeCollapsed() ? '▼' : '▲' }}</span>
+      @if (getServiceStatus('crime')) {
+        <div class="service-card" [attr.data-status]="getServiceStatus('crime')">
+          <div class="service-header" (click)="toggleCollapsed('crime')">
+            <h3>Crime Data</h3>
+            <div class="header-actions">
+              <span class="status-badge" [attr.data-status]="getServiceStatus('crime')">
+                {{ getServiceStatus('crime') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ crimeCollapsed() ? '▼' : '▲' }}</span>
+            </div>
           </div>
+
+          @if (!crimeCollapsed()) {
+            @if (
+              getServiceStatus('crime') === 'PENDING' || getServiceStatus('crime') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('crime') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('crime') }}</p>
+                <button (click)="retryService('crime')" class="btn-retry">Retry</button>
+              </div>
+            }
+
+            @if (getServiceStatus('crime') === 'COMPLETE' && getCrimeData()) {
+              <div class="service-content">
+                <app-crime-report [data]="getCrimeData()!" />
+              </div>
+            }
+          }
         </div>
-
-        @if (!crimeCollapsed()) {
-          @if (
-            getServiceStatus('crime') === 'PENDING' || getServiceStatus('crime') === 'IN_PROGRESS'
-          ) {
-            <div class="service-loading">
-              <div class="spinner"></div>
-              <p>Retrieving data...</p>
-            </div>
-          }
-
-          @if (getServiceStatus('crime') === 'FAILED') {
-            <div class="service-error">
-              <p class="error-message">{{ getServiceError('crime') }}</p>
-              <button (click)="retryService('crime')" class="btn-retry">Retry</button>
-            </div>
-          }
-
-          @if (getServiceStatus('crime') === 'COMPLETE' && getCrimeData()) {
-            <div class="service-content">
-              <app-crime-report [data]="getCrimeData()!" />
-            </div>
-          }
-        }
-      </div>
+      }
 
       <!-- Schools -->
-      <div class="service-card" [attr.data-status]="getServiceStatus('schools')">
-        <div class="service-header" (click)="toggleCollapsed('schools')">
-          <h3>School Ratings</h3>
-          <div class="header-actions">
-            <span class="status-badge" [attr.data-status]="getServiceStatus('schools')">
-              {{ getServiceStatus('schools') || 'Not Started' }}
-            </span>
-            <span class="toggle-icon">{{ schoolsCollapsed() ? '▼' : '▲' }}</span>
+      @if (getServiceStatus('schools')) {
+        <div class="service-card" [attr.data-status]="getServiceStatus('schools')">
+          <div class="service-header" (click)="toggleCollapsed('schools')">
+            <h3>School Ratings</h3>
+            <div class="header-actions">
+              <span class="status-badge" [attr.data-status]="getServiceStatus('schools')">
+                {{ getServiceStatus('schools') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ schoolsCollapsed() ? '▼' : '▲' }}</span>
+            </div>
           </div>
+
+          @if (!schoolsCollapsed()) {
+            @if (
+              getServiceStatus('schools') === 'PENDING' ||
+              getServiceStatus('schools') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('schools') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('schools') }}</p>
+                <button (click)="retryService('schools')" class="btn-retry">Retry</button>
+              </div>
+            }
+
+            @if (getServiceStatus('schools') === 'COMPLETE' && getSchoolsData()) {
+              <div class="service-content">
+                <app-schools-report [data]="getSchoolsData()!" />
+              </div>
+            }
+          }
         </div>
-
-        @if (!schoolsCollapsed()) {
-          @if (
-            getServiceStatus('schools') === 'PENDING' ||
-            getServiceStatus('schools') === 'IN_PROGRESS'
-          ) {
-            <div class="service-loading">
-              <div class="spinner"></div>
-              <p>Retrieving data...</p>
-            </div>
-          }
-
-          @if (getServiceStatus('schools') === 'FAILED') {
-            <div class="service-error">
-              <p class="error-message">{{ getServiceError('schools') }}</p>
-              <button (click)="retryService('schools')" class="btn-retry">Retry</button>
-            </div>
-          }
-
-          @if (getServiceStatus('schools') === 'COMPLETE' && getSchoolsData()) {
-            <div class="service-content">
-              <app-schools-report [data]="getSchoolsData()!" />
-            </div>
-          }
-        }
-      </div>
+      }
 
       <!-- Broadband -->
-      <div class="service-card" [attr.data-status]="getServiceStatus('broadband')">
-        <div class="service-header" (click)="toggleCollapsed('broadband')">
-          <h3>Broadband Speeds</h3>
-          <div class="header-actions">
-            <span class="status-badge" [attr.data-status]="getServiceStatus('broadband')">
-              {{ getServiceStatus('broadband') || 'Not Started' }}
-            </span>
-            <span class="toggle-icon">{{ broadbandCollapsed() ? '▼' : '▲' }}</span>
+      @if (getServiceStatus('broadband')) {
+        <div class="service-card" [attr.data-status]="getServiceStatus('broadband')">
+          <div class="service-header" (click)="toggleCollapsed('broadband')">
+            <h3>Broadband Speeds</h3>
+            <div class="header-actions">
+              <span class="status-badge" [attr.data-status]="getServiceStatus('broadband')">
+                {{ getServiceStatus('broadband') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ broadbandCollapsed() ? '▼' : '▲' }}</span>
+            </div>
           </div>
+
+          @if (!broadbandCollapsed()) {
+            @if (
+              getServiceStatus('broadband') === 'PENDING' ||
+              getServiceStatus('broadband') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('broadband') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('broadband') }}</p>
+                <button (click)="retryService('broadband')" class="btn-retry">Retry</button>
+              </div>
+            }
+
+            @if (getServiceStatus('broadband') === 'COMPLETE' && getBroadbandData()) {
+              <div class="service-content">
+                <app-broadband-report [data]="getBroadbandData()!" />
+              </div>
+            }
+          }
         </div>
-
-        @if (!broadbandCollapsed()) {
-          @if (
-            getServiceStatus('broadband') === 'PENDING' ||
-            getServiceStatus('broadband') === 'IN_PROGRESS'
-          ) {
-            <div class="service-loading">
-              <div class="spinner"></div>
-              <p>Retrieving data...</p>
-            </div>
-          }
-
-          @if (getServiceStatus('broadband') === 'FAILED') {
-            <div class="service-error">
-              <p class="error-message">{{ getServiceError('broadband') }}</p>
-              <button (click)="retryService('broadband')" class="btn-retry">Retry</button>
-            </div>
-          }
-
-          @if (getServiceStatus('broadband') === 'COMPLETE' && getBroadbandData()) {
-            <div class="service-content">
-              <app-broadband-report [data]="getBroadbandData()!" />
-            </div>
-          }
-        }
-      </div>
+      }
 
       <!-- Mobile -->
-      <div class="service-card" [attr.data-status]="getServiceStatus('mobile')">
-        <div class="service-header" (click)="toggleCollapsed('mobile')">
-          <h3>Mobile Coverage</h3>
-          <div class="header-actions">
-            <span class="status-badge" [attr.data-status]="getServiceStatus('mobile')">
-              {{ getServiceStatus('mobile') || 'Not Started' }}
-            </span>
-            <span class="toggle-icon">{{ mobileCollapsed() ? '▼' : '▲' }}</span>
+      @if (getServiceStatus('mobile')) {
+        <div class="service-card" [attr.data-status]="getServiceStatus('mobile')">
+          <div class="service-header" (click)="toggleCollapsed('mobile')">
+            <h3>Mobile Coverage</h3>
+            <div class="header-actions">
+              <span class="status-badge" [attr.data-status]="getServiceStatus('mobile')">
+                {{ getServiceStatus('mobile') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ mobileCollapsed() ? '▼' : '▲' }}</span>
+            </div>
           </div>
+
+          @if (!mobileCollapsed()) {
+            @if (
+              getServiceStatus('mobile') === 'PENDING' ||
+              getServiceStatus('mobile') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('mobile') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('mobile') }}</p>
+                <button (click)="retryService('mobile')" class="btn-retry">Retry</button>
+              </div>
+            }
+
+            @if (getServiceStatus('mobile') === 'COMPLETE' && getMobileData()) {
+              <div class="service-content">
+                <app-mobile-coverage-report [data]="getMobileData()!" />
+              </div>
+            }
+          }
         </div>
-
-        @if (!mobileCollapsed()) {
-          @if (
-            getServiceStatus('mobile') === 'PENDING' || getServiceStatus('mobile') === 'IN_PROGRESS'
-          ) {
-            <div class="service-loading">
-              <div class="spinner"></div>
-              <p>Retrieving data...</p>
-            </div>
-          }
-
-          @if (getServiceStatus('mobile') === 'FAILED') {
-            <div class="service-error">
-              <p class="error-message">{{ getServiceError('mobile') }}</p>
-              <button (click)="retryService('mobile')" class="btn-retry">Retry</button>
-            </div>
-          }
-
-          @if (getServiceStatus('mobile') === 'COMPLETE' && getMobileData()) {
-            <div class="service-content">
-              <app-mobile-coverage-report [data]="getMobileData()!" />
-            </div>
-          }
-        }
-      </div>
+      }
 
       <!-- POI -->
-      <div class="service-card" [attr.data-status]="getServiceStatus('poi')">
-        <div class="service-header" (click)="toggleCollapsed('poi')">
-          <h3>Places of Interest</h3>
-          <div class="header-actions">
-            <span class="status-badge" [attr.data-status]="getServiceStatus('poi')">
-              {{ getServiceStatus('poi') || 'Not Started' }}
-            </span>
-            <span class="toggle-icon">{{ poiCollapsed() ? '▼' : '▲' }}</span>
+      @if (getServiceStatus('poi')) {
+        <div class="service-card" [attr.data-status]="getServiceStatus('poi')">
+          <div class="service-header" (click)="toggleCollapsed('poi')">
+            <h3>Places of Interest</h3>
+            <div class="header-actions">
+              <span class="status-badge" [attr.data-status]="getServiceStatus('poi')">
+                {{ getServiceStatus('poi') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ poiCollapsed() ? '▼' : '▲' }}</span>
+            </div>
           </div>
+
+          @if (!poiCollapsed()) {
+            @if (
+              getServiceStatus('poi') === 'PENDING' || getServiceStatus('poi') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('poi') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('poi') }}</p>
+                <button (click)="retryService('poi')" class="btn-retry">Retry</button>
+              </div>
+            }
+
+            @if (getServiceStatus('poi') === 'COMPLETE' && getPoiData()) {
+              <div class="service-content">
+                <app-poi-report [data]="getPoiData()!" />
+              </div>
+            }
+          }
         </div>
-
-        @if (!poiCollapsed()) {
-          @if (getServiceStatus('poi') === 'PENDING' || getServiceStatus('poi') === 'IN_PROGRESS') {
-            <div class="service-loading">
-              <div class="spinner"></div>
-              <p>Retrieving data...</p>
-            </div>
-          }
-
-          @if (getServiceStatus('poi') === 'FAILED') {
-            <div class="service-error">
-              <p class="error-message">{{ getServiceError('poi') }}</p>
-              <button (click)="retryService('poi')" class="btn-retry">Retry</button>
-            </div>
-          }
-
-          @if (getServiceStatus('poi') === 'COMPLETE' && getPoiData()) {
-            <div class="service-content">
-              <app-poi-report [data]="getPoiData()!" />
-            </div>
-          }
-        }
-      </div>
+      }
     </div>
   }
 </div>
