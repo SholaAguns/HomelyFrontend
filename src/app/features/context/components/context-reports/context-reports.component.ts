@@ -88,9 +88,12 @@ export class ContextReportsComponent implements OnDestroy {
           console.log('🎉 STAGE 2 COMPLETE - Reloading context data and updating property state');
           this.contextDataStore.load(propertyId);
           this.propertyStore.updatePropertyState(propertyId, 'STAGE2_COMPLETE');
-          console.log('🔌 CLOSING WEBSOCKET CONNECTION (Stage 2 complete)');
-          this.wsSubscription?.unsubscribe();
-          this.propertyWebSocketService.disconnect();
+          // Wait for load to complete before disconnecting
+          setTimeout(() => {
+            console.log('🔌 CLOSING WEBSOCKET CONNECTION (Stage 2 complete)');
+            this.wsSubscription?.unsubscribe();
+            this.propertyWebSocketService.disconnect();
+          }, 1000);
         }
       },
       error: (err) => {
@@ -148,9 +151,14 @@ export class ContextReportsComponent implements OnDestroy {
   }
 
   retryService(serviceName: string): void {
-    this.contextDataStore.retry({
-      propertyId: this.propertyId(),
-      service: serviceName,
+    const propertyId = this.propertyId();
+    // Subscribe FIRST, then retry service after connection established
+    this.subscribeToUpdates(propertyId, () => {
+      console.log('🔄 RETRYING SERVICE:', serviceName);
+      this.contextDataStore.retry({
+        propertyId,
+        service: serviceName,
+      });
     });
   }
 
