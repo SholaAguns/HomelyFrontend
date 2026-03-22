@@ -6,7 +6,7 @@ import { ContextOptionsService } from '../../../core/services/context-options-se
 import {
   ContextOptions,
   UpdateContextOptionsDto,
-} from '../../../shared/models/property-list-models';
+} from '../../../shared/models/context-options.models';
 
 type ContextOptionsState = {
   entities: Record<string, ContextOptions>;

@@ -4,7 +4,7 @@ import { ApiService } from '../api-service/api.service';
 import {
   ContextOptions,
   UpdateContextOptionsDto,
-} from '../../../shared/models/property-list-models';
+} from '../../../shared/models/context-options.models';
 
 @Injectable({
   providedIn: 'root',

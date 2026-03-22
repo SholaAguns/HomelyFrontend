@@ -7,7 +7,7 @@ import {
   POI_TYPE_LABELS,
   PoiType,
   UpdateContextOptionsDto,
-} from '../../../../shared/models/property-list-models';
+} from '../../../../shared/models/context-options.models';
 
 @Component({
   selector: 'app-context-options-form',
@@ -93,6 +93,17 @@ export class ContextOptionsFormComponent implements OnInit {
 
   onPoiTypeToggle(poiType: PoiType): void {
     this.poiTypeSelections[poiType] = !this.poiTypeSelections[poiType];
+  }
+
+  toggleAllPoiTypes(): void {
+    const allSelected = this.areAllPoiTypesSelected();
+    this.poiTypeEntries.forEach(([type]) => {
+      this.poiTypeSelections[type] = !allSelected;
+    });
+  }
+
+  areAllPoiTypesSelected(): boolean {
+    return this.poiTypeEntries.every(([type]) => this.poiTypeSelections[type]);
   }
 
   onSubmit(): void {

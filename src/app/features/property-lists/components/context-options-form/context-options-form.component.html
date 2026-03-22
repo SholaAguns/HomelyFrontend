@@ -108,7 +108,16 @@
         </div>
 
         <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700">POI Types</label>
+          <div class="mb-2 flex items-center justify-between">
+            <label class="text-sm font-medium text-gray-700">POI Types</label>
+            <button
+              type="button"
+              (click)="toggleAllPoiTypes()"
+              class="text-xs text-blue-600 hover:text-blue-700 hover:underline"
+            >
+              {{ areAllPoiTypesSelected() ? 'Unselect All' : 'Select All' }}
+            </button>
+          </div>
           <div class="grid grid-cols-2 gap-2">
             @for (entry of poiTypeEntries; track entry[0]) {
               <label

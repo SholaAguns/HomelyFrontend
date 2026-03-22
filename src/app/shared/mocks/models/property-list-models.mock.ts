@@ -4,10 +4,9 @@ import {
   CreatePropertyListDto,
   UpdatePropertyListDto,
   PropertyListStatusSummary,
-  ContextOptions,
-  UpdateContextOptionsDto,
 } from '../../models/property-list-models';
 import { mockSearchCriteria } from './property-models.mock';
+import { ContextOptions, UpdateContextOptionsDto } from '../../models/context-options.models';
 
 export const mockStatusSummary: PropertyListStatusSummary = {
   total: 5,
