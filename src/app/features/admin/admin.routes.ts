@@ -32,6 +32,18 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./components/lists-list/lists-list.component').then((m) => m.ListsListComponent),
       },
+      {
+        path: 'context-data',
+        loadComponent: () =>
+          import('./components/context-data-list/context-data-list.component').then(
+            (m) => m.ContextDataListComponent
+          ),
+      },
+      {
+        path: 'tasks',
+        loadComponent: () =>
+          import('./components/tasks-list/tasks-list.component').then((m) => m.TasksListComponent),
+      },
     ],
   },
 ];
