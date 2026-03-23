@@ -1,3 +1,12 @@
+export type SchoolType = 'nursery' | 'primary' | 'secondary' | 'all_through';
+
+export const SCHOOL_TYPE_LABELS: Record<SchoolType, string> = {
+  nursery: 'Nursery',
+  primary: 'Primary',
+  secondary: 'Secondary',
+  all_through: 'All Through',
+};
+
 export type PoiType =
   | 'restaurant'
   | 'supermarket'
@@ -46,6 +55,7 @@ export interface ContextOptions {
   property_list_uuid: string;
   enable_crime: boolean;
   enable_schools: boolean;
+  school_types: SchoolType[];
   enable_broadband: boolean;
   enable_mobile: boolean;
   enable_poi: boolean;
@@ -58,6 +68,7 @@ export interface ContextOptions {
 export interface UpdateContextOptionsDto {
   enable_crime?: boolean;
   enable_schools?: boolean;
+  school_types?: SchoolType[];
   enable_broadband?: boolean;
   enable_mobile?: boolean;
   enable_poi?: boolean;

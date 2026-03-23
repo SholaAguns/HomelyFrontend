@@ -6,6 +6,8 @@ import { ContextOptionsStore } from '../../store/context-options.store';
 import {
   POI_TYPE_LABELS,
   PoiType,
+  SCHOOL_TYPE_LABELS,
+  SchoolType,
   UpdateContextOptionsDto,
 } from '../../../../shared/models/context-options.models';
 
@@ -24,6 +26,7 @@ export class ContextOptionsFormComponent implements OnInit {
 
   propertyListUuid = '';
   readonly poiTypeEntries = Object.entries(POI_TYPE_LABELS) as [PoiType, string][];
+  readonly schoolTypeEntries = Object.entries(SCHOOL_TYPE_LABELS) as [SchoolType, string][];
 
   form: FormGroup = this.fb.group({
     enable_crime: [false],
@@ -35,12 +38,16 @@ export class ContextOptionsFormComponent implements OnInit {
   });
 
   poiTypeSelections: Record<PoiType, boolean> = {} as Record<PoiType, boolean>;
+  schoolTypeSelections: Record<SchoolType, boolean> = {} as Record<SchoolType, boolean>;
   private formPatched = false;
   private previousSaving = false;
 
   constructor() {
     this.poiTypeEntries.forEach(([type]) => {
       this.poiTypeSelections[type] = false;
+    });
+    this.schoolTypeEntries.forEach(([type]) => {
+      this.schoolTypeSelections[type] = false;
     });
 
     effect(() => {
@@ -72,6 +79,7 @@ export class ContextOptionsFormComponent implements OnInit {
   private patchForm(contextOptions: {
     enable_crime: boolean;
     enable_schools: boolean;
+    school_types: SchoolType[];
     enable_broadband: boolean;
     enable_mobile: boolean;
     enable_poi: boolean;
@@ -89,6 +97,24 @@ export class ContextOptionsFormComponent implements OnInit {
     this.poiTypeEntries.forEach(([type]) => {
       this.poiTypeSelections[type] = contextOptions.poi_types.includes(type);
     });
+    this.schoolTypeEntries.forEach(([type]) => {
+      this.schoolTypeSelections[type] = contextOptions.school_types.includes(type);
+    });
+  }
+
+  onSchoolTypeToggle(schoolType: SchoolType): void {
+    this.schoolTypeSelections[schoolType] = !this.schoolTypeSelections[schoolType];
+  }
+
+  toggleAllSchoolTypes(): void {
+    const allSelected = this.areAllSchoolTypesSelected();
+    this.schoolTypeEntries.forEach(([type]) => {
+      this.schoolTypeSelections[type] = !allSelected;
+    });
+  }
+
+  areAllSchoolTypesSelected(): boolean {
+    return this.schoolTypeEntries.every(([type]) => this.schoolTypeSelections[type]);
   }
 
   onPoiTypeToggle(poiType: PoiType): void {
@@ -129,12 +155,17 @@ export class ContextOptionsFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.valid) {
+      const selectedSchoolTypes = this.schoolTypeEntries
+        .filter(([type]) => this.schoolTypeSelections[type])
+        .map(([type]) => type);
+
       const selectedPoiTypes = this.poiTypeEntries
         .filter(([type]) => this.poiTypeSelections[type])
         .map(([type]) => type);
 
       const updateData: UpdateContextOptionsDto = {
         ...this.form.value,
+        school_types: selectedSchoolTypes,
         poi_types: selectedPoiTypes,
       };
 
@@ -144,6 +175,10 @@ export class ContextOptionsFormComponent implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/lists', this.propertyListUuid]);
+  }
+
+  get isSchoolsEnabled(): boolean {
+    return this.form.get('enable_schools')?.value === true;
   }
 
   get isPoiEnabled(): boolean {
