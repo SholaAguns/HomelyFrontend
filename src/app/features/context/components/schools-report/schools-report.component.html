@@ -2,6 +2,13 @@
   <!-- Statistics -->
   <div class="schools-stats">
     <div class="stat-card">
+      <span class="stat-value">{{ stats().nursery_count }}</span>
+      <span class="stat-label">Nursery Schools</span>
+      @if (stats().closest_nursery_km) {
+        <span class="stat-detail"> Closest: {{ stats().closest_nursery_km }}km </span>
+      }
+    </div>
+    <div class="stat-card">
       <span class="stat-value">{{ stats().primary_count }}</span>
       <span class="stat-label">Primary Schools</span>
       @if (stats().closest_primary_km) {
@@ -17,6 +24,34 @@
     </div>
   </div>
 
+  <!-- Nursery Schools -->
+  @if (data().nursery_schools && data().nursery_schools!.length > 0) {
+    <div class="school-section">
+      <h4>Nursery Schools (Within 5km)</h4>
+      <div class="school-list">
+        @for (school of data().nursery_schools; track school.name) {
+          <div class="school-card">
+            <div class="school-header">
+              <h5>{{ school.name }}</h5>
+              <span class="school-distance"> {{ school.distance_miles }}mi </span>
+            </div>
+            <div class="school-info">
+              @if (school.pupil_count) {
+                <span>{{ school.pupil_count }} pupils</span>
+              }
+              <span>{{ school.type }}</span>
+            </div>
+            @if (school.ofsted_url) {
+              <a [href]="school.ofsted_url" target="_blank" class="ofsted-link">
+                View Ofsted Report →
+              </a>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
   <!-- Primary Schools -->
   @if (data().primary_schools && data().primary_schools!.length > 0) {
     <div class="school-section">
@@ -29,7 +64,9 @@
               <span class="school-distance"> {{ school.distance_miles }}mi </span>
             </div>
             <div class="school-info">
-              <span>{{ school.pupil_count }} pupils</span>
+              @if (school.pupil_count) {
+                <span>{{ school.pupil_count }} pupils</span>
+              }
               <span>{{ school.type }}</span>
             </div>
             @if (school.ofsted_url) {
@@ -55,7 +92,9 @@
               <span class="school-distance"> {{ school.distance_miles }}mi </span>
             </div>
             <div class="school-info">
-              <span>{{ school.pupil_count }} pupils</span>
+              @if (school.pupil_count) {
+                <span>{{ school.pupil_count }} pupils</span>
+              }
               <span>{{ school.type }}</span>
             </div>
             @if (school.ofsted_url) {

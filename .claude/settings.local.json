@@ -20,7 +20,8 @@
       "Bash(ng generate:*)",
       "Bash(ren:*)",
       "Bash(npx ng:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(python:*)"
     ]
   }
 }
