@@ -106,6 +106,27 @@ export class ContextOptionsFormComponent implements OnInit {
     return this.poiTypeEntries.every(([type]) => this.poiTypeSelections[type]);
   }
 
+  toggleAllContextServices(): void {
+    const allSelected = this.areAllContextServicesSelected();
+    this.form.patchValue({
+      enable_crime: !allSelected,
+      enable_schools: !allSelected,
+      enable_broadband: !allSelected,
+      enable_mobile: !allSelected,
+      enable_poi: !allSelected,
+    });
+  }
+
+  areAllContextServicesSelected(): boolean {
+    return (
+      this.form.get('enable_crime')?.value &&
+      this.form.get('enable_schools')?.value &&
+      this.form.get('enable_broadband')?.value &&
+      this.form.get('enable_mobile')?.value &&
+      this.form.get('enable_poi')?.value
+    );
+  }
+
   onSubmit(): void {
     if (this.form.valid) {
       const selectedPoiTypes = this.poiTypeEntries
