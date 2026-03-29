@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { PropertyListStore } from './property-list.store';
 import { PropertyListService } from '../../../core/services/property-list-service/property-list.service';
 import { of, throwError } from 'rxjs';
@@ -8,7 +8,7 @@ import {
   mockActivePropertyList,
   mockCreatePropertyListDto,
   mockUpdatePropertyListDto,
-  mockActivateResponse
+  mockActivateResponse,
 } from '../../../shared/mocks/models/property-list-models.mock';
 import { createPropertyListServiceMock } from '../../../shared/mocks/property-list-service.mock';
 
@@ -16,17 +16,21 @@ describe('PropertyListStore', () => {
   let store: InstanceType<typeof PropertyListStore>;
   let propertyListServiceMock: ReturnType<typeof createPropertyListServiceMock>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     propertyListServiceMock = createPropertyListServiceMock();
 
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       providers: [
         PropertyListStore,
-        { provide: PropertyListService, useValue: propertyListServiceMock }
-      ]
-    });
+        { provide: PropertyListService, useValue: propertyListServiceMock },
+      ],
+    }).compileComponents();
 
     store = TestBed.inject(PropertyListStore);
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 
   it('should be created with initial state', () => {
@@ -40,12 +44,14 @@ describe('PropertyListStore', () => {
 
   describe('computed values', () => {
     beforeEach(() => {
-      propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList, mockActivePropertyList]));
+      propertyListServiceMock.getAll.mockReturnValue(
+        of([mockPropertyList, mockActivePropertyList])
+      );
       store.load();
     });
 
     it('should compute all property lists from entities', async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const all = store.all();
       expect(all.length).toBe(2);
@@ -54,13 +60,13 @@ describe('PropertyListStore', () => {
     });
 
     it('should compute count from ids', async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(store.count()).toBe(2);
     });
 
     it('should compute activeLists filtering by state', async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const activeLists = store.activeLists();
       expect(activeLists.length).toBe(1);
@@ -68,7 +74,7 @@ describe('PropertyListStore', () => {
     });
 
     it('should compute selected from selectedId', async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       store.select(mockPropertyList.uuid);
       expect(store.selected()).toEqual(mockPropertyList);
@@ -86,7 +92,7 @@ describe('PropertyListStore', () => {
 
       store.load();
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBeNull();
@@ -101,7 +107,7 @@ describe('PropertyListStore', () => {
 
       store.load();
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to load');
@@ -114,7 +120,7 @@ describe('PropertyListStore', () => {
 
       store.create(mockCreatePropertyListDto);
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBeNull();
@@ -129,7 +135,7 @@ describe('PropertyListStore', () => {
 
       store.create(mockCreatePropertyListDto);
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to create');
@@ -140,7 +146,7 @@ describe('PropertyListStore', () => {
     beforeEach(async () => {
       propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList]));
       store.load();
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
     it('should update existing property list in state', async () => {
@@ -149,7 +155,7 @@ describe('PropertyListStore', () => {
 
       store.update({ uuid: mockPropertyList.uuid, data: mockUpdatePropertyListDto });
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBeNull();
@@ -166,7 +172,7 @@ describe('PropertyListStore', () => {
 
       store.update({ uuid: mockPropertyList.uuid, data: mockUpdatePropertyListDto });
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to update');
@@ -175,9 +181,11 @@ describe('PropertyListStore', () => {
 
   describe('delete', () => {
     beforeEach(async () => {
-      propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList, mockActivePropertyList]));
+      propertyListServiceMock.getAll.mockReturnValue(
+        of([mockPropertyList, mockActivePropertyList])
+      );
       store.load();
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
     it('should remove property list from state', async () => {
@@ -187,7 +195,7 @@ describe('PropertyListStore', () => {
 
       store.delete(mockPropertyList.uuid);
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBeNull();
@@ -202,7 +210,7 @@ describe('PropertyListStore', () => {
 
       store.delete(mockPropertyList.uuid);
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to delete');
@@ -214,7 +222,7 @@ describe('PropertyListStore', () => {
     beforeEach(async () => {
       propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList]));
       store.load();
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
     it('should update property list state to ACTIVE', async () => {
@@ -224,7 +232,7 @@ describe('PropertyListStore', () => {
 
       store.activate(mockPropertyList.uuid);
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBeNull();
@@ -238,7 +246,7 @@ describe('PropertyListStore', () => {
 
       store.activate(mockPropertyList.uuid);
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to activate');

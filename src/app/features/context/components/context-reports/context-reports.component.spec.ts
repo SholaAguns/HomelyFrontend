@@ -1,5 +1,5 @@
-/* global jasmine */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ContextReportsComponent } from './context-reports.component';
 import { ContextDataStore } from '../../store/context-data.store';
 import { signal, computed } from '@angular/core';
@@ -20,7 +20,7 @@ describe('ContextReportsComponent', () => {
     setContextData = (data: any[]) => contextDataSignal.set(data);
 
     mockContextDataStore = {
-      load: Object.assign(jasmine.createSpy('load'), { destroy: () => {} }) as any,
+      load: Object.assign(vi.fn(), { destroy: () => {} }) as any,
       forProperty: computed(() => () => contextDataSignal()),
       progressFor: computed(() => () => ({
         total: 6,
@@ -29,23 +29,23 @@ describe('ContextReportsComponent', () => {
         failed: 1,
         pending: 2,
       })),
-      triggerStage2: Object.assign(jasmine.createSpy('triggerStage2'), {
+      triggerStage2: Object.assign(vi.fn(), {
         destroy: () => {},
       }) as any,
-      retry: Object.assign(jasmine.createSpy('retry'), { destroy: () => {} }) as any,
-      updateService: jasmine.createSpy('updateService'),
+      retry: Object.assign(vi.fn(), { destroy: () => {} }) as any,
+      updateService: vi.fn(),
     };
 
     mockPropertyStore = {
       entities: signal({}),
-      updatePropertyState: jasmine.createSpy('updatePropertyState'),
+      updatePropertyState: vi.fn(),
     };
 
     mockWebSocketService = {
-      connectToProperty: jasmine.createSpy('connectToProperty').and.returnValue({
-        subscribe: jasmine.createSpy('subscribe'),
+      connectToProperty: vi.fn().mockReturnValue({
+        subscribe: vi.fn(),
       }),
-      disconnect: jasmine.createSpy('disconnect'),
+      disconnect: vi.fn(),
     };
 
     await TestBed.configureTestingModule({

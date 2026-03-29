@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ContextDataService } from './context-data.service';
 import { environment } from '../../../../environments/environment';
@@ -7,13 +8,13 @@ import { ContextData } from '../../../shared/models/context-data.models';
 describe('ContextDataService', () => {
   let contextDataService: ContextDataService;
   let httpTestingController: HttpTestingController;
-  const baseUrl = `${environment.apiUrl}/properties`;
+  const baseUrl = `${environment.apiUrl}/property/properties`;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [ContextDataService],
-    });
+    }).compileComponents();
 
     contextDataService = TestBed.inject(ContextDataService);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -21,6 +22,7 @@ describe('ContextDataService', () => {
 
   afterEach(() => {
     httpTestingController.verify();
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {
