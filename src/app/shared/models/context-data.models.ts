@@ -40,9 +40,10 @@ export interface School {
 }
 
 export interface SchoolStatistics {
-  nursery_count: number;
-  primary_count: number;
-  secondary_count: number;
+  nursery_count?: number;
+  primary_count?: number;
+  secondary_count?: number;
+  all_through_count?: number;
   closest_nursery_km?: number;
   closest_primary_km?: number;
   closest_secondary_km?: number;
@@ -53,6 +54,7 @@ export interface SchoolsReportData {
   nursery_schools?: School[];
   primary_schools?: School[];
   secondary_schools?: School[];
+  all_through_schools?: School[];
   note?: string;
 }
 

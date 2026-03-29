@@ -1,27 +1,39 @@
 <div class="schools-report">
   <!-- Statistics -->
   <div class="schools-stats">
-    <div class="stat-card">
-      <span class="stat-value">{{ stats().nursery_count }}</span>
-      <span class="stat-label">Nursery Schools</span>
-      @if (stats().closest_nursery_km) {
-        <span class="stat-detail"> Closest: {{ stats().closest_nursery_km }}km </span>
-      }
-    </div>
-    <div class="stat-card">
-      <span class="stat-value">{{ stats().primary_count }}</span>
-      <span class="stat-label">Primary Schools</span>
-      @if (stats().closest_primary_km) {
-        <span class="stat-detail"> Closest: {{ stats().closest_primary_km }}km </span>
-      }
-    </div>
-    <div class="stat-card">
-      <span class="stat-value">{{ stats().secondary_count }}</span>
-      <span class="stat-label">Secondary Schools</span>
-      @if (stats().closest_secondary_km) {
-        <span class="stat-detail"> Closest: {{ stats().closest_secondary_km }}km </span>
-      }
-    </div>
+    @if (stats().nursery_count !== undefined) {
+      <div class="stat-card">
+        <span class="stat-value">{{ stats().nursery_count }}</span>
+        <span class="stat-label">Nursery Schools</span>
+        @if (stats().closest_nursery_km) {
+          <span class="stat-detail"> Closest: {{ stats().closest_nursery_km }}km </span>
+        }
+      </div>
+    }
+    @if (stats().primary_count !== undefined) {
+      <div class="stat-card">
+        <span class="stat-value">{{ stats().primary_count }}</span>
+        <span class="stat-label">Primary Schools</span>
+        @if (stats().closest_primary_km) {
+          <span class="stat-detail"> Closest: {{ stats().closest_primary_km }}km </span>
+        }
+      </div>
+    }
+    @if (stats().secondary_count !== undefined) {
+      <div class="stat-card">
+        <span class="stat-value">{{ stats().secondary_count }}</span>
+        <span class="stat-label">Secondary Schools</span>
+        @if (stats().closest_secondary_km) {
+          <span class="stat-detail"> Closest: {{ stats().closest_secondary_km }}km </span>
+        }
+      </div>
+    }
+    @if (stats().all_through_count !== undefined) {
+      <div class="stat-card">
+        <span class="stat-value">{{ stats().all_through_count }}</span>
+        <span class="stat-label">All Through Schools</span>
+      </div>
+    }
   </div>
 
   <!-- Nursery Schools -->
@@ -86,6 +98,34 @@
       <h4>Secondary Schools (Within 5km)</h4>
       <div class="school-list">
         @for (school of data().secondary_schools; track school.name) {
+          <div class="school-card">
+            <div class="school-header">
+              <h5>{{ school.name }}</h5>
+              <span class="school-distance"> {{ school.distance_miles }}mi </span>
+            </div>
+            <div class="school-info">
+              @if (school.pupil_count) {
+                <span>{{ school.pupil_count }} pupils</span>
+              }
+              <span>{{ school.type }}</span>
+            </div>
+            @if (school.ofsted_url) {
+              <a [href]="school.ofsted_url" target="_blank" class="ofsted-link">
+                View Ofsted Report →
+              </a>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- All Through Schools -->
+  @if (data().all_through_schools && data().all_through_schools!.length > 0) {
+    <div class="school-section">
+      <h4>All Through Schools (Within 5km)</h4>
+      <div class="school-list">
+        @for (school of data().all_through_schools; track school.name) {
           <div class="school-card">
             <div class="school-header">
               <h5>{{ school.name }}</h5>
