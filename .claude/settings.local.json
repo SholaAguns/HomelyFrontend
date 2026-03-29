@@ -23,7 +23,8 @@
       "Bash(find:*)",
       "Bash(python:*)",
       "Bash(grep -r \"SchoolRatingService\\\\|school_service\" property/*.py)",
-      "Bash(source .venv/Scripts/activate)"
+      "Bash(source .venv/Scripts/activate)",
+      "Bash(pytest property/tests/test_saved_location.py -v)"
     ]
   }
 }
