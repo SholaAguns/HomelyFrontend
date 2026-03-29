@@ -182,6 +182,46 @@
         </div>
       }
 
+      <!-- Council Tax -->
+      @if (getServiceStatus('council_tax')) {
+        <div class="service-card" [attr.data-status]="getServiceStatus('council_tax')">
+          <div class="service-header" (click)="toggleCollapsed('council_tax')">
+            <h3>Council Tax</h3>
+            <div class="header-actions">
+              <span class="status-badge" [attr.data-status]="getServiceStatus('council_tax')">
+                {{ getServiceStatus('council_tax') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ councilTaxCollapsed() ? '▼' : '▲' }}</span>
+            </div>
+          </div>
+
+          @if (!councilTaxCollapsed()) {
+            @if (
+              getServiceStatus('council_tax') === 'PENDING' ||
+              getServiceStatus('council_tax') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('council_tax') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('council_tax') }}</p>
+                <button (click)="retryService('council_tax')" class="btn-retry">Retry</button>
+              </div>
+            }
+
+            @if (getServiceStatus('council_tax') === 'COMPLETE' && getCouncilTaxData()) {
+              <div class="service-content">
+                <app-council-tax-report [data]="getCouncilTaxData()!" />
+              </div>
+            }
+          }
+        </div>
+      }
+
       <!-- POI -->
       @if (getServiceStatus('poi')) {
         <div class="service-card" [attr.data-status]="getServiceStatus('poi')">

@@ -58,6 +58,7 @@ export interface ContextOptions {
   school_types: SchoolType[];
   enable_broadband: boolean;
   enable_mobile: boolean;
+  enable_council_tax: boolean;
   enable_poi: boolean;
   poi_types: PoiType[];
   poi_search_radius_meters: number;
@@ -71,6 +72,7 @@ export interface UpdateContextOptionsDto {
   school_types?: SchoolType[];
   enable_broadband?: boolean;
   enable_mobile?: boolean;
+  enable_council_tax?: boolean;
   enable_poi?: boolean;
   poi_types?: PoiType[];
   poi_search_radius_meters?: number;

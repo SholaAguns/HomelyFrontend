@@ -1,0 +1,43 @@
+<div class="council-tax-report">
+  <!-- Band Info -->
+  @if (data().band) {
+    <div class="council-tax-summary">
+      <div class="metric-card">
+        <span class="metric-label">Council Tax Band</span>
+        <span class="metric-value band-value">Band {{ data().band }}</span>
+      </div>
+      @if (data().band_range) {
+        <div class="metric-card">
+          <span class="metric-label">Property Value Range ({{ data().country }})</span>
+          <span class="metric-value range-value">{{ data().band_range }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Local Authority -->
+    @if (data().local_authority) {
+      <div class="authority-info">
+        <span class="authority-label">Local Authority:</span>
+        <span class="authority-value">{{ data().local_authority }}</span>
+      </div>
+    }
+
+    <!-- Match Quality -->
+    @if (!data().is_exact_match && data().address) {
+      <div class="match-warning">
+        <p class="warning-text">
+          ⚠️ No exact address match found. Showing data for: {{ data().address }}
+        </p>
+      </div>
+    }
+
+    <!-- Retrieved Date -->
+    @if (data().retrieved_at) {
+      <p class="data-source">Retrieved: {{ data().retrieved_at | date: 'medium' }}</p>
+    }
+  } @else {
+    <div class="no-data">
+      <p>No council tax data available for this property</p>
+    </div>
+  }
+</div>

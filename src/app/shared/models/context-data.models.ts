@@ -1,4 +1,4 @@
-export type ServiceName = 'crime' | 'schools' | 'broadband' | 'mobile' | 'poi';
+export type ServiceName = 'crime' | 'schools' | 'broadband' | 'mobile' | 'poi' | 'council_tax';
 export type ServiceStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETE' | 'FAILED';
 
 export interface ContextData {
@@ -138,4 +138,14 @@ export interface PoiReportData {
   by_category?: Record<string, Place[]>;
   data_source: string;
   search_radius_km: number;
+}
+
+export interface CouncilTaxReportData {
+  band: string | null;
+  band_range: string | null;
+  local_authority: string | null;
+  address?: string | null;
+  is_exact_match: boolean;
+  country: string;
+  retrieved_at: string | null;
 }

@@ -8,12 +8,14 @@ import { CrimeReportComponent } from '../crime-report/crime-report.component';
 import { SchoolsReportComponent } from '../schools-report/schools-report.component';
 import { BroadbandReportComponent } from '../broadband-report/broadband-report.component';
 import { MobileCoverageReportComponent } from '../mobile-coverage-report/mobile-coverage-report.component';
+import { CouncilTaxReportComponent } from '../council-tax-report/council-tax-report.component';
 import { PoiReportComponent } from '../poi-report/poi-report.component';
 import {
   CrimeReportData,
   SchoolsReportData,
   BroadbandReportData,
   MobileCoverageReportData,
+  CouncilTaxReportData,
   PoiReportData,
   ContextData,
 } from '../../../../shared/models/context-data.models';
@@ -27,6 +29,7 @@ import {
     SchoolsReportComponent,
     BroadbandReportComponent,
     MobileCoverageReportComponent,
+    CouncilTaxReportComponent,
     PoiReportComponent,
   ],
   templateUrl: './context-reports.component.html',
@@ -45,6 +48,7 @@ export class ContextReportsComponent implements OnDestroy {
   schoolsCollapsed = signal(true);
   broadbandCollapsed = signal(true);
   mobileCollapsed = signal(true);
+  councilTaxCollapsed = signal(true);
   poiCollapsed = signal(true);
 
   constructor() {
@@ -178,6 +182,10 @@ export class ContextReportsComponent implements OnDestroy {
     return this.getServiceData<MobileCoverageReportData>('mobile');
   }
 
+  getCouncilTaxData(): CouncilTaxReportData | null {
+    return this.getServiceData<CouncilTaxReportData>('council_tax');
+  }
+
   getPoiData(): PoiReportData | null {
     return this.getServiceData<PoiReportData>('poi');
   }
@@ -195,6 +203,9 @@ export class ContextReportsComponent implements OnDestroy {
         break;
       case 'mobile':
         this.mobileCollapsed.update((v) => !v);
+        break;
+      case 'council_tax':
+        this.councilTaxCollapsed.update((v) => !v);
         break;
       case 'poi':
         this.poiCollapsed.update((v) => !v);

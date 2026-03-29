@@ -33,6 +33,7 @@ export class ContextOptionsFormComponent implements OnInit {
     enable_schools: [false],
     enable_broadband: [false],
     enable_mobile: [false],
+    enable_council_tax: [false],
     enable_poi: [false],
     poi_search_radius_meters: [1600],
   });
@@ -82,6 +83,7 @@ export class ContextOptionsFormComponent implements OnInit {
     school_types: SchoolType[];
     enable_broadband: boolean;
     enable_mobile: boolean;
+    enable_council_tax: boolean;
     enable_poi: boolean;
     poi_types: PoiType[];
     poi_search_radius_meters: number;
@@ -91,6 +93,7 @@ export class ContextOptionsFormComponent implements OnInit {
       enable_schools: contextOptions.enable_schools,
       enable_broadband: contextOptions.enable_broadband,
       enable_mobile: contextOptions.enable_mobile,
+      enable_council_tax: contextOptions.enable_council_tax,
       enable_poi: contextOptions.enable_poi,
       poi_search_radius_meters: contextOptions.poi_search_radius_meters,
     });
@@ -139,6 +142,7 @@ export class ContextOptionsFormComponent implements OnInit {
       enable_schools: !allSelected,
       enable_broadband: !allSelected,
       enable_mobile: !allSelected,
+      enable_council_tax: !allSelected,
       enable_poi: !allSelected,
     });
   }
@@ -149,6 +153,7 @@ export class ContextOptionsFormComponent implements OnInit {
       this.form.get('enable_schools')?.value &&
       this.form.get('enable_broadband')?.value &&
       this.form.get('enable_mobile')?.value &&
+      this.form.get('enable_council_tax')?.value &&
       this.form.get('enable_poi')?.value
     );
   }
