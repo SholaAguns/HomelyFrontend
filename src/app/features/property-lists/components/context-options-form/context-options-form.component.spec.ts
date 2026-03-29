@@ -7,7 +7,7 @@ import { ContextOptionsFormComponent } from './context-options-form.component';
 import { ContextOptionsStore } from '../../store/context-options.store';
 import { createRouterMock } from '../../../../shared/mocks/router.mock';
 import { mockContextOptions } from '../../../../shared/mocks/models/property-list-models.mock';
-import { PoiType } from '../../../../shared/models/property-list-models';
+import { PoiType } from '../../../../shared/models/context-options.models';
 
 function createActivatedRouteMockWithUuid(uuid: string) {
   return {
@@ -88,6 +88,7 @@ describe('ContextOptionsFormComponent', () => {
       expect(component.form.get('enable_schools')?.value).toBe(false);
       expect(component.form.get('enable_broadband')?.value).toBe(false);
       expect(component.form.get('enable_mobile')?.value).toBe(false);
+      expect(component.form.get('enable_council_tax')?.value).toBe(false);
       expect(component.form.get('enable_poi')?.value).toBe(false);
       expect(component.form.get('poi_search_radius_meters')?.value).toBe(1600);
     });
@@ -97,6 +98,9 @@ describe('ContextOptionsFormComponent', () => {
       expect(component.form.get('enable_crime')?.value).toBe(mockContextOptions.enable_crime);
       expect(component.form.get('enable_broadband')?.value).toBe(
         mockContextOptions.enable_broadband
+      );
+      expect(component.form.get('enable_council_tax')?.value).toBe(
+        mockContextOptions.enable_council_tax
       );
       expect(component.form.get('enable_poi')?.value).toBe(mockContextOptions.enable_poi);
       expect(component.form.get('poi_search_radius_meters')?.value).toBe(
@@ -157,6 +161,7 @@ describe('ContextOptionsFormComponent', () => {
         enable_schools: false,
         enable_broadband: true,
         enable_mobile: false,
+        enable_council_tax: true,
         enable_poi: true,
         poi_search_radius_meters: 800,
       });
@@ -172,8 +177,10 @@ describe('ContextOptionsFormComponent', () => {
           enable_schools: false,
           enable_broadband: true,
           enable_mobile: false,
+          enable_council_tax: true,
           enable_poi: true,
           poi_search_radius_meters: 800,
+          school_types: [],
           poi_types: ['gym', 'park'],
         },
       });

@@ -181,7 +181,7 @@ describe('ContextDataStore', () => {
       expect(store.entities()['1']).toEqual(mockContextData[0]);
 
       store.updateService('prop-1', updatedData);
-      expect(store.entities()['1'].data.total).toBe(20);
+      expect((store.entities()['1'].data as any).total).toBe(20);
     });
 
     it('should add new service data', () => {

@@ -56,7 +56,6 @@ describe('CrimeReportComponent', () => {
   it('should apply correct rating class for high rating', () => {
     const highRatingData = { ...mockCrimeData, crime_rating: 'High' };
     fixture.componentRef.setInput('data', highRatingData);
-    component.data = signal(highRatingData).asReadonly();
     fixture.detectChanges();
 
     const ratingClass = component.ratingClass();
