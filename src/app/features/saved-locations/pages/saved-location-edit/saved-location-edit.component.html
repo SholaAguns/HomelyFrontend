@@ -1,0 +1,24 @@
+<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+  <h1 class="mb-6 text-2xl font-bold text-gray-900">Edit Location</h1>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+      {{ error() }}
+    </div>
+  }
+
+  @if (!loading() && location()) {
+    <app-saved-location-form
+      [mode]="'edit'"
+      [initialData]="getInitialData()"
+      (formSubmit)="onFormSubmit($event)"
+      (formCancel)="onFormCancel()"
+    />
+  }
+</div>

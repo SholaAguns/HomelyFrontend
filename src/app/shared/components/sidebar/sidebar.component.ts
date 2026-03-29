@@ -7,7 +7,7 @@ import { UiStore } from '../../../core/stores/ui.store';
   selector: 'app-sidebar',
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent {
   protected readonly uiStore = inject(UiStore);
@@ -15,6 +15,7 @@ export class SidebarComponent {
   protected readonly navItems = [
     { path: '/lists', icon: 'list', label: 'Property Lists' },
     { path: '/rating-criteria', icon: 'star', label: 'Rating Criteria' },
+    { path: '/saved-locations', icon: 'map-pin', label: 'Saved Locations' },
     { path: '/profile', icon: 'user', label: 'Profile' },
     { path: '/settings', icon: 'settings', label: 'Settings' },
   ];

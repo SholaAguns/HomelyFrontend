@@ -1,0 +1,109 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+  <div class="rounded-lg border border-gray-200 bg-white p-6">
+    <h3 class="mb-4 text-lg font-semibold text-gray-900">
+      {{ mode() === 'create' ? 'Add New Location' : 'Edit Location' }}
+    </h3>
+
+    <div class="space-y-4">
+      <!-- Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">
+          Name <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="e.g., Home, Work, Parents"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('name')?.invalid && form.get('name')?.touched"
+        />
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Name is required</p>
+        }
+      </div>
+
+      <!-- Postcode -->
+      <div>
+        <label for="postcode" class="block text-sm font-medium text-gray-700">
+          Postcode <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="postcode"
+          formControlName="postcode"
+          placeholder="e.g., SW1A 1AA"
+          class="mt-1 block w-full rounded-md border-gray-300 uppercase shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="form.get('postcode')?.invalid && form.get('postcode')?.touched"
+        />
+        @if (form.get('postcode')?.invalid && form.get('postcode')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Postcode is required</p>
+        }
+      </div>
+
+      <!-- Address Line 1 -->
+      <div>
+        <label for="address_line_1" class="block text-sm font-medium text-gray-700">
+          Address Line 1 <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="address_line_1"
+          formControlName="address_line_1"
+          placeholder="e.g., 123 Main Street"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [class.border-red-500]="
+            form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched
+          "
+        />
+        @if (form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched) {
+          <p class="mt-1 text-sm text-red-600">Address Line 1 is required</p>
+        }
+      </div>
+
+      <!-- Address Line 2 -->
+      <div>
+        <label for="address_line_2" class="block text-sm font-medium text-gray-700">
+          Address Line 2
+        </label>
+        <input
+          type="text"
+          id="address_line_2"
+          formControlName="address_line_2"
+          placeholder="e.g., Flat 4, Building Name"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- City -->
+      <div>
+        <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+        <input
+          type="text"
+          id="city"
+          formControlName="city"
+          placeholder="e.g., London"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end gap-3">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      [disabled]="!isValid || loading()"
+      class="rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
+    >
+      {{ mode() === 'create' ? 'Create Location' : 'Update Location' }}
+    </button>
+  </div>
+</form>

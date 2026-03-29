@@ -39,6 +39,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'saved-locations',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/saved-locations/saved-locations.routes').then(
+        (m) => m.SAVED_LOCATION_ROUTES
+      ),
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),

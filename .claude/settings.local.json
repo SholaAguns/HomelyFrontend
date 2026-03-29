@@ -22,7 +22,8 @@
       "Bash(npx ng:*)",
       "Bash(find:*)",
       "Bash(python:*)",
-      "Bash(grep -r \"SchoolRatingService\\\\|school_service\" property/*.py)"
+      "Bash(grep -r \"SchoolRatingService\\\\|school_service\" property/*.py)",
+      "Bash(source .venv/Scripts/activate)"
     ]
   }
 }

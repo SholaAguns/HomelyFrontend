@@ -376,7 +376,7 @@ Angular frontend for Homely property list web application.
 ### 5.3 Additional Features
 
 #### Tasks
-- [ ] Saved locations management (user profile)
+- [X] Saved locations management (user profile)
 - [ ] Export property list (CSV, PDF)
 - [ ] Print-friendly property details
 - [ ] Property image gallery (if available)
