@@ -19,7 +19,7 @@ export class SavedLocationService {
   }
 
   getByUuid(uuid: string): Observable<SavedLocation> {
-    return this.api.get<SavedLocation>(`${this.endpoint}${uuid}`);
+    return this.api.get<SavedLocation>(`${this.endpoint}${uuid}/`);
   }
 
   create(data: CreateSavedLocationDto): Observable<SavedLocation> {
@@ -27,10 +27,10 @@ export class SavedLocationService {
   }
 
   update(uuid: string, data: UpdateSavedLocationDto): Observable<SavedLocation> {
-    return this.api.patch<SavedLocation>(`${this.endpoint}${uuid}`, data);
+    return this.api.patch<SavedLocation>(`${this.endpoint}${uuid}/`, data);
   }
 
   delete(uuid: string): Observable<void> {
-    return this.api.delete<void>(`${this.endpoint}${uuid}`);
+    return this.api.delete<void>(`${this.endpoint}${uuid}/`);
   }
 }
