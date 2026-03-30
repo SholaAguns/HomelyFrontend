@@ -1,4 +1,11 @@
-export type ServiceName = 'crime' | 'schools' | 'broadband' | 'mobile' | 'poi' | 'council_tax';
+export type ServiceName =
+  | 'crime'
+  | 'schools'
+  | 'broadband'
+  | 'mobile'
+  | 'poi'
+  | 'council_tax'
+  | 'saved_locations';
 export type ServiceStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETE' | 'FAILED';
 
 export interface ContextData {
@@ -148,4 +155,21 @@ export interface CouncilTaxReportData {
   is_exact_match: boolean;
   country: string;
   retrieved_at: string | null;
+}
+
+export interface SavedLocationDistance {
+  location_id: number;
+  location_uuid: string;
+  location_name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  distance_km: number;
+  distance_miles: number;
+}
+
+export interface SavedLocationReportData {
+  distances: SavedLocationDistance[];
+  total_locations: number;
+  closest_location: SavedLocationDistance | null;
 }

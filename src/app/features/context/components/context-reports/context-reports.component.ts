@@ -10,6 +10,7 @@ import { BroadbandReportComponent } from '../broadband-report/broadband-report.c
 import { MobileCoverageReportComponent } from '../mobile-coverage-report/mobile-coverage-report.component';
 import { CouncilTaxReportComponent } from '../council-tax-report/council-tax-report.component';
 import { PoiReportComponent } from '../poi-report/poi-report.component';
+import { SavedLocationReportComponent } from '../saved-location-report/saved-location-report';
 import {
   CrimeReportData,
   SchoolsReportData,
@@ -17,6 +18,7 @@ import {
   MobileCoverageReportData,
   CouncilTaxReportData,
   PoiReportData,
+  SavedLocationReportData,
   ContextData,
 } from '../../../../shared/models/context-data.models';
 
@@ -31,6 +33,7 @@ import {
     MobileCoverageReportComponent,
     CouncilTaxReportComponent,
     PoiReportComponent,
+    SavedLocationReportComponent,
   ],
   templateUrl: './context-reports.component.html',
   styleUrl: './context-reports.component.css',
@@ -50,6 +53,7 @@ export class ContextReportsComponent implements OnDestroy {
   mobileCollapsed = signal(true);
   councilTaxCollapsed = signal(true);
   poiCollapsed = signal(true);
+  savedLocationsCollapsed = signal(true);
 
   constructor() {
     effect(() => {
@@ -190,6 +194,10 @@ export class ContextReportsComponent implements OnDestroy {
     return this.getServiceData<PoiReportData>('poi');
   }
 
+  getSavedLocationsData(): SavedLocationReportData | null {
+    return this.getServiceData<SavedLocationReportData>('saved_locations');
+  }
+
   toggleCollapsed(serviceName: string): void {
     switch (serviceName) {
       case 'crime':
@@ -209,6 +217,9 @@ export class ContextReportsComponent implements OnDestroy {
         break;
       case 'poi':
         this.poiCollapsed.update((v) => !v);
+        break;
+      case 'saved_locations':
+        this.savedLocationsCollapsed.update((v) => !v);
         break;
     }
   }

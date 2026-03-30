@@ -260,6 +260,46 @@
           }
         </div>
       }
+
+      <!-- Saved Locations -->
+      @if (getServiceStatus('saved_locations')) {
+        <div class="service-card" [attr.data-status]="getServiceStatus('saved_locations')">
+          <div class="service-header" (click)="toggleCollapsed('saved_locations')">
+            <h3>Saved Locations</h3>
+            <div class="header-actions">
+              <span class="status-badge" [attr.data-status]="getServiceStatus('saved_locations')">
+                {{ getServiceStatus('saved_locations') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ savedLocationsCollapsed() ? '▼' : '▲' }}</span>
+            </div>
+          </div>
+
+          @if (!savedLocationsCollapsed()) {
+            @if (
+              getServiceStatus('saved_locations') === 'PENDING' ||
+              getServiceStatus('saved_locations') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('saved_locations') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('saved_locations') }}</p>
+                <button (click)="retryService('saved_locations')" class="btn-retry">Retry</button>
+              </div>
+            }
+
+            @if (getServiceStatus('saved_locations') === 'COMPLETE' && getSavedLocationsData()) {
+              <div class="service-content">
+                <app-saved-location-report [data]="getSavedLocationsData()!" />
+              </div>
+            }
+          }
+        </div>
+      }
     </div>
   }
 </div>

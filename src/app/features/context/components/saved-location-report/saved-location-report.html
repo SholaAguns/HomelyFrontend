@@ -1,0 +1,52 @@
+<div class="saved-location-report">
+  @if (data().total_locations > 0) {
+    <!-- Summary -->
+    <div class="location-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📍</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ data().total_locations }}</div>
+          <div class="stat-label">
+            Saved {{ data().total_locations === 1 ? 'Location' : 'Locations' }}
+          </div>
+        </div>
+      </div>
+      @if (data().closest_location) {
+        <div class="stat-card closest">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ data().closest_location?.distance_km }}km</div>
+            <div class="stat-label">Closest: {{ data().closest_location?.location_name }}</div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Locations List -->
+    <div class="locations-list">
+      @for (location of data().distances; track location.location_uuid) {
+        <div class="location-card">
+          <div class="location-header">
+            <h4 class="location-name">{{ location.location_name }}</h4>
+            <div class="distance-badge">
+              <span class="distance-value">{{ location.distance_km }} km</span>
+              <span class="distance-value-alt">({{ location.distance_miles }} miles)</span>
+            </div>
+          </div>
+          <div class="location-address">
+            <span class="address-icon">📌</span>
+            <span>{{ location.address }}</span>
+          </div>
+          <div class="location-coords">
+            <span class="coords-label">Coordinates:</span>
+            <span class="coords-value">{{ location.latitude }}, {{ location.longitude }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="no-data">
+      <p>No saved locations configured for this property list</p>
+    </div>
+  }
+</div>
