@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ContextOptionsStore } from '../../store/context-options.store';
 import {
@@ -16,7 +16,7 @@ import { SavedLocation } from '../../../../shared/models/saved-location-models';
 @Component({
   selector: 'app-context-options-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './context-options-form.component.html',
   styleUrl: './context-options-form.component.css',
 })
@@ -35,6 +35,9 @@ export class ContextOptionsFormComponent implements OnInit {
   availableSavedLocations = signal<SavedLocation[]>([]);
   selectedSavedLocationUuids = signal<string[]>([]);
   loadingSavedLocations = signal(false);
+  savedLocationsConfigExpanded = signal(false);
+  poiConfigExpanded = signal(false);
+  validationError = signal<string | null>(null);
 
   form: FormGroup = this.fb.group({
     enable_crime: [false],
@@ -131,6 +134,14 @@ export class ContextOptionsFormComponent implements OnInit {
       this.schoolTypeSelections[type] = contextOptions.school_types.includes(type);
     });
     this.selectedSavedLocationUuids.set(contextOptions.saved_location_uuids || []);
+
+    // Auto-expand config sections if they have data
+    if (contextOptions.enable_saved_locations && contextOptions.saved_location_uuids?.length > 0) {
+      this.savedLocationsConfigExpanded.set(true);
+    }
+    if (contextOptions.enable_poi && contextOptions.poi_types?.length > 0) {
+      this.poiConfigExpanded.set(true);
+    }
   }
 
   onSchoolTypeToggle(schoolType: SchoolType): void {
@@ -161,6 +172,10 @@ export class ContextOptionsFormComponent implements OnInit {
 
   areAllPoiTypesSelected(): boolean {
     return this.poiTypeEntries.every(([type]) => this.poiTypeSelections[type]);
+  }
+
+  hasAnyPoiTypeSelected(): boolean {
+    return this.poiTypeEntries.some(([type]) => this.poiTypeSelections[type]);
   }
 
   toggleAllContextServices(): void {
@@ -213,25 +228,51 @@ export class ContextOptionsFormComponent implements OnInit {
     this.selectedSavedLocationUuids.update((uuids) => uuids.filter((id) => id !== uuid));
   }
 
+  toggleSavedLocationsConfig(): void {
+    this.savedLocationsConfigExpanded.update((v) => !v);
+  }
+
+  togglePoiConfig(): void {
+    this.poiConfigExpanded.update((v) => !v);
+  }
+
   onSubmit(): void {
-    if (this.form.valid) {
-      const selectedSchoolTypes = this.schoolTypeEntries
-        .filter(([type]) => this.schoolTypeSelections[type])
-        .map(([type]) => type);
+    this.validationError.set(null);
 
-      const selectedPoiTypes = this.poiTypeEntries
-        .filter(([type]) => this.poiTypeSelections[type])
-        .map(([type]) => type);
-
-      const updateData: UpdateContextOptionsDto = {
-        ...this.form.value,
-        school_types: selectedSchoolTypes,
-        poi_types: selectedPoiTypes,
-        saved_location_uuids: this.selectedSavedLocationUuids(),
-      };
-
-      this.contextOptionsStore.save({ propertyListUuid: this.propertyListUuid, data: updateData });
+    if (!this.form.valid) {
+      return;
     }
+
+    const selectedSchoolTypes = this.schoolTypeEntries
+      .filter(([type]) => this.schoolTypeSelections[type])
+      .map(([type]) => type);
+
+    const selectedPoiTypes = this.poiTypeEntries
+      .filter(([type]) => this.poiTypeSelections[type])
+      .map(([type]) => type);
+
+    // Validation: if saved locations enabled, at least one location must be selected
+    if (this.form.value.enable_saved_locations && this.selectedSavedLocationUuids().length === 0) {
+      this.validationError.set('Please select at least one saved location');
+      this.savedLocationsConfigExpanded.set(true);
+      return;
+    }
+
+    // Validation: if POI enabled, at least one POI type must be selected
+    if (this.form.value.enable_poi && selectedPoiTypes.length === 0) {
+      this.validationError.set('Please select at least one place of interest type');
+      this.poiConfigExpanded.set(true);
+      return;
+    }
+
+    const updateData: UpdateContextOptionsDto = {
+      ...this.form.value,
+      school_types: selectedSchoolTypes,
+      poi_types: selectedPoiTypes,
+      saved_location_uuids: this.selectedSavedLocationUuids(),
+    };
+
+    this.contextOptionsStore.save({ propertyListUuid: this.propertyListUuid, data: updateData });
   }
 
   onCancel(): void {
