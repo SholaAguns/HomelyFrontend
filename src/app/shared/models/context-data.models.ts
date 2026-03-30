@@ -162,6 +162,7 @@ export interface SavedLocationDistance {
   location_uuid: string;
   location_name: string;
   address: string;
+  postcode: string;
   latitude: number;
   longitude: number;
   distance_km: number;
