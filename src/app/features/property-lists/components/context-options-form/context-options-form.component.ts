@@ -112,7 +112,7 @@ export class ContextOptionsFormComponent implements OnInit {
     poi_types: PoiType[];
     poi_search_radius_meters: number;
     enable_saved_locations: boolean;
-    saved_location_ids: string[];
+    saved_location_uuids: string[];
   }): void {
     this.form.patchValue({
       enable_crime: contextOptions.enable_crime,
@@ -130,7 +130,7 @@ export class ContextOptionsFormComponent implements OnInit {
     this.schoolTypeEntries.forEach(([type]) => {
       this.schoolTypeSelections[type] = contextOptions.school_types.includes(type);
     });
-    this.selectedSavedLocationUuids.set(contextOptions.saved_location_ids || []);
+    this.selectedSavedLocationUuids.set(contextOptions.saved_location_uuids || []);
   }
 
   onSchoolTypeToggle(schoolType: SchoolType): void {
@@ -227,7 +227,7 @@ export class ContextOptionsFormComponent implements OnInit {
         ...this.form.value,
         school_types: selectedSchoolTypes,
         poi_types: selectedPoiTypes,
-        saved_location_ids: this.selectedSavedLocationUuids(),
+        saved_location_uuids: this.selectedSavedLocationUuids(),
       };
 
       this.contextOptionsStore.save({ propertyListUuid: this.propertyListUuid, data: updateData });

@@ -24,7 +24,8 @@
       "Bash(python:*)",
       "Bash(grep -r \"SchoolRatingService\\\\|school_service\" property/*.py)",
       "Bash(source .venv/Scripts/activate)",
-      "Bash(pytest property/tests/test_saved_location.py -v)"
+      "Bash(pytest property/tests/test_saved_location.py -v)",
+      "Bash(bash -c \"source .venv/Scripts/activate && echo 'y' | python manage.py makemigrations property -n rename_saved_location_ids_to_uuids\")"
     ]
   }
 }
