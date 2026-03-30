@@ -62,6 +62,8 @@ export interface ContextOptions {
   enable_poi: boolean;
   poi_types: PoiType[];
   poi_search_radius_meters: number;
+  enable_saved_locations: boolean;
+  saved_location_ids: string[];
   created_at: string;
   updated_at: string;
 }
@@ -76,4 +78,6 @@ export interface UpdateContextOptionsDto {
   enable_poi?: boolean;
   poi_types?: PoiType[];
   poi_search_radius_meters?: number;
+  enable_saved_locations?: boolean;
+  saved_location_ids?: string[];
 }

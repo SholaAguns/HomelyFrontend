@@ -74,6 +74,8 @@ export const mockContextOptions: ContextOptions = {
   enable_poi: true,
   poi_types: ['restaurant', 'park', 'supermarket'],
   poi_search_radius_meters: 1600,
+  enable_saved_locations: false,
+  saved_location_ids: [],
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
 };
@@ -90,6 +92,8 @@ export const mockContextOptionsAllDisabled: ContextOptions = {
   enable_poi: false,
   poi_types: [],
   poi_search_radius_meters: 1600,
+  enable_saved_locations: false,
+  saved_location_ids: [],
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
 };

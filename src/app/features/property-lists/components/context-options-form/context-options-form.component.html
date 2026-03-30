@@ -137,6 +137,20 @@
         >
           <input
             type="checkbox"
+            formControlName="enable_saved_locations"
+            class="h-4 w-4 rounded text-blue-600"
+          />
+          <div>
+            <span class="font-medium text-gray-700">Saved Locations</span>
+            <p class="text-xs text-gray-500">Distances to your saved locations</p>
+          </div>
+        </label>
+
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+        >
+          <input
+            type="checkbox"
             formControlName="enable_poi"
             class="h-4 w-4 rounded text-blue-600"
           />
@@ -147,6 +161,89 @@
         </label>
       </div>
     </div>
+
+    <!-- Saved Locations Configuration (shown only when Saved Locations enabled) -->
+    @if (isSavedLocationsEnabled) {
+      <div class="mb-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
+        <h3 class="mb-3 text-base font-semibold text-gray-800">Saved Locations Configuration</h3>
+
+        @if (loadingSavedLocations()) {
+          <div class="py-4 text-center text-sm text-gray-500">Loading saved locations...</div>
+        } @else if (availableSavedLocations().length === 0) {
+          <div class="rounded-lg border border-gray-200 bg-white p-4 text-center">
+            <p class="mb-2 text-sm text-gray-600">No saved locations found.</p>
+            <a routerLink="/saved-locations" class="text-sm text-blue-600 hover:underline">
+              Create your first saved location
+            </a>
+          </div>
+        } @else {
+          <!-- Selected Locations -->
+          @if (selectedSavedLocationUuids().length > 0) {
+            <div class="mb-4">
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Selected Locations ({{ selectedSavedLocationUuids().length }})
+              </label>
+              <div class="space-y-2">
+                @for (uuid of selectedSavedLocationUuids(); track uuid) {
+                  @if (getSelectedLocation(uuid); as location) {
+                    <div
+                      class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3"
+                    >
+                      <div class="flex-1">
+                        <div class="font-medium text-gray-900">{{ location.name }}</div>
+                        <div class="text-xs text-gray-500">
+                          {{ location.address_line_1 }}, {{ location.postcode }}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        (click)="removeSavedLocation(uuid)"
+                        class="ml-2 rounded-md p-1 text-red-600 hover:bg-red-50"
+                        title="Remove"
+                      >
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Add Location Dropdown -->
+          @if (availableLocationsForSelection.length > 0) {
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">Add Location</label>
+              <select
+                #locationSelect
+                (change)="addSavedLocation(locationSelect.value); locationSelect.value = ''"
+                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a location to add...</option>
+                @for (location of availableLocationsForSelection; track location.uuid) {
+                  <option [value]="location.uuid">
+                    {{ location.name }} - {{ location.address_line_1 }}, {{ location.postcode }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+
+          @if (selectedSavedLocationUuids().length === 0) {
+            <p class="mt-2 text-xs text-gray-500">
+              Select at least one saved location to calculate distances
+            </p>
+          }
+        }
+      </div>
+    }
 
     <!-- POI Configuration (shown only when POI enabled) -->
     @if (isPoiEnabled) {
