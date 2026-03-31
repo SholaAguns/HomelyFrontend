@@ -1,0 +1,25 @@
+import { Routes } from '@angular/router';
+
+export const PROJECT_ROUTES: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('./components/project-list/project-list.component').then(
+        (m) => m.ProjectListComponent
+      ),
+  },
+  {
+    path: 'new',
+    loadComponent: () =>
+      import('./components/project-create/project-create.component').then(
+        (m) => m.ProjectCreateComponent
+      ),
+  },
+  {
+    path: ':uuid',
+    loadComponent: () =>
+      import('./components/project-detail/project-detail.component').then(
+        (m) => m.ProjectDetailComponent
+      ),
+  },
+];

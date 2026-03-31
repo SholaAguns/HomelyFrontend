@@ -5,7 +5,7 @@ import { guestGuard } from './core/guards/guest.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'lists',
+    redirectTo: 'projects',
     pathMatch: 'full',
   },
   {
@@ -23,6 +23,17 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadComponent: () =>
       import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
+  },
+  {
+    path: 'projects',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/projects/projects.routes').then((m) => m.PROJECT_ROUTES),
+  },
+  {
+    path: 'projects/:projectUuid/lists',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/property-lists/property-lists.routes').then((m) => m.PROPERTY_LIST_ROUTES),
   },
   {
     path: 'lists',
