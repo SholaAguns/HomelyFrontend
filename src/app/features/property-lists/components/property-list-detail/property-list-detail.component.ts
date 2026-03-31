@@ -192,22 +192,6 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  onActivate() {
-    const list = this.list();
-    if (list) {
-      this.propertyListService.activate(list.uuid).subscribe({
-        next: (result) => {
-          this.list.update((current) =>
-            current ? { ...current, state: result.state as 'ACTIVE' | 'DRAFT' } : null
-          );
-        },
-        error: (err) => {
-          this.error.set(err.message);
-        },
-      });
-    }
-  }
-
   onEdit() {
     this.editMode.set(true);
   }

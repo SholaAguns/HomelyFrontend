@@ -21,8 +21,8 @@ describe('PropertyListListComponent', () => {
       providers: [
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: createActivatedRouteMock() },
-        { provide: PropertyListStore, useValue: propertyListStoreMock }
-      ]
+        { provide: PropertyListStore, useValue: propertyListStoreMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PropertyListListComponent);
@@ -46,7 +46,9 @@ describe('PropertyListListComponent', () => {
 
       component.onDelete('test-uuid');
 
-      expect(confirmSpy).toHaveBeenCalledWith('Are you sure you want to delete this property list?');
+      expect(confirmSpy).toHaveBeenCalledWith(
+        'Are you sure you want to delete this property list?'
+      );
       expect(propertyListStoreMock.delete).toHaveBeenCalledWith('test-uuid');
     });
 
@@ -57,14 +59,6 @@ describe('PropertyListListComponent', () => {
 
       expect(confirmSpy).toHaveBeenCalled();
       expect(propertyListStoreMock.delete).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('onActivate', () => {
-    it('should call store activate with uuid', () => {
-      component.onActivate('test-uuid');
-
-      expect(propertyListStoreMock.activate).toHaveBeenCalledWith('test-uuid');
     });
   });
 

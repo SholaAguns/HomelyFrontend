@@ -15,8 +15,9 @@ export class PropertyListService {
   private api = inject(ApiService);
   private readonly endpoint = 'property/property-lists/';
 
-  getAll(): Observable<PropertyList[]> {
-    return this.api.get<PropertyList[]>(this.endpoint);
+  getAll(projectUuid?: string): Observable<PropertyList[]> {
+    const url = projectUuid ? `${this.endpoint}?project=${projectUuid}` : this.endpoint;
+    return this.api.get<PropertyList[]>(url);
   }
 
   getByUuid(uuid: string): Observable<PropertyListDetail> {
@@ -33,12 +34,5 @@ export class PropertyListService {
 
   delete(uuid: string): Observable<void> {
     return this.api.delete<void>(`${this.endpoint}${uuid}/`);
-  }
-
-  activate(uuid: string): Observable<{ status: string; state: string }> {
-    return this.api.post<{ status: string; state: string }>(
-      `${this.endpoint}${uuid}/activate/`,
-      {}
-    );
   }
 }

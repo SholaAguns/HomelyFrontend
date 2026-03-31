@@ -16,17 +16,13 @@ export class PropertyListListComponent implements OnInit {
   readonly store = inject(PropertyListStore);
 
   ngOnInit() {
-    this.store.load();
+    this.store.load(undefined);
   }
 
   onDelete(uuid: string) {
     if (confirm('Are you sure you want to delete this property list?')) {
       this.store.delete(uuid);
     }
-  }
-
-  onActivate(uuid: string) {
-    this.store.activate(uuid);
   }
 
   navigateToCreate() {

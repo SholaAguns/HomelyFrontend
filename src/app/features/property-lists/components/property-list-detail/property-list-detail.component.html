@@ -52,14 +52,6 @@
             >
               Edit
             </button>
-            @if (list()!.state === 'DRAFT') {
-              <button
-                (click)="onActivate()"
-                class="rounded bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
-              >
-                Activate
-              </button>
-            }
             <button
               (click)="onDelete()"
               class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"

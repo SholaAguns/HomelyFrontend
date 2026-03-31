@@ -10,12 +10,12 @@ import { createPropertyListServiceMock } from '../../../../shared/mocks/property
 import {
   mockPropertyListDetail,
   mockUpdatePropertyListDto,
-  mockActivateResponse
+  mockActivateResponse,
 } from '../../../../shared/mocks/models/property-list-models.mock';
 
 @Directive({
   selector: '[routerLink]',
-  standalone: true
+  standalone: true,
 })
 class RouterLinkStubDirective {
   @Input() routerLink: any;
@@ -38,7 +38,7 @@ describe('PropertyListDetailComponent', () => {
     routerMock = createRouterMock();
     activatedRouteMock = createActivatedRouteMock();
     activatedRouteMock.snapshot.paramMap = {
-      get: vi.fn().mockReturnValue('test-uuid-1')
+      get: vi.fn().mockReturnValue('test-uuid-1'),
     };
 
     propertyListServiceMock = createPropertyListServiceMock();
@@ -48,14 +48,14 @@ describe('PropertyListDetailComponent', () => {
       providers: [
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: PropertyListService, useValue: propertyListServiceMock }
-      ]
+        { provide: PropertyListService, useValue: propertyListServiceMock },
+      ],
     })
-    .overrideComponent(PropertyListDetailComponent, {
-      remove: { imports: [] },
-      add: { imports: [RouterLinkStubDirective] }
-    })
-    .compileComponents();
+      .overrideComponent(PropertyListDetailComponent, {
+        remove: { imports: [] },
+        add: { imports: [RouterLinkStubDirective] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(PropertyListDetailComponent);
     component = fixture.componentInstance;
@@ -121,7 +121,9 @@ describe('PropertyListDetailComponent', () => {
 
       component.onDelete();
 
-      expect(confirmSpy).toHaveBeenCalledWith('Are you sure you want to delete this property list?');
+      expect(confirmSpy).toHaveBeenCalledWith(
+        'Are you sure you want to delete this property list?'
+      );
       expect(propertyListServiceMock.delete).toHaveBeenCalledWith(mockPropertyListDetail.uuid);
       expect(routerMock.navigate).toHaveBeenCalledWith(['/lists']);
     });
@@ -153,38 +155,6 @@ describe('PropertyListDetailComponent', () => {
 
       expect(confirmSpy).not.toHaveBeenCalled();
       expect(propertyListServiceMock.delete).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('onActivate', () => {
-    beforeEach(() => {
-      component.list.set(mockPropertyListDetail);
-    });
-
-    it('should activate list and update state', () => {
-      propertyListServiceMock.activate.mockReturnValue(of(mockActivateResponse));
-
-      component.onActivate();
-
-      expect(propertyListServiceMock.activate).toHaveBeenCalledWith(mockPropertyListDetail.uuid);
-      expect(component.list()?.state).toBe('ACTIVE');
-    });
-
-    it('should set error on activate failure', () => {
-      const error = new Error('Activate failed');
-      propertyListServiceMock.activate.mockReturnValue(throwError(() => error));
-
-      component.onActivate();
-
-      expect(component.error()).toBe('Activate failed');
-    });
-
-    it('should handle when no list is loaded', () => {
-      component.list.set(null);
-
-      component.onActivate();
-
-      expect(propertyListServiceMock.activate).not.toHaveBeenCalled();
     });
   });
 
