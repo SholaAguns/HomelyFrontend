@@ -1,3 +1,5 @@
+import { ContextOptions, UpdateContextOptionsDto } from './context-options.models';
+
 export interface Project {
   uuid: string;
   owner: string;
@@ -14,7 +16,7 @@ export interface Project {
 }
 
 export interface ProjectDetail extends Project {
-  property_lists: any[]; // Will use PropertyList[] when imported
+  property_lists: any[];
 }
 
 export interface ProjectStats {
@@ -60,28 +62,4 @@ export interface UpdateProjectDto {
   rating_criteria?: string | null;
 }
 
-export interface ContextOptions {
-  uuid: string;
-  project: string;
-  crime_service_enabled: boolean;
-  schools_service_enabled: boolean;
-  transport_service_enabled: boolean;
-  poi_service_enabled: boolean;
-  flood_service_enabled: boolean;
-  broadband_service_enabled: boolean;
-  demographics_service_enabled: boolean;
-  council_tax_service_enabled?: boolean;
-  saved_locations_service_enabled?: boolean;
-}
-
-export interface CreateContextOptionsDto {
-  crime_service_enabled: boolean;
-  schools_service_enabled: boolean;
-  transport_service_enabled: boolean;
-  poi_service_enabled: boolean;
-  flood_service_enabled: boolean;
-  broadband_service_enabled: boolean;
-  demographics_service_enabled: boolean;
-  council_tax_service_enabled?: boolean;
-  saved_locations_service_enabled?: boolean;
-}
+export type CreateContextOptionsDto = UpdateContextOptionsDto;

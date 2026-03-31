@@ -8,8 +8,8 @@ import {
   CreateProjectDto,
   UpdateProjectDto,
   CreateContextOptionsDto,
-  ContextOptions,
 } from '../../../shared/models/project-models';
+import { ContextOptions } from '../../../shared/models/context-options.models';
 
 @Injectable({
   providedIn: 'root',
