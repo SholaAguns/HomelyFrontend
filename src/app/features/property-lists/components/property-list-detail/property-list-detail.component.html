@@ -40,6 +40,13 @@
             </div>
           </div>
           <div class="flex gap-2">
+            <button
+              (click)="triggerStage2ForList()"
+              [disabled]="list()!.status_summary.new === 0"
+              class="rounded bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:bg-gray-400"
+            >
+              Run Stage 2 on List
+            </button>
             <a
               [routerLink]="['/lists', list()!.uuid, 'context-options']"
               class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
@@ -279,3 +286,21 @@
     }
   }
 </div>
+
+<app-inline-modal
+  [isOpen]="showContextOptionsModal()"
+  [title]="'Configure Context Options'"
+  (closeModal)="onContextOptionsCancel()"
+>
+  <div class="p-4">
+    <p class="mb-4 text-sm text-gray-600">
+      No context options configured for this project. Please configure which services to enable.
+    </p>
+    <button
+      (click)="onContextOptionsSaved()"
+      class="rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors hover:bg-blue-700"
+    >
+      Configure Now
+    </button>
+  </div>
+</app-inline-modal>
