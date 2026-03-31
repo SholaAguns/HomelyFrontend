@@ -6,7 +6,10 @@ export const authGuard: CanActivateFn = () => {
   const authStore = inject(AuthStore);
   const router = inject(Router);
 
-  if (authStore.isAuthenticated()) {
+  // Check if we have tokens in localStorage (prevents redirect during initialization)
+  const hasTokens = !!authStore.accessToken() || !!authStore.refreshToken();
+
+  if (authStore.isAuthenticated() || (hasTokens && authStore.loading())) {
     return true;
   }
 
