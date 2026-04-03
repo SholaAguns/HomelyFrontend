@@ -1,14 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { PropertyListStore } from '../../store/property-list.store';
 import { SearchCriteria } from '../../../../shared/models/property-models';
+import { SearchCriteriaFormComponent } from '../../../../shared/components/search-criteria-form/search-criteria-form.component';
 
 @Component({
   selector: 'app-property-list-create',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, SearchCriteriaFormComponent],
   templateUrl: './property-list-create.component.html',
   styleUrl: './property-list-create.component.css',
 })
@@ -21,16 +21,6 @@ export class PropertyListCreateComponent implements OnInit {
   submitting = signal(false);
   error = signal<string | null>(null);
 
-  searchCriteria: SearchCriteria = {
-    area: '',
-    radius: 5,
-    property_types: 'any',
-    price_min: undefined,
-    price_max: undefined,
-    bedrooms_min: undefined,
-    bedrooms_max: undefined,
-  };
-
   ngOnInit() {
     this.projectUuid = this.route.parent?.snapshot.paramMap.get('projectUuid') || '';
 
@@ -39,15 +29,15 @@ export class PropertyListCreateComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    if (this.submitting() || !this.projectUuid || !this.searchCriteria.area.trim()) return;
+  onSearchSubmit(searchCriteria: SearchCriteria) {
+    if (this.submitting() || !this.projectUuid) return;
 
     this.submitting.set(true);
     this.error.set(null);
 
     this.store.create({
       project_uuid: this.projectUuid,
-      search_criteria: this.searchCriteria,
+      search_criteria: searchCriteria,
     });
 
     const checkCreation = setInterval(() => {
@@ -60,7 +50,7 @@ export class PropertyListCreateComponent implements OnInit {
         } else {
           const createdList = this.store
             .all()
-            .find((l) => l.search_criteria?.area === this.searchCriteria.area);
+            .find((l) => l.search_criteria?.area === searchCriteria.area);
           if (createdList) {
             this.submitting.set(false);
             this.router.navigate(['/projects', this.projectUuid, 'lists', createdList.uuid]);

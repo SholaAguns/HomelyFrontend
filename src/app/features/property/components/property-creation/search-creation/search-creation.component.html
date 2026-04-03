@@ -8,9 +8,10 @@
   @if (currentView() === 'criteria') {
     <app-search-criteria-form
       [searchCriteria]="existingSearchCriteria()"
+      [submitButtonText]="'Start Search'"
+      [showCancelButton]="false"
       (searchSubmit)="onSearchSubmit($event)"
-    >
-    </app-search-criteria-form>
+    />
   }
 
   <!-- Progress View -->

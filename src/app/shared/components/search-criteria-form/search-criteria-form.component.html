@@ -1,0 +1,146 @@
+<div class="search-criteria-form">
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <!-- Area (Required) -->
+    <div class="form-group mb-4">
+      <label for="area" class="mb-1 block text-sm font-medium">
+        Area <span class="text-red-600">*</span>
+      </label>
+      <input
+        type="text"
+        id="area"
+        formControlName="area"
+        placeholder="e.g., London, SW1A 1AA, or postcode"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+      />
+      @if (searchForm.get('area')?.invalid && searchForm.get('area')?.touched) {
+        <small class="mt-1 text-sm text-red-600">Area is required</small>
+      }
+    </div>
+
+    <!-- Radius -->
+    <div class="form-group mb-4">
+      <label for="radius" class="mb-1 block text-sm font-medium">Search Radius (miles)</label>
+      <select
+        id="radius"
+        formControlName="radius"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+      >
+        <option [value]="0">This area only</option>
+        <option [value]="0.25">Within 1/4 mile</option>
+        <option [value]="0.5">Within 1/2 mile</option>
+        <option [value]="1.0">Within 1 mile</option>
+        <option [value]="3.0">Within 3 miles</option>
+        <option [value]="5.0">Within 5 miles</option>
+        <option [value]="10.0">Within 10 miles</option>
+        <option [value]="15.0">Within 15 miles</option>
+        <option [value]="20">Within 20 miles</option>
+        <option [value]="30.0">Within 30 miles</option>
+        <option [value]="40.0">Within 40 miles</option>
+      </select>
+    </div>
+
+    <!-- Property Types -->
+    <div class="form-group mb-4">
+      <label for="property_types" class="mb-1 block text-sm font-medium">Property Type</label>
+      <select
+        id="property_types"
+        formControlName="property_types"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+      >
+        @for (type of propertyTypes; track type.value) {
+          <option [value]="type.value">{{ type.label }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Bedrooms -->
+    <div class="mb-4 grid grid-cols-2 gap-4">
+      <div class="form-group">
+        <label for="bedrooms_min" class="mb-1 block text-sm font-medium">Min Bedrooms</label>
+        <input
+          type="number"
+          id="bedrooms_min"
+          formControlName="bedrooms_min"
+          min="0"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+        />
+      </div>
+      <div class="form-group">
+        <label for="bedrooms_max" class="mb-1 block text-sm font-medium">Max Bedrooms</label>
+        <input
+          type="number"
+          id="bedrooms_max"
+          formControlName="bedrooms_max"
+          min="0"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+        />
+      </div>
+    </div>
+
+    <!-- Price -->
+    <div class="mb-4 grid grid-cols-2 gap-4">
+      <div class="form-group">
+        <label for="price_min" class="mb-1 block text-sm font-medium">Min Price (£)</label>
+        <input
+          type="number"
+          id="price_min"
+          formControlName="price_min"
+          min="0"
+          placeholder="£"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+        />
+      </div>
+      <div class="form-group">
+        <label for="price_max" class="mb-1 block text-sm font-medium">Max Price (£)</label>
+        <input
+          type="number"
+          id="price_max"
+          formControlName="price_max"
+          min="0"
+          placeholder="£"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+        />
+      </div>
+    </div>
+
+    <!-- Max Days Since Added -->
+    <div class="form-group mb-6">
+      <label for="max_days_since_added" class="mb-1 block text-sm font-medium">Added within</label>
+      <select
+        id="max_days_since_added"
+        formControlName="max_days_since_added"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+      >
+        <option [value]="null">Anytime</option>
+        <option [value]="1">Last 24 hours</option>
+        <option [value]="3">Last 3 days</option>
+        <option [value]="7">Last 7 days</option>
+        <option [value]="14">Last 14 days</option>
+      </select>
+    </div>
+
+    <!-- Submit Button -->
+    <div
+      class="flex"
+      [class.justify-between]="showCancelButton()"
+      [class.justify-end]="!showCancelButton()"
+    >
+      @if (showCancelButton()) {
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="rounded-lg border border-gray-300 px-6 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+      }
+      <button
+        type="submit"
+        [disabled]="!isFormValid"
+        class="rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400"
+      >
+        {{ submitButtonText() }}
+      </button>
+    </div>
+  </form>
+</div>
