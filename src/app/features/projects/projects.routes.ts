@@ -22,4 +22,11 @@ export const PROJECT_ROUTES: Routes = [
         (m) => m.ProjectDetailComponent
       ),
   },
+  {
+    path: ':uuid/settings',
+    loadComponent: () =>
+      import('./components/project-settings/project-settings.component').then(
+        (m) => m.ProjectSettingsComponent
+      ),
+  },
 ];

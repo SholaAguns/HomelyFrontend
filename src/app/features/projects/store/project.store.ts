@@ -204,6 +204,7 @@ export const ProjectStore = signalStore(
           projectService.setContextOptions(uuid, data).pipe(
             tap((contextOptions) => {
               const entity = store.entities()[uuid];
+              const detailEntity = store.detailEntities()[uuid];
               if (entity) {
                 const updatedEntity = {
                   ...entity,
@@ -214,6 +215,12 @@ export const ProjectStore = signalStore(
                     ...store.entities(),
                     [uuid]: updatedEntity,
                   },
+                  detailEntities: detailEntity
+                    ? {
+                        ...store.detailEntities(),
+                        [uuid]: { ...detailEntity, context_options: contextOptions },
+                      }
+                    : store.detailEntities(),
                   loading: false,
                 });
               }

@@ -44,17 +44,8 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
-  onDeleteProject() {
-    if (confirm('Are you sure you want to delete this project and all its property lists?')) {
-      this.projectStore.delete(this.projectUuid);
-
-      const checkDeletion = setInterval(() => {
-        if (!this.projectStore.loading()) {
-          clearInterval(checkDeletion);
-          this.router.navigate(['/projects']);
-        }
-      }, 100);
-    }
+  navigateToSettings() {
+    this.router.navigate(['/projects', this.projectUuid, 'settings']);
   }
 
   navigateToCreateList() {
