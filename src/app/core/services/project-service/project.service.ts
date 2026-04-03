@@ -47,6 +47,6 @@ export class ProjectService {
   }
 
   setContextOptions(uuid: string, data: CreateContextOptionsDto): Observable<ContextOptions> {
-    return this.api.post<ContextOptions>(`${this.endpoint}${uuid}/context-options/`, data);
+    return this.api.patch<ContextOptions>(`${this.endpoint}${uuid}/context-options/`, data);
   }
 }

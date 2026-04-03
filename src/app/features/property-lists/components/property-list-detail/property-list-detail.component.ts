@@ -25,7 +25,6 @@ import { forkJoin, Subscription } from 'rxjs';
     PropertyPreviewCard,
     LoadingSpinnerComponent,
     InlineModalComponent,
-    ContextOptionsFormComponent,
   ],
   templateUrl: './property-list-detail.component.html',
   styleUrl: './property-list-detail.component.css',
