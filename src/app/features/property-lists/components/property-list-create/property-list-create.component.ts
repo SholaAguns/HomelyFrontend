@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PropertyListStore } from '../../store/property-list.store';
-import { AreaValidationInputComponent } from '../../../../shared/components/area-validation-input/area-validation-input.component';
 import { SearchCriteria } from '../../../../shared/models/property-models';
 
 @Component({
   selector: 'app-property-list-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, AreaValidationInputComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './property-list-create.component.html',
   styleUrl: './property-list-create.component.css',
 })
@@ -19,7 +18,6 @@ export class PropertyListCreateComponent implements OnInit {
   readonly store = inject(PropertyListStore);
 
   projectUuid = '';
-  areaValid = signal(false);
   submitting = signal(false);
   error = signal<string | null>(null);
 
@@ -41,16 +39,8 @@ export class PropertyListCreateComponent implements OnInit {
     }
   }
 
-  onAreaChange(value: string) {
-    this.searchCriteria.area = value;
-  }
-
-  onAreaValidationChange(isValid: boolean) {
-    this.areaValid.set(isValid);
-  }
-
   onSubmit() {
-    if (!this.areaValid() || this.submitting() || !this.projectUuid) return;
+    if (this.submitting() || !this.projectUuid || !this.searchCriteria.area.trim()) return;
 
     this.submitting.set(true);
     this.error.set(null);
