@@ -37,7 +37,7 @@ export interface PropertyListDetail extends PropertyList {
 }
 
 export interface CreatePropertyListDto {
-  project?: string;
+  project_uuid?: string;
   search_criteria?: SearchCriteria;
   title?: string;
   rating_criteria?: string | null;

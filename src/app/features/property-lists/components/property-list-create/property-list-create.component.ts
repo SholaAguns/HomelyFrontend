@@ -46,7 +46,7 @@ export class PropertyListCreateComponent implements OnInit {
     this.error.set(null);
 
     this.store.create({
-      project: this.projectUuid,
+      project_uuid: this.projectUuid,
       search_criteria: this.searchCriteria,
     });
 
