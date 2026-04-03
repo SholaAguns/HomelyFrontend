@@ -13,7 +13,7 @@ export class SidebarComponent {
   protected readonly uiStore = inject(UiStore);
 
   protected readonly navItems = [
-    { path: '/lists', icon: 'list', label: 'Property Lists' },
+    { path: '/projects', icon: 'list', label: 'Projects' },
     { path: '/rating-criteria', icon: 'star', label: 'Rating Criteria' },
     { path: '/saved-locations', icon: 'map-pin', label: 'Saved Locations' },
     { path: '/profile', icon: 'user', label: 'Profile' },
