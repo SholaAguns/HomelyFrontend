@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { PropertyListStore } from '../../store/property-list.store';
 import { SearchCriteria } from '../../../../shared/models/property-models';
 import { SearchCriteriaFormComponent } from '../../../../shared/components/search-criteria-form/search-criteria-form.component';
+import { SearchTaskStore } from '../../../property/store/search-task.store';
 
 @Component({
   selector: 'app-property-list-create',
@@ -16,6 +17,7 @@ export class PropertyListCreateComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   readonly store = inject(PropertyListStore);
+  readonly searchTaskStore = inject(SearchTaskStore);
 
   projectUuid = '';
   submitting = signal(false);
@@ -52,6 +54,15 @@ export class PropertyListCreateComponent implements OnInit {
             .all()
             .find((l) => l.search_criteria?.area === searchCriteria.area);
           if (createdList) {
+            // If list has scraping task info, initialize SearchTaskStore and start polling
+            if (createdList.scraping_task_uuid && createdList.scraping_status) {
+              this.searchTaskStore.initializeFromListCreation(
+                createdList.uuid,
+                createdList.scraping_task_uuid,
+                createdList.scraping_status as any
+              );
+            }
+
             this.submitting.set(false);
             this.router.navigate(['/projects', this.projectUuid, 'lists', createdList.uuid]);
           }

@@ -169,6 +169,43 @@ export const SearchTaskStore = signalStore(
           stopPolling$.next();
           patchState(store, initialState);
         },
+
+        initializeFromListCreation(
+          listUuid: string,
+          taskUuid: string,
+          taskStatus: TaskStatus
+        ): void {
+          const task: PropertyListTask = {
+            uuid: taskUuid,
+            property_list: listUuid,
+            task_type: 'SCRAPE_SEARCH',
+            status: taskStatus,
+            celery_task_id: null,
+            total_items: 0,
+            completed_items: 0,
+            failed_items: 0,
+            progress_percentage: 0,
+            errors: [],
+            metadata: {},
+            websocket_url: '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+
+          patchState(store, {
+            currentTask: task,
+            status: taskStatus,
+            completedItems: 0,
+            totalItems: 0,
+            failedItems: 0,
+            errors: [],
+            propertyListUuid: listUuid,
+            usingPollingFallback: true,
+          });
+
+          // Start polling for updates
+          methods.startPolling(listUuid);
+        },
       };
 
       return methods;
