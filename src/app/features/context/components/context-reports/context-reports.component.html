@@ -5,7 +5,11 @@
     @if (showTriggerButton()) {
       <button (click)="triggerStage2()" class="btn-primary">Get reports</button>
     }
-    @if (hasStarted()) {
+  </div>
+
+  <!-- Service Reports -->
+  @if (hasStarted()) {
+    <div class="reports-grid">
       <div class="progress-info">
         <span class="progress-text">
           {{ progress().complete }} / {{ progress().total }} services complete
@@ -17,12 +21,6 @@
           ></div>
         </div>
       </div>
-    }
-  </div>
-
-  <!-- Service Reports -->
-  @if (hasStarted()) {
-    <div class="reports-grid">
       <!-- Crime -->
       @if (getServiceStatus('crime')) {
         <div class="service-card" [attr.data-status]="getServiceStatus('crime')">
