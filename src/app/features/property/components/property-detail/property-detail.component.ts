@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { PropertyStore } from '../../store/property.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
@@ -12,7 +12,13 @@ import { ContextReportsComponent } from '../../../context/components/context-rep
 @Component({
   selector: 'app-property-detail',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, ImageGalleryComponent, ContextReportsComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    LoadingSpinnerComponent,
+    ImageGalleryComponent,
+    ContextReportsComponent,
+  ],
   templateUrl: './property-detail.component.html',
   styleUrl: './property-detail.component.css',
 })
