@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProjectStore } from '../../store/project.store';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import {
   UpdateProjectDto,
   CreateContextOptionsDto,
@@ -26,6 +27,10 @@ export class ProjectSettingsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   readonly projectStore = inject(ProjectStore);
+  private notificationService = inject(NotificationService);
+
+  private previousLoadingState = false;
+  private isSaving = false;
 
   projectUuid = '';
   loading = signal(false);
@@ -65,6 +70,24 @@ export class ProjectSettingsComponent implements OnInit {
   readonly SCHOOL_TYPE_LABELS = SCHOOL_TYPE_LABELS;
   readonly poiTypeKeys = Object.keys(POI_TYPE_LABELS) as PoiType[];
   readonly schoolTypeKeys = Object.keys(SCHOOL_TYPE_LABELS) as SchoolType[];
+
+  constructor() {
+    effect(() => {
+      const loading = this.projectStore.loading();
+      const error = this.projectStore.error();
+
+      if (this.previousLoadingState && !loading && this.isSaving) {
+        if (error) {
+          this.notificationService.error(error);
+        } else {
+          this.notificationService.success('Settings saved successfully');
+        }
+        this.isSaving = false;
+      }
+
+      this.previousLoadingState = loading;
+    });
+  }
 
   ngOnInit() {
     this.projectUuid = this.route.snapshot.paramMap.get('uuid') || '';
@@ -107,6 +130,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   saveProjectDetails() {
+    this.isSaving = true;
     const updateDto: UpdateProjectDto = {
       title: this.title(),
       description: this.description(),
@@ -116,6 +140,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   saveContextOptions() {
+    this.isSaving = true;
     const updateDto: CreateContextOptionsDto = {
       enable_crime: this.enableCrime(),
       enable_schools: this.enableSchools(),
@@ -134,6 +159,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   saveRatingCriteria() {
+    this.isSaving = true;
     const updateDto: UpdateProjectDto = {
       rating_criteria: this.ratingCriteria() || null,
     };
@@ -142,6 +168,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   saveViewersContributors() {
+    this.isSaving = true;
     const updateDto: UpdateProjectDto = {
       viewers: this.viewers(),
       contributors: this.contributors(),
