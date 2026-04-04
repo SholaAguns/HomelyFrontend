@@ -70,6 +70,13 @@ export interface CrimeCategory {
   count: number;
 }
 
+export interface MonthlyBreakdown {
+  month: string;
+  crime_count: number | null;
+  status: 'success' | 'failed';
+  error?: string;
+}
+
 export interface CrimeReportData {
   total_crimes: number;
   period: string;
@@ -77,6 +84,7 @@ export interface CrimeReportData {
   top_categories: CrimeCategory[];
   data_source: string;
   postcode_sector: string;
+  monthly_breakdown?: MonthlyBreakdown[];
 }
 
 export interface FullFibreData {

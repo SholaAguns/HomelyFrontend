@@ -27,6 +27,30 @@
     </div>
   </div>
 
+  <!-- Monthly Breakdown -->
+  @if (data().monthly_breakdown && data().monthly_breakdown!.length > 0) {
+    <div class="monthly-breakdown">
+      <h4>Monthly Breakdown</h4>
+      <div class="breakdown-grid">
+        @for (month of data().monthly_breakdown; track month.month) {
+          <div class="month-item" [ngClass]="{ 'month-failed': month.status === 'failed' }">
+            <span class="month-label">{{ month.month }}</span>
+            <span class="month-count">
+              @if (month.status === 'success') {
+                {{ month.crime_count }}
+              } @else {
+                N/A
+              }
+            </span>
+            @if (month.status === 'failed' && month.error) {
+              <span class="month-error" [title]="month.error">⚠</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
   <!-- Source -->
   <p class="data-source">Data: {{ data().data_source }} ({{ data().postcode_sector }})</p>
 </div>
