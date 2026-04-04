@@ -48,6 +48,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   selectionMode = signal(false);
   selectedPropertyUuids = signal<Set<string>>(new Set());
   showContextOptionsModal = signal(false);
+  showDropdown = signal(false);
   private wsSubscription?: Subscription;
 
   paginatedProperties = computed(() => {
@@ -349,5 +350,13 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
   onContextOptionsCancel() {
     this.showContextOptionsModal.set(false);
+  }
+
+  toggleDropdown() {
+    this.showDropdown.update((show) => !show);
+  }
+
+  closeDropdown() {
+    this.showDropdown.set(false);
   }
 }
