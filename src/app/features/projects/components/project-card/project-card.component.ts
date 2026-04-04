@@ -49,13 +49,6 @@ import { Project } from '../../../../shared/models/project-models';
         <span class="text-xs text-gray-500">
           Created {{ project.created_at | date: 'MMM d, yyyy' }}
         </span>
-
-        <button
-          (click)="onDelete($event)"
-          class="rounded px-3 py-1 text-sm text-red-600 transition-colors hover:bg-red-50"
-        >
-          Delete
-        </button>
       </div>
     </div>
   `,

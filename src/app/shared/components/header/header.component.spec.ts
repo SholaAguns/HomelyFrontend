@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Router } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { HeaderComponent } from './header.component';
 import { UiStore } from '../../../core/stores/ui.store';
 import { AuthStore } from '../../../core/stores/auth-store/auth.store';
@@ -32,9 +32,9 @@ describe('HeaderComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
       providers: [
+        provideRouter([]),
         { provide: UiStore, useValue: mockUiStore },
         { provide: AuthStore, useValue: mockAuthStore },
-        { provide: Router, useValue: mockRouter },
       ],
     }).compileComponents();
 
@@ -58,9 +58,12 @@ describe('HeaderComponent', () => {
   });
 
   it('should call logout and navigate on onLogout', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
     component.onLogout();
     expect(mockAuthStore.logout).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/']);
   });
 
   it('should display correct theme icon based on theme', () => {

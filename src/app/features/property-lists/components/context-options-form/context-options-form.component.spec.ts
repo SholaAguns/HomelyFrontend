@@ -179,9 +179,11 @@ describe('ContextOptionsFormComponent', () => {
           enable_mobile: false,
           enable_council_tax: true,
           enable_poi: true,
+          enable_saved_locations: false,
           poi_search_radius_meters: 800,
           school_types: [],
           poi_types: ['gym', 'park'],
+          saved_location_uuids: [],
         },
       });
     });

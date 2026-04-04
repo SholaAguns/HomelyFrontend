@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { provideRouter } from '@angular/router';
 import { SidebarComponent } from './sidebar.component';
 import { UiStore } from '../../../core/stores/ui.store';
 import { signal } from '@angular/core';
@@ -16,7 +17,7 @@ describe('SidebarComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [SidebarComponent],
-      providers: [{ provide: UiStore, useValue: mockUiStore }],
+      providers: [provideRouter([]), { provide: UiStore, useValue: mockUiStore }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SidebarComponent);
@@ -72,7 +73,7 @@ describe('SidebarComponent', () => {
 
   it('should render all navigation items', () => {
     const compiled = fixture.nativeElement;
-    const navLinks = compiled.querySelectorAll('a[routerLink]');
+    const navLinks = compiled.querySelectorAll('nav a');
     expect(navLinks.length).toBe(5);
   });
 

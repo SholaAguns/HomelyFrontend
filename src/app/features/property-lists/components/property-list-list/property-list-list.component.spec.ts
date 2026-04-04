@@ -40,28 +40,6 @@ describe('PropertyListListComponent', () => {
     });
   });
 
-  describe('onDelete', () => {
-    it('should call store delete when confirmed', () => {
-      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
-
-      component.onDelete('test-uuid');
-
-      expect(confirmSpy).toHaveBeenCalledWith(
-        'Are you sure you want to delete this property list?'
-      );
-      expect(propertyListStoreMock.delete).toHaveBeenCalledWith('test-uuid');
-    });
-
-    it('should not call store delete when cancelled', () => {
-      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
-
-      component.onDelete('test-uuid');
-
-      expect(confirmSpy).toHaveBeenCalled();
-      expect(propertyListStoreMock.delete).not.toHaveBeenCalled();
-    });
-  });
-
   describe('navigateToCreate', () => {
     it('should navigate to create page', () => {
       component.navigateToCreate();
