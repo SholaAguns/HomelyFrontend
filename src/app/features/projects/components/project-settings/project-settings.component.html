@@ -23,7 +23,8 @@
           <label class="mb-2 block text-sm font-medium text-gray-700">Title</label>
           <input
             type="text"
-            [(ngModel)]="title"
+            [ngModel]="title()"
+            (ngModelChange)="title.set($event)"
             class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
           />
         </div>
@@ -31,7 +32,8 @@
         <div>
           <label class="mb-2 block text-sm font-medium text-gray-700">Description</label>
           <textarea
-            [(ngModel)]="description"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
             rows="3"
             class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
           ></textarea>
@@ -55,7 +57,8 @@
         <label class="flex items-center gap-2">
           <input
             type="checkbox"
-            [(ngModel)]="enableCrime"
+            [ngModel]="enableCrime()"
+            (ngModelChange)="enableCrime.set($event)"
             class="h-4 w-4 rounded border-gray-300"
           />
           <span class="text-sm font-medium text-gray-700">Enable Crime Data</span>
@@ -66,7 +69,8 @@
           <label class="mb-2 flex items-center gap-2">
             <input
               type="checkbox"
-              [(ngModel)]="enableSchools"
+              [ngModel]="enableSchools()"
+              (ngModelChange)="enableSchools.set($event)"
               class="h-4 w-4 rounded border-gray-300"
             />
             <span class="text-sm font-medium text-gray-700">Enable Schools Data</span>
@@ -93,7 +97,8 @@
         <label class="flex items-center gap-2">
           <input
             type="checkbox"
-            [(ngModel)]="enableBroadband"
+            [ngModel]="enableBroadband()"
+            (ngModelChange)="enableBroadband.set($event)"
             class="h-4 w-4 rounded border-gray-300"
           />
           <span class="text-sm font-medium text-gray-700">Enable Broadband Data</span>
@@ -103,7 +108,8 @@
         <label class="flex items-center gap-2">
           <input
             type="checkbox"
-            [(ngModel)]="enableMobile"
+            [ngModel]="enableMobile()"
+            (ngModelChange)="enableMobile.set($event)"
             class="h-4 w-4 rounded border-gray-300"
           />
           <span class="text-sm font-medium text-gray-700">Enable Mobile Data</span>
@@ -113,7 +119,8 @@
         <label class="flex items-center gap-2">
           <input
             type="checkbox"
-            [(ngModel)]="enableCouncilTax"
+            [ngModel]="enableCouncilTax()"
+            (ngModelChange)="enableCouncilTax.set($event)"
             class="h-4 w-4 rounded border-gray-300"
           />
           <span class="text-sm font-medium text-gray-700">Enable Council Tax Data</span>
@@ -124,7 +131,8 @@
           <label class="mb-2 flex items-center gap-2">
             <input
               type="checkbox"
-              [(ngModel)]="enablePoi"
+              [ngModel]="enablePoi()"
+              (ngModelChange)="enablePoi.set($event)"
               class="h-4 w-4 rounded border-gray-300"
             />
             <span class="text-sm font-medium text-gray-700">Enable Points of Interest</span>
@@ -136,7 +144,8 @@
                 <label class="mb-2 block text-sm text-gray-600">Search Radius (meters)</label>
                 <input
                   type="number"
-                  [(ngModel)]="poiRadius"
+                  [ngModel]="poiRadius()"
+                  (ngModelChange)="poiRadius.set($event)"
                   min="100"
                   max="5000"
                   step="100"
@@ -165,7 +174,8 @@
         <label class="flex items-center gap-2">
           <input
             type="checkbox"
-            [(ngModel)]="enableSavedLocations"
+            [ngModel]="enableSavedLocations()"
+            (ngModelChange)="enableSavedLocations.set($event)"
             class="h-4 w-4 rounded border-gray-300"
           />
           <span class="text-sm font-medium text-gray-700">Enable Saved Locations</span>
@@ -190,7 +200,8 @@
             Criteria (optional - AI-generated rating rubric)
           </label>
           <textarea
-            [(ngModel)]="ratingCriteria"
+            [ngModel]="ratingCriteria()"
+            (ngModelChange)="ratingCriteria.set($event)"
             rows="5"
             placeholder="Enter custom rating criteria or leave blank for default"
             class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
@@ -218,7 +229,8 @@
           <div class="mb-3 flex gap-2">
             <input
               type="email"
-              [(ngModel)]="newViewer"
+              [ngModel]="newViewer()"
+              (ngModelChange)="newViewer.set($event)"
               placeholder="Enter email address"
               (keyup.enter)="addViewer()"
               class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
@@ -255,7 +267,8 @@
           <div class="mb-3 flex gap-2">
             <input
               type="email"
-              [(ngModel)]="newContributor"
+              [ngModel]="newContributor()"
+              (ngModelChange)="newContributor.set($event)"
               placeholder="Enter email address"
               (keyup.enter)="addContributor()"
               class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
@@ -338,7 +351,8 @@
 
       <input
         type="text"
-        [(ngModel)]="deleteConfirmation"
+        [ngModel]="deleteConfirmation()"
+        (ngModelChange)="deleteConfirmation.set($event)"
         placeholder="Type DELETE"
         class="mb-4 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-red-500 focus:outline-none"
       />
