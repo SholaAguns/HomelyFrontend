@@ -1,11 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ActivatedRoute } from '@angular/router';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SearchCreationComponent } from './search-creation.component';
 import { SearchTaskStore } from '../../../store/search-task.store';
-import { SearchCriteriaForm } from './search-criteria-form/search-criteria-form';
+import { SearchCriteria } from '../../../../../shared/models/property-models';
 import { createSearchTaskStoreMock } from '../../../../../shared/mocks/search-task-store.mock';
 import { mockSearchCriteria } from '../../../../../shared/mocks/models/property-models.mock';
+
+@Component({
+  selector: 'app-search-criteria-form-stub',
+  standalone: true,
+  template: '<div></div>',
+})
+class SearchCriteriaFormStubComponent {
+  @Input() searchCriteria: SearchCriteria | null = null;
+  @Input() submitButtonText = 'Create List';
+  @Input() showCancelButton = true;
+  @Output() searchSubmit = new EventEmitter<SearchCriteria>();
+  @Output() cancel = new EventEmitter<void>();
+}
 
 describe('SearchCreationComponent', () => {
   let component: SearchCreationComponent;
@@ -28,12 +42,17 @@ describe('SearchCreationComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SearchCreationComponent, SearchCriteriaForm],
+      imports: [SearchCriteriaFormStubComponent],
       providers: [
         { provide: SearchTaskStore, useValue: searchTaskStoreMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(SearchCreationComponent, {
+        remove: { imports: [] },
+        add: { imports: [SearchCriteriaFormStubComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(SearchCreationComponent);
     component = fixture.componentInstance;
