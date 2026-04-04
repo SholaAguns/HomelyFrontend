@@ -19,12 +19,6 @@ export class PropertyListListComponent implements OnInit {
     this.store.load(undefined);
   }
 
-  onDelete(uuid: string) {
-    if (confirm('Are you sure you want to delete this property list?')) {
-      this.store.delete(uuid);
-    }
-  }
-
   navigateToCreate() {
     this.router.navigate(['/lists/new']);
   }

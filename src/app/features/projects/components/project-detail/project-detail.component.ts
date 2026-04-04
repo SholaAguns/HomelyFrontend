@@ -38,12 +38,6 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
-  onDeleteList(uuid: string) {
-    if (confirm('Are you sure you want to delete this property list?')) {
-      this.listStore.delete(uuid);
-    }
-  }
-
   navigateToSettings() {
     this.router.navigate(['/projects', this.projectUuid, 'settings']);
   }
@@ -54,9 +48,5 @@ export class ProjectDetailComponent implements OnInit {
 
   navigateToDashboard() {
     this.router.navigate(['/projects', this.projectUuid, 'dashboard']);
-  }
-
-  navigateToList(listUuid: string) {
-    this.router.navigate(['/projects', this.projectUuid, 'lists', listUuid]);
   }
 }

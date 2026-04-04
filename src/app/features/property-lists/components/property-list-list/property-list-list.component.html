@@ -46,7 +46,7 @@
   } @else {
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       @for (list of store.all(); track list.uuid) {
-        <app-property-list-card [list]="list" (delete)="onDelete($event)" />
+        <app-property-list-card [list]="list" />
       }
     </div>
   }

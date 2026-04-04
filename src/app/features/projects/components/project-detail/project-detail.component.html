@@ -59,9 +59,7 @@
       } @else {
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           @for (list of listStore.all(); track list.uuid) {
-            <div (click)="navigateToList(list.uuid)">
-              <app-property-list-card [list]="list" (delete)="onDeleteList($event)" />
-            </div>
+            <app-property-list-card [list]="list" />
           }
         </div>
       }
