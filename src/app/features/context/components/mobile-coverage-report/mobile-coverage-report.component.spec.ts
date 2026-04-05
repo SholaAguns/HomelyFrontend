@@ -7,23 +7,23 @@ describe('MobileCoverageReportComponent', () => {
 
   const mockMobileData = {
     scores: {
-      '4g_coverage': 85,
-      '5g_coverage': 60,
+      four_g_coverage: 85,
+      five_g_coverage: 60,
       overall_coverage: 75,
     },
-    '4g_coverage': {
+    four_g_coverage: {
       indoor: {
         all_4_networks: 45,
-        '3_networks': 25,
-        '2_networks': 15,
-        '1_network': 10,
+        three_networks: 25,
+        two_networks: 15,
+        one_network: 10,
         no_coverage: 5,
       },
       outdoor: {
         all_4_networks: 60,
-        '3_networks': 20,
-        '2_networks': 10,
-        '1_network': 8,
+        three_networks: 20,
+        two_networks: 10,
+        one_network: 8,
         no_coverage: 2,
       },
     },

@@ -102,30 +102,46 @@ export interface BroadbandReportData {
 
 export interface CoverageByNetwork {
   all_4_networks: number;
-  '3_networks': number;
-  '2_networks': number;
-  '1_network': number;
+  three_networks: number;
+  two_networks: number;
+  one_network: number;
   no_coverage: number;
 }
 
 export interface CoverageScores {
-  '4g_coverage': number;
-  '5g_coverage': number;
+  four_g_coverage: number;
+  five_g_coverage: number;
   overall_coverage: number;
+}
+
+export interface ProviderCoverage {
+  voice_outdoor: number;
+  voice_indoor: number;
+  data_outdoor: number;
+  data_indoor: number;
+}
+
+export interface MobileProviders {
+  ee: ProviderCoverage;
+  three: ProviderCoverage;
+  o2: ProviderCoverage;
+  vodafone: ProviderCoverage;
 }
 
 export interface MobileCoverageReportData {
   scores: CoverageScores;
-  '4g_coverage': {
+  four_g_coverage: {
     indoor: CoverageByNetwork;
     outdoor: CoverageByNetwork;
   };
-  '5g_coverage_high_confidence'?: {
+  five_g_coverage_high_confidence?: {
     outdoor: CoverageByNetwork;
   };
   data_source: string;
   granularity: string;
   laua_name?: string;
+  // Optional provider-specific data (only present when from API source)
+  providers?: MobileProviders;
 }
 
 export interface Place {
