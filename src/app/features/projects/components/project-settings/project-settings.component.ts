@@ -15,6 +15,8 @@ import {
   PoiType,
   SchoolType,
 } from '../../../../shared/models/context-options.models';
+import { SavedLocationService } from '../../../../core/services/saved-location.service';
+import { SavedLocation } from '../../../../shared/models/saved-location-models';
 
 @Component({
   selector: 'app-project-settings',
@@ -28,6 +30,7 @@ export class ProjectSettingsComponent implements OnInit {
   private router = inject(Router);
   readonly projectStore = inject(ProjectStore);
   private notificationService = inject(NotificationService);
+  private savedLocationService = inject(SavedLocationService);
 
   private previousLoadingState = false;
   private isSaving = false;
@@ -52,6 +55,7 @@ export class ProjectSettingsComponent implements OnInit {
   poiRadius = signal(1000);
   enableSavedLocations = signal(false);
   savedLocationUuids = signal<string[]>([]);
+  savedLocations = signal<SavedLocation[]>([]);
 
   // Rating criteria
   ratingCriteria = signal('');
@@ -91,6 +95,11 @@ export class ProjectSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.projectUuid = this.route.snapshot.paramMap.get('uuid') || '';
+
+    this.savedLocationService.getAll().subscribe({
+      next: (locations) => this.savedLocations.set(locations),
+      error: (err) => console.error('Failed to load saved locations:', err),
+    });
 
     if (this.projectUuid) {
       this.loading.set(true);
@@ -216,6 +225,15 @@ export class ProjectSettingsComponent implements OnInit {
       this.poiTypes.set(current.filter((t) => t !== type));
     } else {
       this.poiTypes.set([...current, type]);
+    }
+  }
+
+  toggleSavedLocation(uuid: string) {
+    const current = this.savedLocationUuids();
+    if (current.includes(uuid)) {
+      this.savedLocationUuids.set(current.filter((u) => u !== uuid));
+    } else {
+      this.savedLocationUuids.set([...current, uuid]);
     }
   }
 

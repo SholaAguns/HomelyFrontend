@@ -171,15 +171,40 @@
         </div>
 
         <!-- Saved Locations -->
-        <label class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            [ngModel]="enableSavedLocations()"
-            (ngModelChange)="enableSavedLocations.set($event)"
-            class="h-4 w-4 rounded border-gray-300"
-          />
-          <span class="text-sm font-medium text-gray-700">Enable Saved Locations</span>
-        </label>
+        <div>
+          <label class="mb-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              [ngModel]="enableSavedLocations()"
+              (ngModelChange)="enableSavedLocations.set($event)"
+              class="h-4 w-4 rounded border-gray-300"
+            />
+            <span class="text-sm font-medium text-gray-700">Enable Saved Locations</span>
+          </label>
+
+          @if (enableSavedLocations()) {
+            <div class="ml-6 space-y-2">
+              @if (savedLocations().length === 0) {
+                <p class="text-sm text-gray-500 italic">No saved locations available</p>
+              } @else {
+                <label class="mb-2 block text-sm text-gray-600">Select locations:</label>
+                @for (location of savedLocations(); track location.uuid) {
+                  <label class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      [checked]="savedLocationUuids().includes(location.uuid)"
+                      (change)="toggleSavedLocation(location.uuid)"
+                      class="h-4 w-4 rounded border-gray-300"
+                    />
+                    <span class="text-sm text-gray-600"
+                      >{{ location.name }} ({{ location.postcode }})</span
+                    >
+                  </label>
+                }
+              }
+            </div>
+          }
+        </div>
 
         <button
           (click)="saveContextOptions()"
