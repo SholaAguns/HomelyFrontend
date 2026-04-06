@@ -50,7 +50,7 @@ describe('SavedLocationService', () => {
 
       expect(response).toEqual(mockSavedLocation);
       expect(apiServiceMock.get).toHaveBeenCalledWith(
-        'property/saved-locations/test-location-uuid-1'
+        'property/saved-locations/test-location-uuid-1/'
       );
     });
   });
@@ -82,7 +82,7 @@ describe('SavedLocationService', () => {
 
       expect(response).toEqual(updatedLocation);
       expect(apiServiceMock.patch).toHaveBeenCalledWith(
-        'property/saved-locations/test-location-uuid-1',
+        'property/saved-locations/test-location-uuid-1/',
         mockUpdateSavedLocationDto
       );
     });
@@ -95,7 +95,7 @@ describe('SavedLocationService', () => {
       await firstValueFrom(savedLocationService.delete('test-location-uuid-1'));
 
       expect(apiServiceMock.delete).toHaveBeenCalledWith(
-        'property/saved-locations/test-location-uuid-1'
+        'property/saved-locations/test-location-uuid-1/'
       );
     });
   });

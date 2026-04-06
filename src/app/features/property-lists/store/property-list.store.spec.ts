@@ -5,10 +5,8 @@ import { PropertyListService } from '../../../core/services/property-list-servic
 import { of, throwError } from 'rxjs';
 import {
   mockPropertyList,
-  mockActivePropertyList,
   mockCreatePropertyListDto,
   mockUpdatePropertyListDto,
-  mockActivateResponse,
 } from '../../../shared/mocks/models/property-list-models.mock';
 import { createPropertyListServiceMock } from '../../../shared/mocks/property-list-service.mock';
 
@@ -44,33 +42,22 @@ describe('PropertyListStore', () => {
 
   describe('computed values', () => {
     beforeEach(() => {
-      propertyListServiceMock.getAll.mockReturnValue(
-        of([mockPropertyList, mockActivePropertyList])
-      );
-      store.load();
+      propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList]));
+      store.load('test-project-uuid');
     });
 
     it('should compute all property lists from entities', async () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       const all = store.all();
-      expect(all.length).toBe(2);
+      expect(all.length).toBe(1);
       expect(all).toContain(mockPropertyList);
-      expect(all).toContain(mockActivePropertyList);
     });
 
     it('should compute count from ids', async () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      expect(store.count()).toBe(2);
-    });
-
-    it('should compute activeLists filtering by state', async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const activeLists = store.activeLists();
-      expect(activeLists.length).toBe(1);
-      expect(activeLists[0].state).toBe('ACTIVE');
+      expect(store.count()).toBe(1);
     });
 
     it('should compute selected from selectedId', async () => {
@@ -87,25 +74,24 @@ describe('PropertyListStore', () => {
 
   describe('load', () => {
     it('should update state on successful load', async () => {
-      const mockLists = [mockPropertyList, mockActivePropertyList];
+      const mockLists = [mockPropertyList];
       propertyListServiceMock.getAll.mockReturnValue(of(mockLists));
 
-      store.load();
+      store.load('test-project-uuid');
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBeNull();
-      expect(store.ids()).toEqual([mockPropertyList.uuid, mockActivePropertyList.uuid]);
+      expect(store.ids()).toEqual([mockPropertyList.uuid]);
       expect(store.entities()[mockPropertyList.uuid]).toEqual(mockPropertyList);
-      expect(store.entities()[mockActivePropertyList.uuid]).toEqual(mockActivePropertyList);
     });
 
     it('should handle load error', async () => {
       const error = new Error('Failed to load');
       propertyListServiceMock.getAll.mockReturnValue(throwError(() => error));
 
-      store.load();
+      store.load('test-project-uuid');
 
       await new Promise((resolve) => setTimeout(resolve, 200));
 
@@ -145,7 +131,7 @@ describe('PropertyListStore', () => {
   describe('update', () => {
     beforeEach(async () => {
       propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList]));
-      store.load();
+      store.load('test-project-uuid');
       await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
@@ -181,10 +167,8 @@ describe('PropertyListStore', () => {
 
   describe('delete', () => {
     beforeEach(async () => {
-      propertyListServiceMock.getAll.mockReturnValue(
-        of([mockPropertyList, mockActivePropertyList])
-      );
-      store.load();
+      propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList]));
+      store.load('test-project-uuid');
       await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
@@ -215,42 +199,6 @@ describe('PropertyListStore', () => {
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to delete');
       expect(store.ids()).toContain(mockPropertyList.uuid);
-    });
-  });
-
-  describe('activate', () => {
-    beforeEach(async () => {
-      propertyListServiceMock.getAll.mockReturnValue(of([mockPropertyList]));
-      store.load();
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
-
-    it('should update property list state to ACTIVE', async () => {
-      propertyListServiceMock.activate.mockReturnValue(of(mockActivateResponse));
-
-      expect(store.entities()[mockPropertyList.uuid].state).toBe('DRAFT');
-
-      store.activate(mockPropertyList.uuid);
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(store.loading()).toBe(false);
-      expect(store.error()).toBeNull();
-      expect(store.entities()[mockPropertyList.uuid].state).toBe('ACTIVE');
-      expect(propertyListServiceMock.activate).toHaveBeenCalledWith(mockPropertyList.uuid);
-    });
-
-    it('should handle activate error', async () => {
-      const error = new Error('Failed to activate');
-      propertyListServiceMock.activate.mockReturnValue(throwError(() => error));
-
-      store.activate(mockPropertyList.uuid);
-
-      await new Promise((resolve) => setTimeout(resolve, 200));
-
-      expect(store.loading()).toBe(false);
-      expect(store.error()).toBe('Failed to activate');
-      expect(store.entities()[mockPropertyList.uuid].state).toBe('DRAFT');
     });
   });
 

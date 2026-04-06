@@ -1,0 +1,57 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8 flex items-center justify-between">
+    <h1 class="text-3xl font-bold text-gray-900">My Projects</h1>
+    <button
+      (click)="navigateToCreate()"
+      class="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white shadow-md transition-colors hover:bg-blue-700"
+    >
+      + Create New Project
+    </button>
+  </div>
+
+  @if (store.loading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+    </div>
+  } @else if (store.error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+      <h3 class="mb-2 font-semibold">Error loading projects</h3>
+      <p>{{ store.error() }}</p>
+    </div>
+  } @else if (store.count() === 0) {
+    <div class="py-16 text-center">
+      <svg
+        class="mx-auto mb-4 h-24 w-24 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+        />
+      </svg>
+      <h3 class="mb-2 text-xl font-semibold text-gray-900">No projects yet</h3>
+      <p class="mb-6 text-gray-600">Get started by creating your first project</p>
+      <button
+        (click)="navigateToCreate()"
+        class="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
+      >
+        Create Your First Project
+      </button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      @for (project of store.all(); track project.uuid) {
+        <app-project-card
+          [project]="project"
+          (click)="navigateToDetail(project.uuid)"
+          (delete)="onDelete($event)"
+        />
+      }
+    </div>
+  }
+</div>

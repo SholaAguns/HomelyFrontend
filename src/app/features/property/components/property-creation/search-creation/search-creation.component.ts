@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { SearchTaskStore } from '../../../store/search-task.store';
 import { PropertyListStore } from '../../../../property-lists/store/property-list.store';
-import { SearchCriteriaForm } from './search-criteria-form/search-criteria-form';
+import { SearchCriteriaFormComponent } from '../../../../../shared/components/search-criteria-form/search-criteria-form.component';
 import { SearchCriteria } from '../../../../../shared/models/property-models';
 import { LoadingSpinnerComponent } from '../../../../../shared/components/loading-spinner/loading-spinner.component';
 
@@ -12,7 +12,7 @@ type SearchView = 'criteria' | 'progress' | 'results';
 @Component({
   selector: 'app-search-creation',
   standalone: true,
-  imports: [CommonModule, SearchCriteriaForm, LoadingSpinnerComponent],
+  imports: [CommonModule, SearchCriteriaFormComponent, LoadingSpinnerComponent],
   templateUrl: './search-creation.component.html',
   styleUrl: './search-creation.component.css',
 })

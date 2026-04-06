@@ -52,7 +52,8 @@ export const POI_TYPE_LABELS: Record<PoiType, string> = {
 
 export interface ContextOptions {
   uuid: string;
-  property_list_uuid: string;
+  property_list_uuid?: string;
+  project?: string;
   enable_crime: boolean;
   enable_schools: boolean;
   school_types: SchoolType[];

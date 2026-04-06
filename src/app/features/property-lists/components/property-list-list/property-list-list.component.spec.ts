@@ -21,8 +21,8 @@ describe('PropertyListListComponent', () => {
       providers: [
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: createActivatedRouteMock() },
-        { provide: PropertyListStore, useValue: propertyListStoreMock }
-      ]
+        { provide: PropertyListStore, useValue: propertyListStoreMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PropertyListListComponent);
@@ -37,34 +37,6 @@ describe('PropertyListListComponent', () => {
   describe('ngOnInit', () => {
     it('should call store load on init', () => {
       expect(propertyListStoreMock.load).toHaveBeenCalled();
-    });
-  });
-
-  describe('onDelete', () => {
-    it('should call store delete when confirmed', () => {
-      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
-
-      component.onDelete('test-uuid');
-
-      expect(confirmSpy).toHaveBeenCalledWith('Are you sure you want to delete this property list?');
-      expect(propertyListStoreMock.delete).toHaveBeenCalledWith('test-uuid');
-    });
-
-    it('should not call store delete when cancelled', () => {
-      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
-
-      component.onDelete('test-uuid');
-
-      expect(confirmSpy).toHaveBeenCalled();
-      expect(propertyListStoreMock.delete).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('onActivate', () => {
-    it('should call store activate with uuid', () => {
-      component.onActivate('test-uuid');
-
-      expect(propertyListStoreMock.activate).toHaveBeenCalledWith('test-uuid');
     });
   });
 

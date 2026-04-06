@@ -12,11 +12,11 @@ export function createPropertyListStoreMock() {
     entities: signal({}),
     ids: signal([]),
     selectedId: signal<string | null>(null),
-    all: signal([]),
+    all: signal<any[]>([]),
     selected: signal(null),
     count: signal(0),
     activeLists: signal([]),
     loading: signal(false),
-    error: signal<string | null>(null)
+    error: signal<string | null>(null),
   };
 }

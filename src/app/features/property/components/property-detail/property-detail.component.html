@@ -4,39 +4,6 @@
   }
 
   @if (property() && !loading()) {
-    <div class="mb-6 flex items-center justify-between">
-      <button (click)="goBack()" class="flex items-center text-gray-600 hover:text-gray-900">
-        <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back to Lists
-      </button>
-
-      <div class="flex gap-2">
-        @if (property()!.available_transitions.includes('run_stage2')) {
-          <button
-            (click)="runStage2()"
-            class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Run Stage 2
-          </button>
-        }
-        @if (property()!.available_transitions.includes('run_stage3')) {
-          <button
-            (click)="runStage3()"
-            class="rounded bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"
-          >
-            Run Stage 3
-          </button>
-        }
-      </div>
-    </div>
-
     <div class="grid gap-6 lg:grid-cols-2">
       <!-- Images Section -->
       <div>
@@ -135,111 +102,112 @@
           }
         </div>
 
-        <!-- Key Features -->
-        <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-          <h2 class="mb-4 text-xl font-semibold">Key Features</h2>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <span class="text-sm text-gray-600">Bedrooms</span>
-              <div class="text-lg font-medium">{{ property()!.bedrooms }}</div>
-            </div>
-            <div>
-              <span class="text-sm text-gray-600">Bathrooms</span>
-              <div class="text-lg font-medium">{{ property()!.bathrooms }}</div>
-            </div>
-            @if (property()!.square_area) {
-              <div>
-                <span class="text-sm text-gray-600">Area</span>
-                <div class="text-lg font-medium">{{ property()!.square_area }} sq ft</div>
-              </div>
-            }
-            <div>
-              <span class="text-sm text-gray-600">Furnished</span>
-              <div class="text-lg font-medium">{{ property()!.furnished_status || 'N/A' }}</div>
-            </div>
-            <div>
-              <span class="text-sm text-gray-600">Garden</span>
-              <div class="text-lg font-medium">{{ property()!.garden ? 'Yes' : 'No' }}</div>
-            </div>
-            <div>
-              <span class="text-sm text-gray-600">Parking</span>
-              <div class="text-lg font-medium">{{ property()!.parking ? 'Yes' : 'No' }}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Additional Details -->
-        <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-          <h2 class="mb-4 text-xl font-semibold">Additional Details</h2>
-          <div class="grid grid-cols-2 gap-4">
-            @if (property()!.council_tax_band) {
-              <div>
-                <span class="text-sm text-gray-600">Council Tax Band</span>
-                <div class="text-lg font-medium">{{ property()!.council_tax_band }}</div>
-              </div>
-            }
-            @if (property()!.epc_rating) {
-              <div>
-                <span class="text-sm text-gray-600">EPC Rating</span>
-                <div class="text-lg font-medium">{{ property()!.epc_rating }}</div>
-              </div>
-            }
-            @if (property()!.floor_level !== null) {
-              <div>
-                <span class="text-sm text-gray-600">Floor Level</span>
-                <div class="text-lg font-medium">{{ property()!.floor_level }}</div>
-              </div>
-            }
-            @if (property()!.lease_length) {
-              <div>
-                <span class="text-sm text-gray-600">Lease Length</span>
-                <div class="text-lg font-medium">{{ property()!.lease_length }} years</div>
-              </div>
-            }
-            <div>
-              <span class="text-sm text-gray-600">Child Suitable</span>
-              <div class="text-lg font-medium">{{ property()!.child_suitable ? 'Yes' : 'No' }}</div>
-            </div>
-            @if (property()!.completion_date) {
-              <div>
-                <span class="text-sm text-gray-600">Completion Date</span>
-                <div class="text-lg font-medium">{{ property()!.completion_date }}</div>
-              </div>
-            }
-          </div>
-        </div>
-
-        <!-- Rating Information -->
-        @if (property()!.overall_rating !== null) {
-          <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-            <h2 class="mb-4 text-xl font-semibold">Rating</h2>
-            <div class="mb-4">
-              <span class="text-sm text-gray-600">Overall Rating</span>
-              <div class="text-2xl font-bold text-green-600">
-                {{ property()!.overall_rating }}/10
-              </div>
-            </div>
-            @if (property()!.disqualified) {
-              <div class="rounded bg-red-50 p-3 text-red-800">
-                <strong>Disqualified:</strong> {{ property()!.disqualification_reason }}
-              </div>
-            }
-          </div>
-        }
-
         <!-- Property Lists -->
-        <div class="rounded-lg border border-gray-200 bg-white p-6">
+        <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
           <h2 class="mb-4 text-xl font-semibold">Property Lists</h2>
           <div class="flex flex-wrap gap-2">
             @for (list of property()!.property_lists | keyvalue; track list.key) {
-              <span class="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+              <a
+                [routerLink]="['/lists', list.key]"
+                class="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800 transition-colors hover:bg-blue-200"
+              >
                 {{ list.value }}
-              </span>
+              </a>
             }
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Key Features -->
+    <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+      <h2 class="mb-4 text-xl font-semibold">Key Features</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <span class="text-sm text-gray-600">Bedrooms</span>
+          <div class="text-lg font-medium">{{ property()!.bedrooms }}</div>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600">Bathrooms</span>
+          <div class="text-lg font-medium">{{ property()!.bathrooms }}</div>
+        </div>
+        @if (property()!.square_area) {
+          <div>
+            <span class="text-sm text-gray-600">Area</span>
+            <div class="text-lg font-medium">{{ property()!.square_area }} sq ft</div>
+          </div>
+        }
+        <div>
+          <span class="text-sm text-gray-600">Furnished</span>
+          <div class="text-lg font-medium">{{ property()!.furnished_status || 'N/A' }}</div>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600">Garden</span>
+          <div class="text-lg font-medium">{{ property()!.garden ? 'Yes' : 'No' }}</div>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600">Parking</span>
+          <div class="text-lg font-medium">{{ property()!.parking ? 'Yes' : 'No' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Details -->
+    <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+      <h2 class="mb-4 text-xl font-semibold">Additional Details</h2>
+      <div class="grid grid-cols-2 gap-4">
+        @if (property()!.council_tax_band) {
+          <div>
+            <span class="text-sm text-gray-600">Council Tax Band</span>
+            <div class="text-lg font-medium">{{ property()!.council_tax_band }}</div>
+          </div>
+        }
+        @if (property()!.epc_rating) {
+          <div>
+            <span class="text-sm text-gray-600">EPC Rating</span>
+            <div class="text-lg font-medium">{{ property()!.epc_rating }}</div>
+          </div>
+        }
+        @if (property()!.floor_level !== null) {
+          <div>
+            <span class="text-sm text-gray-600">Floor Level</span>
+            <div class="text-lg font-medium">{{ property()!.floor_level }}</div>
+          </div>
+        }
+        @if (property()!.lease_length) {
+          <div>
+            <span class="text-sm text-gray-600">Lease Length</span>
+            <div class="text-lg font-medium">{{ property()!.lease_length }} years</div>
+          </div>
+        }
+        <div>
+          <span class="text-sm text-gray-600">Child Suitable</span>
+          <div class="text-lg font-medium">{{ property()!.child_suitable ? 'Yes' : 'No' }}</div>
+        </div>
+        @if (property()!.completion_date) {
+          <div>
+            <span class="text-sm text-gray-600">Completion Date</span>
+            <div class="text-lg font-medium">{{ property()!.completion_date }}</div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Rating Information -->
+    @if (property()!.overall_rating !== null) {
+      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+        <h2 class="mb-4 text-xl font-semibold">Rating</h2>
+        <div class="mb-4">
+          <span class="text-sm text-gray-600">Overall Rating</span>
+          <div class="text-2xl font-bold text-green-600">{{ property()!.overall_rating }}/10</div>
+        </div>
+        @if (property()!.disqualified) {
+          <div class="rounded bg-red-50 p-3 text-red-800">
+            <strong>Disqualified:</strong> {{ property()!.disqualification_reason }}
+          </div>
+        }
+      </div>
+    }
 
     <!-- Context Reports Section -->
     <div class="mt-8">

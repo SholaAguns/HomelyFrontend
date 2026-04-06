@@ -10,7 +10,6 @@ import {
   mockPropertyListDetail,
   mockCreatePropertyListDto,
   mockUpdatePropertyListDto,
-  mockActivateResponse
 } from '../../../shared/mocks/models/property-list-models.mock';
 import { createApiServiceMock } from '../../../shared/mocks/api-service.mock';
 
@@ -22,10 +21,7 @@ describe('PropertyListService', () => {
     apiServiceMock = createApiServiceMock();
 
     TestBed.configureTestingModule({
-      providers: [
-        PropertyListService,
-        { provide: ApiService, useValue: apiServiceMock }
-      ]
+      providers: [PropertyListService, { provide: ApiService, useValue: apiServiceMock }],
     });
 
     propertyListService = TestBed.inject(PropertyListService);
@@ -96,20 +92,6 @@ describe('PropertyListService', () => {
       await firstValueFrom(propertyListService.delete('test-uuid-1'));
 
       expect(apiServiceMock.delete).toHaveBeenCalledWith('property/property-lists/test-uuid-1/');
-    });
-  });
-
-  describe('activate', () => {
-    it('should call API post to activate endpoint with uuid', async () => {
-      apiServiceMock.post.mockReturnValue(of(mockActivateResponse));
-
-      const response = await firstValueFrom(propertyListService.activate('test-uuid-1'));
-
-      expect(response).toEqual(mockActivateResponse);
-      expect(apiServiceMock.post).toHaveBeenCalledWith(
-        'property/property-lists/test-uuid-1/activate/',
-        {}
-      );
     });
   });
 });

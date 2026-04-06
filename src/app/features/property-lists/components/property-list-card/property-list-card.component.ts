@@ -1,29 +1,20 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { PropertyList } from '../../../../shared/models/property-list-models';
 
 @Component({
   selector: 'app-property-list-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './property-list-card.component.html',
   styleUrl: './property-list-card.component.css',
 })
 export class PropertyListCardComponent {
+  private router = inject(Router);
   list = input.required<PropertyList>();
-  delete = output<string>();
-  activate = output<string>();
 
-  onDelete(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.delete.emit(this.list().uuid);
-  }
-
-  onActivate(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.activate.emit(this.list().uuid);
+  onCardClick() {
+    this.router.navigate(['/lists', this.list().uuid]);
   }
 }

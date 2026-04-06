@@ -4,11 +4,15 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
+import { ContextDataService } from '../../../../core/services/context-data-service/context-data.service';
+import { ProjectStore } from '../../../projects/store/project.store';
 import { PropertyListDetail } from '../../../../shared/models/property-list-models';
 import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
 import { PropertyPreviewCard } from '../property-preview-card/property-preview-card';
 import { SearchTaskStore } from '../../../property/store/search-task.store';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
+import { InlineModalComponent } from '../../../../shared/components/inline-modal/inline-modal.component';
+import { ContextOptionsFormComponent } from '../context-options-form/context-options-form.component';
 import { forkJoin, Subscription } from 'rxjs';
 
 @Component({
@@ -20,6 +24,7 @@ import { forkJoin, Subscription } from 'rxjs';
     PropertyListFormComponent,
     PropertyPreviewCard,
     LoadingSpinnerComponent,
+    InlineModalComponent,
   ],
   templateUrl: './property-list-detail.component.html',
   styleUrl: './property-list-detail.component.css',
@@ -30,7 +35,9 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private propertyListService = inject(PropertyListService);
   private propertyService = inject(PropertyService);
   private propertyWebSocketService = inject(PropertyWebSocketService);
+  private contextDataService = inject(ContextDataService);
   searchTaskStore = inject(SearchTaskStore);
+  projectStore = inject(ProjectStore);
 
   list = signal<PropertyListDetail | null>(null);
   loading = signal(false);
@@ -40,6 +47,8 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   itemsPerPage = 20;
   selectionMode = signal(false);
   selectedPropertyUuids = signal<Set<string>>(new Set());
+  showContextOptionsModal = signal(false);
+  showDropdown = signal(false);
   private wsSubscription?: Subscription;
 
   paginatedProperties = computed(() => {
@@ -152,6 +161,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         this.currentPage.set(1);
         this.loading.set(false);
 
+        // Load project to check context options
+        if (list.project) {
+          this.projectStore.loadDetail(list.project);
+        }
+
         // Connect to WebSocket if any properties are in stage 2 progress
         if (list.status_summary.stage2_in_progress > 0) {
           this.subscribeToListUpdates(uuid);
@@ -184,22 +198,6 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
       this.propertyListService.delete(list.uuid).subscribe({
         next: () => {
           this.router.navigate(['/lists']);
-        },
-        error: (err) => {
-          this.error.set(err.message);
-        },
-      });
-    }
-  }
-
-  onActivate() {
-    const list = this.list();
-    if (list) {
-      this.propertyListService.activate(list.uuid).subscribe({
-        next: (result) => {
-          this.list.update((current) =>
-            current ? { ...current, state: result.state as 'ACTIVE' | 'DRAFT' } : null
-          );
         },
         error: (err) => {
           this.error.set(err.message);
@@ -292,5 +290,73 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
   isPropertySelected(uuid: string): boolean {
     return this.selectedPropertyUuids().has(uuid);
+  }
+
+  triggerStage2ForList() {
+    const listData = this.list();
+    if (!listData || !listData.project) return;
+
+    const project = this.projectStore.selectedDetail();
+    if (!project) {
+      this.error.set('Project not found');
+      return;
+    }
+
+    if (!project.context_options) {
+      this.showContextOptionsModal.set(true);
+    } else {
+      this.executeStage2ForList();
+    }
+  }
+
+  executeStage2ForList() {
+    const listData = this.list();
+    if (!listData) return;
+
+    const propertiesToProcess = listData.properties.filter((p) => p.state === 'NEW');
+
+    if (propertiesToProcess.length === 0) {
+      this.error.set('No properties to process');
+      return;
+    }
+
+    this.loading.set(true);
+    const stage2Observables = propertiesToProcess.map((property) =>
+      this.contextDataService.triggerStage2(property.uuid)
+    );
+
+    forkJoin(stage2Observables).subscribe({
+      next: () => {
+        this.loadList(listData.uuid);
+        this.subscribeToListUpdates(listData.uuid);
+      },
+      error: (err) => {
+        this.error.set(err.message);
+        this.loading.set(false);
+      },
+    });
+  }
+
+  onContextOptionsSaved() {
+    this.showContextOptionsModal.set(false);
+    const listData = this.list();
+    if (listData?.project) {
+      this.projectStore.loadDetail(listData.project);
+      setTimeout(() => {
+        this.executeStage2ForList();
+      }, 500);
+    }
+  }
+
+  onContextOptionsCancel() {
+    this.showContextOptionsModal.set(false);
+  }
+
+  toggleDropdown() {
+    this.showDropdown.update((show) => !show);
+  }
+
+  closeDropdown() {
+    this.showDropdown.set(false);
   }
 }

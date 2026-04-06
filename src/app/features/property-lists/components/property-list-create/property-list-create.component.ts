@@ -1,33 +1,77 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PropertyListStore } from '../../store/property-list.store';
-import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
-import { CreatePropertyListDto } from '../../../../shared/models/property-list-models';
+import { SearchCriteria } from '../../../../shared/models/property-models';
+import { SearchCriteriaFormComponent } from '../../../../shared/components/search-criteria-form/search-criteria-form.component';
+import { SearchTaskStore } from '../../../property/store/search-task.store';
 
 @Component({
   selector: 'app-property-list-create',
   standalone: true,
-  imports: [CommonModule, RouterLink, PropertyListFormComponent],
+  imports: [CommonModule, SearchCriteriaFormComponent],
   templateUrl: './property-list-create.component.html',
   styleUrl: './property-list-create.component.css',
 })
-export class PropertyListCreateComponent {
+export class PropertyListCreateComponent implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   readonly store = inject(PropertyListStore);
+  readonly searchTaskStore = inject(SearchTaskStore);
 
-  onCreate(data: CreatePropertyListDto) {
-    this.store.create(data);
-    // Navigate after successful creation
-    // Note: In production, you'd want to wait for the observable to complete
-    setTimeout(() => {
-      if (!this.store.error()) {
-        this.router.navigate(['/lists']);
+  projectUuid = '';
+  submitting = signal(false);
+  error = signal<string | null>(null);
+
+  ngOnInit() {
+    this.projectUuid = this.route.parent?.snapshot.paramMap.get('projectUuid') || '';
+
+    if (!this.projectUuid) {
+      this.error.set('Project UUID is required');
+    }
+  }
+
+  onSearchSubmit(searchCriteria: SearchCriteria) {
+    if (this.submitting() || !this.projectUuid) return;
+
+    this.submitting.set(true);
+    this.error.set(null);
+
+    this.store.create({
+      project_uuid: this.projectUuid,
+      search_criteria: searchCriteria,
+    });
+
+    const checkCreation = setInterval(() => {
+      if (!this.store.loading()) {
+        clearInterval(checkCreation);
+
+        if (this.store.error()) {
+          this.submitting.set(false);
+          this.error.set(this.store.error());
+        } else {
+          const createdList = this.store
+            .all()
+            .find((l) => l.search_criteria?.area === searchCriteria.area);
+          if (createdList) {
+            // If list has scraping task info, initialize SearchTaskStore and start polling
+            if (createdList.scraping_task_uuid && createdList.scraping_status) {
+              this.searchTaskStore.initializeFromListCreation(
+                createdList.uuid,
+                createdList.scraping_task_uuid,
+                createdList.scraping_status as any
+              );
+            }
+
+            this.submitting.set(false);
+            this.router.navigate(['/projects', this.projectUuid, 'lists', createdList.uuid]);
+          }
+        }
       }
-    }, 500);
+    }, 100);
   }
 
   onCancel() {
-    this.router.navigate(['/lists']);
+    this.router.navigate(['/projects', this.projectUuid]);
   }
 }

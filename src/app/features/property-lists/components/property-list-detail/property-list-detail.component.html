@@ -19,7 +19,7 @@
     } @else {
       <div class="rounded-lg bg-white p-6 shadow-md">
         <div class="mb-6 flex items-start justify-between">
-          <div>
+          <div class="flex-1">
             <h1 class="mb-2 text-3xl font-bold text-gray-900">
               {{ list()!.title }}
             </h1>
@@ -37,41 +37,57 @@
                 {{ list()!.properties_count }}
                 {{ list()!.properties_count === 1 ? 'property' : 'properties' }}
               </span>
+              @if (list()!.project_title) {
+                <span class="text-gray-400">•</span>
+                <a
+                  [routerLink]="['/projects', list()!.project]"
+                  class="text-blue-600 hover:underline"
+                >
+                  {{ list()!.project_title }}
+                </a>
+              }
             </div>
           </div>
-          <div class="flex gap-2">
-            <a
-              [routerLink]="['/lists', list()!.uuid, 'context-options']"
-              class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
-            >
-              Context Options
-            </a>
+          <div class="relative">
             <button
-              (click)="onEdit()"
-              class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              (click)="toggleDropdown()"
+              class="rounded-full p-2 text-gray-600 transition-colors hover:bg-gray-100"
+              aria-label="More options"
             >
-              Edit
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="12" cy="19" r="2" />
+              </svg>
             </button>
-            @if (list()!.state === 'DRAFT') {
-              <button
-                (click)="onActivate()"
-                class="rounded bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+            @if (showDropdown()) {
+              <div class="fixed inset-0 z-10" (click)="closeDropdown()"></div>
+              <div
+                class="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-md border border-gray-200 bg-white shadow-lg"
               >
-                Activate
-              </button>
+                <div class="py-1">
+                  <button
+                    (click)="onEdit(); closeDropdown()"
+                    class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    (click)="triggerStage2ForList(); closeDropdown()"
+                    [disabled]="list()!.status_summary.new === 0"
+                    class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400"
+                  >
+                    Run Stage 2
+                  </button>
+                  <button
+                    (click)="onDelete(); closeDropdown()"
+                    class="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             }
-            <button
-              (click)="onDelete()"
-              class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
-            >
-              Delete
-            </button>
-            <a
-              routerLink="/lists"
-              class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300"
-            >
-              Back
-            </a>
           </div>
         </div>
 
@@ -287,3 +303,21 @@
     }
   }
 </div>
+
+<app-inline-modal
+  [isOpen]="showContextOptionsModal()"
+  [title]="'Configure Context Options'"
+  (closeModal)="onContextOptionsCancel()"
+>
+  <div class="p-4">
+    <p class="mb-4 text-sm text-gray-600">
+      No context options configured for this project. Please configure which services to enable.
+    </p>
+    <button
+      (click)="onContextOptionsSaved()"
+      class="rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors hover:bg-blue-700"
+    >
+      Configure Now
+    </button>
+  </div>
+</app-inline-modal>
