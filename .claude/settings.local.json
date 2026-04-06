@@ -19,7 +19,17 @@
       "Bash(npx vitest run:*)",
       "Bash(ng generate:*)",
       "Bash(ren:*)",
-      "Bash(npx ng:*)"
+      "Bash(npx ng:*)",
+      "Bash(xargs grep -l \"context_option\\\\|context-option\\\\|ContextOption\")",
+      "Bash(xargs grep -l \"context\")",
+      "Bash(xargs grep -l \"context_option\\\\|ContextOption\")",
+      "Bash(xargs grep -l \"ContextOption\")",
+      "Bash(xargs grep -l \"ContextOptionsView\\\\|context-options\\\\|context_options_view\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); t=d.get\\(''projects'',{}\\).get\\(''homely-frontend'',{}\\).get\\(''architect'',{}\\).get\\(''test'',{}\\); print\\(json.dumps\\(t, indent=2\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\(''scripts'',{}\\), indent=2\\)\\)\")",
+      "Bash(xargs head -5)",
+      "Bash(xargs grep -l \"vitest\\\\|setupFiles\")",
+      "Bash(ng test --no-watch)"
     ]
   }
 }
