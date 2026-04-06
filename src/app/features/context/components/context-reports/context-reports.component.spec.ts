@@ -142,4 +142,67 @@ describe('ContextReportsComponent', () => {
 
     expect(component.getServiceData('crime')).toBeNull();
   });
+
+  it('should call triggerStage2 with no services when Get reports clicked', () => {
+    setContextData([]);
+    fixture.detectChanges();
+
+    component.triggerStage2();
+
+    expect(mockWebSocketService.connectToProperty).toHaveBeenCalledWith('test-property-id');
+  });
+
+  it('should call triggerStage2 with specific services list', () => {
+    const services = ['crime', 'schools'];
+    component.triggerStage2(services);
+
+    expect(mockWebSocketService.connectToProperty).toHaveBeenCalledWith('test-property-id');
+  });
+
+  it('should retry all failed services when retryAllFailed called', () => {
+    setContextData([
+      { id: '1', service_name: 'crime', status: 'FAILED' } as any,
+      { id: '2', service_name: 'schools', status: 'FAILED' } as any,
+      { id: '3', service_name: 'broadband', status: 'COMPLETE' } as any,
+    ]);
+    fixture.detectChanges();
+
+    component.retryAllFailed();
+
+    expect(mockWebSocketService.connectToProperty).toHaveBeenCalledWith('test-property-id');
+  });
+
+  it('should display retry all failed button when failures exist', () => {
+    mockContextDataStore.progressFor = computed(() => () => ({
+      total: 6,
+      complete: 2,
+      in_progress: 0,
+      failed: 2,
+      pending: 2,
+    }));
+    setContextData([
+      { id: '1', service_name: 'crime', status: 'FAILED' } as any,
+      { id: '2', service_name: 'schools', status: 'FAILED' } as any,
+    ]);
+    fixture.detectChanges();
+
+    const retryAllButton = fixture.nativeElement.querySelector('.btn-retry-all');
+    expect(retryAllButton).toBeTruthy();
+    expect(retryAllButton.textContent.trim()).toContain('Retry All Failed');
+  });
+
+  it('should not display retry all button when no failures', () => {
+    mockContextDataStore.progressFor = computed(() => () => ({
+      total: 6,
+      complete: 6,
+      in_progress: 0,
+      failed: 0,
+      pending: 0,
+    }));
+    setContextData([{ id: '1', service_name: 'crime', status: 'COMPLETE' } as any]);
+    fixture.detectChanges();
+
+    const retryAllButton = fixture.nativeElement.querySelector('.btn-retry-all');
+    expect(retryAllButton).toBeNull();
+  });
 });

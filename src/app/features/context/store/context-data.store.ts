@@ -88,10 +88,10 @@ export const ContextDataStore = signalStore(
     return {
       load: loadMethod,
 
-      triggerStage2: rxMethod<string>(
+      triggerStage2: rxMethod<{ propertyId: string; services?: string[] }>(
         pipe(
-          switchMap((propertyId) =>
-            contextDataService.triggerStage2(propertyId).pipe(
+          switchMap(({ propertyId, services }) =>
+            contextDataService.triggerStage2(propertyId, services).pipe(
               tap(() => {
                 // Re-load to get PENDING records
                 loadMethod(propertyId);

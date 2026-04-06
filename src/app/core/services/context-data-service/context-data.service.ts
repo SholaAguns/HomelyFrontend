@@ -10,10 +10,10 @@ export class ContextDataService {
 
   constructor(private httpClient: HttpClient) {}
 
-  triggerStage2(propertyId: string): Observable<{ message: string }> {
+  triggerStage2(propertyId: string, services?: string[]): Observable<{ message: string }> {
     return this.httpClient.post<{ message: string }>(
       `${this.baseUrl}/${propertyId}/run-stage2/`,
-      {}
+      services ? { services } : {}
     );
   }
 

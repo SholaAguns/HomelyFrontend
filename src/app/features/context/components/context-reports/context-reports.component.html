@@ -2,9 +2,16 @@
   <!-- Header -->
   <div class="reports-header">
     <h2>Context Reports</h2>
-    @if (showTriggerButton()) {
-      <button (click)="triggerStage2()" class="btn-primary">Get reports</button>
-    }
+    <div class="header-actions">
+      @if (showTriggerButton()) {
+        <button (click)="triggerStage2()" class="btn-primary">Get reports</button>
+      }
+      @if (progress().failed > 0) {
+        <button (click)="retryAllFailed()" class="btn-retry-all">
+          Retry All Failed ({{ progress().failed }})
+        </button>
+      }
+    </div>
   </div>
 
   <!-- Service Reports -->

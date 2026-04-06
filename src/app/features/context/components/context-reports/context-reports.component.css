@@ -200,6 +200,22 @@
   background-color: #dc2626;
 }
 
+.btn-retry-all {
+  padding: 0.75rem 1.5rem;
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.btn-retry-all:hover {
+  background-color: #d97706;
+}
+
 .service-content {
   padding: 1rem 0;
 }

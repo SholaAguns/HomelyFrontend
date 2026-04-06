@@ -30,7 +30,7 @@ describe('ContextDataService', () => {
   });
 
   describe('triggerStage2', () => {
-    it('should send POST request to trigger stage 2', () => {
+    it('should send POST request to trigger stage 2 for all services', () => {
       const propertyId = 'test-property-id';
       const expectedResponse = { message: 'Stage 2 triggered successfully' };
 
@@ -41,6 +41,21 @@ describe('ContextDataService', () => {
       const request = httpTestingController.expectOne(`${baseUrl}/${propertyId}/run-stage2/`);
       expect(request.request.method).toBe('POST');
       expect(request.request.body).toEqual({});
+      request.flush(expectedResponse);
+    });
+
+    it('should send POST request to trigger stage 2 for specific services', () => {
+      const propertyId = 'test-property-id';
+      const services = ['crime', 'schools'];
+      const expectedResponse = { message: 'Stage 2 triggered successfully' };
+
+      contextDataService.triggerStage2(propertyId, services).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      const request = httpTestingController.expectOne(`${baseUrl}/${propertyId}/run-stage2/`);
+      expect(request.request.method).toBe('POST');
+      expect(request.request.body).toEqual({ services });
       request.flush(expectedResponse);
     });
   });

@@ -130,15 +130,28 @@ describe('ContextDataStore', () => {
   });
 
   describe('triggerStage2', () => {
-    it('should trigger stage 2 and reload data', async () => {
+    it('should trigger stage 2 for all services and reload data', async () => {
       contextDataService.triggerStage2.mockReturnValue(of({ message: 'Success' }));
       contextDataService.getContextData.mockReturnValue(of(mockContextData));
 
-      store.triggerStage2('prop-1');
+      store.triggerStage2({ propertyId: 'prop-1' });
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(contextDataService.triggerStage2).toHaveBeenCalledWith('prop-1');
+      expect(contextDataService.triggerStage2).toHaveBeenCalledWith('prop-1', undefined);
+      expect(contextDataService.getContextData).toHaveBeenCalledWith('prop-1');
+    });
+
+    it('should trigger stage 2 for specific services and reload data', async () => {
+      const services = ['crime', 'schools'];
+      contextDataService.triggerStage2.mockReturnValue(of({ message: 'Success' }));
+      contextDataService.getContextData.mockReturnValue(of(mockContextData));
+
+      store.triggerStage2({ propertyId: 'prop-1', services });
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(contextDataService.triggerStage2).toHaveBeenCalledWith('prop-1', services);
       expect(contextDataService.getContextData).toHaveBeenCalledWith('prop-1');
     });
 
@@ -146,7 +159,7 @@ describe('ContextDataStore', () => {
       const errorMessage = 'Failed to trigger stage 2';
       contextDataService.triggerStage2.mockReturnValue(throwError(() => new Error(errorMessage)));
 
-      store.triggerStage2('prop-1');
+      store.triggerStage2({ propertyId: 'prop-1' });
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 

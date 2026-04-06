@@ -134,12 +134,15 @@ export class ContextReportsComponent implements OnDestroy {
     return !this.hasStarted() || currentProperty?.state === 'STAGE2_COMPLETE';
   });
 
-  triggerStage2(): void {
+  triggerStage2(services?: string[]): void {
     const propertyId = this.propertyId();
     // Subscribe FIRST, then trigger stage 2 after connection established
     this.subscribeToUpdates(propertyId, () => {
-      console.log('🚀 TRIGGERING STAGE 2');
-      this.contextDataStore.triggerStage2(propertyId);
+      console.log(
+        '🚀 TRIGGERING STAGE 2',
+        services ? `for services: ${services.join(', ')}` : '(all services)'
+      );
+      this.contextDataStore.triggerStage2({ propertyId, services });
     });
   }
 
@@ -196,6 +199,17 @@ export class ContextReportsComponent implements OnDestroy {
 
   getSavedLocationsData(): SavedLocationReportData | null {
     return this.getServiceData<SavedLocationReportData>('saved_locations');
+  }
+
+  retryAllFailed(): void {
+    const failedServices = this.contextData()
+      .filter((d) => d.status === 'FAILED')
+      .map((d) => d.service_name);
+
+    if (failedServices.length > 0) {
+      console.log('🔄 RETRYING ALL FAILED SERVICES:', failedServices);
+      this.triggerStage2(failedServices);
+    }
   }
 
   toggleCollapsed(serviceName: string): void {
