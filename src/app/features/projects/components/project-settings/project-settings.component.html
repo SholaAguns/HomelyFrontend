@@ -222,15 +222,70 @@
       <div class="space-y-4">
         <div>
           <label class="mb-2 block text-sm font-medium text-gray-700">
-            Criteria (optional - AI-generated rating rubric)
+            Select Rating Criteria
           </label>
-          <textarea
-            [ngModel]="ratingCriteria()"
-            (ngModelChange)="ratingCriteria.set($event)"
-            rows="5"
-            placeholder="Enter custom rating criteria or leave blank for default"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-          ></textarea>
+          <p class="mb-3 text-sm text-gray-600">
+            Choose how properties will be rated and scored for this project
+          </p>
+
+          @if (ratingCriteriaStore.loading()) {
+            <div class="flex items-center gap-2 py-2">
+              <div class="h-5 w-5 animate-spin rounded-full border-b-2 border-blue-600"></div>
+              <span class="text-sm text-gray-600">Loading criteria...</span>
+            </div>
+          } @else {
+            <select
+              [ngModel]="ratingCriteria()"
+              (ngModelChange)="ratingCriteria.set($event)"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+            >
+              <option value="">None (No rating criteria)</option>
+              @for (criteria of ratingCriteriaStore.allCriteria(); track criteria.uuid) {
+                <option [value]="criteria.uuid">
+                  {{ criteria.name }} ({{ criteria.criteria_count }} criteria)
+                </option>
+              }
+            </select>
+          }
+
+          @if (selectedCriteriaName) {
+            <div class="mt-2 rounded-lg bg-blue-50 px-3 py-2">
+              <p class="text-sm text-blue-800">
+                <strong>Current:</strong> {{ selectedCriteriaName }}
+                @if (hasSourceCriteria) {
+                  <span class="ml-1 text-xs">(Copied from shared criteria)</span>
+                }
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="flex gap-3">
+          <button
+            (click)="createNewCriteria()"
+            class="rounded-lg border border-blue-600 px-4 py-2 text-blue-600 hover:bg-blue-50"
+          >
+            Create New Criteria
+          </button>
+
+          @if (ratingCriteria()) {
+            <button
+              (click)="editCriteria()"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+            >
+              Edit Criteria
+            </button>
+
+            @if (hasSourceCriteria) {
+              <button
+                (click)="copyCriteria()"
+                class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                title="Create a personal copy of shared criteria"
+              >
+                Copy Criteria
+              </button>
+            }
+          }
         </div>
 
         <button

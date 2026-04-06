@@ -1,0 +1,135 @@
+<div class="rating-criteria-form-container">
+  <div class="form-header">
+    <h2>{{ isEditMode() ? 'Edit' : 'Create' }} Rating Criteria</h2>
+    <p class="subtitle">Configure how properties will be rated</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Criteria Name -->
+    <div class="form-group">
+      <label for="name">Criteria Name *</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        placeholder="e.g., Family Home Criteria"
+        class="form-control"
+      />
+    </div>
+
+    <!-- System Criteria Section -->
+    <div class="criteria-section">
+      <h3>System Criteria</h3>
+      <p class="section-description">Built-in criteria based on core property fields</p>
+
+      <div class="criteria-list">
+        @for (criterion of systemCriteria(); track criterion.name) {
+          <div class="criterion-item">
+            <div class="criterion-header">
+              <div class="criterion-info">
+                <h4>{{ criterion.name }}</h4>
+                <span class="criterion-strategy">{{
+                  scoringStrategyLabels[criterion.scoring_strategy]
+                }}</span>
+              </div>
+            </div>
+
+            <div class="criterion-controls">
+              <div class="control-group">
+                <label>Weight</label>
+                <select
+                  [value]="criterion.weight"
+                  (change)="updateCriterionWeight(criterion, +$any($event.target).value, true)"
+                  class="form-control-sm"
+                >
+                  @for (weight of weightValues; track weight) {
+                    <option [value]="weight">{{ weightLabels[weight] }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="criterion.is_dealbreaker"
+                    (change)="
+                      updateCriterionDealbreaker(criterion, $any($event.target).checked, true)
+                    "
+                  />
+                  <span>Dealbreaker</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- User Criteria Section -->
+    <div class="criteria-section">
+      <h3>User Criteria</h3>
+      <p class="section-description">Configurable criteria based on context data and preferences</p>
+
+      <div class="criteria-list">
+        @for (criterion of userCriteria(); track criterion.name) {
+          <div class="criterion-item">
+            <div class="criterion-header">
+              <div class="criterion-info">
+                <h4>{{ criterion.name }}</h4>
+                <span class="criterion-strategy">{{
+                  scoringStrategyLabels[criterion.scoring_strategy]
+                }}</span>
+              </div>
+            </div>
+
+            <div class="criterion-controls">
+              <div class="control-group">
+                <label>Weight</label>
+                <select
+                  [value]="criterion.weight"
+                  (change)="updateCriterionWeight(criterion, +$any($event.target).value, false)"
+                  class="form-control-sm"
+                >
+                  @for (weight of weightValues; track weight) {
+                    <option [value]="weight">{{ weightLabels[weight] }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="criterion.is_dealbreaker"
+                    (change)="
+                      updateCriterionDealbreaker(criterion, $any($event.target).checked, false)
+                    "
+                  />
+                  <span>Dealbreaker</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="error-message">
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" (click)="onCancel()" class="btn btn-secondary" [disabled]="saving()">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="!form.valid || saving()">
+        {{ saving() ? 'Saving...' : isEditMode() ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </form>
+</div>

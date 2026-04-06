@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProjectStore } from '../../store/project.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
@@ -17,11 +17,12 @@ import {
 } from '../../../../shared/models/context-options.models';
 import { SavedLocationService } from '../../../../core/services/saved-location.service';
 import { SavedLocation } from '../../../../shared/models/saved-location-models';
+import { RatingCriteriaStore } from '../../store/rating-criteria.store';
 
 @Component({
   selector: 'app-project-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './project-settings.component.html',
   styleUrl: './project-settings.component.css',
 })
@@ -31,6 +32,7 @@ export class ProjectSettingsComponent implements OnInit {
   readonly projectStore = inject(ProjectStore);
   private notificationService = inject(NotificationService);
   private savedLocationService = inject(SavedLocationService);
+  readonly ratingCriteriaStore = inject(RatingCriteriaStore);
 
   private previousLoadingState = false;
   private isSaving = false;
@@ -100,6 +102,8 @@ export class ProjectSettingsComponent implements OnInit {
       next: (locations) => this.savedLocations.set(locations),
       error: (err) => console.error('Failed to load saved locations:', err),
     });
+
+    this.ratingCriteriaStore.loadAll();
 
     if (this.projectUuid) {
       this.loading.set(true);
@@ -262,5 +266,47 @@ export class ProjectSettingsComponent implements OnInit {
 
   navigateBack() {
     this.router.navigate(['/projects', this.projectUuid]);
+  }
+
+  createNewCriteria() {
+    this.router.navigate(['/projects/rating-criteria/new'], {
+      queryParams: { project: this.projectUuid },
+    });
+  }
+
+  editCriteria() {
+    const criteriaUuid = this.ratingCriteria();
+    if (criteriaUuid) {
+      this.router.navigate(['/projects/rating-criteria', criteriaUuid, 'edit'], {
+        queryParams: { project: this.projectUuid },
+      });
+    }
+  }
+
+  copyCriteria() {
+    const criteriaUuid = this.ratingCriteria();
+    if (criteriaUuid) {
+      this.ratingCriteriaStore.copy(criteriaUuid);
+      setTimeout(() => {
+        const copiedCriteria = this.ratingCriteriaStore
+          .allCriteria()
+          .find((c) => c.name.includes('(Copy)'));
+        if (copiedCriteria) {
+          this.ratingCriteria.set(copiedCriteria.uuid);
+          this.saveRatingCriteria();
+          this.notificationService.success('Criteria copied successfully');
+        }
+      }, 500);
+    }
+  }
+
+  get selectedCriteriaName(): string {
+    const project = this.projectStore.selectedDetail();
+    return project?.rating_criteria_name || '';
+  }
+
+  get hasSourceCriteria(): boolean {
+    const project = this.projectStore.selectedDetail();
+    return !!project?.rating_criteria_source;
   }
 }

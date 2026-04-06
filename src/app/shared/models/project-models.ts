@@ -1,4 +1,5 @@
 import { ContextOptions, UpdateContextOptionsDto } from './context-options.models';
+import { PropertyList } from './property-list-models';
 
 export interface Project {
   uuid: string;
@@ -8,7 +9,9 @@ export interface Project {
   viewers: string[];
   contributors: string[];
   rating_criteria: string | null;
+  rating_criteria_name?: string;
   rating_criteria_source: string | null;
+  rating_criteria_source_name?: string;
   context_options: ContextOptions | null;
   property_lists_count: number;
   created_at: string;
@@ -16,7 +19,7 @@ export interface Project {
 }
 
 export interface ProjectDetail extends Project {
-  property_lists: any[];
+  property_lists: PropertyList[];
 }
 
 export interface ProjectStats {
