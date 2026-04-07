@@ -42,7 +42,9 @@ export class PropertyWebSocketService {
     return this.webSocketService.connect(channel).pipe(
       filter(
         (message: WebSocketServiceUpdate) =>
-          message.type === 'service_update' || message.type === 'stage2_complete'
+          message.type === 'service_update' ||
+          message.type === 'stage2_complete' ||
+          message.type === 'rating_complete'
       ),
       map((message: WebSocketServiceUpdate) => message),
       catchError((error) => {

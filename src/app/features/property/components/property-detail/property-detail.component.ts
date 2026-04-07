@@ -1,10 +1,13 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { PropertyStore } from '../../store/property.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
 import { PropertyDetail } from '../../../../shared/models/property-models';
+import { RatingCompleteData } from '../../../../shared/models/context-data.models';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { ImageGalleryComponent } from '../../../../shared/components/image-gallery/image-gallery.component';
 import { ContextReportsComponent } from '../../../context/components/context-reports/context-reports.component';
@@ -22,17 +25,19 @@ import { ContextReportsComponent } from '../../../context/components/context-rep
   templateUrl: './property-detail.component.html',
   styleUrl: './property-detail.component.css',
 })
-export class PropertyDetailComponent implements OnInit {
+export class PropertyDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private propertyService = inject(PropertyService);
   private propertyStore = inject(PropertyStore);
   private notificationService = inject(NotificationService);
+  private propertyWebSocketService = inject(PropertyWebSocketService);
 
   property = signal<PropertyDetail | null>(null);
   loading = signal(true);
   galleryOpen = signal(false);
   galleryInitialIndex = signal(0);
+  private wsSubscription?: Subscription;
 
   displayedImages = computed(() => {
     const propertyData = this.property();
@@ -100,15 +105,84 @@ export class PropertyDetailComponent implements OnInit {
     const propertyValue = this.property();
     if (!propertyValue) return;
 
-    this.propertyService.runStage3(propertyValue.uuid).subscribe({
-      next: () => {
-        this.notificationService.success('Stage 3 started successfully');
-        this.loadProperty(propertyValue.uuid);
+    // Subscribe to WebSocket FIRST, then trigger Stage 3
+    this.subscribeToRatingUpdates(propertyValue.uuid, () => {
+      console.log('🚀 TRIGGERING STAGE 3 (Rating Calculation)');
+      this.propertyService.runStage3(propertyValue.uuid).subscribe({
+        next: () => {
+          this.notificationService.success('Stage 3 started successfully');
+        },
+        error: (err) => {
+          this.notificationService.error(err.message || 'Failed to run stage 3');
+          this.wsSubscription?.unsubscribe();
+          this.propertyWebSocketService.disconnect();
+        },
+      });
+    });
+  }
+
+  private subscribeToRatingUpdates(propertyId: string, onConnected?: () => void): void {
+    this.wsSubscription?.unsubscribe();
+
+    console.log('🔌 WEBSOCKET: Connecting to property channel for rating updates...', propertyId);
+
+    this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
+      next: (update) => {
+        console.log('📨 WEBSOCKET UPDATE RECEIVED:', update.type, update);
+
+        if (update.type === 'rating_complete') {
+          console.log('🎉 RATING COMPLETE - Updating property with rating data');
+
+          // Update property with rating data from WebSocket message
+          const currentProperty = this.property();
+          if (currentProperty && update.data) {
+            const ratingData = update.data as RatingCompleteData;
+            const updatedProperty = {
+              ...currentProperty,
+              state: ratingData.property_state || 'STAGE3_COMPLETE',
+              overall_rating: ratingData.overall_rating,
+              rating_breakdown: ratingData.rating_breakdown,
+              disqualified: ratingData.disqualified,
+              disqualification_reason: ratingData.disqualification_reason,
+            } as PropertyDetail;
+
+            this.property.set(updatedProperty);
+            this.propertyStore.updatePropertyState(
+              propertyId,
+              ratingData.property_state || 'STAGE3_COMPLETE'
+            );
+          }
+
+          this.notificationService.success('Rating calculation complete!');
+
+          // Disconnect after a short delay
+          setTimeout(() => {
+            console.log('🔌 CLOSING WEBSOCKET CONNECTION (Rating complete)');
+            this.wsSubscription?.unsubscribe();
+            this.propertyWebSocketService.disconnect();
+          }, 1000);
+        }
       },
       error: (err) => {
-        this.notificationService.error(err.message || 'Failed to run stage 3');
+        console.error('❌ WEBSOCKET ERROR:', err);
+      },
+      complete: () => {
+        console.log('🔌 WEBSOCKET CONNECTION CLOSED');
       },
     });
+
+    // Call the callback after a short delay to ensure connection is established
+    if (onConnected) {
+      setTimeout(() => {
+        console.log('🔌 WEBSOCKET: Connection ready, calling callback');
+        onConnected();
+      }, 200);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.wsSubscription?.unsubscribe();
+    this.propertyWebSocketService.disconnect();
   }
 
   openGallery(index: number = 0): void {

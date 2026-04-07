@@ -28,8 +28,26 @@ export interface ServiceProgress {
   pending: number;
 }
 
+export interface RatingCompleteData {
+  property_id: string;
+  property_state: string;
+  overall_rating: number | null;
+  rating_breakdown: Record<
+    string,
+    {
+      raw_value: string | number | boolean;
+      normalized_score: number;
+      weighted_score: number;
+      weight: number;
+    }
+  > | null;
+  disqualified: boolean;
+  disqualification_reason: string | null;
+  message: string;
+}
+
 export interface WebSocketServiceUpdate {
-  type: 'service_update' | 'stage2_complete';
+  type: 'service_update' | 'stage2_complete' | 'rating_complete';
   service?: string;
   status?: string;
   property_id: string;
