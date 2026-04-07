@@ -210,6 +210,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       source: 'property',
       field_name: 'floor_level',
       scoring_strategy: 'min_max',
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
