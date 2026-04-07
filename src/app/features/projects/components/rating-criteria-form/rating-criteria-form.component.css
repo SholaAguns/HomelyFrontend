@@ -72,10 +72,38 @@
   border: 1px solid #ddd;
   border-radius: 6px;
   padding: 1rem;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s;
+}
+
+.criterion-item.disabled {
+  opacity: 0.6;
+  background: #f8f9fa;
 }
 
 .criterion-header {
   margin-bottom: 1rem;
+}
+
+.criterion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.enable-toggle {
+  margin-bottom: 0.5rem;
+}
+
+.enable-toggle .criterion-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #212529;
+}
+
+.criterion-item.disabled .criterion-name {
+  color: #6c757d;
 }
 
 .criterion-info h4 {

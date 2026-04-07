@@ -24,43 +24,52 @@
 
       <div class="criteria-list">
         @for (criterion of systemCriteria(); track criterion.name) {
-          <div class="criterion-item">
+          <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion.name)">
             <div class="criterion-header">
               <div class="criterion-info">
-                <h4>{{ criterion.name }}</h4>
+                <label class="checkbox-label enable-toggle">
+                  <input
+                    type="checkbox"
+                    [checked]="isCriterionEnabled(criterion.name)"
+                    (change)="toggleCriterionEnabled(criterion.name)"
+                  />
+                  <span class="criterion-name">{{ criterion.name }}</span>
+                </label>
                 <span class="criterion-strategy">{{
                   scoringStrategyLabels[criterion.scoring_strategy]
                 }}</span>
               </div>
             </div>
 
-            <div class="criterion-controls">
-              <div class="control-group">
-                <label>Weight</label>
-                <select
-                  [value]="criterion.weight"
-                  (change)="updateCriterionWeight(criterion, +$any($event.target).value, true)"
-                  class="form-control-sm"
-                >
-                  @for (weight of weightValues; track weight) {
-                    <option [value]="weight">{{ weightLabels[weight] }}</option>
-                  }
-                </select>
-              </div>
+            @if (isCriterionEnabled(criterion.name)) {
+              <div class="criterion-controls">
+                <div class="control-group">
+                  <label>Weight</label>
+                  <select
+                    [value]="criterion.weight"
+                    (change)="updateCriterionWeight(criterion, +$any($event.target).value, true)"
+                    class="form-control-sm"
+                  >
+                    @for (weight of weightValues; track weight) {
+                      <option [value]="weight">{{ weightLabels[weight] }}</option>
+                    }
+                  </select>
+                </div>
 
-              <div class="control-group">
-                <label class="checkbox-label">
-                  <input
-                    type="checkbox"
-                    [checked]="criterion.is_dealbreaker"
-                    (change)="
-                      updateCriterionDealbreaker(criterion, $any($event.target).checked, true)
-                    "
-                  />
-                  <span>Dealbreaker</span>
-                </label>
+                <div class="control-group">
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      [checked]="criterion.is_dealbreaker"
+                      (change)="
+                        updateCriterionDealbreaker(criterion, $any($event.target).checked, true)
+                      "
+                    />
+                    <span>Dealbreaker</span>
+                  </label>
+                </div>
               </div>
-            </div>
+            }
           </div>
         }
       </div>
@@ -73,43 +82,52 @@
 
       <div class="criteria-list">
         @for (criterion of userCriteria(); track criterion.name) {
-          <div class="criterion-item">
+          <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion.name)">
             <div class="criterion-header">
               <div class="criterion-info">
-                <h4>{{ criterion.name }}</h4>
+                <label class="checkbox-label enable-toggle">
+                  <input
+                    type="checkbox"
+                    [checked]="isCriterionEnabled(criterion.name)"
+                    (change)="toggleCriterionEnabled(criterion.name)"
+                  />
+                  <span class="criterion-name">{{ criterion.name }}</span>
+                </label>
                 <span class="criterion-strategy">{{
                   scoringStrategyLabels[criterion.scoring_strategy]
                 }}</span>
               </div>
             </div>
 
-            <div class="criterion-controls">
-              <div class="control-group">
-                <label>Weight</label>
-                <select
-                  [value]="criterion.weight"
-                  (change)="updateCriterionWeight(criterion, +$any($event.target).value, false)"
-                  class="form-control-sm"
-                >
-                  @for (weight of weightValues; track weight) {
-                    <option [value]="weight">{{ weightLabels[weight] }}</option>
-                  }
-                </select>
-              </div>
+            @if (isCriterionEnabled(criterion.name)) {
+              <div class="criterion-controls">
+                <div class="control-group">
+                  <label>Weight</label>
+                  <select
+                    [value]="criterion.weight"
+                    (change)="updateCriterionWeight(criterion, +$any($event.target).value, false)"
+                    class="form-control-sm"
+                  >
+                    @for (weight of weightValues; track weight) {
+                      <option [value]="weight">{{ weightLabels[weight] }}</option>
+                    }
+                  </select>
+                </div>
 
-              <div class="control-group">
-                <label class="checkbox-label">
-                  <input
-                    type="checkbox"
-                    [checked]="criterion.is_dealbreaker"
-                    (change)="
-                      updateCriterionDealbreaker(criterion, $any($event.target).checked, false)
-                    "
-                  />
-                  <span>Dealbreaker</span>
-                </label>
+                <div class="control-group">
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      [checked]="criterion.is_dealbreaker"
+                      (change)="
+                        updateCriterionDealbreaker(criterion, $any($event.target).checked, false)
+                      "
+                    />
+                    <span>Dealbreaker</span>
+                  </label>
+                </div>
               </div>
-            </div>
+            }
           </div>
         }
       </div>

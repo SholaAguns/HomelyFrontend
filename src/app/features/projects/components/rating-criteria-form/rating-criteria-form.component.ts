@@ -202,6 +202,9 @@ export class RatingCriteriaFormComponent implements OnInit {
     name: ['', Validators.required],
   });
 
+  // Track enabled state for each criterion by name
+  enabledCriteria = signal<Set<string>>(new Set());
+
   saving = computed(() => this.ratingCriteriaStore.saving());
   error = computed(() => this.ratingCriteriaStore.error());
 
@@ -245,6 +248,10 @@ export class RatingCriteriaFormComponent implements OnInit {
       this.uuid.set(uuid);
       this.isEditMode.set(true);
       this.ratingCriteriaStore.loadById(uuid);
+    } else {
+      // Create mode: enable system criteria by default
+      const systemNames = this.systemCriteria().map((c) => c.name);
+      this.enabledCriteria.set(new Set(systemNames));
     }
 
     if (projectUuid) {
@@ -256,6 +263,10 @@ export class RatingCriteriaFormComponent implements OnInit {
     this.form.patchValue({
       name: criteria.name,
     });
+
+    // Set enabled criteria based on loaded data
+    const enabledNames = criteria.criteria.map((c) => c.name);
+    this.enabledCriteria.set(new Set(enabledNames));
 
     // Update criterion weights and dealbreakers
     criteria.criteria.forEach((criterion: Criterion) => {
@@ -309,13 +320,30 @@ export class RatingCriteriaFormComponent implements OnInit {
     }
   }
 
+  toggleCriterionEnabled(criterionName: string): void {
+    this.enabledCriteria.update((enabled) => {
+      const updated = new Set(enabled);
+      if (updated.has(criterionName)) {
+        updated.delete(criterionName);
+      } else {
+        updated.add(criterionName);
+      }
+      return updated;
+    });
+  }
+
+  isCriterionEnabled(criterionName: string): boolean {
+    return this.enabledCriteria().has(criterionName);
+  }
+
   onSubmit(): void {
     if (!this.form.valid) {
       return;
     }
 
-    const allCriteria = [...this.systemCriteria(), ...this.userCriteria()].filter(
-      (c) => c.weight > 0 || c.is_dealbreaker
+    const enabledSet = this.enabledCriteria();
+    const allCriteria = [...this.systemCriteria(), ...this.userCriteria()].filter((c) =>
+      enabledSet.has(c.name)
     );
 
     const data = {

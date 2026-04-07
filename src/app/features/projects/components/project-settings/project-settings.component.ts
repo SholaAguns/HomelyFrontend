@@ -22,7 +22,7 @@ import { RatingCriteriaStore } from '../../store/rating-criteria.store';
 @Component({
   selector: 'app-project-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './project-settings.component.html',
   styleUrl: './project-settings.component.css',
 })
