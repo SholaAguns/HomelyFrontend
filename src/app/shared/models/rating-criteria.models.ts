@@ -12,6 +12,7 @@ export interface Criterion {
   ordinal_mapping?: Record<string, number> | null;
   thresholds?: Record<string, number> | null;
   boolean_true_is_better?: boolean;
+  enabled: boolean;
   weight: number;
   is_dealbreaker: boolean;
   dealbreaker_threshold?: Record<string, number | string | boolean> | null;

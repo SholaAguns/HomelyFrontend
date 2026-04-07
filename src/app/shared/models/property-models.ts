@@ -1,3 +1,12 @@
+export interface CriterionScoreBreakdown {
+  normalized_score: number;
+  weight: number;
+  weighted_score: number;
+  raw_value?: string | number | boolean;
+}
+
+export type RatingBreakdown = Record<string, CriterionScoreBreakdown>;
+
 export type PropertyState =
   | 'NEW'
   | 'STAGE2_IN_PROGRESS'
@@ -59,7 +68,7 @@ export interface Property {
 
   // Stage 3 results
   overall_rating: number | null;
-  rating_breakdown: Record<string, any> | null;
+  rating_breakdown: RatingBreakdown | null;
   disqualified: boolean;
   disqualification_reason: string;
 

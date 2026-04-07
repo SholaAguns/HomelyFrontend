@@ -24,14 +24,14 @@
 
       <div class="criteria-list">
         @for (criterion of systemCriteria(); track criterion.name) {
-          <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion.name)">
+          <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion)">
             <div class="criterion-header">
               <div class="criterion-info">
                 <label class="checkbox-label enable-toggle">
                   <input
                     type="checkbox"
-                    [checked]="isCriterionEnabled(criterion.name)"
-                    (change)="toggleCriterionEnabled(criterion.name)"
+                    [checked]="isCriterionEnabled(criterion)"
+                    (change)="toggleCriterionEnabled(criterion, true)"
                   />
                   <span class="criterion-name">{{ criterion.name }}</span>
                 </label>
@@ -41,7 +41,7 @@
               </div>
             </div>
 
-            @if (isCriterionEnabled(criterion.name)) {
+            @if (isCriterionEnabled(criterion)) {
               <div class="criterion-controls">
                 <div class="control-group">
                   <label>Weight</label>
@@ -82,14 +82,14 @@
 
       <div class="criteria-list">
         @for (criterion of userCriteria(); track criterion.name) {
-          <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion.name)">
+          <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion)">
             <div class="criterion-header">
               <div class="criterion-info">
                 <label class="checkbox-label enable-toggle">
                   <input
                     type="checkbox"
-                    [checked]="isCriterionEnabled(criterion.name)"
-                    (change)="toggleCriterionEnabled(criterion.name)"
+                    [checked]="isCriterionEnabled(criterion)"
+                    (change)="toggleCriterionEnabled(criterion, false)"
                   />
                   <span class="criterion-name">{{ criterion.name }}</span>
                 </label>
@@ -99,7 +99,7 @@
               </div>
             </div>
 
-            @if (isCriterionEnabled(criterion.name)) {
+            @if (isCriterionEnabled(criterion)) {
               <div class="criterion-controls">
                 <div class="control-group">
                   <label>Weight</label>

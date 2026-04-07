@@ -32,13 +32,14 @@ export class RatingCriteriaFormComponent implements OnInit {
   readonly weightValues = WEIGHT_VALUES;
   readonly scoringStrategyLabels = SCORING_STRATEGY_LABELS;
 
-  // System criteria (built-in)
+  // System criteria (built-in) - enabled by default
   systemCriteria = signal<Criterion[]>([
     {
       name: 'Price',
       source: 'property',
       field_name: 'price',
       scoring_strategy: 'inverted',
+      enabled: true,
       weight: 1.0,
       is_dealbreaker: false,
     },
@@ -47,6 +48,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       source: 'property',
       field_name: 'bedrooms',
       scoring_strategy: 'min_max',
+      enabled: true,
       weight: 1.0,
       is_dealbreaker: false,
     },
@@ -55,6 +57,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       source: 'property',
       field_name: 'bathrooms',
       scoring_strategy: 'min_max',
+      enabled: true,
       weight: 1.0,
       is_dealbreaker: false,
     },
@@ -64,6 +67,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'council_tax_band',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { A: 100, B: 90, C: 80, D: 70, E: 60, F: 50, G: 40, H: 30 },
+      enabled: true,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -74,6 +78,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       data_path: 'rating',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { Low: 100, Medium: 50, High: 0 },
+      enabled: true,
       weight: 1.0,
       is_dealbreaker: false,
     },
@@ -83,6 +88,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'epc_rating',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { A: 100, B: 90, C: 80, D: 70, E: 60, F: 50, G: 40 },
+      enabled: true,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -91,12 +97,13 @@ export class RatingCriteriaFormComponent implements OnInit {
       source: 'property',
       field_name: 'square_area',
       scoring_strategy: 'min_max',
+      enabled: true,
       weight: 0.5,
       is_dealbreaker: false,
     },
   ]);
 
-  // User criteria (configurable)
+  // User criteria (configurable) - disabled by default
   userCriteria = signal<Criterion[]>([
     {
       name: 'Garden',
@@ -104,6 +111,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'garden',
       scoring_strategy: 'boolean',
       boolean_true_is_better: true,
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -113,6 +121,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'furnished_status',
       scoring_strategy: 'boolean',
       boolean_true_is_better: true,
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -122,6 +131,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'child_suitable',
       scoring_strategy: 'boolean',
       boolean_true_is_better: true,
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -131,6 +141,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       service_name: 'broadband',
       data_path: 'avg_download_speed',
       scoring_strategy: 'min_max',
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -141,6 +152,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       data_path: 'scores.overall',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { Excellent: 100, Good: 75, Fair: 50, Poor: 25, None: 0 },
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -151,6 +163,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       data_path: 'ofsted_rating',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { Outstanding: 100, Good: 75, 'Requires Improvement': 50, Inadequate: 25 },
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -160,6 +173,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'parking',
       scoring_strategy: 'boolean',
       boolean_true_is_better: true,
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -169,6 +183,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       service_name: 'saved_locations',
       data_path: 'closest_location.distance_km',
       scoring_strategy: 'inverted',
+      enabled: false,
       weight: 1.0,
       is_dealbreaker: false,
     },
@@ -177,6 +192,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       source: 'property',
       field_name: 'epc_rating',
       scoring_strategy: 'min_max',
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -185,6 +201,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       source: 'property',
       field_name: 'lease_length',
       scoring_strategy: 'min_max',
+      enabled: false,
       weight: 0.5,
       is_dealbreaker: false,
     },
@@ -201,9 +218,6 @@ export class RatingCriteriaFormComponent implements OnInit {
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
   });
-
-  // Track enabled state for each criterion by name
-  enabledCriteria = signal<Set<string>>(new Set());
 
   saving = computed(() => this.ratingCriteriaStore.saving());
   error = computed(() => this.ratingCriteriaStore.error());
@@ -248,11 +262,8 @@ export class RatingCriteriaFormComponent implements OnInit {
       this.uuid.set(uuid);
       this.isEditMode.set(true);
       this.ratingCriteriaStore.loadById(uuid);
-    } else {
-      // Create mode: enable system criteria by default
-      const systemNames = this.systemCriteria().map((c) => c.name);
-      this.enabledCriteria.set(new Set(systemNames));
     }
+    // In create mode, system criteria already have enabled: true by default
 
     if (projectUuid) {
       this.projectUuid.set(projectUuid);
@@ -264,11 +275,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       name: criteria.name,
     });
 
-    // Set enabled criteria based on loaded data
-    const enabledNames = criteria.criteria.map((c) => c.name);
-    this.enabledCriteria.set(new Set(enabledNames));
-
-    // Update criterion weights and dealbreakers
+    // Update criterion properties from loaded data
     criteria.criteria.forEach((criterion: Criterion) => {
       // Find in system criteria
       const systemIndex = this.systemCriteria().findIndex((c) => c.name === criterion.name);
@@ -320,20 +327,20 @@ export class RatingCriteriaFormComponent implements OnInit {
     }
   }
 
-  toggleCriterionEnabled(criterionName: string): void {
-    this.enabledCriteria.update((enabled) => {
-      const updated = new Set(enabled);
-      if (updated.has(criterionName)) {
-        updated.delete(criterionName);
-      } else {
-        updated.add(criterionName);
-      }
-      return updated;
-    });
+  toggleCriterionEnabled(criterion: Criterion, isSystem: boolean): void {
+    if (isSystem) {
+      this.systemCriteria.update((list) =>
+        list.map((c) => (c.name === criterion.name ? { ...c, enabled: !c.enabled } : c))
+      );
+    } else {
+      this.userCriteria.update((list) =>
+        list.map((c) => (c.name === criterion.name ? { ...c, enabled: !c.enabled } : c))
+      );
+    }
   }
 
-  isCriterionEnabled(criterionName: string): boolean {
-    return this.enabledCriteria().has(criterionName);
+  isCriterionEnabled(criterion: Criterion): boolean {
+    return criterion.enabled;
   }
 
   onSubmit(): void {
@@ -341,10 +348,8 @@ export class RatingCriteriaFormComponent implements OnInit {
       return;
     }
 
-    const enabledSet = this.enabledCriteria();
-    const allCriteria = [...this.systemCriteria(), ...this.userCriteria()].filter((c) =>
-      enabledSet.has(c.name)
-    );
+    // Send all criteria (both enabled and disabled)
+    const allCriteria = [...this.systemCriteria(), ...this.userCriteria()];
 
     const data = {
       name: this.form.value.name,

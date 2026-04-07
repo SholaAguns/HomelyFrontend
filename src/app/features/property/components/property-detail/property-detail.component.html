@@ -193,25 +193,97 @@
       </div>
     </div>
 
-    <!-- Rating Information -->
-    @if (property()!.overall_rating !== null) {
-      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-xl font-semibold">Rating</h2>
-        <div class="mb-4">
-          <span class="text-sm text-gray-600">Overall Rating</span>
-          <div class="text-2xl font-bold text-green-600">{{ property()!.overall_rating }}/10</div>
-        </div>
-        @if (property()!.disqualified) {
-          <div class="rounded bg-red-50 p-3 text-red-800">
-            <strong>Disqualified:</strong> {{ property()!.disqualification_reason }}
-          </div>
-        }
-      </div>
-    }
-
     <!-- Context Reports Section -->
     <div class="mt-8">
       <app-context-reports [propertyId]="property()!.uuid" />
+    </div>
+
+    <!-- Rating Section (Stage 3) -->
+    <div class="mt-8 rounded-lg border border-gray-200 bg-white p-6">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-xl font-semibold">Property Rating (Stage 3)</h2>
+
+        @if (property()!.state === 'STAGE2_COMPLETE' || property()!.state === 'STAGE3_COMPLETE') {
+          <button
+            (click)="runStage3()"
+            class="rounded-lg bg-purple-600 px-4 py-2 text-white transition-colors hover:bg-purple-700"
+            [disabled]="property()!.state === 'STAGE3_IN_PROGRESS'"
+          >
+            {{ property()!.state === 'STAGE3_COMPLETE' ? 'Recalculate Rating' : 'Run Rating' }}
+          </button>
+        }
+      </div>
+
+      @if (property()!.state === 'NEW' || property()!.state === 'STAGE2_IN_PROGRESS') {
+        <div class="rounded bg-gray-50 p-4 text-gray-600">
+          Complete Stage 2 (Context Reports) before running rating calculations.
+        </div>
+      }
+
+      @if (property()!.state === 'STAGE3_IN_PROGRESS') {
+        <div class="rounded bg-blue-50 p-4">
+          <div class="flex items-center gap-3">
+            <div
+              class="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"
+            ></div>
+            <span class="text-blue-800">Calculating property rating...</span>
+          </div>
+        </div>
+      }
+
+      @if (property()!.state === 'STAGE3_COMPLETE') {
+        @if (property()!.disqualified) {
+          <div class="rounded bg-red-50 p-4">
+            <h3 class="mb-2 font-semibold text-red-900">Property Disqualified</h3>
+            <p class="text-red-800">{{ property()!.disqualification_reason }}</p>
+          </div>
+        } @else if (property()!.overall_rating !== null) {
+          <div class="space-y-4">
+            <!-- Overall Rating -->
+            <div class="rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600">Overall Rating</p>
+                  <p class="text-4xl font-bold text-purple-600">
+                    {{ property()!.overall_rating?.toFixed(2) }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm text-gray-600">Out of</p>
+                  <p class="text-2xl font-semibold text-gray-700">100</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rating Breakdown -->
+            @if (property()!.rating_breakdown) {
+              <div>
+                <h3 class="mb-3 font-semibold text-gray-900">Rating Breakdown</h3>
+                <div class="space-y-2">
+                  @for (item of property()!.rating_breakdown | keyvalue; track item.key) {
+                    <div class="flex items-center justify-between rounded bg-gray-50 px-4 py-2">
+                      <span class="font-medium text-gray-700">{{ item.key }}</span>
+                      <div class="flex items-center gap-4">
+                        <span class="text-sm text-gray-600">
+                          Score: {{ item.value.normalized_score?.toFixed(2) }}
+                        </span>
+                        <span class="text-sm text-gray-600"> Weight: {{ item.value.weight }} </span>
+                        <span class="font-semibold text-purple-600">
+                          {{ item.value.weighted_score?.toFixed(2) }}
+                        </span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="rounded bg-yellow-50 p-4 text-yellow-800">
+            Rating calculation completed but no rating data available.
+          </div>
+        }
+      }
     </div>
 
     <!-- Image Gallery -->
