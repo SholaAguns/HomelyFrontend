@@ -74,7 +74,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'Crime Rating',
       source: 'context',
-      service_name: 'crime',
+      field_name: 'crime',
       data_path: 'rating',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { Low: 100, Medium: 50, High: 0 },
@@ -138,7 +138,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'Broadband Speed',
       source: 'context',
-      service_name: 'broadband',
+      field_name: 'broadband',
       data_path: 'avg_download_speed',
       scoring_strategy: 'min_max',
       enabled: false,
@@ -148,7 +148,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'Mobile Coverage',
       source: 'context',
-      service_name: 'mobile',
+      field_name: 'mobile',
       data_path: 'scores.overall',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { Excellent: 100, Good: 75, Fair: 50, Poor: 25, None: 0 },
@@ -159,7 +159,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'School Rating',
       source: 'context',
-      service_name: 'schools',
+      field_name: 'schools',
       data_path: 'ofsted_rating',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { Outstanding: 100, Good: 75, 'Requires Improvement': 50, Inadequate: 25 },
@@ -180,7 +180,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'Distance to Saved Location',
       source: 'calculated',
-      service_name: 'saved_locations',
+      field_name: 'saved_locations',
       data_path: 'closest_location.distance_km',
       scoring_strategy: 'inverted',
       enabled: false,

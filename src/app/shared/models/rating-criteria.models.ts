@@ -6,7 +6,6 @@ export interface Criterion {
   name: string;
   source: CriterionSource;
   field_name?: string;
-  service_name?: string;
   data_path?: string;
   scoring_strategy: ScoringStrategy;
   ordinal_mapping?: Record<string, number> | null;
