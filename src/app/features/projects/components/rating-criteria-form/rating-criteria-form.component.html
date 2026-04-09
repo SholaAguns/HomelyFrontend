@@ -43,12 +43,13 @@
                 <div class="control-group">
                   <label>Weight</label>
                   <select
-                    [value]="criterion.weight"
                     (change)="updateCriterionWeight(criterion, +$any($event.target).value, true)"
                     class="form-control-sm"
                   >
                     @for (weight of weightValues; track weight) {
-                      <option [value]="weight">{{ weightLabels[weight] }}</option>
+                      <option [value]="weight" [selected]="criterion.weight === weight">
+                        {{ weightLabels[weight] }}
+                      </option>
                     }
                   </select>
                 </div>
@@ -98,12 +99,13 @@
                 <div class="control-group">
                   <label>Weight</label>
                   <select
-                    [value]="criterion.weight"
                     (change)="updateCriterionWeight(criterion, +$any($event.target).value, false)"
                     class="form-control-sm"
                   >
                     @for (weight of weightValues; track weight) {
-                      <option [value]="weight">{{ weightLabels[weight] }}</option>
+                      <option [value]="weight" [selected]="criterion.weight === weight">
+                        {{ weightLabels[weight] }}
+                      </option>
                     }
                   </select>
                 </div>

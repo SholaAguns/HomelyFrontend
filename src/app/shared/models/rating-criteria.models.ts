@@ -39,13 +39,13 @@ export type UpdateRatingCriteriaDto = CreateRatingCriteriaDto;
 
 // Weight display labels
 export const WEIGHT_LABELS: Record<number, string> = {
-  0.0: 'Not Important',
+  0.25: 'Not Important',
   0.5: 'Nice to Have',
   1.0: 'Important',
   1.5: 'Very Important',
 };
 
-export const WEIGHT_VALUES = [0.0, 0.5, 1.0, 1.5];
+export const WEIGHT_VALUES = [0.25, 0.5, 1.0, 1.5];
 
 // Scoring strategy labels
 export const SCORING_STRATEGY_LABELS: Record<ScoringStrategy, string> = {

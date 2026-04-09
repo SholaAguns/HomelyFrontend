@@ -278,12 +278,20 @@ export class RatingCriteriaFormComponent implements OnInit {
 
     // Update criterion properties from loaded data
     criteria.criteria.forEach((criterion: Criterion) => {
+      // Ensure weight is a number
+      const normalizedCriterion: Criterion = {
+        ...criterion,
+        weight: Number(criterion.weight),
+        is_dealbreaker: Boolean(criterion.is_dealbreaker),
+        enabled: Boolean(criterion.enabled),
+      };
+
       // Find in system criteria
       const systemIndex = this.systemCriteria().findIndex((c) => c.name === criterion.name);
       if (systemIndex >= 0) {
         this.systemCriteria.update((list) => {
           const updated = [...list];
-          updated[systemIndex] = { ...updated[systemIndex], ...criterion };
+          updated[systemIndex] = { ...updated[systemIndex], ...normalizedCriterion };
           return updated;
         });
       }
@@ -293,7 +301,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       if (userIndex >= 0) {
         this.userCriteria.update((list) => {
           const updated = [...list];
-          updated[userIndex] = { ...updated[userIndex], ...criterion };
+          updated[userIndex] = { ...updated[userIndex], ...normalizedCriterion };
           return updated;
         });
       }
