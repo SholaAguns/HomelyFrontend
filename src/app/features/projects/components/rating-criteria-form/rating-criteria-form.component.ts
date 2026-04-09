@@ -63,7 +63,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     },
     {
       name: 'Council Tax Band',
-      source: 'property',
+      source: 'context',
       field_name: 'council_tax_band',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { A: 100, B: 90, C: 80, D: 70, E: 60, F: 50, G: 40, H: 30 },
@@ -179,7 +179,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     },
     {
       name: 'Distance to Saved Location',
-      source: 'context',
+      source: 'calculated',
       service_name: 'saved_locations',
       data_path: 'closest_location.distance_km',
       scoring_strategy: 'inverted',
