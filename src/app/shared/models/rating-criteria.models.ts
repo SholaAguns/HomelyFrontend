@@ -1,16 +1,10 @@
-export type CriterionSource = 'property' | 'context' | 'calculated';
-export type ScoringStrategy = 'min_max' | 'inverted' | 'ordinal' | 'boolean' | 'threshold';
+export type CriterionSource = 'property' | 'context_report';
 
 export interface Criterion {
   id?: number;
   name: string;
   source: CriterionSource;
   field_name?: string;
-  data_path?: string;
-  scoring_strategy: ScoringStrategy;
-  ordinal_mapping?: Record<string, number> | null;
-  thresholds?: Record<string, number> | null;
-  boolean_true_is_better?: boolean;
   enabled: boolean;
   weight: number;
   is_dealbreaker: boolean;
@@ -46,18 +40,8 @@ export const WEIGHT_LABELS: Record<number, string> = {
 
 export const WEIGHT_VALUES = [0.25, 0.5, 1.0, 1.5];
 
-// Scoring strategy labels
-export const SCORING_STRATEGY_LABELS: Record<ScoringStrategy, string> = {
-  min_max: 'Min-Max (Higher Better)',
-  inverted: 'Inverted (Lower Better)',
-  ordinal: 'Ordinal Mapping',
-  boolean: 'Boolean',
-  threshold: 'Threshold-Based',
-};
-
 // Criterion source labels
 export const CRITERION_SOURCE_LABELS: Record<CriterionSource, string> = {
   property: 'Property Field',
-  context: 'Context Data',
-  calculated: 'Calculated Value',
+  context_report: 'Context Report',
 };

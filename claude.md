@@ -12,10 +12,12 @@
 
 - when implementation decisions are made that differ from the plan update the planning documentation to reflect that
 
-- when beginning work on a task mark it as "- in progress" and once comeplete mark it as "- done"
+- when beginning work on a task mark it as "- in progress" and once complete mark it as "- done"
 
 - always seek my explicit approval before running any migrations
 
 - use descriptive names for variables e.g. authService instead of just service, propertyIds not just ids etc
 
 - use descriptive names for tests that explain the consequence and action taken. e.g. "should call createUser request on register"
+
+- error message displays should be handled through toaster not by embedding into page html content
