@@ -64,7 +64,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'Council Tax Band',
       source: 'context',
-      field_name: 'council_tax_band',
+      field_name: 'council_tax',
       scoring_strategy: 'ordinal',
       ordinal_mapping: { A: 100, B: 90, C: 80, D: 70, E: 60, F: 50, G: 40, H: 30 },
       enabled: true,
