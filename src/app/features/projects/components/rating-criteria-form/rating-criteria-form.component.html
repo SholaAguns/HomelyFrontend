@@ -196,60 +196,62 @@
                   <p class="mt-2 text-xs text-red-600">Select one saved location</p>
                 }
 
-                @for (criterion of savedLocationCriteria(); track criterion.saved_location_uuid) {
-                  <div class="criterion-item">
-                    <div class="criterion-header">
-                      <div class="criterion-info">
-                        <span class="criterion-name">{{ criterion.name }}</span>
-                      </div>
-                      <button
-                        type="button"
-                        (click)="removeSavedLocationCriterion(criterion.saved_location_uuid!)"
-                        class="text-red-600 hover:text-red-800"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div class="criterion-controls">
-                      <div class="control-group">
-                        <label>Weight</label>
-                        <select
-                          (change)="
-                            updateCriterionWeight(
-                              criterion,
-                              +$any($event.target).value,
-                              'savedLocation'
-                            )
-                          "
-                          class="form-control-sm"
+                <div class="criteria-list">
+                  @for (criterion of savedLocationCriteria(); track criterion.saved_location_uuid) {
+                    <div class="criterion-item">
+                      <div class="criterion-header">
+                        <div class="criterion-info">
+                          <span class="criterion-name">{{ criterion.name }}</span>
+                        </div>
+                        <button
+                          type="button"
+                          (click)="removeSavedLocationCriterion(criterion.saved_location_uuid!)"
+                          class="text-red-600 hover:text-red-800"
                         >
-                          @for (weight of weightValues; track weight) {
-                            <option [value]="weight" [selected]="criterion.weight === weight">
-                              {{ weightLabels[weight] }}
-                            </option>
-                          }
-                        </select>
+                          Remove
+                        </button>
                       </div>
-
-                      <div class="control-group">
-                        <label class="checkbox-label">
-                          <input
-                            type="checkbox"
-                            [checked]="criterion.is_dealbreaker"
+                      <div class="criterion-controls">
+                        <div class="control-group">
+                          <label>Weight</label>
+                          <select
                             (change)="
-                              updateCriterionDealbreaker(
+                              updateCriterionWeight(
                                 criterion,
-                                $any($event.target).checked,
+                                +$any($event.target).value,
                                 'savedLocation'
                               )
                             "
-                          />
-                          <span>Dealbreaker</span>
-                        </label>
+                            class="form-control-sm"
+                          >
+                            @for (weight of weightValues; track weight) {
+                              <option [value]="weight" [selected]="criterion.weight === weight">
+                                {{ weightLabels[weight] }}
+                              </option>
+                            }
+                          </select>
+                        </div>
+
+                        <div class="control-group">
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              [checked]="criterion.is_dealbreaker"
+                              (change)="
+                                updateCriterionDealbreaker(
+                                  criterion,
+                                  $any($event.target).checked,
+                                  'savedLocation'
+                                )
+                              "
+                            />
+                            <span>Dealbreaker</span>
+                          </label>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
+                  }
+                </div>
               }
             </div>
           }
