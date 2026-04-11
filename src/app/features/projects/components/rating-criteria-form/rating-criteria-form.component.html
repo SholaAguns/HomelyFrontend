@@ -256,6 +256,102 @@
             </div>
           }
         </div>
+        <div class="multi-type-criteria-config">
+          <div class="criterion-item" [class.disabled]="!isPOITypeEnabled()">
+            <div class="criterion-header">
+              <div class="criterion-info">
+                <label class="checkbox-label enable-toggle">
+                  <input
+                    type="checkbox"
+                    [checked]="isPOITypeEnabled()"
+                    (change)="toggleIsPOITypeEnabled()"
+                  />
+                  <span class="criterion-name">Distance to a closest Place of Interest</span>
+                </label>
+              </div>
+            </div>
+
+            @if (isPOITypeEnabled()) {
+              <div class="border-t border-gray-200 bg-blue-50 p-4">
+                <!-- Add POI Type Dropdown -->
+                @if (availablePoiTypesForSelection.length > 0) {
+                  <div>
+                    <label class="mb-2 block text-sm font-medium text-gray-700">Add POI Type</label>
+                    <select
+                      #poiSelect
+                      (change)="addPoiCriterion($any(poiSelect.value)); poiSelect.value = ''"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select a POI type to add...</option>
+                      @for (poiType of availablePoiTypesForSelection; track poiType) {
+                        <option [value]="poiType">
+                          {{ POI_TYPE_LABELS[poiType] }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                }
+
+                @if (selectedPoiCategories().length === 0) {
+                  <p class="mt-2 text-xs text-red-600">Select at least one POI type</p>
+                }
+
+                <div class="criteria-list">
+                  @for (criterion of poiCriteria(); track criterion.poi_category) {
+                    <div class="criterion-item">
+                      <div class="criterion-header">
+                        <div class="criterion-info">
+                          <span class="criterion-name">{{ criterion.name }}</span>
+                        </div>
+                        <button
+                          type="button"
+                          (click)="removePoiCriterion(criterion.poi_category!)"
+                          class="text-red-600 hover:text-red-800"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div class="criterion-controls">
+                        <div class="control-group">
+                          <label>Weight</label>
+                          <select
+                            (change)="
+                              updateCriterionWeight(criterion, +$any($event.target).value, 'poi')
+                            "
+                            class="form-control-sm"
+                          >
+                            @for (weight of weightValues; track weight) {
+                              <option [value]="weight" [selected]="criterion.weight === weight">
+                                {{ weightLabels[weight] }}
+                              </option>
+                            }
+                          </select>
+                        </div>
+
+                        <div class="control-group">
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              [checked]="criterion.is_dealbreaker"
+                              (change)="
+                                updateCriterionDealbreaker(
+                                  criterion,
+                                  $any($event.target).checked,
+                                  'poi'
+                                )
+                              "
+                            />
+                            <span>Dealbreaker</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
       </div>
     </div>
 

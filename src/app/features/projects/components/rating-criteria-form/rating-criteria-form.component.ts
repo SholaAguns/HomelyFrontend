@@ -124,6 +124,8 @@ export class RatingCriteriaFormComponent implements OnInit {
   ]);
 
   savedLocationCriteria = signal<Criterion[]>([]);
+  poiCriteria = signal<Criterion[]>([]);
+  selectedPoiCategories = signal<string[]>([]);
 
   readonly POI_TYPE_LABELS = POI_TYPE_LABELS;
   readonly poiTypeKeys = Object.keys(POI_TYPE_LABELS) as PoiType[];
@@ -226,6 +228,18 @@ export class RatingCriteriaFormComponent implements OnInit {
         return;
       }
 
+      // Check if it's a POI criterion
+      if (
+        criterion.source === 'context_report' &&
+        criterion.field_name === 'poi' &&
+        criterion.poi_category
+      ) {
+        this.poiCriteria.update((list) => [...list, normalizedCriterion]);
+        this.selectedPoiCategories.update((categories) => [...categories, criterion.poi_category!]);
+        this.isPOITypeEnabled.set(true);
+        return;
+      }
+
       // Find in default criteria
       const defaultIndex = this.defaultCriteria().findIndex((c) => c.name === criterion.name);
       if (defaultIndex >= 0) {
@@ -285,6 +299,32 @@ export class RatingCriteriaFormComponent implements OnInit {
     this.selectedSavedLocationUuids.update((uuids) => uuids.filter((id) => id !== uuid));
   }
 
+  get availablePoiTypesForSelection(): PoiType[] {
+    return this.poiTypeKeys.filter((type) => !this.selectedPoiCategories().includes(type));
+  }
+
+  addPoiCriterion(poiCategory: PoiType): void {
+    const poiCriterion: Criterion = {
+      name: `Distance to ${POI_TYPE_LABELS[poiCategory]}`,
+      source: 'context_report',
+      field_name: 'poi',
+      poi_category: poiCategory,
+      enabled: true,
+      weight: 1.0,
+      is_dealbreaker: false,
+    };
+
+    this.poiCriteria.update((list) => [...list, poiCriterion]);
+    this.selectedPoiCategories.update((categories) => [...categories, poiCategory]);
+  }
+
+  removePoiCriterion(poiCategory: string): void {
+    this.poiCriteria.update((criteria) => criteria.filter((c) => c.poi_category !== poiCategory));
+    this.selectedPoiCategories.update((categories) =>
+      categories.filter((cat) => cat !== poiCategory)
+    );
+  }
+
   updateCriterionWeight(criterion: Criterion, weight: number, criterionListType: string): void {
     switch (criterionListType) {
       case 'default':
@@ -299,6 +339,11 @@ export class RatingCriteriaFormComponent implements OnInit {
         break;
       case 'savedLocation':
         this.savedLocationCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
+        );
+        break;
+      case 'poi':
+        this.poiCriteria.update((list) =>
           list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
         );
         break;
@@ -323,6 +368,11 @@ export class RatingCriteriaFormComponent implements OnInit {
         break;
       case 'savedLocation':
         this.savedLocationCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
+        );
+        break;
+      case 'poi':
+        this.poiCriteria.update((list) =>
           list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
         );
         break;
@@ -363,6 +413,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       ...this.defaultCriteria(),
       ...this.additionalCriteria(),
       ...this.savedLocationCriteria(),
+      ...this.poiCriteria(),
     ];
 
     const data = {
