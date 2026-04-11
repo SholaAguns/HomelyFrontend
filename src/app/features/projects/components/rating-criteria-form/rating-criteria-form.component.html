@@ -62,7 +62,11 @@
                       type="checkbox"
                       [checked]="criterion.is_dealbreaker"
                       (change)="
-                        updateCriterionDealbreaker(criterion, $any($event.target).checked, true)
+                        updateCriterionDealbreaker(
+                          criterion,
+                          $any($event.target).checked,
+                          'default'
+                        )
                       "
                     />
                     <span>Dealbreaker</span>
@@ -120,7 +124,11 @@
                       type="checkbox"
                       [checked]="criterion.is_dealbreaker"
                       (change)="
-                        updateCriterionDealbreaker(criterion, $any($event.target).checked, false)
+                        updateCriterionDealbreaker(
+                          criterion,
+                          $any($event.target).checked,
+                          'additional'
+                        )
                       "
                     />
                     <span>Dealbreaker</span>
@@ -165,7 +173,10 @@
                     <select
                       #locationSelect
                       (change)="
-                        addSavedLocationCriterion(locationSelect.value, locationSelect.name);
+                        addSavedLocationCriterion(
+                          locationSelect.value,
+                          getSelectedLocation(locationSelect.value)?.name || ''
+                        );
                         locationSelect.value = ''
                       "
                       class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
@@ -191,6 +202,13 @@
                       <div class="criterion-info">
                         <span class="criterion-name">{{ criterion.name }}</span>
                       </div>
+                      <button
+                        type="button"
+                        (click)="removeSavedLocationCriterion(criterion.saved_location_uuid!)"
+                        class="text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
                     </div>
                     <div class="criterion-controls">
                       <div class="control-group">
@@ -200,7 +218,7 @@
                             updateCriterionWeight(
                               criterion,
                               +$any($event.target).value,
-                              'multiType'
+                              'savedLocation'
                             )
                           "
                           class="form-control-sm"
@@ -222,7 +240,7 @@
                               updateCriterionDealbreaker(
                                 criterion,
                                 $any($event.target).checked,
-                                false
+                                'savedLocation'
                               )
                             "
                           />

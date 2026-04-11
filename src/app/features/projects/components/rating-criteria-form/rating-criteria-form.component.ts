@@ -125,25 +125,6 @@ export class RatingCriteriaFormComponent implements OnInit {
 
   savedLocationCriteria = signal<Criterion[]>([]);
 
-  multiTypeCriteriaTypes = signal<Criterion[]>([
-    {
-      name: 'Distance to a Saved Location',
-      source: 'context_report',
-      field_name: 'saved_locations',
-      enabled: false,
-      weight: 1.0,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Distance to a Place of Interest',
-      source: 'context_report',
-      field_name: 'poi',
-      enabled: false,
-      weight: 1.0,
-      is_dealbreaker: false,
-    },
-  ]);
-
   readonly POI_TYPE_LABELS = POI_TYPE_LABELS;
   readonly poiTypeKeys = Object.keys(POI_TYPE_LABELS) as PoiType[];
 
@@ -230,6 +211,21 @@ export class RatingCriteriaFormComponent implements OnInit {
         enabled: Boolean(criterion.enabled),
       };
 
+      // Check if it's a saved location criterion
+      if (
+        criterion.source === 'context_report' &&
+        criterion.field_name === 'saved_locations' &&
+        criterion.saved_location_uuid
+      ) {
+        this.savedLocationCriteria.update((list) => [...list, normalizedCriterion]);
+        this.selectedSavedLocationUuids.update((uuids) => [
+          ...uuids,
+          criterion.saved_location_uuid!,
+        ]);
+        this.isSavedLocationTypeEnabled.set(true);
+        return;
+      }
+
       // Find in default criteria
       const defaultIndex = this.defaultCriteria().findIndex((c) => c.name === criterion.name);
       if (defaultIndex >= 0) {
@@ -312,16 +308,24 @@ export class RatingCriteriaFormComponent implements OnInit {
   updateCriterionDealbreaker(
     criterion: Criterion,
     isDealbreaker: boolean,
-    isDefault: boolean
+    criterionListType: string
   ): void {
-    if (isDefault) {
-      this.defaultCriteria.update((list) =>
-        list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
-      );
-    } else {
-      this.additionalCriteria.update((list) =>
-        list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
-      );
+    switch (criterionListType) {
+      case 'default':
+        this.defaultCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
+        );
+        break;
+      case 'additional':
+        this.additionalCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
+        );
+        break;
+      case 'savedLocation':
+        this.savedLocationCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
+        );
+        break;
     }
   }
 
