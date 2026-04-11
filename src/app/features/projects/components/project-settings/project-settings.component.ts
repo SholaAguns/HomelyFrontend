@@ -139,7 +139,11 @@ export class ProjectSettingsComponent implements OnInit {
     this.poiTypes.set([...options.poi_types]);
     this.poiRadius.set(options.poi_search_radius_meters);
     this.enableSavedLocations.set(options.enable_saved_locations);
-    this.savedLocationUuids.set([...options.saved_location_uuids]);
+
+    const validUuids = options.saved_location_uuids.filter((uuid) =>
+      this.savedLocations().some((loc) => loc.uuid === uuid)
+    );
+    this.savedLocationUuids.set(validUuids);
   }
 
   saveProjectDetails() {
@@ -165,7 +169,7 @@ export class ProjectSettingsComponent implements OnInit {
       poi_types: this.poiTypes(),
       poi_search_radius_meters: this.poiRadius(),
       enable_saved_locations: this.enableSavedLocations(),
-      saved_location_uuids: this.savedLocationUuids(),
+      saved_location_uuids: this.enableSavedLocations() ? this.savedLocationUuids() : [],
     };
 
     this.projectStore.setContextOptions({ uuid: this.projectUuid, data: updateDto });
