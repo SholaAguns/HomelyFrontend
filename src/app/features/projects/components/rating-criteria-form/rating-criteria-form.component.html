@@ -131,47 +131,6 @@
           </div>
         }
       </div>
-      <div class="criteria-list">
-        @for (criterion of multiTypeCriteria(); track criterion.name) {
-          <div class="criterion-item">
-            <div class="criterion-header">
-              <div class="criterion-info">
-                <span class="criterion-name">{{ criterion.name }}</span>
-              </div>
-            </div>
-            <div class="criterion-controls">
-              <div class="control-group">
-                <label>Weight</label>
-                <select
-                  (change)="
-                    updateCriterionWeight(criterion, +$any($event.target).value, 'multiType')
-                  "
-                  class="form-control-sm"
-                >
-                  @for (weight of weightValues; track weight) {
-                    <option [value]="weight" [selected]="criterion.weight === weight">
-                      {{ weightLabels[weight] }}
-                    </option>
-                  }
-                </select>
-              </div>
-
-              <div class="control-group">
-                <label class="checkbox-label">
-                  <input
-                    type="checkbox"
-                    [checked]="criterion.is_dealbreaker"
-                    (change)="
-                      updateCriterionDealbreaker(criterion, $any($event.target).checked, false)
-                    "
-                  />
-                  <span>Dealbreaker</span>
-                </label>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
       <div class="multi-type-criteria-config">
         <div class="criterion-item" [class.disabled]="!isSavedLocationTypeEnabled()">
           <div class="criterion-header">
@@ -224,6 +183,54 @@
 
                 @if (selectedSavedLocationUuids().length === 0) {
                   <p class="mt-2 text-xs text-red-600">Select one saved location</p>
+                }
+
+                @for (criterion of savedLocationCriteria(); track criterion.saved_location_uuid) {
+                  <div class="criterion-item">
+                    <div class="criterion-header">
+                      <div class="criterion-info">
+                        <span class="criterion-name">{{ criterion.name }}</span>
+                      </div>
+                    </div>
+                    <div class="criterion-controls">
+                      <div class="control-group">
+                        <label>Weight</label>
+                        <select
+                          (change)="
+                            updateCriterionWeight(
+                              criterion,
+                              +$any($event.target).value,
+                              'multiType'
+                            )
+                          "
+                          class="form-control-sm"
+                        >
+                          @for (weight of weightValues; track weight) {
+                            <option [value]="weight" [selected]="criterion.weight === weight">
+                              {{ weightLabels[weight] }}
+                            </option>
+                          }
+                        </select>
+                      </div>
+
+                      <div class="control-group">
+                        <label class="checkbox-label">
+                          <input
+                            type="checkbox"
+                            [checked]="criterion.is_dealbreaker"
+                            (change)="
+                              updateCriterionDealbreaker(
+                                criterion,
+                                $any($event.target).checked,
+                                false
+                              )
+                            "
+                          />
+                          <span>Dealbreaker</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 }
               }
             </div>

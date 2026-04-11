@@ -123,7 +123,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     },
   ]);
 
-  multiTypeCriteria = signal<Criterion[]>([]);
+  savedLocationCriteria = signal<Criterion[]>([]);
 
   multiTypeCriteriaTypes = signal<Criterion[]>([
     {
@@ -263,8 +263,11 @@ export class RatingCriteriaFormComponent implements OnInit {
   }
 
   addSavedLocationCriterion(uuid: string, name: string): void {
+    console.log(`Adding ${name}`);
+    console.log(`Addig id ${uuid}`);
+
     let savedLocationCriterion: Criterion = {
-      name: `Distance to ${name}`,
+      name: 'Distance to ' + name,
       source: 'context_report',
       field_name: 'saved_locations',
       saved_location_uuid: uuid,
@@ -272,13 +275,15 @@ export class RatingCriteriaFormComponent implements OnInit {
       weight: 1.0,
       is_dealbreaker: false,
     };
+    console.log('Saved Location Criterion:');
+    console.log('%j', savedLocationCriterion);
 
-    this.multiTypeCriteria.update((list) => [...list, savedLocationCriterion]);
+    this.savedLocationCriteria.update((list) => [...list, savedLocationCriterion]);
     this.selectedSavedLocationUuids.update((uuids) => [...uuids, uuid]);
   }
 
   removeSavedLocationCriterion(uuid: string): void {
-    this.multiTypeCriteria.update((criteria) =>
+    this.savedLocationCriteria.update((criteria) =>
       criteria.filter((c) => c.saved_location_uuid !== uuid)
     );
     this.selectedSavedLocationUuids.update((uuids) => uuids.filter((id) => id !== uuid));
@@ -296,8 +301,8 @@ export class RatingCriteriaFormComponent implements OnInit {
           list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
         );
         break;
-      case 'multiType':
-        this.multiTypeCriteria.update((list) =>
+      case 'savedLocation':
+        this.savedLocationCriteria.update((list) =>
           list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
         );
         break;
@@ -353,7 +358,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     const allCriteria = [
       ...this.defaultCriteria(),
       ...this.additionalCriteria(),
-      ...this.multiTypeCriteria(),
+      ...this.savedLocationCriteria(),
     ];
 
     const data = {
