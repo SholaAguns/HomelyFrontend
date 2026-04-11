@@ -9,6 +9,9 @@ import {
   WEIGHT_LABELS,
   WEIGHT_VALUES,
 } from '../../../../shared/models/rating-criteria.models';
+import { PoiType, POI_TYPE_LABELS } from '../../../../shared/models/context-options.models';
+import { SavedLocation } from '../../../../shared/models/saved-location-models';
+import { SavedLocationService } from '../../../../core/services/saved-location.service';
 
 @Component({
   selector: 'app-rating-criteria-form',
@@ -22,16 +25,26 @@ export class RatingCriteriaFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   protected ratingCriteriaStore = inject(RatingCriteriaStore);
+  private savedLocationService = inject(SavedLocationService);
 
   uuid = signal<string | null>(null);
   isEditMode = signal(false);
   projectUuid = signal<string | null>(null);
+  loadingSavedLocations = signal(false);
+  availableSavedLocations = signal<SavedLocation[]>([]);
+  selectedSavedLocationUuids = signal<string[]>([]);
+
+  isPOITypeEnabled = signal<boolean>(false);
+  isSavedLocationTypeEnabled = signal<boolean>(false);
+
+  private formPatched = signal<boolean>(false);
+  private previousSaving = signal<boolean>(false);
 
   readonly weightLabels = WEIGHT_LABELS;
   readonly weightValues = WEIGHT_VALUES;
 
   // System criteria (built-in) - enabled by default
-  systemCriteria = signal<Criterion[]>([
+  defaultCriteria = signal<Criterion[]>([
     {
       name: 'Price',
       source: 'property',
@@ -59,7 +72,7 @@ export class RatingCriteriaFormComponent implements OnInit {
   ]);
 
   // User criteria (configurable) - disabled by default
-  userCriteria = signal<Criterion[]>([
+  additionalCriteria = signal<Criterion[]>([
     {
       name: 'Garden',
       source: 'property',
@@ -108,6 +121,11 @@ export class RatingCriteriaFormComponent implements OnInit {
       weight: 0.5,
       is_dealbreaker: false,
     },
+  ]);
+
+  multiTypeCriteria = signal<Criterion[]>([]);
+
+  multiTypeCriteriaTypes = signal<Criterion[]>([
     {
       name: 'Distance to a Saved Location',
       source: 'context_report',
@@ -119,12 +137,15 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'Distance to a Place of Interest',
       source: 'context_report',
-      field_name: 'saved_locations',
+      field_name: 'poi',
       enabled: false,
       weight: 1.0,
       is_dealbreaker: false,
     },
   ]);
+
+  readonly POI_TYPE_LABELS = POI_TYPE_LABELS;
+  readonly poiTypeKeys = Object.keys(POI_TYPE_LABELS) as PoiType[];
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
@@ -133,16 +154,13 @@ export class RatingCriteriaFormComponent implements OnInit {
   saving = computed(() => this.ratingCriteriaStore.saving());
   error = computed(() => this.ratingCriteriaStore.error());
 
-  private formPatched = false;
-  private previousSaving = false;
-
   constructor() {
     effect(() => {
       const uuid = this.uuid();
-      if (uuid && !this.formPatched) {
+      if (uuid && !this.formPatched()) {
         const criteria = this.ratingCriteriaStore.getByUuid()(uuid);
         if (criteria) {
-          this.formPatched = true;
+          this.formPatched.set(true);
           this.patchForm(criteria);
         }
       }
@@ -152,7 +170,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       const currentSaving = this.ratingCriteriaStore.saving();
       const currentError = this.ratingCriteriaStore.error();
 
-      if (this.previousSaving && !currentSaving && !currentError) {
+      if (this.previousSaving() && !currentSaving && !currentError) {
         const projectUuid = this.projectUuid();
         if (projectUuid) {
           this.router.navigate(['/projects', projectUuid, 'settings']);
@@ -161,7 +179,7 @@ export class RatingCriteriaFormComponent implements OnInit {
         }
       }
 
-      this.previousSaving = currentSaving;
+      this.previousSaving.set(currentSaving);
     });
   }
 
@@ -179,6 +197,22 @@ export class RatingCriteriaFormComponent implements OnInit {
     if (projectUuid) {
       this.projectUuid.set(projectUuid);
     }
+
+    this.loadSavedLocations();
+  }
+
+  private loadSavedLocations(): void {
+    this.loadingSavedLocations.set(true);
+    this.savedLocationService.getAll().subscribe({
+      next: (locations) => {
+        this.availableSavedLocations.set(locations);
+        this.loadingSavedLocations.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading saved locations:', err);
+        this.loadingSavedLocations.set(false);
+      },
+    });
   }
 
   private patchForm(criteria: RatingCriteria): void {
@@ -196,66 +230,114 @@ export class RatingCriteriaFormComponent implements OnInit {
         enabled: Boolean(criterion.enabled),
       };
 
-      // Find in system criteria
-      const systemIndex = this.systemCriteria().findIndex((c) => c.name === criterion.name);
-      if (systemIndex >= 0) {
-        this.systemCriteria.update((list) => {
+      // Find in default criteria
+      const defaultIndex = this.defaultCriteria().findIndex((c) => c.name === criterion.name);
+      if (defaultIndex >= 0) {
+        this.defaultCriteria.update((list) => {
           const updated = [...list];
-          updated[systemIndex] = { ...updated[systemIndex], ...normalizedCriterion };
+          updated[defaultIndex] = { ...updated[defaultIndex], ...normalizedCriterion };
           return updated;
         });
       }
 
       // Find in user criteria
-      const userIndex = this.userCriteria().findIndex((c) => c.name === criterion.name);
-      if (userIndex >= 0) {
-        this.userCriteria.update((list) => {
+      const additonalIndex = this.additionalCriteria().findIndex((c) => c.name === criterion.name);
+      if (additonalIndex >= 0) {
+        this.additionalCriteria.update((list) => {
           const updated = [...list];
-          updated[userIndex] = { ...updated[userIndex], ...normalizedCriterion };
+          updated[additonalIndex] = { ...updated[additonalIndex], ...normalizedCriterion };
           return updated;
         });
       }
     });
   }
 
-  updateCriterionWeight(criterion: Criterion, weight: number, isSystem: boolean): void {
-    if (isSystem) {
-      this.systemCriteria.update((list) =>
-        list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
-      );
-    } else {
-      this.userCriteria.update((list) =>
-        list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
-      );
+  get availableLocationsForSelection(): SavedLocation[] {
+    return this.availableSavedLocations().filter(
+      (loc) => !this.selectedSavedLocationUuids().includes(loc.uuid)
+    );
+  }
+
+  getSelectedLocation(uuid: string): SavedLocation | undefined {
+    return this.availableSavedLocations().find((loc) => loc.uuid === uuid);
+  }
+
+  addSavedLocationCriterion(uuid: string, name: string): void {
+    let savedLocationCriterion: Criterion = {
+      name: `Distance to ${name}`,
+      source: 'context_report',
+      field_name: 'saved_locations',
+      saved_location_uuid: uuid,
+      enabled: true,
+      weight: 1.0,
+      is_dealbreaker: false,
+    };
+
+    this.multiTypeCriteria.update((list) => [...list, savedLocationCriterion]);
+    this.selectedSavedLocationUuids.update((uuids) => [...uuids, uuid]);
+  }
+
+  removeSavedLocationCriterion(uuid: string): void {
+    this.multiTypeCriteria.update((criteria) =>
+      criteria.filter((c) => c.saved_location_uuid !== uuid)
+    );
+    this.selectedSavedLocationUuids.update((uuids) => uuids.filter((id) => id !== uuid));
+  }
+
+  updateCriterionWeight(criterion: Criterion, weight: number, criterionListType: string): void {
+    switch (criterionListType) {
+      case 'default':
+        this.defaultCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
+        );
+        break;
+      case 'additional':
+        this.additionalCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
+        );
+        break;
+      case 'multiType':
+        this.multiTypeCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
+        );
+        break;
     }
   }
 
   updateCriterionDealbreaker(
     criterion: Criterion,
     isDealbreaker: boolean,
-    isSystem: boolean
+    isDefault: boolean
   ): void {
-    if (isSystem) {
-      this.systemCriteria.update((list) =>
+    if (isDefault) {
+      this.defaultCriteria.update((list) =>
         list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
       );
     } else {
-      this.userCriteria.update((list) =>
+      this.additionalCriteria.update((list) =>
         list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
       );
     }
   }
 
-  toggleCriterionEnabled(criterion: Criterion, isSystem: boolean): void {
-    if (isSystem) {
-      this.systemCriteria.update((list) =>
+  toggleCriterionEnabled(criterion: Criterion, isDefault: boolean): void {
+    if (isDefault) {
+      this.defaultCriteria.update((list) =>
         list.map((c) => (c.name === criterion.name ? { ...c, enabled: !c.enabled } : c))
       );
     } else {
-      this.userCriteria.update((list) =>
+      this.additionalCriteria.update((list) =>
         list.map((c) => (c.name === criterion.name ? { ...c, enabled: !c.enabled } : c))
       );
     }
+  }
+
+  toggleIsPOITypeEnabled(): void {
+    this.isPOITypeEnabled.set(!this.isPOITypeEnabled());
+  }
+
+  toggleIsSavedLocationTypeEnabled(): void {
+    this.isSavedLocationTypeEnabled.set(!this.isSavedLocationTypeEnabled());
   }
 
   isCriterionEnabled(criterion: Criterion): boolean {
@@ -268,7 +350,11 @@ export class RatingCriteriaFormComponent implements OnInit {
     }
 
     // Send all criteria (both enabled and disabled)
-    const allCriteria = [...this.systemCriteria(), ...this.userCriteria()];
+    const allCriteria = [
+      ...this.defaultCriteria(),
+      ...this.additionalCriteria(),
+      ...this.multiTypeCriteria(),
+    ];
 
     const data = {
       name: this.form.value.name,

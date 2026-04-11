@@ -4,6 +4,8 @@ export interface Criterion {
   id?: number;
   name: string;
   source: CriterionSource;
+  saved_location_uuid?: string;
+  poi_category?: string;
   field_name?: string;
   enabled: boolean;
   weight: number;
