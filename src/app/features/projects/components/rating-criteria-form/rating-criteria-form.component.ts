@@ -158,7 +158,7 @@ export class RatingCriteriaFormComponent implements OnInit {
         if (projectUuid) {
           this.router.navigate(['/projects', projectUuid, 'settings']);
         } else {
-          this.router.navigate(['/projects']);
+          this.router.navigate(['/rating-criteria']);
         }
       }
 
@@ -437,7 +437,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     if (projectUuid) {
       this.router.navigate(['/projects', projectUuid, 'settings']);
     } else {
-      this.router.navigate(['/projects']);
+      this.router.navigate(['/rating-criteria']);
     }
   }
 }

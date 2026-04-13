@@ -6,6 +6,7 @@ P0:
 
 
 P1:
+- Remove unused rating criteria
 - Allow rerunning Stage 2
 - Context report section layout
 - Only include options for POI rating criteria that are included in project context options
