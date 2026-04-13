@@ -58,6 +58,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'rating-criteria',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/rating-criteria/rating-criteria.routes').then(
+        (m) => m.RATING_CRITERIA_ROUTES
+      ),
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
