@@ -1,19 +1,29 @@
-- ~~Login and register redirect~~
-- ~~Follow plist creation path~~
-- Error handling
-- Property creation feature
+# Features
+P0:
+- ~~Rating Criteria Page~~
+- Updates when running stage 2
+- Updates when running stage 3
+- Project stats dashboard
+
+
+P1:
+- Remove unused rating criteria
+- Allow rerunning Stage 2
+- Context report section layout
+- Only include options for POI rating criteria that are included in project context options
+- Only include options for Saved Location rating criteria that are included in project context options
+- delete modal confirmation only
+- poi_search_radius_meters should be in Km
+
+
+## P2:
+- Site wide toaster use
+- Site redesign and renaming
 - formBuilder.group is deprecated
 - animations method are deprecated
-- ~~Add any to property type options and make dropdown~~
-- loading spinner
-
-Issues
-- propertyStore.load(undefined); rather then undefined woudl it be better to pass in nothing or an empty stirng rather than undefined?
-- should set loading to true during create - doesn't actuallt check that loading is set to true
-- In search-tasks.store startSearch method we are intialisaing setting created_dt and updated_dt when we receive a response, this should be done in thye backend and passed back like everything else
 
 
-# Bugs
-- Slow redirect after login or register
-- Can't retry after error
+
+
+
 

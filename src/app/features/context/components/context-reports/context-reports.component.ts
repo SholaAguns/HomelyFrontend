@@ -131,7 +131,12 @@ export class ContextReportsComponent implements OnDestroy {
 
   showTriggerButton = computed(() => {
     const currentProperty = this.property();
-    return !this.hasStarted() || currentProperty?.state === 'STAGE2_COMPLETE';
+    return (
+      !this.hasStarted() ||
+      currentProperty?.state === 'STAGE2_COMPLETE' ||
+      currentProperty?.state === 'STAGE3_IN_PROGRESS' ||
+      currentProperty?.state === 'STAGE3_COMPLETE'
+    );
   });
 
   triggerStage2(services?: string[]): void {
