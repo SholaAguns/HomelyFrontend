@@ -8,7 +8,7 @@ P0:
 
 P1:
 - Remove unused rating criteria
-- Allow rerunning Stage 2
+- ~~Allow rerunning Stage 2~~
 - Context report section layout
 - Only include options for POI rating criteria that are included in project context options
 - Only include options for Saved Location rating criteria that are included in project context options
@@ -18,6 +18,7 @@ P1:
 
 ## P2:
 - Site wide toaster use
+- Any
 - Site redesign and renaming
 - formBuilder.group is deprecated
 - animations method are deprecated
