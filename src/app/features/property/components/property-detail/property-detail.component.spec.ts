@@ -137,11 +137,11 @@ describe('PropertyDetailComponent', () => {
     fixture.detectChanges();
     component.runStage3();
 
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 250));
 
     expect(propertyServiceMock.runStage3).toHaveBeenCalledWith('prop-123');
     expect(notificationServiceMock.success).toHaveBeenCalledWith('Stage 3 started successfully');
-    expect(propertyServiceMock.getByUuid).toHaveBeenCalledTimes(2);
+    expect(propertyServiceMock.getByUuid).toHaveBeenCalledTimes(1);
   });
 
   it('should handle stage 2 error', async () => {

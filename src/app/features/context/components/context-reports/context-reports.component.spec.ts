@@ -14,21 +14,26 @@ describe('ContextReportsComponent', () => {
   let mockWebSocketService: Partial<PropertyWebSocketService>;
   let contextDataSignal: any;
   let setContextData: (data: any[]) => void;
+  let progressSignal: any;
+  let setProgress: (progress: any) => void;
 
   beforeEach(async () => {
     contextDataSignal = signal([]);
     setContextData = (data: any[]) => contextDataSignal.set(data);
 
+    progressSignal = signal({
+      total: 6,
+      complete: 2,
+      in_progress: 1,
+      failed: 1,
+      pending: 2,
+    });
+    setProgress = (progress: any) => progressSignal.set(progress);
+
     mockContextDataStore = {
       load: Object.assign(vi.fn(), { destroy: () => {} }) as any,
       forProperty: computed(() => () => contextDataSignal()),
-      progressFor: computed(() => () => ({
-        total: 6,
-        complete: 2,
-        in_progress: 1,
-        failed: 1,
-        pending: 2,
-      })),
+      progressFor: computed(() => () => progressSignal()),
       triggerStage2: Object.assign(vi.fn(), {
         destroy: () => {},
       }) as any,
@@ -173,13 +178,13 @@ describe('ContextReportsComponent', () => {
   });
 
   it('should display retry all failed button when failures exist', () => {
-    mockContextDataStore.progressFor = computed(() => () => ({
+    setProgress({
       total: 6,
       complete: 2,
       in_progress: 0,
       failed: 2,
       pending: 2,
-    }));
+    });
     setContextData([
       { id: '1', service_name: 'crime', status: 'FAILED' } as any,
       { id: '2', service_name: 'schools', status: 'FAILED' } as any,
@@ -192,13 +197,13 @@ describe('ContextReportsComponent', () => {
   });
 
   it('should not display retry all button when no failures', () => {
-    mockContextDataStore.progressFor = computed(() => () => ({
+    setProgress({
       total: 6,
       complete: 6,
       in_progress: 0,
       failed: 0,
       pending: 0,
-    }));
+    });
     setContextData([{ id: '1', service_name: 'crime', status: 'COMPLETE' } as any]);
     fixture.detectChanges();
 

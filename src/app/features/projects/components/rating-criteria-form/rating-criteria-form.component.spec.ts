@@ -23,9 +23,9 @@ describe('RatingCriteriaFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with system and user criteria', () => {
-    expect(component.systemCriteria().length).toBe(7);
-    expect(component.userCriteria().length).toBe(11);
+  it('should initialize with default and additional criteria', () => {
+    expect(component.defaultCriteria().length).toBe(3);
+    expect(component.additionalCriteria().length).toBe(6);
   });
 
   it('should require name field', () => {
@@ -37,22 +37,22 @@ describe('RatingCriteriaFormComponent', () => {
   });
 
   it('should update criterion weight', () => {
-    const criterion = component.systemCriteria()[0];
+    const criterion = component.defaultCriteria()[0];
     const originalWeight = criterion.weight;
 
-    component.updateCriterionWeight(criterion, 1.5, true);
+    component.updateCriterionWeight(criterion, 1.5, 'default');
 
-    const updatedCriterion = component.systemCriteria().find((c) => c.name === criterion.name);
+    const updatedCriterion = component.defaultCriteria().find((c) => c.name === criterion.name);
     expect(updatedCriterion?.weight).toBe(1.5);
     expect(updatedCriterion?.weight).not.toBe(originalWeight);
   });
 
   it('should update criterion dealbreaker status', () => {
-    const criterion = component.systemCriteria()[0];
+    const criterion = component.defaultCriteria()[0];
 
-    component.updateCriterionDealbreaker(criterion, true, true);
+    component.updateCriterionDealbreaker(criterion, true, 'default');
 
-    const updatedCriterion = component.systemCriteria().find((c) => c.name === criterion.name);
+    const updatedCriterion = component.defaultCriteria().find((c) => c.name === criterion.name);
     expect(updatedCriterion?.is_dealbreaker).toBe(true);
   });
 });
