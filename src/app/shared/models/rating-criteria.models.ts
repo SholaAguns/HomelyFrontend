@@ -3,7 +3,8 @@ export type CriterionSource = 'property' | 'context_report';
 export interface DealbreakerThreshold {
   below_price_threshold?: number;
   above_price_threshold?: number;
-  categories?: string[];
+  above_crime_threshold?: string;
+  above_council_tax_threshold: string;
 }
 
 export interface Criterion {

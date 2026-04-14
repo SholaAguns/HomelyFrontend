@@ -13,11 +13,19 @@ import { PoiType, POI_TYPE_LABELS } from '../../../../shared/models/context-opti
 import { SavedLocation } from '../../../../shared/models/saved-location-models';
 import { SavedLocationService } from '../../../../core/services/saved-location.service';
 import { PriceCriterion } from './rating-criterion-cards/price-criterion/price-criterion';
+import { BedroomsCriterion } from './rating-criterion-cards/bedrooms-criterion/bedrooms-criterion';
+import { BathroomsCriterion } from './rating-criterion-cards/bathrooms-criterion/bathrooms-criterion';
 
 @Component({
   selector: 'app-rating-criteria-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PriceCriterion],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    PriceCriterion,
+    BedroomsCriterion,
+    BathroomsCriterion,
+  ],
   templateUrl: './rating-criteria-form.component.html',
   styleUrl: './rating-criteria-form.component.css',
 })
@@ -53,25 +61,26 @@ export class RatingCriteriaFormComponent implements OnInit {
     is_dealbreaker: false,
   });
 
+  bedroomsCriterion = signal<Criterion>({
+    name: 'Bedrooms',
+    source: 'property',
+    field_name: 'bedrooms',
+    enabled: true,
+    weight: 1.0,
+    is_dealbreaker: false,
+  });
+
+  bathroomsCriterion = signal<Criterion>({
+    name: 'Bathrooms',
+    source: 'property',
+    field_name: 'bathrooms',
+    enabled: true,
+    weight: 1.0,
+    is_dealbreaker: false,
+  });
+
   // System criteria (built-in) - enabled by default
-  defaultCriteria = signal<Criterion[]>([
-    {
-      name: 'Bedrooms',
-      source: 'property',
-      field_name: 'bedrooms',
-      enabled: true,
-      weight: 1.0,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Bathrooms',
-      source: 'property',
-      field_name: 'bathrooms',
-      enabled: true,
-      weight: 1.0,
-      is_dealbreaker: false,
-    },
-  ]);
+  defaultCriteria = signal<Criterion[]>([]);
 
   // User criteria (configurable) - disabled by default
   additionalCriteria = signal<Criterion[]>([
@@ -218,6 +227,18 @@ export class RatingCriteriaFormComponent implements OnInit {
       // Check if it's the price criterion
       if (criterion.name === 'Price') {
         this.priceCriterion.set(normalizedCriterion);
+        return;
+      }
+
+      // Check if it's the bedrooms criterion
+      if (criterion.name === 'Bedrooms') {
+        this.bedroomsCriterion.set(normalizedCriterion);
+        return;
+      }
+
+      // Check if it's the bathrooms criterion
+      if (criterion.name === 'Bathrooms') {
+        this.bathroomsCriterion.set(normalizedCriterion);
         return;
       }
 
@@ -415,6 +436,14 @@ export class RatingCriteriaFormComponent implements OnInit {
     this.priceCriterion.set(updatedCriterion);
   }
 
+  onBedroomsCriterionChange(updatedCriterion: Criterion): void {
+    this.bedroomsCriterion.set(updatedCriterion);
+  }
+
+  onBathroomsCriterionChange(updatedCriterion: Criterion): void {
+    this.bathroomsCriterion.set(updatedCriterion);
+  }
+
   onSubmit(): void {
     if (!this.form.valid) {
       return;
@@ -423,6 +452,8 @@ export class RatingCriteriaFormComponent implements OnInit {
     // Send all criteria (both enabled and disabled)
     const allCriteria = [
       this.priceCriterion(),
+      this.bedroomsCriterion(),
+      this.bathroomsCriterion(),
       ...this.defaultCriteria(),
       ...this.additionalCriteria(),
       ...this.savedLocationCriteria(),
