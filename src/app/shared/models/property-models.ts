@@ -165,6 +165,7 @@ export interface SearchCriteria {
   bedrooms_max?: number;
   price_min?: number;
   price_max?: number;
+  prices?: number[];
   radius?: number;
   property_types?: string;
   max_days_since_added?: number;
