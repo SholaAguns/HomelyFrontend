@@ -1,0 +1,50 @@
+<div class="criteria-section">
+  <h3>Mobile Coverage Rating Criteria</h3>
+  <p class="section-description">Based on mobile network coverage</p>
+
+  <div class="criteria-list">
+    <div class="criterion-item" [class.disabled]="!isCriterionEnabled(mobileCriterion()?.enabled)">
+      <div class="criterion-header">
+        <div class="criterion-info">
+          <label class="checkbox-label enable-toggle">
+            <input
+              type="checkbox"
+              [checked]="isCriterionEnabled(mobileCriterion()?.enabled)"
+              (change)="toggleCriterionEnabled()"
+            />
+            <span class="criterion-name">{{ mobileCriterion()?.name }}</span>
+          </label>
+        </div>
+      </div>
+
+      @if (isCriterionEnabled(mobileCriterion()?.enabled)) {
+        <div class="criterion-controls">
+          <div class="control-group">
+            <label>Weight</label>
+            <select
+              (change)="updateCriterionWeight(+$any($event.target).value)"
+              class="form-control-sm"
+            >
+              @for (weight of weightValues; track weight) {
+                <option [value]="weight" [selected]="mobileCriterion()?.weight === weight">
+                  {{ weightLabels[weight] }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="mobileCriterion()?.is_dealbreaker"
+                (change)="updateCriterionIsDealbreaker($any($event.target).checked)"
+              />
+              <span>Dealbreaker</span>
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

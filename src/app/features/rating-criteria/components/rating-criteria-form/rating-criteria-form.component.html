@@ -35,342 +35,253 @@
       (bathroomsCriterionChanges)="onBathroomsCriterionChange($event)"
     ></app-bathrooms-criterion>
 
-    <!-- Default Criteria Section -->
-    @if (defaultCriteria().length > 0) {
-      <div class="criteria-section">
-        <h3>Default Rating Criteria</h3>
-        <p class="section-description">Built-in criteria based on core property fields</p>
+    <!-- Garden Criterion Section -->
+    <app-garden-criterion
+      [gardenCriterion]="gardenCriterion()"
+      (gardenCriterionChanges)="onGardenCriterionChange($event)"
+    ></app-garden-criterion>
 
-        <div class="criteria-list">
-          @for (criterion of defaultCriteria(); track criterion.name) {
-            <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion)">
-              <div class="criterion-header">
-                <div class="criterion-info">
-                  <label class="checkbox-label enable-toggle">
-                    <input
-                      type="checkbox"
-                      [checked]="isCriterionEnabled(criterion)"
-                      (change)="toggleCriterionEnabled(criterion, true)"
-                    />
-                    <span class="criterion-name">{{ criterion.name }}</span>
-                  </label>
-                </div>
-              </div>
+    <!-- Council Tax Criterion Section -->
+    <app-council-tax-criterion
+      [councilTaxCriterion]="councilTaxCriterion()"
+      (councilTaxCriterionChanges)="onCouncilTaxCriterionChange($event)"
+    ></app-council-tax-criterion>
 
-              @if (isCriterionEnabled(criterion)) {
-                <div class="criterion-controls">
-                  <div class="control-group">
-                    <label>Weight</label>
-                    <select
-                      (change)="
-                        updateCriterionWeight(criterion, +$any($event.target).value, 'default')
-                      "
-                      class="form-control-sm"
-                    >
-                      @for (weight of weightValues; track weight) {
-                        <option [value]="weight" [selected]="criterion.weight === weight">
-                          {{ weightLabels[weight] }}
-                        </option>
-                      }
-                    </select>
-                  </div>
+    <!-- Crime Criterion Section -->
+    <app-crime-criterion
+      [crimeCriterion]="crimeCriterion()"
+      (crimeCriterionChanges)="onCrimeCriterionChange($event)"
+    ></app-crime-criterion>
 
-                  <div class="control-group">
-                    <label class="checkbox-label">
-                      <input
-                        type="checkbox"
-                        [checked]="criterion.is_dealbreaker"
-                        (change)="
-                          updateCriterionDealbreaker(
-                            criterion,
-                            $any($event.target).checked,
-                            'default'
-                          )
-                        "
-                      />
-                      <span>Dealbreaker</span>
-                    </label>
-                  </div>
-                </div>
-              }
-            </div>
-          }
+    <!-- Broadband Criterion Section -->
+    <app-broadband-criterion
+      [broadbandCriterion]="broadbandCriterion()"
+      (broadbandCriterionChanges)="onBroadbandCriterionChange($event)"
+    ></app-broadband-criterion>
+
+    <!-- Mobile Criterion Section -->
+    <app-mobile-criterion
+      [mobileCriterion]="mobileCriterion()"
+      (mobileCriterionChanges)="onMobileCriterionChange($event)"
+    ></app-mobile-criterion>
+
+    <!-- Schools Criterion Section -->
+    <app-schools-criterion
+      [schoolsCriterion]="schoolsCriterion()"
+      (schoolsCriterionChanges)="onSchoolsCriterionChange($event)"
+    ></app-schools-criterion>
+
+    <div class="multi-type-criteria-config">
+      <div class="criterion-item" [class.disabled]="!isSavedLocationTypeEnabled()">
+        <div class="criterion-header">
+          <div class="criterion-info">
+            <label class="checkbox-label enable-toggle">
+              <input
+                type="checkbox"
+                [checked]="isSavedLocationTypeEnabled()"
+                (change)="toggleIsSavedLocationTypeEnabled()"
+              />
+              <span class="criterion-name">Distance to a Saved Location</span>
+            </label>
+          </div>
         </div>
-      </div>
-    }
 
-    <!-- Additional Criteria Section -->
-    <div class="criteria-section">
-      <h3>Additional Criteria</h3>
-      <p class="section-description">Configurable criteria based on context data and preferences</p>
-
-      <div class="criteria-list">
-        @for (criterion of additionalCriteria(); track criterion.name) {
-          <div class="criterion-item" [class.disabled]="!isCriterionEnabled(criterion)">
-            <div class="criterion-header">
-              <div class="criterion-info">
-                <label class="checkbox-label enable-toggle">
-                  <input
-                    type="checkbox"
-                    [checked]="isCriterionEnabled(criterion)"
-                    (change)="toggleCriterionEnabled(criterion, false)"
-                  />
-                  <span class="criterion-name">{{ criterion.name }}</span>
-                </label>
+        @if (isSavedLocationTypeEnabled()) {
+          <div class="border-t border-gray-200 bg-blue-50 p-4">
+            @if (loadingSavedLocations()) {
+              <div class="py-4 text-center text-sm text-gray-500">Loading saved locations...</div>
+            } @else if (availableSavedLocations().length === 0) {
+              <div class="rounded-lg border border-gray-200 bg-white p-4 text-center">
+                <p class="mb-2 text-sm text-gray-600">No saved locations found.</p>
+                <a routerLink="/saved-locations" class="text-sm text-blue-600 hover:underline">
+                  Create your first saved location
+                </a>
               </div>
-            </div>
-
-            @if (isCriterionEnabled(criterion)) {
-              <div class="criterion-controls">
-                <div class="control-group">
-                  <label>Weight</label>
+            } @else {
+              <!-- Add Location Dropdown -->
+              @if (availableLocationsForSelection.length > 0) {
+                <div>
+                  <label class="mb-2 block text-sm font-medium text-gray-700">Add Location</label>
                   <select
+                    #locationSelect
                     (change)="
-                      updateCriterionWeight(criterion, +$any($event.target).value, 'additional')
+                      addSavedLocationCriterion(
+                        locationSelect.value,
+                        getSelectedLocation(locationSelect.value)?.name || ''
+                      );
+                      locationSelect.value = ''
                     "
-                    class="form-control-sm"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
                   >
-                    @for (weight of weightValues; track weight) {
-                      <option [value]="weight" [selected]="criterion.weight === weight">
-                        {{ weightLabels[weight] }}
+                    <option value="">Select a location to add...</option>
+                    @for (location of availableLocationsForSelection; track location.uuid) {
+                      <option [value]="location.uuid">
+                        {{ location.name }} - {{ location.address_line_1 }},
+                        {{ location.postcode }}
                       </option>
                     }
                   </select>
                 </div>
+              }
 
-                <div class="control-group">
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      [checked]="criterion.is_dealbreaker"
-                      (change)="
-                        updateCriterionDealbreaker(
-                          criterion,
-                          $any($event.target).checked,
-                          'additional'
-                        )
-                      "
-                    />
-                    <span>Dealbreaker</span>
-                  </label>
-                </div>
+              @if (selectedSavedLocationUuids().length === 0) {
+                <p class="mt-2 text-xs text-red-600">Select one saved location</p>
+              }
+
+              <div class="criteria-list">
+                @for (criterion of savedLocationCriteria(); track criterion.saved_location_uuid) {
+                  <div class="criterion-item">
+                    <div class="criterion-header">
+                      <div class="criterion-info">
+                        <span class="criterion-name">{{ criterion.name }}</span>
+                      </div>
+                      <button
+                        type="button"
+                        (click)="removeSavedLocationCriterion(criterion.saved_location_uuid!)"
+                        class="text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div class="criterion-controls">
+                      <div class="control-group">
+                        <label>Weight</label>
+                        <select
+                          (change)="
+                            updateCriterionWeight(
+                              criterion,
+                              +$any($event.target).value,
+                              'savedLocation'
+                            )
+                          "
+                          class="form-control-sm"
+                        >
+                          @for (weight of weightValues; track weight) {
+                            <option [value]="weight" [selected]="criterion.weight === weight">
+                              {{ weightLabels[weight] }}
+                            </option>
+                          }
+                        </select>
+                      </div>
+
+                      <div class="control-group">
+                        <label class="checkbox-label">
+                          <input
+                            type="checkbox"
+                            [checked]="criterion.is_dealbreaker"
+                            (change)="
+                              updateCriterionDealbreaker(
+                                criterion,
+                                $any($event.target).checked,
+                                'savedLocation'
+                              )
+                            "
+                          />
+                          <span>Dealbreaker</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                }
               </div>
             }
           </div>
         }
       </div>
       <div class="multi-type-criteria-config">
-        <div class="criterion-item" [class.disabled]="!isSavedLocationTypeEnabled()">
+        <div class="criterion-item" [class.disabled]="!isPOITypeEnabled()">
           <div class="criterion-header">
             <div class="criterion-info">
               <label class="checkbox-label enable-toggle">
                 <input
                   type="checkbox"
-                  [checked]="isSavedLocationTypeEnabled()"
-                  (change)="toggleIsSavedLocationTypeEnabled()"
+                  [checked]="isPOITypeEnabled()"
+                  (change)="toggleIsPOITypeEnabled()"
                 />
-                <span class="criterion-name">Distance to a Saved Location</span>
+                <span class="criterion-name">Distance to a closest Place of Interest</span>
               </label>
             </div>
           </div>
 
-          @if (isSavedLocationTypeEnabled()) {
+          @if (isPOITypeEnabled()) {
             <div class="border-t border-gray-200 bg-blue-50 p-4">
-              @if (loadingSavedLocations()) {
-                <div class="py-4 text-center text-sm text-gray-500">Loading saved locations...</div>
-              } @else if (availableSavedLocations().length === 0) {
-                <div class="rounded-lg border border-gray-200 bg-white p-4 text-center">
-                  <p class="mb-2 text-sm text-gray-600">No saved locations found.</p>
-                  <a routerLink="/saved-locations" class="text-sm text-blue-600 hover:underline">
-                    Create your first saved location
-                  </a>
-                </div>
-              } @else {
-                <!-- Add Location Dropdown -->
-                @if (availableLocationsForSelection.length > 0) {
-                  <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-700">Add Location</label>
-                    <select
-                      #locationSelect
-                      (change)="
-                        addSavedLocationCriterion(
-                          locationSelect.value,
-                          getSelectedLocation(locationSelect.value)?.name || ''
-                        );
-                        locationSelect.value = ''
-                      "
-                      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select a location to add...</option>
-                      @for (location of availableLocationsForSelection; track location.uuid) {
-                        <option [value]="location.uuid">
-                          {{ location.name }} - {{ location.address_line_1 }},
-                          {{ location.postcode }}
-                        </option>
-                      }
-                    </select>
-                  </div>
-                }
-
-                @if (selectedSavedLocationUuids().length === 0) {
-                  <p class="mt-2 text-xs text-red-600">Select one saved location</p>
-                }
-
-                <div class="criteria-list">
-                  @for (criterion of savedLocationCriteria(); track criterion.saved_location_uuid) {
-                    <div class="criterion-item">
-                      <div class="criterion-header">
-                        <div class="criterion-info">
-                          <span class="criterion-name">{{ criterion.name }}</span>
-                        </div>
-                        <button
-                          type="button"
-                          (click)="removeSavedLocationCriterion(criterion.saved_location_uuid!)"
-                          class="text-red-600 hover:text-red-800"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                      <div class="criterion-controls">
-                        <div class="control-group">
-                          <label>Weight</label>
-                          <select
-                            (change)="
-                              updateCriterionWeight(
-                                criterion,
-                                +$any($event.target).value,
-                                'savedLocation'
-                              )
-                            "
-                            class="form-control-sm"
-                          >
-                            @for (weight of weightValues; track weight) {
-                              <option [value]="weight" [selected]="criterion.weight === weight">
-                                {{ weightLabels[weight] }}
-                              </option>
-                            }
-                          </select>
-                        </div>
-
-                        <div class="control-group">
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              [checked]="criterion.is_dealbreaker"
-                              (change)="
-                                updateCriterionDealbreaker(
-                                  criterion,
-                                  $any($event.target).checked,
-                                  'savedLocation'
-                                )
-                              "
-                            />
-                            <span>Dealbreaker</span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  }
+              <!-- Add POI Type Dropdown -->
+              @if (availablePoiTypesForSelection.length > 0) {
+                <div>
+                  <label class="mb-2 block text-sm font-medium text-gray-700">Add POI Type</label>
+                  <select
+                    #poiSelect
+                    (change)="addPoiCriterion($any(poiSelect.value)); poiSelect.value = ''"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select a POI type to add...</option>
+                    @for (poiType of availablePoiTypesForSelection; track poiType) {
+                      <option [value]="poiType">
+                        {{ POI_TYPE_LABELS[poiType] }}
+                      </option>
+                    }
+                  </select>
                 </div>
               }
-            </div>
-          }
-        </div>
-        <div class="multi-type-criteria-config">
-          <div class="criterion-item" [class.disabled]="!isPOITypeEnabled()">
-            <div class="criterion-header">
-              <div class="criterion-info">
-                <label class="checkbox-label enable-toggle">
-                  <input
-                    type="checkbox"
-                    [checked]="isPOITypeEnabled()"
-                    (change)="toggleIsPOITypeEnabled()"
-                  />
-                  <span class="criterion-name">Distance to a closest Place of Interest</span>
-                </label>
-              </div>
-            </div>
 
-            @if (isPOITypeEnabled()) {
-              <div class="border-t border-gray-200 bg-blue-50 p-4">
-                <!-- Add POI Type Dropdown -->
-                @if (availablePoiTypesForSelection.length > 0) {
-                  <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-700">Add POI Type</label>
-                    <select
-                      #poiSelect
-                      (change)="addPoiCriterion($any(poiSelect.value)); poiSelect.value = ''"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select a POI type to add...</option>
-                      @for (poiType of availablePoiTypesForSelection; track poiType) {
-                        <option [value]="poiType">
-                          {{ POI_TYPE_LABELS[poiType] }}
-                        </option>
-                      }
-                    </select>
-                  </div>
-                }
+              @if (selectedPoiCategories().length === 0) {
+                <p class="mt-2 text-xs text-red-600">Select at least one POI type</p>
+              }
 
-                @if (selectedPoiCategories().length === 0) {
-                  <p class="mt-2 text-xs text-red-600">Select at least one POI type</p>
-                }
-
-                <div class="criteria-list">
-                  @for (criterion of poiCriteria(); track criterion.poi_category) {
-                    <div class="criterion-item">
-                      <div class="criterion-header">
-                        <div class="criterion-info">
-                          <span class="criterion-name">{{ criterion.name }}</span>
-                        </div>
-                        <button
-                          type="button"
-                          (click)="removePoiCriterion(criterion.poi_category!)"
-                          class="text-red-600 hover:text-red-800"
-                        >
-                          Remove
-                        </button>
+              <div class="criteria-list">
+                @for (criterion of poiCriteria(); track criterion.poi_category) {
+                  <div class="criterion-item">
+                    <div class="criterion-header">
+                      <div class="criterion-info">
+                        <span class="criterion-name">{{ criterion.name }}</span>
                       </div>
-                      <div class="criterion-controls">
-                        <div class="control-group">
-                          <label>Weight</label>
-                          <select
-                            (change)="
-                              updateCriterionWeight(criterion, +$any($event.target).value, 'poi')
-                            "
-                            class="form-control-sm"
-                          >
-                            @for (weight of weightValues; track weight) {
-                              <option [value]="weight" [selected]="criterion.weight === weight">
-                                {{ weightLabels[weight] }}
-                              </option>
-                            }
-                          </select>
-                        </div>
+                      <button
+                        type="button"
+                        (click)="removePoiCriterion(criterion.poi_category!)"
+                        class="text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div class="criterion-controls">
+                      <div class="control-group">
+                        <label>Weight</label>
+                        <select
+                          (change)="
+                            updateCriterionWeight(criterion, +$any($event.target).value, 'poi')
+                          "
+                          class="form-control-sm"
+                        >
+                          @for (weight of weightValues; track weight) {
+                            <option [value]="weight" [selected]="criterion.weight === weight">
+                              {{ weightLabels[weight] }}
+                            </option>
+                          }
+                        </select>
+                      </div>
 
-                        <div class="control-group">
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              [checked]="criterion.is_dealbreaker"
-                              (change)="
-                                updateCriterionDealbreaker(
-                                  criterion,
-                                  $any($event.target).checked,
-                                  'poi'
-                                )
-                              "
-                            />
-                            <span>Dealbreaker</span>
-                          </label>
-                        </div>
+                      <div class="control-group">
+                        <label class="checkbox-label">
+                          <input
+                            type="checkbox"
+                            [checked]="criterion.is_dealbreaker"
+                            (change)="
+                              updateCriterionDealbreaker(
+                                criterion,
+                                $any($event.target).checked,
+                                'poi'
+                              )
+                            "
+                          />
+                          <span>Dealbreaker</span>
+                        </label>
                       </div>
                     </div>
-                  }
-                </div>
+                  </div>
+                }
               </div>
-            }
-          </div>
+            </div>
+          }
         </div>
       </div>
     </div>

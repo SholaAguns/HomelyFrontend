@@ -15,6 +15,12 @@ import { SavedLocationService } from '../../../../core/services/saved-location.s
 import { PriceCriterion } from './rating-criterion-cards/price-criterion/price-criterion';
 import { BedroomsCriterion } from './rating-criterion-cards/bedrooms-criterion/bedrooms-criterion';
 import { BathroomsCriterion } from './rating-criterion-cards/bathrooms-criterion/bathrooms-criterion';
+import { GardenCriterion } from './rating-criterion-cards/garden-criterion/garden-criterion';
+import { CouncilTaxCriterion } from './rating-criterion-cards/council-tax-criterion/council-tax-criterion';
+import { CrimeCriterion } from './rating-criterion-cards/crime-criterion/crime-criterion';
+import { BroadbandCriterion } from './rating-criterion-cards/broadband-criterion/broadband-criterion';
+import { MobileCriterion } from './rating-criterion-cards/mobile-criterion/mobile-criterion';
+import { SchoolsCriterion } from './rating-criterion-cards/schools-criterion/schools-criterion';
 
 @Component({
   selector: 'app-rating-criteria-form',
@@ -25,6 +31,12 @@ import { BathroomsCriterion } from './rating-criterion-cards/bathrooms-criterion
     PriceCriterion,
     BedroomsCriterion,
     BathroomsCriterion,
+    GardenCriterion,
+    CouncilTaxCriterion,
+    CrimeCriterion,
+    BroadbandCriterion,
+    MobileCriterion,
+    SchoolsCriterion,
   ],
   templateUrl: './rating-criteria-form.component.html',
   styleUrl: './rating-criteria-form.component.css',
@@ -79,60 +91,65 @@ export class RatingCriteriaFormComponent implements OnInit {
     is_dealbreaker: false,
   });
 
+  gardenCriterion = signal<Criterion>({
+    name: 'Garden',
+    source: 'property',
+    field_name: 'garden',
+    enabled: false,
+    weight: 0.5,
+    is_dealbreaker: false,
+  });
+
+  councilTaxCriterion = signal<Criterion>({
+    name: 'Council Tax Band',
+    source: 'context_report',
+    field_name: 'council_tax',
+    enabled: true,
+    weight: 0.5,
+    is_dealbreaker: false,
+  });
+
+  crimeCriterion = signal<Criterion>({
+    name: 'Crime Rating',
+    source: 'context_report',
+    field_name: 'crime',
+    enabled: true,
+    weight: 1.0,
+    is_dealbreaker: false,
+  });
+
+  broadbandCriterion = signal<Criterion>({
+    name: 'Broadband Speed',
+    source: 'context_report',
+    field_name: 'broadband',
+    enabled: false,
+    weight: 0.5,
+    is_dealbreaker: false,
+  });
+
+  mobileCriterion = signal<Criterion>({
+    name: 'Mobile Coverage',
+    source: 'context_report',
+    field_name: 'mobile',
+    enabled: false,
+    weight: 0.5,
+    is_dealbreaker: false,
+  });
+
+  schoolsCriterion = signal<Criterion>({
+    name: 'School Rating',
+    source: 'context_report',
+    field_name: 'schools',
+    enabled: false,
+    weight: 0.5,
+    is_dealbreaker: false,
+  });
+
   // System criteria (built-in) - enabled by default
   defaultCriteria = signal<Criterion[]>([]);
 
   // User criteria (configurable) - disabled by default
-  additionalCriteria = signal<Criterion[]>([
-    {
-      name: 'Garden',
-      source: 'property',
-      field_name: 'garden',
-      enabled: false,
-      weight: 0.5,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Council Tax Band',
-      source: 'context_report',
-      field_name: 'council_tax',
-      enabled: true,
-      weight: 0.5,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Crime Rating',
-      source: 'context_report',
-      field_name: 'crime',
-      enabled: true,
-      weight: 1.0,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Broadband Speed',
-      source: 'context_report',
-      field_name: 'broadband',
-      enabled: false,
-      weight: 0.5,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Mobile Coverage',
-      source: 'context_report',
-      field_name: 'mobile',
-      enabled: false,
-      weight: 0.5,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'School Rating',
-      source: 'context_report',
-      field_name: 'schools',
-      enabled: false,
-      weight: 0.5,
-      is_dealbreaker: false,
-    },
-  ]);
+  additionalCriteria = signal<Criterion[]>([]);
 
   savedLocationCriteria = signal<Criterion[]>([]);
   poiCriteria = signal<Criterion[]>([]);
@@ -242,6 +259,42 @@ export class RatingCriteriaFormComponent implements OnInit {
         return;
       }
 
+      // Check if it's the garden criterion
+      if (criterion.name === 'Garden') {
+        this.gardenCriterion.set(normalizedCriterion);
+        return;
+      }
+
+      // Check if it's the council tax criterion
+      if (criterion.name === 'Council Tax Band') {
+        this.councilTaxCriterion.set(normalizedCriterion);
+        return;
+      }
+
+      // Check if it's the crime criterion
+      if (criterion.name === 'Crime Rating') {
+        this.crimeCriterion.set(normalizedCriterion);
+        return;
+      }
+
+      // Check if it's the broadband criterion
+      if (criterion.name === 'Broadband Speed') {
+        this.broadbandCriterion.set(normalizedCriterion);
+        return;
+      }
+
+      // Check if it's the mobile criterion
+      if (criterion.name === 'Mobile Coverage') {
+        this.mobileCriterion.set(normalizedCriterion);
+        return;
+      }
+
+      // Check if it's the schools criterion
+      if (criterion.name === 'School Rating') {
+        this.schoolsCriterion.set(normalizedCriterion);
+        return;
+      }
+
       // Check if it's a saved location criterion
       if (
         criterion.source === 'context_report' &&
@@ -314,8 +367,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       weight: 1.0,
       is_dealbreaker: false,
     };
-    console.log('Saved Location Criterion:');
-    console.log('%j', savedLocationCriterion);
 
     this.savedLocationCriteria.update((list) => [...list, savedLocationCriterion]);
     this.selectedSavedLocationUuids.update((uuids) => [...uuids, uuid]);
@@ -444,6 +495,30 @@ export class RatingCriteriaFormComponent implements OnInit {
     this.bathroomsCriterion.set(updatedCriterion);
   }
 
+  onGardenCriterionChange(updatedCriterion: Criterion): void {
+    this.gardenCriterion.set(updatedCriterion);
+  }
+
+  onCouncilTaxCriterionChange(updatedCriterion: Criterion): void {
+    this.councilTaxCriterion.set(updatedCriterion);
+  }
+
+  onCrimeCriterionChange(updatedCriterion: Criterion): void {
+    this.crimeCriterion.set(updatedCriterion);
+  }
+
+  onBroadbandCriterionChange(updatedCriterion: Criterion): void {
+    this.broadbandCriterion.set(updatedCriterion);
+  }
+
+  onMobileCriterionChange(updatedCriterion: Criterion): void {
+    this.mobileCriterion.set(updatedCriterion);
+  }
+
+  onSchoolsCriterionChange(updatedCriterion: Criterion): void {
+    this.schoolsCriterion.set(updatedCriterion);
+  }
+
   onSubmit(): void {
     if (!this.form.valid) {
       return;
@@ -454,6 +529,12 @@ export class RatingCriteriaFormComponent implements OnInit {
       this.priceCriterion(),
       this.bedroomsCriterion(),
       this.bathroomsCriterion(),
+      this.gardenCriterion(),
+      this.councilTaxCriterion(),
+      this.crimeCriterion(),
+      this.broadbandCriterion(),
+      this.mobileCriterion(),
+      this.schoolsCriterion(),
       ...this.defaultCriteria(),
       ...this.additionalCriteria(),
       ...this.savedLocationCriteria(),

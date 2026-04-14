@@ -1,0 +1,50 @@
+<div class="criteria-section">
+  <h3>Garden Rating Criteria</h3>
+  <p class="section-description">Based on garden availability</p>
+
+  <div class="criteria-list">
+    <div class="criterion-item" [class.disabled]="!isCriterionEnabled(gardenCriterion()?.enabled)">
+      <div class="criterion-header">
+        <div class="criterion-info">
+          <label class="checkbox-label enable-toggle">
+            <input
+              type="checkbox"
+              [checked]="isCriterionEnabled(gardenCriterion()?.enabled)"
+              (change)="toggleCriterionEnabled()"
+            />
+            <span class="criterion-name">{{ gardenCriterion()?.name }}</span>
+          </label>
+        </div>
+      </div>
+
+      @if (isCriterionEnabled(gardenCriterion()?.enabled)) {
+        <div class="criterion-controls">
+          <div class="control-group">
+            <label>Weight</label>
+            <select
+              (change)="updateCriterionWeight(+$any($event.target).value)"
+              class="form-control-sm"
+            >
+              @for (weight of weightValues; track weight) {
+                <option [value]="weight" [selected]="gardenCriterion()?.weight === weight">
+                  {{ weightLabels[weight] }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="gardenCriterion()?.is_dealbreaker"
+                (change)="updateCriterionIsDealbreaker($any($event.target).checked)"
+              />
+              <span>Dealbreaker</span>
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

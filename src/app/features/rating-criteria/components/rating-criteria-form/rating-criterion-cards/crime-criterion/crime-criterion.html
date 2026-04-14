@@ -1,0 +1,50 @@
+<div class="criteria-section">
+  <h3>Crime Rating Criteria</h3>
+  <p class="section-description">Based on local crime statistics</p>
+
+  <div class="criteria-list">
+    <div class="criterion-item" [class.disabled]="!isCriterionEnabled(crimeCriterion()?.enabled)">
+      <div class="criterion-header">
+        <div class="criterion-info">
+          <label class="checkbox-label enable-toggle">
+            <input
+              type="checkbox"
+              [checked]="isCriterionEnabled(crimeCriterion()?.enabled)"
+              (change)="toggleCriterionEnabled()"
+            />
+            <span class="criterion-name">{{ crimeCriterion()?.name }}</span>
+          </label>
+        </div>
+      </div>
+
+      @if (isCriterionEnabled(crimeCriterion()?.enabled)) {
+        <div class="criterion-controls">
+          <div class="control-group">
+            <label>Weight</label>
+            <select
+              (change)="updateCriterionWeight(+$any($event.target).value)"
+              class="form-control-sm"
+            >
+              @for (weight of weightValues; track weight) {
+                <option [value]="weight" [selected]="crimeCriterion()?.weight === weight">
+                  {{ weightLabels[weight] }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="crimeCriterion()?.is_dealbreaker"
+                (change)="updateCriterionIsDealbreaker($any($event.target).checked)"
+              />
+              <span>Dealbreaker</span>
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
