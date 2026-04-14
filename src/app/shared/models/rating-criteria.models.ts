@@ -1,8 +1,8 @@
 export type CriterionSource = 'property' | 'context_report';
 
 export interface DealbreakerThreshold {
-  min_price?: string;
-  max_price?: string;
+  below_price_threshold?: number;
+  above_price_threshold?: number;
   categories?: string[];
 }
 
