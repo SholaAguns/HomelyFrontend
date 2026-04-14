@@ -2,7 +2,7 @@ import { Component, inject, OnInit, effect, signal, computed } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RatingCriteriaStore } from '../../store/rating-criteria.store';
+import { RatingCriteriaStore } from '../../../projects/store/rating-criteria.store';
 import {
   Criterion,
   RatingCriteria,

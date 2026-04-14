@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RatingCriteriaFormComponent } from '../../../projects/components/rating-criteria-form/rating-criteria-form.component';
+import { RatingCriteriaFormComponent } from '../rating-criteria-form/rating-criteria-form.component';
 
 @Component({
   selector: 'app-rating-criteria-edit',

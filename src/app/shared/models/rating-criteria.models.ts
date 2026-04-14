@@ -1,5 +1,11 @@
 export type CriterionSource = 'property' | 'context_report';
 
+export interface DealbreakerThreshold {
+  min_price?: string;
+  max_price?: string;
+  categories?: string[];
+}
+
 export interface Criterion {
   id?: number;
   name: string;
@@ -10,7 +16,7 @@ export interface Criterion {
   enabled: boolean;
   weight: number;
   is_dealbreaker: boolean;
-  dealbreaker_threshold?: Record<string, number | string | boolean> | null;
+  dealbreaker_threshold?: DealbreakerThreshold | null;
   created_at?: string;
   updated_at?: string;
 }

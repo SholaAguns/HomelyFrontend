@@ -158,6 +158,12 @@ export interface CreateFromInputResponse {
   source?: string;
 }
 
+export const SEARCH_CRITERIA_PRICES = [
+  100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1250, 1300, 1400,
+  1500, 1750, 2000, 2250, 2500, 2750, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 8000,
+  9000, 10000, 12500, 15000, 17500, 18000, 19000, 20000, 25000, 30000, 35000, 40000,
+];
+
 // Search criteria for bulk property creation
 export interface SearchCriteria {
   area: string;
@@ -165,7 +171,6 @@ export interface SearchCriteria {
   bedrooms_max?: number;
   price_min?: number;
   price_max?: number;
-  prices?: number[];
   radius?: number;
   property_types?: string;
   max_days_since_added?: number;

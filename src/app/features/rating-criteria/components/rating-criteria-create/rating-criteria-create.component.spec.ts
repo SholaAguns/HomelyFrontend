@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { RatingCriteriaCreateComponent } from './rating-criteria-create.component';
-import { RatingCriteriaFormComponent } from '../../../projects/components/rating-criteria-form/rating-criteria-form.component';
+import { RatingCriteriaFormComponent } from '../rating-criteria-form/rating-criteria-form.component';
 import { RatingCriteriaStore } from '../../../projects/store/rating-criteria.store';
 import { SavedLocationService } from '../../../../core/services/saved-location.service';
 import { ActivatedRoute, Router } from '@angular/router';
