@@ -1,15 +1,15 @@
-import { Component, inject, OnInit, effect, signal, computed, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   Criterion,
   WEIGHT_LABELS,
   WEIGHT_VALUES,
 } from '../../../../../../shared/models/rating-criteria.models';
-import { ReactiveFormsModule } from '@angular/forms';
 import { SEARCH_CRITERIA_PRICES } from '../../../../../../shared/models/property-models';
 
 @Component({
   selector: 'app-price-criterion',
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule],
   templateUrl: './price-criterion.html',
   styleUrl: './price-criterion.css',
 })
@@ -69,10 +69,12 @@ export class PriceCriterion {
 
   updateCriterionBelowPriceThreshold(below_price_threshold: number): void {
     const current = this.priceCriterion();
+    const currentThreshold = current.dealbreaker_threshold || {};
 
     const updated: Criterion = {
       ...current,
       dealbreaker_threshold: {
+        ...currentThreshold,
         below_price_threshold: below_price_threshold,
       },
     };
@@ -82,10 +84,12 @@ export class PriceCriterion {
 
   updateCriterionAbovePriceThreshold(above_price_threshold: number): void {
     const current = this.priceCriterion();
+    const currentThreshold = current.dealbreaker_threshold || {};
 
     const updated: Criterion = {
       ...current,
       dealbreaker_threshold: {
+        ...currentThreshold,
         above_price_threshold: above_price_threshold,
       },
     };

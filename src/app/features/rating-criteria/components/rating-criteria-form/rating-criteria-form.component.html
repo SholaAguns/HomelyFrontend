@@ -17,6 +17,12 @@
       />
     </div>
 
+    <!-- Price Criterion Section -->
+    <app-price-criterion
+      [priceCriterion]="priceCriterion()"
+      (priceCriterionChanges)="onPriceCriterionChange($event)"
+    ></app-price-criterion>
+
     <!-- Default Criteria Section -->
     <div class="criteria-section">
       <h3>Default Rating Criteria</h3>

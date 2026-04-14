@@ -45,31 +45,45 @@
             @if (isCriterionEnabled(priceCriterion()?.is_dealbreaker)) {
               <div class="form-group mb-4">
                 <label for="dealbreaker_below_price" class="mb-1 block text-sm font-medium"
-                  >Below:</label
+                  >Below (reject if lower):</label
                 >
                 <select
                   id="dealbreaker_below_price"
-                  formControlName="dealbreaker_below_price"
-                  (change)="updateCriterionBelowPriceThreshold($any($event.target).value)"
+                  (change)="updateCriterionBelowPriceThreshold(+$any($event.target).value)"
                   class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                 >
+                  <option value="">Not set</option>
                   @for (price of pricesOptions; track price) {
-                    <option [value]="price">£{{ price }}</option>
+                    <option
+                      [value]="price * 1000"
+                      [selected]="
+                        priceCriterion()?.dealbreaker_threshold?.['below'] === price * 1000
+                      "
+                    >
+                      £{{ (price * 1000).toLocaleString() }}
+                    </option>
                   }
                 </select>
               </div>
               <div class="form-group mb-4">
                 <label for="dealbreaker_above_price" class="mb-1 block text-sm font-medium"
-                  >Above:</label
+                  >Above (reject if higher):</label
                 >
                 <select
                   id="dealbreaker_above_price"
-                  formControlName="dealbreaker_above_price"
-                  (change)="updateCriterionAbovePriceThreshold($any($event.target).value)"
+                  (change)="updateCriterionAbovePriceThreshold(+$any($event.target).value)"
                   class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                 >
+                  <option value="">Not set</option>
                   @for (price of pricesOptions; track price) {
-                    <option [value]="price">£{{ price }}</option>
+                    <option
+                      [value]="price * 1000"
+                      [selected]="
+                        priceCriterion()?.dealbreaker_threshold?.['above'] === price * 1000
+                      "
+                    >
+                      £{{ (price * 1000).toLocaleString() }}
+                    </option>
                   }
                 </select>
               </div>

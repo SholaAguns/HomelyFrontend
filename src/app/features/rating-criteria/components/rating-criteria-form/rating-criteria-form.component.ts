@@ -12,11 +12,12 @@ import {
 import { PoiType, POI_TYPE_LABELS } from '../../../../shared/models/context-options.models';
 import { SavedLocation } from '../../../../shared/models/saved-location-models';
 import { SavedLocationService } from '../../../../core/services/saved-location.service';
+import { PriceCriterion } from './rating-criterion-cards/price-criterion/price-criterion';
 
 @Component({
   selector: 'app-rating-criteria-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PriceCriterion],
   templateUrl: './rating-criteria-form.component.html',
   styleUrl: './rating-criteria-form.component.css',
 })
@@ -43,16 +44,17 @@ export class RatingCriteriaFormComponent implements OnInit {
   readonly weightLabels = WEIGHT_LABELS;
   readonly weightValues = WEIGHT_VALUES;
 
+  priceCriterion = signal<Criterion>({
+    name: 'Price',
+    source: 'property',
+    field_name: 'price',
+    enabled: true,
+    weight: 1.0,
+    is_dealbreaker: false,
+  });
+
   // System criteria (built-in) - enabled by default
   defaultCriteria = signal<Criterion[]>([
-    {
-      name: 'Price',
-      source: 'property',
-      field_name: 'price',
-      enabled: true,
-      weight: 1.0,
-      is_dealbreaker: false,
-    },
     {
       name: 'Bedrooms',
       source: 'property',
@@ -212,6 +214,12 @@ export class RatingCriteriaFormComponent implements OnInit {
         is_dealbreaker: Boolean(criterion.is_dealbreaker),
         enabled: Boolean(criterion.enabled),
       };
+
+      // Check if it's the price criterion
+      if (criterion.name === 'Price') {
+        this.priceCriterion.set(normalizedCriterion);
+        return;
+      }
 
       // Check if it's a saved location criterion
       if (
@@ -403,6 +411,10 @@ export class RatingCriteriaFormComponent implements OnInit {
     return criterion.enabled;
   }
 
+  onPriceCriterionChange(updatedCriterion: Criterion): void {
+    this.priceCriterion.set(updatedCriterion);
+  }
+
   onSubmit(): void {
     if (!this.form.valid) {
       return;
@@ -410,6 +422,7 @@ export class RatingCriteriaFormComponent implements OnInit {
 
     // Send all criteria (both enabled and disabled)
     const allCriteria = [
+      this.priceCriterion(),
       ...this.defaultCriteria(),
       ...this.additionalCriteria(),
       ...this.savedLocationCriteria(),
