@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UiStore } from '../../../core/stores/ui.store';
 import { AuthStore } from '../../../core/stores/auth-store/auth.store';
+import { NotificationBellComponent } from '../notification-bell/notification-bell.component';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NotificationBellComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })

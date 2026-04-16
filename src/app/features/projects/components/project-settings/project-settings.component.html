@@ -297,97 +297,262 @@
       </div>
     </div>
 
-    <!-- Viewers/Contributors Section -->
+    <!-- Sharing Section -->
     <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">Viewers & Contributors</h2>
+      <h2 class="mb-1 text-xl font-semibold text-gray-900">Sharing</h2>
+      <p class="mb-4 text-sm text-gray-500">Manage who has access to this project.</p>
 
-      <div class="space-y-6">
-        <!-- Viewers -->
-        <div>
-          <h3 class="mb-3 text-sm font-medium text-gray-700">Viewers (Read-only access)</h3>
-
-          <div class="mb-3 flex gap-2">
-            <input
-              type="email"
-              [ngModel]="newViewer()"
-              (ngModelChange)="newViewer.set($event)"
-              placeholder="Enter email address"
-              (keyup.enter)="addViewer()"
-              class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-            />
-            <button
-              (click)="addViewer()"
-              class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            >
-              Add
-            </button>
-          </div>
-
-          <div class="space-y-2">
-            @for (viewer of viewers(); track viewer) {
-              <div
-                class="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
-              >
-                <span class="text-sm text-gray-700">{{ viewer }}</span>
-                <button (click)="removeViewer(viewer)" class="text-red-600 hover:text-red-800">
-                  Remove
-                </button>
-              </div>
-            }
-            @if (viewers().length === 0) {
-              <p class="text-sm text-gray-500 italic">No viewers added</p>
-            }
-          </div>
-        </div>
-
-        <!-- Contributors -->
-        <div>
-          <h3 class="mb-3 text-sm font-medium text-gray-700">Contributors (Edit access)</h3>
-
-          <div class="mb-3 flex gap-2">
-            <input
-              type="email"
-              [ngModel]="newContributor()"
-              (ngModelChange)="newContributor.set($event)"
-              placeholder="Enter email address"
-              (keyup.enter)="addContributor()"
-              class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-            />
-            <button
-              (click)="addContributor()"
-              class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            >
-              Add
-            </button>
-          </div>
-
-          <div class="space-y-2">
-            @for (contributor of contributors(); track contributor) {
-              <div
-                class="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
-              >
-                <span class="text-sm text-gray-700">{{ contributor }}</span>
-                <button
-                  (click)="removeContributor(contributor)"
-                  class="text-red-600 hover:text-red-800"
-                >
-                  Remove
-                </button>
-              </div>
-            }
-            @if (contributors().length === 0) {
-              <p class="text-sm text-gray-500 italic">No contributors added</p>
-            }
-          </div>
-        </div>
-
+      <!-- Tab toggle -->
+      <div class="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
         <button
-          (click)="saveViewersContributors()"
-          class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          (click)="shareTab.set('direct')"
+          [class.bg-white]="shareTab() === 'direct'"
+          [class.shadow-sm]="shareTab() === 'direct'"
+          class="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all"
         >
-          Save Viewers & Contributors
+          Add User Directly
+        </button>
+        <button
+          (click)="shareTab.set('invite'); loadInvitations()"
+          [class.bg-white]="shareTab() === 'invite'"
+          [class.shadow-sm]="shareTab() === 'invite'"
+          class="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all"
+        >
+          Send Invite Link
         </button>
       </div>
+
+      @if (shareTab() === 'direct') {
+        <!-- Direct add -->
+        <div class="space-y-4">
+          <div class="relative">
+            <div class="flex gap-2">
+              <div class="relative flex-1">
+                <input
+                  type="text"
+                  [ngModel]="userSearchQuery()"
+                  (ngModelChange)="onSearchInput($event)"
+                  placeholder="Search by name or email..."
+                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+                />
+                @if (userSearchResults().length > 0) {
+                  <div
+                    class="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg"
+                  >
+                    @for (result of userSearchResults(); track result.email) {
+                      <button
+                        type="button"
+                        (click)="selectSearchResult(result)"
+                        class="w-full px-4 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50"
+                      >
+                        <span class="font-medium"
+                          >{{ result.first_name }} {{ result.last_name }}</span
+                        >
+                        <span class="ml-1 text-gray-500">{{ result.email }}</span>
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+              <select
+                [ngModel]="newMemberRole()"
+                (ngModelChange)="newMemberRole.set($event)"
+                class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none"
+              >
+                <option value="viewer">Viewer</option>
+                <option value="contributor">Contributor</option>
+              </select>
+              <button
+                (click)="addMemberDirect()"
+                [disabled]="!selectedUser()"
+                class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+              >
+                Add
+              </button>
+            </div>
+            @if (selectedUser()) {
+              <div
+                class="mt-2 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-800"
+              >
+                <span
+                  >{{ selectedUser()!.first_name }} {{ selectedUser()!.last_name }} ({{
+                    selectedUser()!.email
+                  }})</span
+                >
+                <button
+                  (click)="selectedUser.set(null); userSearchQuery.set('')"
+                  class="ml-auto text-blue-600 hover:text-blue-800"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+
+          <!-- Current members -->
+          @if (members()) {
+            <div class="mt-4 space-y-3">
+              <div>
+                <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                  Owner
+                </h4>
+                <div
+                  class="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-2"
+                >
+                  <span class="text-sm text-gray-700">{{ members()!.owner.email }}</span>
+                  <span class="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600"
+                    >Owner</span
+                  >
+                </div>
+              </div>
+              @if (members()!.contributors.length > 0) {
+                <div>
+                  <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                    Contributors
+                  </h4>
+                  @for (m of members()!.contributors; track m.email) {
+                    <div
+                      class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
+                    >
+                      <div>
+                        <span class="text-sm font-medium text-gray-900"
+                          >{{ m.first_name }} {{ m.last_name }}</span
+                        >
+                        <span class="ml-2 text-xs text-gray-500">{{ m.email }}</span>
+                      </div>
+                      <button
+                        (click)="removeMember(m.email)"
+                        class="text-xs text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+              @if (members()!.viewers.length > 0) {
+                <div>
+                  <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                    Viewers
+                  </h4>
+                  @for (m of members()!.viewers; track m.email) {
+                    <div
+                      class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
+                    >
+                      <div>
+                        <span class="text-sm font-medium text-gray-900"
+                          >{{ m.first_name }} {{ m.last_name }}</span
+                        >
+                        <span class="ml-2 text-xs text-gray-500">{{ m.email }}</span>
+                      </div>
+                      <button
+                        (click)="removeMember(m.email)"
+                        class="text-xs text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (shareTab() === 'invite') {
+        <!-- Invite link -->
+        <div class="space-y-4">
+          <div class="flex gap-2">
+            <input
+              type="email"
+              [ngModel]="inviteEmail()"
+              (ngModelChange)="inviteEmail.set($event)"
+              placeholder="Recipient email address"
+              class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+            />
+            <select
+              [ngModel]="inviteRole()"
+              (ngModelChange)="inviteRole.set($event)"
+              class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none"
+            >
+              <option value="viewer">Viewer</option>
+              <option value="contributor">Contributor</option>
+            </select>
+            <button
+              (click)="sendInvite()"
+              [disabled]="!inviteEmail() || sendingInvite()"
+              class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              @if (sendingInvite()) {
+                Sending...
+              } @else {
+                Send Invite
+              }
+            </button>
+          </div>
+
+          @if (lastInviteUrl()) {
+            <div class="rounded-lg border border-green-200 bg-green-50 p-3">
+              <p class="mb-1 text-xs font-medium text-green-700">Invite sent! Share this link:</p>
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  [value]="lastInviteUrl()"
+                  readonly
+                  class="flex-1 rounded border border-green-200 bg-white px-3 py-1.5 text-xs text-gray-700"
+                />
+                <button
+                  (click)="copyInviteUrl()"
+                  class="rounded bg-green-600 px-3 py-1.5 text-xs text-white hover:bg-green-700"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Pending invitations -->
+          @if (pendingInvitations().length > 0) {
+            <div class="mt-4">
+              <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                Pending Invitations
+              </h4>
+              <div class="overflow-hidden rounded-lg border border-gray-200">
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-50 text-xs text-gray-500">
+                    <tr>
+                      <th class="px-4 py-2 text-left">Email</th>
+                      <th class="px-4 py-2 text-left">Role</th>
+                      <th class="px-4 py-2 text-left">Expires</th>
+                      <th class="px-4 py-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (inv of pendingInvitations(); track inv.uuid) {
+                      <tr class="border-t border-gray-100">
+                        <td class="px-4 py-2 text-gray-700">{{ inv.invited_email }}</td>
+                        <td class="px-4 py-2 text-gray-600 capitalize">{{ inv.role }}</td>
+                        <td class="px-4 py-2 text-xs text-gray-500">
+                          {{ formatInviteDate(inv.expires_at) }}
+                        </td>
+                        <td class="px-4 py-2 text-right">
+                          <button
+                            (click)="revokeInvitation(inv.uuid)"
+                            class="text-xs text-red-600 hover:text-red-800"
+                          >
+                            Revoke
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <!-- Delete Project Section -->

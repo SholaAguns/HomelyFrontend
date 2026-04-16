@@ -1,6 +1,15 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { SharingService } from '../../../../../core/services/sharing-service/sharing.service';
+import { UserSearchResult } from '../../../../../shared/models/project-models';
+
+interface CollabEntry {
+  user: UserSearchResult;
+  role: 'viewer' | 'contributor';
+}
 
 @Component({
   selector: 'app-step3-collaboration',
@@ -14,89 +23,107 @@ import { FormsModule } from '@angular/forms';
       </p>
 
       <form (ngSubmit)="onSubmit()">
-        <div class="mb-4">
-          <label for="viewerInput" class="mb-1 block text-sm font-medium"> Viewers </label>
-          <p class="mb-2 text-xs text-gray-500">Can view properties but not make changes</p>
-          <div class="flex">
-            <input
-              id="viewerInput"
-              type="email"
-              [(ngModel)]="viewerInput"
-              name="viewerInput"
-              class="flex-1 rounded-l-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-              placeholder="email@example.com"
-            />
+        <div class="mb-6">
+          <label class="mb-1 block text-sm font-medium">Add collaborators</label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input
+                type="text"
+                [ngModel]="searchQuery"
+                (ngModelChange)="onSearchInput($event)"
+                name="searchQuery"
+                class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                placeholder="Search by name or email..."
+                autocomplete="off"
+              />
+              @if (searchResults.length > 0) {
+                <div
+                  class="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg"
+                >
+                  @for (result of searchResults; track result.email) {
+                    <button
+                      type="button"
+                      (click)="selectUser(result)"
+                      class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
+                    >
+                      {{ result.first_name }} {{ result.last_name }}
+                      <span class="text-gray-400">({{ result.email }})</span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+            <select
+              [(ngModel)]="pendingRole"
+              name="pendingRole"
+              class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none"
+            >
+              <option value="viewer">Viewer</option>
+              <option value="contributor">Contributor</option>
+            </select>
             <button
               type="button"
-              (click)="addViewer()"
-              [disabled]="!viewerInput"
-              class="rounded-r-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400"
+              (click)="addPending()"
+              [disabled]="!selectedUser"
+              class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-gray-400"
             >
               Add
             </button>
           </div>
-          @if (viewers.length > 0) {
-            <div class="mt-2 flex flex-wrap gap-2">
-              @for (viewer of viewers; track viewer) {
-                <span
-                  class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800"
-                >
-                  {{ viewer }}
-                  <button
-                    type="button"
-                    (click)="removeViewer(viewer)"
-                    class="ml-2 text-blue-600 hover:text-blue-800"
-                  >
-                    ×
-                  </button>
-                </span>
-              }
+
+          @if (selectedUser) {
+            <div
+              class="mt-2 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-800"
+            >
+              <span
+                >{{ selectedUser.first_name }} {{ selectedUser.last_name }} ({{
+                  selectedUser.email
+                }})</span
+              >
+              <button
+                type="button"
+                (click)="clearSelected()"
+                class="ml-auto text-blue-600 hover:text-blue-800"
+              >
+                ×
+              </button>
             </div>
           }
         </div>
 
-        <div class="mb-6">
-          <label for="contributorInput" class="mb-1 block text-sm font-medium">
-            Contributors
-          </label>
-          <p class="mb-2 text-xs text-gray-500">Can view and make changes</p>
-          <div class="flex">
-            <input
-              id="contributorInput"
-              type="email"
-              [(ngModel)]="contributorInput"
-              name="contributorInput"
-              class="flex-1 rounded-l-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-              placeholder="email@example.com"
-            />
-            <button
-              type="button"
-              (click)="addContributor()"
-              [disabled]="!contributorInput"
-              class="rounded-r-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400"
-            >
-              Add
-            </button>
-          </div>
-          @if (contributors.length > 0) {
-            <div class="mt-2 flex flex-wrap gap-2">
-              @for (contributor of contributors; track contributor) {
+        @if (entries.length > 0) {
+          <div class="mb-6 space-y-2">
+            <p class="text-sm font-medium text-gray-700">Added collaborators</p>
+            @for (entry of entries; track entry.user.email) {
+              <div
+                class="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              >
                 <span
-                  class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm text-green-800"
+                  >{{ entry.user.first_name }} {{ entry.user.last_name }} ({{
+                    entry.user.email
+                  }})</span
                 >
-                  {{ contributor }}
+                <div class="flex items-center gap-3">
+                  <span
+                    class="rounded-full px-2 py-0.5 text-xs capitalize"
+                    [class.bg-blue-100]="entry.role === 'viewer'"
+                    [class.text-blue-800]="entry.role === 'viewer'"
+                    [class.bg-green-100]="entry.role === 'contributor'"
+                    [class.text-green-800]="entry.role === 'contributor'"
+                    >{{ entry.role }}</span
+                  >
                   <button
                     type="button"
-                    (click)="removeContributor(contributor)"
-                    class="ml-2 text-green-600 hover:text-green-800"
+                    (click)="removeEntry(entry.user.email)"
+                    class="text-red-500 hover:text-red-700"
                   >
                     ×
                   </button>
-                </span>
-              }
-            </div>
-          }
-        </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
 
         <div class="flex justify-between">
           <button
@@ -127,7 +154,7 @@ import { FormsModule } from '@angular/forms';
     </div>
   `,
 })
-export class Step3CollaborationComponent {
+export class Step3CollaborationComponent implements OnInit, OnDestroy {
   @Input() initialData: { viewers: string[]; contributors: string[] } = {
     viewers: [],
     contributors: [],
@@ -136,42 +163,67 @@ export class Step3CollaborationComponent {
   @Output() skip = new EventEmitter<void>();
   @Output() back = new EventEmitter<void>();
 
-  viewers: string[] = [];
-  contributors: string[] = [];
-  viewerInput = '';
-  contributorInput = '';
+  private sharingService = inject(SharingService);
+  private searchInput$ = new Subject<string>();
+  private sub!: Subscription;
+
+  searchQuery = '';
+  searchResults: UserSearchResult[] = [];
+  selectedUser: UserSearchResult | null = null;
+  pendingRole: 'viewer' | 'contributor' = 'viewer';
+  entries: CollabEntry[] = [];
 
   ngOnInit() {
-    this.viewers = [...(this.initialData.viewers || [])];
-    this.contributors = [...(this.initialData.contributors || [])];
+    this.sub = this.searchInput$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((q) => (q.length >= 2 ? this.sharingService.searchUsers(q) : []))
+      )
+      .subscribe((results) => {
+        const added = this.entries.map((e) => e.user.email);
+        this.searchResults = results.filter((r) => !added.includes(r.email));
+      });
   }
 
-  addViewer() {
-    if (this.viewerInput && !this.viewers.includes(this.viewerInput)) {
-      this.viewers.push(this.viewerInput);
-      this.viewerInput = '';
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+  }
+
+  onSearchInput(q: string) {
+    this.searchQuery = q;
+    this.selectedUser = null;
+    if (!q) this.searchResults = [];
+    this.searchInput$.next(q);
+  }
+
+  selectUser(user: UserSearchResult) {
+    this.selectedUser = user;
+    this.searchQuery = `${user.first_name} ${user.last_name} (${user.email})`;
+    this.searchResults = [];
+  }
+
+  clearSelected() {
+    this.selectedUser = null;
+    this.searchQuery = '';
+  }
+
+  addPending() {
+    if (!this.selectedUser) return;
+    if (!this.entries.find((e) => e.user.email === this.selectedUser!.email)) {
+      this.entries.push({ user: this.selectedUser, role: this.pendingRole });
     }
+    this.clearSelected();
   }
 
-  removeViewer(viewer: string) {
-    this.viewers = this.viewers.filter((v) => v !== viewer);
-  }
-
-  addContributor() {
-    if (this.contributorInput && !this.contributors.includes(this.contributorInput)) {
-      this.contributors.push(this.contributorInput);
-      this.contributorInput = '';
-    }
-  }
-
-  removeContributor(contributor: string) {
-    this.contributors = this.contributors.filter((c) => c !== contributor);
+  removeEntry(email: string) {
+    this.entries = this.entries.filter((e) => e.user.email !== email);
   }
 
   onSubmit() {
     this.complete.emit({
-      viewers: this.viewers,
-      contributors: this.contributors,
+      viewers: this.entries.filter((e) => e.role === 'viewer').map((e) => e.user.email),
+      contributors: this.entries.filter((e) => e.role === 'contributor').map((e) => e.user.email),
     });
   }
 

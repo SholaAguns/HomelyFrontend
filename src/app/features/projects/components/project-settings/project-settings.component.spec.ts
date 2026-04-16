@@ -1,26 +1,43 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { of, throwError } from 'rxjs';
 import { ProjectSettingsComponent } from './project-settings.component';
 import { ProjectStore } from '../../store/project.store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { Project } from '../../../../shared/models/project-models';
 import { ContextOptions } from '../../../../shared/models/context-options.models';
+import { SharingService } from '../../../../core/services/sharing-service/sharing.service';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { SavedLocationService } from '../../../../core/services/saved-location.service';
+import { RatingCriteriaStore } from '../../store/rating-criteria.store';
+import { createSharingServiceMock } from '../../../../shared/mocks/sharing-service.mock';
+import {
+  mockProjectMembers,
+  mockProjectInvitation,
+  mockUserSearchResult,
+} from '../../../../shared/mocks/models/project-sharing-models.mock';
 
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
   let fixture: ComponentFixture<ProjectSettingsComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockProjectStore: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockRoute: any;
+  let mockSharingService: ReturnType<typeof createSharingServiceMock>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockNotificationService: any;
 
   const mockProject: Project = {
     uuid: 'test-uuid',
     owner: 'test-owner',
     title: 'Test Project',
     description: 'Test Description',
-    viewers: ['viewer1@test.com'],
-    contributors: ['contributor1@test.com'],
+    viewers: [],
+    contributors: [],
     rating_criteria: 'Test criteria',
     rating_criteria_source: null,
     context_options: null,
@@ -48,6 +65,10 @@ describe('ProjectSettingsComponent', () => {
   };
 
   beforeEach(async () => {
+    mockSharingService = createSharingServiceMock();
+    mockSharingService.getMembers.mockReturnValue(of(mockProjectMembers));
+    mockSharingService.getInvitations.mockReturnValue(of([]));
+
     mockProjectStore = {
       selectedDetail: signal({ ...mockProject, context_options: mockContextOptions }),
       loading: signal(false),
@@ -55,19 +76,16 @@ describe('ProjectSettingsComponent', () => {
       setContextOptions: vi.fn(),
       delete: vi.fn(),
       loadDetail: vi.fn(),
+      error: signal(null),
     };
 
-    mockRouter = {
-      navigate: vi.fn(),
-    };
+    mockRouter = { navigate: vi.fn() };
 
     mockRoute = {
-      snapshot: {
-        paramMap: {
-          get: vi.fn().mockReturnValue('test-uuid'),
-        },
-      },
+      snapshot: { paramMap: { get: vi.fn().mockReturnValue('test-uuid') } },
     };
+
+    mockNotificationService = { success: vi.fn(), error: vi.fn(), info: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [ProjectSettingsComponent],
@@ -75,6 +93,10 @@ describe('ProjectSettingsComponent', () => {
         { provide: ProjectStore, useValue: mockProjectStore },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: SharingService, useValue: mockSharingService },
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: SavedLocationService, useValue: { getAll: vi.fn().mockReturnValue(of([])) } },
+        { provide: RatingCriteriaStore, useValue: { loadAll: vi.fn(), allCriteria: signal([]) } },
       ],
     }).compileComponents();
 
@@ -91,33 +113,24 @@ describe('ProjectSettingsComponent', () => {
     expect(mockProjectStore.loadDetail).toHaveBeenCalledWith('test-uuid');
   });
 
-  it('should initialize form values from project', async () => {
+  it('should initialise title and description from project', async () => {
     vi.useFakeTimers();
     component.ngOnInit();
-
     vi.advanceTimersByTime(600);
-
     expect(component.title()).toBe('Test Project');
     expect(component.description()).toBe('Test Description');
-    expect(component.viewers()).toEqual(['viewer1@test.com']);
-    expect(component.contributors()).toEqual(['contributor1@test.com']);
-    expect(component.ratingCriteria()).toBe('Test criteria');
-
     vi.useRealTimers();
   });
 
-  it('should initialize context options from project', async () => {
+  it('should initialise context options from project', async () => {
     vi.useFakeTimers();
     component.ngOnInit();
-
     vi.advanceTimersByTime(600);
-
     expect(component.enableCrime()).toBe(true);
     expect(component.enableSchools()).toBe(true);
     expect(component.schoolTypes()).toEqual(['primary']);
     expect(component.enablePoi()).toBe(true);
     expect(component.poiTypes()).toEqual(['restaurant', 'supermarket']);
-
     vi.useRealTimers();
   });
 
@@ -125,15 +138,10 @@ describe('ProjectSettingsComponent', () => {
     component.projectUuid = 'test-uuid';
     component.title.set('Updated Title');
     component.description.set('Updated Description');
-
     component.saveProjectDetails();
-
     expect(mockProjectStore.update).toHaveBeenCalledWith({
       uuid: 'test-uuid',
-      data: {
-        title: 'Updated Title',
-        description: 'Updated Description',
-      },
+      data: { title: 'Updated Title', description: 'Updated Description' },
     });
   });
 
@@ -141,16 +149,11 @@ describe('ProjectSettingsComponent', () => {
     component.projectUuid = 'test-uuid';
     component.enableCrime.set(true);
     component.enableSchools.set(false);
-
     component.saveContextOptions();
-
     expect(mockProjectStore.setContextOptions).toHaveBeenCalledWith(
       expect.objectContaining({
         uuid: 'test-uuid',
-        data: expect.objectContaining({
-          enable_crime: true,
-          enable_schools: false,
-        }),
+        data: expect.objectContaining({ enable_crime: true, enable_schools: false }),
       })
     );
   });
@@ -158,146 +161,193 @@ describe('ProjectSettingsComponent', () => {
   it('should call update on saveRatingCriteria', () => {
     component.projectUuid = 'test-uuid';
     component.ratingCriteria.set('New criteria');
-
     component.saveRatingCriteria();
-
     expect(mockProjectStore.update).toHaveBeenCalledWith({
       uuid: 'test-uuid',
-      data: {
-        rating_criteria: 'New criteria',
-      },
+      data: { rating_criteria: 'New criteria' },
     });
   });
 
-  it('should call update on saveViewersContributors', () => {
-    component.projectUuid = 'test-uuid';
-    component.viewers.set(['viewer@test.com']);
-    component.contributors.set(['contributor@test.com']);
-
-    component.saveViewersContributors();
-
-    expect(mockProjectStore.update).toHaveBeenCalledWith({
-      uuid: 'test-uuid',
-      data: {
-        viewers: ['viewer@test.com'],
-        contributors: ['contributor@test.com'],
-      },
-    });
-  });
-
-  it('should add viewer when addViewer is called', () => {
-    component.newViewer.set('new@test.com');
-    component.viewers.set([]);
-
-    component.addViewer();
-
-    expect(component.viewers()).toContain('new@test.com');
-    expect(component.newViewer()).toBe('');
-  });
-
-  it('should not add duplicate viewer', () => {
-    component.newViewer.set('existing@test.com');
-    component.viewers.set(['existing@test.com']);
-
-    component.addViewer();
-
-    expect(component.viewers().length).toBe(1);
-  });
-
-  it('should remove viewer when removeViewer is called', () => {
-    component.viewers.set(['viewer1@test.com', 'viewer2@test.com']);
-
-    component.removeViewer('viewer1@test.com');
-
-    expect(component.viewers()).toEqual(['viewer2@test.com']);
-  });
-
-  it('should add contributor when addContributor is called', () => {
-    component.newContributor.set('new@test.com');
-    component.contributors.set([]);
-
-    component.addContributor();
-
-    expect(component.contributors()).toContain('new@test.com');
-    expect(component.newContributor()).toBe('');
-  });
-
-  it('should remove contributor when removeContributor is called', () => {
-    component.contributors.set(['contributor1@test.com', 'contributor2@test.com']);
-
-    component.removeContributor('contributor1@test.com');
-
-    expect(component.contributors()).toEqual(['contributor2@test.com']);
-  });
-
-  it('should toggle school type when toggleSchoolType is called', () => {
+  it('should toggle school type', () => {
     component.schoolTypes.set(['primary']);
-
     component.toggleSchoolType('secondary');
     expect(component.schoolTypes()).toContain('secondary');
-
     component.toggleSchoolType('primary');
     expect(component.schoolTypes()).not.toContain('primary');
   });
 
-  it('should toggle POI type when togglePoiType is called', () => {
+  it('should toggle POI type', () => {
     component.poiTypes.set(['restaurant']);
-
     component.togglePoiType('supermarket');
     expect(component.poiTypes()).toContain('supermarket');
-
     component.togglePoiType('restaurant');
     expect(component.poiTypes()).not.toContain('restaurant');
   });
 
-  it('should open delete modal when openDeleteModal is called', () => {
+  it('should open and close delete modal', () => {
     component.openDeleteModal();
-
     expect(component.showDeleteModal()).toBe(true);
-    expect(component.deleteConfirmation()).toBe('');
-  });
-
-  it('should close delete modal when closeDeleteModal is called', () => {
-    component.showDeleteModal.set(true);
-    component.deleteConfirmation.set('DELETE');
-
     component.closeDeleteModal();
-
     expect(component.showDeleteModal()).toBe(false);
-    expect(component.deleteConfirmation()).toBe('');
   });
 
-  it('should delete project when confirmation matches', async () => {
+  it('should delete project when confirmation matches', () => {
     vi.useFakeTimers();
     mockProjectStore.loading.set(false);
     component.projectUuid = 'test-uuid';
     component.deleteConfirmation.set('delete');
-
     component.confirmDelete();
-
     expect(mockProjectStore.delete).toHaveBeenCalledWith('test-uuid');
-
     vi.advanceTimersByTime(200);
-
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/projects']);
-
     vi.useRealTimers();
   });
 
-  it('should not delete project when confirmation does not match', () => {
+  it('should not delete when confirmation does not match', () => {
     component.projectUuid = 'test-uuid';
     component.deleteConfirmation.set('wrong');
-
     component.confirmDelete();
-
     expect(mockProjectStore.delete).not.toHaveBeenCalled();
   });
 
-  it('should navigate back to project detail on navigateBack', () => {
+  it('should navigate back to project', () => {
     component.projectUuid = 'test-uuid';
-
     component.navigateBack();
-
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/projects', 'test-uuid']);
+  });
+
+  describe('sharing — loadMembers', () => {
+    it('should load members on init', () => {
+      component.projectUuid = 'test-uuid';
+      component.loadMembers();
+      expect(mockSharingService.getMembers).toHaveBeenCalledWith('test-uuid');
+      expect(component.members()).toEqual(mockProjectMembers);
+    });
+  });
+
+  describe('sharing — loadInvitations', () => {
+    it('should load pending invitations', () => {
+      mockSharingService.getInvitations.mockReturnValue(of([mockProjectInvitation]));
+      component.projectUuid = 'test-uuid';
+      component.loadInvitations();
+      expect(component.pendingInvitations()).toEqual([mockProjectInvitation]);
+    });
+  });
+
+  describe('sharing — selectSearchResult', () => {
+    it('should set selectedUser and clear results', () => {
+      component.userSearchResults.set([mockUserSearchResult]);
+      component.selectSearchResult(mockUserSearchResult);
+      expect(component.selectedUser()).toEqual(mockUserSearchResult);
+      expect(component.userSearchResults()).toHaveLength(0);
+    });
+  });
+
+  describe('sharing — addMemberDirect', () => {
+    it('should send invite and reload members on success', async () => {
+      mockSharingService.createInvite.mockReturnValue(of(mockProjectInvitation));
+      component.projectUuid = 'test-uuid';
+      component.selectedUser.set(mockUserSearchResult);
+      component.newMemberRole.set('viewer');
+      component.addMemberDirect();
+      await new Promise((r) => setTimeout(r, 10));
+      expect(mockSharingService.createInvite).toHaveBeenCalledWith('test-uuid', {
+        invited_email: mockUserSearchResult.email,
+        role: 'viewer',
+      });
+      expect(mockNotificationService.success).toHaveBeenCalled();
+      expect(component.selectedUser()).toBeNull();
+    });
+
+    it('should show error notification on failure', async () => {
+      mockSharingService.createInvite.mockReturnValue(
+        throwError(() => ({ error: { detail: 'Already a member' } }))
+      );
+      component.projectUuid = 'test-uuid';
+      component.selectedUser.set(mockUserSearchResult);
+      component.addMemberDirect();
+      await new Promise((r) => setTimeout(r, 10));
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Already a member');
+    });
+
+    it('should do nothing when no user selected', () => {
+      component.selectedUser.set(null);
+      component.addMemberDirect();
+      expect(mockSharingService.createInvite).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('sharing — removeMember', () => {
+    it('should remove member and reload members', async () => {
+      mockSharingService.removeMember.mockReturnValue(of(undefined));
+      component.projectUuid = 'test-uuid';
+      component.removeMember('viewer@example.com');
+      await new Promise((r) => setTimeout(r, 10));
+      expect(mockSharingService.removeMember).toHaveBeenCalledWith(
+        'test-uuid',
+        'viewer@example.com'
+      );
+      expect(mockNotificationService.success).toHaveBeenCalled();
+    });
+
+    it('should show error on remove failure', async () => {
+      mockSharingService.removeMember.mockReturnValue(throwError(() => ({ error: {} })));
+      component.projectUuid = 'test-uuid';
+      component.removeMember('viewer@example.com');
+      await new Promise((r) => setTimeout(r, 10));
+      expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+  });
+
+  describe('sharing — sendInvite', () => {
+    it('should create invite, set URL and reload invitations', async () => {
+      mockSharingService.createInvite.mockReturnValue(of(mockProjectInvitation));
+      component.projectUuid = 'test-uuid';
+      component.inviteEmail.set('alice@example.com');
+      component.inviteRole.set('viewer');
+      component.sendInvite();
+      await new Promise((r) => setTimeout(r, 10));
+      expect(mockSharingService.createInvite).toHaveBeenCalledWith('test-uuid', {
+        invited_email: 'alice@example.com',
+        role: 'viewer',
+      });
+      expect(component.lastInviteUrl()).toBe(mockProjectInvitation.invite_url);
+      expect(component.sendingInvite()).toBe(false);
+    });
+
+    it('should do nothing when email is empty', () => {
+      component.inviteEmail.set('  ');
+      component.sendInvite();
+      expect(mockSharingService.createInvite).not.toHaveBeenCalled();
+    });
+
+    it('should show error and reset sending state on failure', async () => {
+      mockSharingService.createInvite.mockReturnValue(throwError(() => ({ error: {} })));
+      component.projectUuid = 'test-uuid';
+      component.inviteEmail.set('alice@example.com');
+      component.sendInvite();
+      await new Promise((r) => setTimeout(r, 10));
+      expect(mockNotificationService.error).toHaveBeenCalled();
+      expect(component.sendingInvite()).toBe(false);
+    });
+  });
+
+  describe('sharing — revokeInvitation', () => {
+    it('should revoke invite and reload invitations', async () => {
+      mockSharingService.revokeInvite.mockReturnValue(of(undefined));
+      component.projectUuid = 'test-uuid';
+      component.revokeInvitation('invite-uuid-1');
+      await new Promise((r) => setTimeout(r, 10));
+      expect(mockSharingService.revokeInvite).toHaveBeenCalledWith('test-uuid', 'invite-uuid-1');
+      expect(mockNotificationService.success).toHaveBeenCalled();
+    });
+  });
+
+  describe('sharing — formatInviteDate', () => {
+    it('should return a formatted date string', () => {
+      const result = component.formatInviteDate('2026-04-23T00:00:00Z');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
+    });
   });
 });

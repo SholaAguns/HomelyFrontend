@@ -66,3 +66,67 @@ export interface UpdateProjectDto {
 }
 
 export type CreateContextOptionsDto = UpdateContextOptionsDto;
+
+export interface ProjectMember {
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
+export interface ProjectMembers {
+  owner: ProjectMember;
+  viewers: ProjectMember[];
+  contributors: ProjectMember[];
+}
+
+export interface ProjectInvitation {
+  uuid: string;
+  invited_email: string;
+  role: 'viewer' | 'contributor';
+  status: 'pending' | 'accepted' | 'declined' | 'revoked';
+  invited_by_email: string;
+  invited_by_name: string;
+  project_title: string;
+  invite_url: string | null;
+  expires_at: string;
+  created_at: string;
+  accepted_at: string | null;
+}
+
+export interface InvitePreview {
+  project_uuid: string;
+  project_title: string;
+  invited_by_name: string;
+  invited_by_email: string;
+  role: 'viewer' | 'contributor';
+  expires_at: string;
+}
+
+export interface CreateInviteDto {
+  invited_email: string;
+  role: 'viewer' | 'contributor';
+}
+
+export interface AcceptInviteResponse {
+  project_uuid: string;
+  role: 'viewer' | 'contributor';
+}
+
+export interface UserSearchResult {
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
+export interface AppNotification {
+  uuid: string;
+  notification_type: 'invite_received' | 'invite_accepted' | 'invite_declined' | 'member_removed';
+  title: string;
+  message: string;
+  related_object_uuid: string | null;
+  related_object_type: string;
+  is_read: boolean;
+  created_at: string;
+  actor_email: string | null;
+  actor_name: string | null;
+}

@@ -12,6 +12,9 @@ import {
 import { User } from '../../../shared/models/user-models';
 import { NotificationService } from '../../services/notification-service/notification.service';
 import { AuthService } from '../../services/auth-service/auth.service';
+import { NotificationStore } from '../notification-store/notification.store';
+
+const PENDING_INVITE_KEY = 'pending_invite_token';
 
 type AuthState = {
   user: User | null;
@@ -40,95 +43,110 @@ export const AuthStore = signalStore(
       store,
       authService = inject(AuthService),
       notificationService = inject(NotificationService),
+      notificationStore = inject(NotificationStore),
       router = inject(Router)
-    ) => ({
-      login: rxMethod<LoginCredentials>(
-        pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((credentials) =>
-            authService.login(credentials).pipe(
-              tap((response: LoginResponse) => {
-                patchState(store, {
-                  user: response.user,
-                  accessToken: response.access,
-                  refreshToken: response.refresh,
-                  loading: false,
-                });
-                notificationService.success('Login successful');
-                router.navigate(['/']);
-              }),
-              catchError((error: Error) => {
-                patchState(store, {
-                  error: error.message,
-                  loading: false,
-                });
-                notificationService.error('Login failed: ' + error.message);
-                return EMPTY;
-              })
+    ) => {
+      function postAuthRedirect(accessToken: string): void {
+        notificationStore.connect(accessToken);
+        const pendingToken = localStorage.getItem(PENDING_INVITE_KEY);
+        if (pendingToken) {
+          localStorage.removeItem(PENDING_INVITE_KEY);
+          router.navigate(['/accept-invite'], { queryParams: { token: pendingToken } });
+        } else {
+          router.navigate(['/']);
+        }
+      }
+
+      return {
+        login: rxMethod<LoginCredentials>(
+          pipe(
+            tap(() => patchState(store, { loading: true, error: null })),
+            switchMap((credentials) =>
+              authService.login(credentials).pipe(
+                tap((response: LoginResponse) => {
+                  patchState(store, {
+                    user: response.user,
+                    accessToken: response.access,
+                    refreshToken: response.refresh,
+                    loading: false,
+                  });
+                  notificationService.success('Login successful');
+                  postAuthRedirect(response.access);
+                }),
+                catchError((error: Error) => {
+                  patchState(store, {
+                    error: error.message,
+                    loading: false,
+                  });
+                  notificationService.error('Login failed: ' + error.message);
+                  return EMPTY;
+                })
+              )
             )
           )
-        )
-      ),
+        ),
 
-      register: rxMethod<RegisterData>(
-        pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((data) =>
-            authService.register(data).pipe(
-              tap((response: RegisterResponse) => {
-                patchState(store, {
-                  user: null,
-                  accessToken: response.access,
-                  refreshToken: response.refresh,
-                  loading: false,
-                });
-                notificationService.success('Registration successful');
-                router.navigate(['/login']);
-              }),
-              catchError((error: Error) => {
-                patchState(store, {
-                  error: error.message,
-                  loading: false,
-                });
-                notificationService.error('Registration failed: ' + error.message);
-                return EMPTY;
-              })
+        register: rxMethod<RegisterData>(
+          pipe(
+            tap(() => patchState(store, { loading: true, error: null })),
+            switchMap((data) =>
+              authService.register(data).pipe(
+                tap((response: RegisterResponse) => {
+                  patchState(store, {
+                    user: null,
+                    accessToken: response.access,
+                    refreshToken: response.refresh,
+                    loading: false,
+                  });
+                  notificationService.success('Registration successful');
+                  postAuthRedirect(response.access);
+                }),
+                catchError((error: Error) => {
+                  patchState(store, {
+                    error: error.message,
+                    loading: false,
+                  });
+                  notificationService.error('Registration failed: ' + error.message);
+                  return EMPTY;
+                })
+              )
             )
           )
-        )
-      ),
+        ),
 
-      logout: rxMethod<void>(
-        pipe(
-          switchMap(() => authService.logout()),
-          tap(() => {
-            authService.removeToken('access_token');
-            authService.removeToken('refresh_token');
-            patchState(store, initialState);
-            notificationService.info('Logged out successfully');
-          })
-        )
-      ),
-
-      initializeFromStorage: () => {
-        const accessToken = authService.getAccessToken();
-        const refreshToken = authService.getRefreshToken();
-        if (accessToken && refreshToken) {
-          patchState(store, { accessToken, refreshToken, loading: true });
-
-          authService.getCurrentUser().subscribe({
-            next: (user) => {
-              patchState(store, { user, loading: false });
-            },
-            error: () => {
-              // Invalid token, clear storage
+        logout: rxMethod<void>(
+          pipe(
+            switchMap(() => authService.logout()),
+            tap(() => {
               authService.removeToken('access_token');
               authService.removeToken('refresh_token');
+              notificationStore.disconnect();
               patchState(store, initialState);
-            },
-          });
-        }
-      },
-    })
+              notificationService.info('Logged out successfully');
+            })
+          )
+        ),
+
+        initializeFromStorage: () => {
+          const accessToken = authService.getAccessToken();
+          const refreshToken = authService.getRefreshToken();
+          if (accessToken && refreshToken) {
+            patchState(store, { accessToken, refreshToken, loading: true });
+
+            authService.getCurrentUser().subscribe({
+              next: (user) => {
+                patchState(store, { user, loading: false });
+                notificationStore.connect(accessToken);
+              },
+              error: () => {
+                authService.removeToken('access_token');
+                authService.removeToken('refresh_token');
+                patchState(store, initialState);
+              },
+            });
+          }
+        },
+      };
+    }
   )
 );

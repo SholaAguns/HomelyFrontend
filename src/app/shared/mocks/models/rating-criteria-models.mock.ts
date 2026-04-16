@@ -25,7 +25,7 @@ export const mockCriterion2: Criterion = {
   enabled: true,
   weight: 1.5,
   is_dealbreaker: true,
-  dealbreaker_threshold: { max: 5 },
+  dealbreaker_threshold: { above_price_threshold: 5 },
   created_at: '2024-01-01T10:00:00Z',
   updated_at: '2024-01-01T10:00:00Z',
 };
@@ -87,7 +87,7 @@ export const mockUpdateRatingCriteriaDto: UpdateRatingCriteriaDto = {
       enabled: true,
       weight: 1.5,
       is_dealbreaker: true,
-      dealbreaker_threshold: { max: 500000 },
+      dealbreaker_threshold: { above_price_threshold: 500000 },
     },
   ],
 };

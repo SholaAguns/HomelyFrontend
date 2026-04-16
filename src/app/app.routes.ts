@@ -71,6 +71,13 @@ export const routes: Routes = [
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   {
+    path: 'accept-invite',
+    loadComponent: () =>
+      import('./features/auth/accept-invite/accept-invite.component').then(
+        (m) => m.AcceptInviteComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
