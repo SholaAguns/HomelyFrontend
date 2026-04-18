@@ -81,7 +81,7 @@ export interface ProjectMembers {
 
 export interface ProjectInvitation {
   uuid: string;
-  invited_email: string;
+  email: string;
   role: 'viewer' | 'contributor';
   status: 'pending' | 'accepted' | 'declined' | 'revoked';
   invited_by_email: string;
@@ -103,7 +103,7 @@ export interface InvitePreview {
 }
 
 export interface CreateInviteDto {
-  invited_email: string;
+  email: string;
   role: 'viewer' | 'contributor';
 }
 

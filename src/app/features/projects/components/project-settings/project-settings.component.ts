@@ -238,7 +238,7 @@ export class ProjectSettingsComponent implements OnInit {
     const user = this.selectedUser();
     if (!user) return;
     this.sharingService
-      .createInvite(this.projectUuid, { invited_email: user.email, role: this.newMemberRole() })
+      .createInvite(this.projectUuid, { email: user.email, role: this.newMemberRole() })
       .subscribe({
         next: () => {
           this.notificationService.success(`Invitation sent to ${user.email}`);
@@ -267,7 +267,7 @@ export class ProjectSettingsComponent implements OnInit {
     if (!email) return;
     this.sendingInvite.set(true);
     this.sharingService
-      .createInvite(this.projectUuid, { invited_email: email, role: this.inviteRole() })
+      .createInvite(this.projectUuid, { email: email, role: this.inviteRole() })
       .subscribe({
         next: (inv) => {
           this.sendingInvite.set(false);
