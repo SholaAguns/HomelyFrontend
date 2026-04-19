@@ -531,7 +531,7 @@
                   <tbody>
                     @for (inv of pendingInvitations(); track inv.uuid) {
                       <tr class="border-t border-gray-100">
-                        <td class="px-4 py-2 text-gray-700">{{ inv.email }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ inv.invited_email }}</td>
                         <td class="px-4 py-2 text-gray-600 capitalize">{{ inv.role }}</td>
                         <td class="px-4 py-2 text-xs text-gray-500">
                           {{ formatInviteDate(inv.expires_at) }}

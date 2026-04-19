@@ -46,7 +46,7 @@ export const mockProjectMembers: ProjectMembers = {
 
 export const mockProjectInvitation: ProjectInvitation = {
   uuid: 'invite-uuid-1',
-  email: 'alice@example.com',
+  invited_email: 'alice@example.com',
   role: 'viewer',
   status: 'pending',
   invited_by_email: 'owner@example.com',
