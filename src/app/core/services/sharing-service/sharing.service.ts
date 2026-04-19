@@ -50,6 +50,12 @@ export class SharingService {
     return this.api.post<void>('property/projects/decline-invite/', { token });
   }
 
+  getMyInviteToken(projectUuid: string): Observable<{ token: string }> {
+    return this.api.get<{ token: string }>(
+      `property/projects/my-invite/?project_uuid=${projectUuid}`
+    );
+  }
+
   searchUsers(q: string): Observable<UserSearchResult[]> {
     return this.api.get<UserSearchResult[]>(`accounts/users/search/?q=${encodeURIComponent(q)}`);
   }
