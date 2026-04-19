@@ -511,46 +511,64 @@
               </div>
             </div>
           }
+        </div>
+      }
 
-          <!-- Pending invitations -->
-          @if (pendingInvitations().length > 0) {
-            <div class="mt-4">
-              <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
-                Pending Invitations
-              </h4>
-              <div class="overflow-hidden rounded-lg border border-gray-200">
-                <table class="w-full text-sm">
-                  <thead class="bg-gray-50 text-xs text-gray-500">
-                    <tr>
-                      <th class="px-4 py-2 text-left">Email</th>
-                      <th class="px-4 py-2 text-left">Role</th>
-                      <th class="px-4 py-2 text-left">Expires</th>
-                      <th class="px-4 py-2"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (inv of pendingInvitations(); track inv.uuid) {
-                      <tr class="border-t border-gray-100">
-                        <td class="px-4 py-2 text-gray-700">{{ inv.invited_email }}</td>
-                        <td class="px-4 py-2 text-gray-600 capitalize">{{ inv.role }}</td>
-                        <td class="px-4 py-2 text-xs text-gray-500">
-                          {{ formatInviteDate(inv.expires_at) }}
-                        </td>
-                        <td class="px-4 py-2 text-right">
-                          <button
-                            (click)="revokeInvitation(inv.uuid)"
-                            class="text-xs text-red-600 hover:text-red-800"
-                          >
-                            Revoke
-                          </button>
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          }
+      <!-- Pending invitations (shown for all tabs) -->
+      @if (pendingInvitations().length > 0) {
+        <div class="mt-6 border-t border-gray-200 pt-6">
+          <h4 class="mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            Pending Invitations
+          </h4>
+          <div class="overflow-hidden rounded-lg border border-gray-200">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50 text-xs text-gray-500">
+                <tr>
+                  <th class="px-4 py-2 text-left">Email</th>
+                  <th class="px-4 py-2 text-left">Role</th>
+                  <th class="px-4 py-2 text-left">Status</th>
+                  <th class="px-4 py-2 text-left">Expires</th>
+                  <th class="px-4 py-2"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (inv of pendingInvitations(); track inv.uuid) {
+                  <tr class="border-t border-gray-100">
+                    <td class="px-4 py-2 text-gray-700">{{ inv.invited_email }}</td>
+                    <td class="px-4 py-2 text-gray-600 capitalize">{{ inv.role }}</td>
+                    <td class="px-4 py-2">
+                      <span
+                        class="rounded-full px-2 py-0.5 text-xs font-medium capitalize"
+                        [class.bg-yellow-100]="inv.status === 'pending'"
+                        [class.text-yellow-800]="inv.status === 'pending'"
+                        [class.bg-green-100]="inv.status === 'accepted'"
+                        [class.text-green-800]="inv.status === 'accepted'"
+                        [class.bg-red-100]="inv.status === 'declined'"
+                        [class.text-red-800]="inv.status === 'declined'"
+                        [class.bg-gray-100]="inv.status === 'revoked'"
+                        [class.text-gray-800]="inv.status === 'revoked'"
+                      >
+                        {{ inv.status }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 text-xs text-gray-500">
+                      {{ formatInviteDate(inv.expires_at) }}
+                    </td>
+                    <td class="px-4 py-2 text-right">
+                      @if (inv.status === 'pending') {
+                        <button
+                          (click)="revokeInvitation(inv.uuid)"
+                          class="text-xs text-red-600 hover:text-red-800"
+                        >
+                          Revoke
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
       }
     </div>
