@@ -10,6 +10,7 @@ P1:
 - Remove unused rating criteria
 - ~~Allow rerunning Stage 2~~
 - Context report section layout
+- Remove rating criteria from property list edit page
 - Only include options for POI rating criteria that are included in project context options
 - Only include options for Saved Location rating criteria that are included in project context options
 - delete modal confirmation only

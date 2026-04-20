@@ -53,15 +53,11 @@ export interface PropertyTypeDistribution {
 export interface CreateProjectDto {
   title: string;
   description?: string;
-  viewers?: string[];
-  contributors?: string[];
 }
 
 export interface UpdateProjectDto {
   title?: string;
   description?: string;
-  viewers?: string[];
-  contributors?: string[];
   rating_criteria?: string | null;
 }
 
