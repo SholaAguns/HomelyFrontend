@@ -3,13 +3,13 @@
   <p class="section-description">Based on property price</p>
 
   <div class="criteria-list">
-    <div class="criterion-item" [class.disabled]="!isCriterionEnabled(priceCriterion()?.enabled)">
+    <div class="criterion-item" [class.disabled]="!priceCriterion()?.enabled">
       <div class="criterion-header">
         <div class="criterion-info">
           <label class="checkbox-label enable-toggle">
             <input
               type="checkbox"
-              [checked]="isCriterionEnabled(priceCriterion()?.enabled)"
+              [checked]="priceCriterion()?.enabled"
               (change)="toggleCriterionEnabled()"
             />
             <span class="criterion-name">{{ priceCriterion()?.name }}</span>
@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      @if (isCriterionEnabled(priceCriterion()?.enabled)) {
+      @if (priceCriterion()?.enabled) {
         <div class="criterion-controls">
           <div class="control-group">
             <label>Weight</label>
@@ -42,7 +42,7 @@
               />
               <span>Dealbreaker</span>
             </label>
-            @if (isCriterionEnabled(priceCriterion()?.is_dealbreaker)) {
+            @if (priceCriterion()?.is_dealbreaker) {
               <div class="form-group mb-4">
                 <label for="dealbreaker_below_price" class="mb-1 block text-sm font-medium"
                   >Below:</label

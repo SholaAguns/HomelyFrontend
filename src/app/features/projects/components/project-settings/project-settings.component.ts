@@ -1,12 +1,16 @@
-import { Component, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 import { ProjectStore } from '../../store/project.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import {
   UpdateProjectDto,
   CreateContextOptionsDto,
+  ProjectMembers,
+  ProjectInvitation,
+  UserSearchResult,
 } from '../../../../shared/models/project-models';
 import {
   ContextOptions,
@@ -18,6 +22,8 @@ import {
 import { SavedLocationService } from '../../../../core/services/saved-location.service';
 import { SavedLocation } from '../../../../shared/models/saved-location-models';
 import { RatingCriteriaStore } from '../../store/rating-criteria.store';
+import { SharingService } from '../../../../core/services/sharing-service/sharing.service';
+import { AuthService } from '../../../../core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -33,12 +39,18 @@ export class ProjectSettingsComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private savedLocationService = inject(SavedLocationService);
   readonly ratingCriteriaStore = inject(RatingCriteriaStore);
+  private sharingService = inject(SharingService);
+  private authService = inject(AuthService);
 
   private previousLoadingState = false;
   private isSaving = false;
 
   projectUuid = '';
   loading = signal(false);
+  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+
+  isOwner = computed(() => this.authService.isOwner(this.projectUuid, this.userRole()));
+  canEdit = computed(() => this.authService.canEdit(this.projectUuid, this.userRole()));
 
   // Project details
   title = signal('');
@@ -62,11 +74,19 @@ export class ProjectSettingsComponent implements OnInit {
   // Rating criteria
   ratingCriteria = signal('');
 
-  // Viewers/contributors
-  viewers = signal<string[]>([]);
-  contributors = signal<string[]>([]);
-  newViewer = signal('');
-  newContributor = signal('');
+  // Sharing
+  shareTab = signal<'direct' | 'invite'>('direct');
+  userSearchQuery = signal('');
+  userSearchResults = signal<UserSearchResult[]>([]);
+  selectedUser = signal<UserSearchResult | null>(null);
+  newMemberRole = signal<'viewer' | 'contributor'>('viewer');
+  members = signal<ProjectMembers | null>(null);
+  inviteEmail = signal('');
+  inviteRole = signal<'viewer' | 'contributor'>('viewer');
+  sendingInvite = signal(false);
+  lastInviteUrl = signal('');
+  pendingInvitations = signal<ProjectInvitation[]>([]);
+  private searchInput$ = new Subject<string>();
 
   // Delete confirmation
   showDeleteModal = signal(false);
@@ -93,10 +113,32 @@ export class ProjectSettingsComponent implements OnInit {
 
       this.previousLoadingState = loading;
     });
+
+    this.searchInput$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((q) => (q.length >= 2 ? this.sharingService.searchUsers(q) : []))
+      )
+      .subscribe((results) => this.userSearchResults.set(results));
   }
 
   ngOnInit() {
     this.projectUuid = this.route.snapshot.paramMap.get('uuid') || '';
+
+    this.authService.getCurrentUser().subscribe();
+
+    if (this.projectUuid) {
+      this.authService.getUserRole(this.projectUuid).subscribe({
+        next: (role) => {
+          this.userRole.set(role);
+          if (role === 'owner') {
+            this.loadInvitations();
+          }
+        },
+        error: () => {},
+      });
+    }
 
     this.savedLocationService.getAll().subscribe({
       next: (locations) => this.savedLocations.set(locations),
@@ -114,8 +156,6 @@ export class ProjectSettingsComponent implements OnInit {
         if (project) {
           this.title.set(project.title);
           this.description.set(project.description || '');
-          this.viewers.set([...project.viewers]);
-          this.contributors.set([...project.contributors]);
           this.ratingCriteria.set(project.rating_criteria || '');
 
           if (project.context_options) {
@@ -124,6 +164,8 @@ export class ProjectSettingsComponent implements OnInit {
         }
         this.loading.set(false);
       }, 500);
+
+      this.loadMembers();
     }
   }
 
@@ -184,38 +226,104 @@ export class ProjectSettingsComponent implements OnInit {
     this.projectStore.update({ uuid: this.projectUuid, data: updateDto });
   }
 
-  saveViewersContributors() {
-    this.isSaving = true;
-    const updateDto: UpdateProjectDto = {
-      viewers: this.viewers(),
-      contributors: this.contributors(),
-    };
-
-    this.projectStore.update({ uuid: this.projectUuid, data: updateDto });
+  loadMembers() {
+    this.sharingService.getMembers(this.projectUuid).subscribe({
+      next: (m) => this.members.set(m),
+      error: () => {},
+    });
   }
 
-  addViewer() {
-    const email = this.newViewer().trim();
-    if (email && !this.viewers().includes(email)) {
-      this.viewers.update((v) => [...v, email]);
-      this.newViewer.set('');
-    }
+  loadInvitations() {
+    this.sharingService.getInvitations(this.projectUuid).subscribe({
+      next: (inv) => this.pendingInvitations.set(inv),
+      error: () => {},
+    });
   }
 
-  removeViewer(email: string) {
-    this.viewers.update((v) => v.filter((e) => e !== email));
+  onSearchInput(q: string) {
+    this.userSearchQuery.set(q);
+    this.selectedUser.set(null);
+    if (!q) this.userSearchResults.set([]);
+    this.searchInput$.next(q);
   }
 
-  addContributor() {
-    const email = this.newContributor().trim();
-    if (email && !this.contributors().includes(email)) {
-      this.contributors.update((c) => [...c, email]);
-      this.newContributor.set('');
-    }
+  selectSearchResult(user: UserSearchResult) {
+    this.selectedUser.set(user);
+    this.userSearchQuery.set(`${user.first_name} ${user.last_name} (${user.email})`);
+    this.userSearchResults.set([]);
   }
 
-  removeContributor(email: string) {
-    this.contributors.update((c) => c.filter((e) => e !== email));
+  addMemberDirect() {
+    const user = this.selectedUser();
+    if (!user) return;
+    this.sharingService
+      .createInvite(this.projectUuid, { email: user.email, role: this.newMemberRole() })
+      .subscribe({
+        next: () => {
+          this.notificationService.success(`Invitation sent to ${user.email}`);
+          this.selectedUser.set(null);
+          this.userSearchQuery.set('');
+          this.loadMembers();
+        },
+        error: (err) =>
+          this.notificationService.error(err?.error?.detail || 'Failed to add member'),
+      });
+  }
+
+  removeMember(email: string) {
+    this.sharingService.removeMember(this.projectUuid, email).subscribe({
+      next: () => {
+        this.notificationService.success('Member removed');
+        this.loadMembers();
+      },
+      error: (err) =>
+        this.notificationService.error(err?.error?.detail || 'Failed to remove member'),
+    });
+  }
+
+  sendInvite() {
+    const email = this.inviteEmail().trim();
+    if (!email) return;
+    this.sendingInvite.set(true);
+    this.sharingService
+      .createInvite(this.projectUuid, { email: email, role: this.inviteRole() })
+      .subscribe({
+        next: (inv) => {
+          this.sendingInvite.set(false);
+          this.lastInviteUrl.set(inv.invite_url || '');
+          this.inviteEmail.set('');
+          this.loadInvitations();
+          this.notificationService.success('Invite sent');
+        },
+        error: (err) => {
+          this.sendingInvite.set(false);
+          this.notificationService.error(err?.error?.detail || 'Failed to send invite');
+        },
+      });
+  }
+
+  revokeInvitation(invitationUuid: string) {
+    this.sharingService.revokeInvite(this.projectUuid, invitationUuid).subscribe({
+      next: () => {
+        this.notificationService.success('Invitation revoked');
+        this.loadInvitations();
+      },
+      error: () => this.notificationService.error('Failed to revoke invitation'),
+    });
+  }
+
+  copyInviteUrl() {
+    navigator.clipboard.writeText(this.lastInviteUrl()).then(() => {
+      this.notificationService.success('Link copied!');
+    });
+  }
+
+  formatInviteDate(iso: string): string {
+    return new Date(iso).toLocaleDateString(undefined, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
   }
 
   toggleSchoolType(type: SchoolType) {

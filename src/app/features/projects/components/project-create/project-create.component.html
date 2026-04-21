@@ -24,16 +24,6 @@
         (skip)="onStep2Skip()"
         (back)="back()"
       />
-    } @else if (currentStep() === 2) {
-      <app-step3-collaboration
-        [initialData]="{
-          viewers: projectData().viewers || [],
-          contributors: projectData().contributors || [],
-        }"
-        (complete)="onStep3Complete($event)"
-        (skip)="onStep3Skip()"
-        (back)="back()"
-      />
     }
 
     @if (submitting()) {

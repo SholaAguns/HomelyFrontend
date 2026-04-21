@@ -8,7 +8,6 @@ import {
 } from '../../../../shared/components/progress-indicator/progress-indicator.component';
 import { Step1BasicInfoComponent } from './steps/step1-basic-info.component';
 import { Step2ContextOptionsComponent } from './steps/step2-context-options.component';
-import { Step3CollaborationComponent } from './steps/step3-collaboration.component';
 import {
   CreateProjectDto,
   CreateContextOptionsDto,
@@ -22,7 +21,6 @@ import {
     ProgressIndicatorComponent,
     Step1BasicInfoComponent,
     Step2ContextOptionsComponent,
-    Step3CollaborationComponent,
   ],
   templateUrl: './project-create.component.html',
   styleUrl: './project-create.component.css',
@@ -38,8 +36,6 @@ export class ProjectCreateComponent {
   projectData = signal<CreateProjectDto>({
     title: '',
     description: '',
-    viewers: [],
-    contributors: [],
   });
 
   contextOptionsData = signal<CreateContextOptionsDto | null>(null);
@@ -47,7 +43,6 @@ export class ProjectCreateComponent {
   steps: WizardStep[] = [
     { label: 'Basic Info', completed: false },
     { label: 'Context Options', completed: false },
-    { label: 'Collaboration', completed: false },
   ];
 
   onStep1Complete(data: { title: string; description: string }) {
@@ -59,23 +54,12 @@ export class ProjectCreateComponent {
   onStep2Complete(data: CreateContextOptionsDto | null) {
     this.contextOptionsData.set(data);
     this.steps[1].completed = true;
-    this.currentStep.set(2);
+    this.submit();
   }
 
   onStep2Skip() {
     this.contextOptionsData.set(null);
     this.steps[1].completed = true;
-    this.currentStep.set(2);
-  }
-
-  onStep3Complete(data: { viewers: string[]; contributors: string[] }) {
-    this.projectData.update((current) => ({ ...current, ...data }));
-    this.steps[2].completed = true;
-    this.submit();
-  }
-
-  onStep3Skip() {
-    this.steps[2].completed = true;
     this.submit();
   }
 

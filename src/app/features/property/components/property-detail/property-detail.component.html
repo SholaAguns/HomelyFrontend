@@ -195,7 +195,7 @@
 
     <!-- Context Reports Section -->
     <div class="mt-8">
-      <app-context-reports [propertyId]="property()!.uuid" />
+      <app-context-reports [propertyId]="property()!.uuid" [projectUuid]="projectUuid()" />
     </div>
 
     <!-- Rating Section (Stage 3) -->
@@ -203,7 +203,10 @@
       <div class="mb-4 flex items-center justify-between">
         <h2 class="text-xl font-semibold">Property Rating (Stage 3)</h2>
 
-        @if (property()!.state === 'STAGE2_COMPLETE' || property()!.state === 'STAGE3_COMPLETE') {
+        @if (
+          canEdit() &&
+          (property()!.state === 'STAGE2_COMPLETE' || property()!.state === 'STAGE3_COMPLETE')
+        ) {
           <button
             (click)="runStage3()"
             class="rounded-lg bg-purple-600 px-4 py-2 text-white transition-colors hover:bg-purple-700"

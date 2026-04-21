@@ -2,16 +2,18 @@
   <!-- Header -->
   <div class="reports-header">
     <h2>Context Reports</h2>
-    <div class="header-actions">
-      @if (showTriggerButton()) {
-        <button (click)="triggerStage2()" class="btn-primary">Get reports</button>
-      }
-      @if (progress().failed > 0) {
-        <button (click)="retryAllFailed()" class="btn-retry-all">
-          Retry All Failed ({{ progress().failed }})
-        </button>
-      }
-    </div>
+    @if (canEdit()) {
+      <div class="header-actions">
+        @if (showTriggerButton()) {
+          <button (click)="triggerStage2()" class="btn-primary">Get reports</button>
+        }
+        @if (progress().failed > 0) {
+          <button (click)="retryAllFailed()" class="btn-retry-all">
+            Retry All Failed ({{ progress().failed }})
+          </button>
+        }
+      </div>
+    }
   </div>
 
   <!-- Service Reports -->
@@ -54,7 +56,9 @@
             @if (getServiceStatus('crime') === 'FAILED') {
               <div class="service-error">
                 <p class="error-message">{{ getServiceError('crime') }}</p>
-                <button (click)="retryService('crime')" class="btn-retry">Retry</button>
+                @if (canEdit()) {
+                  <button (click)="retryService('crime')" class="btn-retry">Retry</button>
+                }
               </div>
             }
 
@@ -94,7 +98,9 @@
             @if (getServiceStatus('schools') === 'FAILED') {
               <div class="service-error">
                 <p class="error-message">{{ getServiceError('schools') }}</p>
-                <button (click)="retryService('schools')" class="btn-retry">Retry</button>
+                @if (canEdit()) {
+                  <button (click)="retryService('schools')" class="btn-retry">Retry</button>
+                }
               </div>
             }
 
@@ -134,7 +140,9 @@
             @if (getServiceStatus('broadband') === 'FAILED') {
               <div class="service-error">
                 <p class="error-message">{{ getServiceError('broadband') }}</p>
-                <button (click)="retryService('broadband')" class="btn-retry">Retry</button>
+                @if (canEdit()) {
+                  <button (click)="retryService('broadband')" class="btn-retry">Retry</button>
+                }
               </div>
             }
 
@@ -174,7 +182,9 @@
             @if (getServiceStatus('mobile') === 'FAILED') {
               <div class="service-error">
                 <p class="error-message">{{ getServiceError('mobile') }}</p>
-                <button (click)="retryService('mobile')" class="btn-retry">Retry</button>
+                @if (canEdit()) {
+                  <button (click)="retryService('mobile')" class="btn-retry">Retry</button>
+                }
               </div>
             }
 
@@ -214,7 +224,9 @@
             @if (getServiceStatus('council_tax') === 'FAILED') {
               <div class="service-error">
                 <p class="error-message">{{ getServiceError('council_tax') }}</p>
-                <button (click)="retryService('council_tax')" class="btn-retry">Retry</button>
+                @if (canEdit()) {
+                  <button (click)="retryService('council_tax')" class="btn-retry">Retry</button>
+                }
               </div>
             }
 
@@ -253,7 +265,9 @@
             @if (getServiceStatus('poi') === 'FAILED') {
               <div class="service-error">
                 <p class="error-message">{{ getServiceError('poi') }}</p>
-                <button (click)="retryService('poi')" class="btn-retry">Retry</button>
+                @if (canEdit()) {
+                  <button (click)="retryService('poi')" class="btn-retry">Retry</button>
+                }
               </div>
             }
 
@@ -293,7 +307,9 @@
             @if (getServiceStatus('saved_locations') === 'FAILED') {
               <div class="service-error">
                 <p class="error-message">{{ getServiceError('saved_locations') }}</p>
-                <button (click)="retryService('saved_locations')" class="btn-retry">Retry</button>
+                @if (canEdit()) {
+                  <button (click)="retryService('saved_locations')" class="btn-retry">Retry</button>
+                }
               </div>
             }
 

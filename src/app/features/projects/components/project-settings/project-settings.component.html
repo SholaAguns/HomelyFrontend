@@ -15,399 +15,592 @@
     </div>
 
     <!-- Project Details Section -->
-    <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">Project Details</h2>
+    @if (canEdit()) {
+      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+        <h2 class="mb-4 text-xl font-semibold text-gray-900">Project Details</h2>
 
-      <div class="space-y-4">
-        <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700">Title</label>
-          <input
-            type="text"
-            [ngModel]="title()"
-            (ngModelChange)="title.set($event)"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-          />
+        <div class="space-y-4">
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700">Title</label>
+            <input
+              type="text"
+              [ngModel]="title()"
+              (ngModelChange)="title.set($event)"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              [ngModel]="description()"
+              (ngModelChange)="description.set($event)"
+              rows="3"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+            ></textarea>
+          </div>
+
+          <button
+            (click)="saveProjectDetails()"
+            class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Save Details
+          </button>
         </div>
-
-        <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            [ngModel]="description()"
-            (ngModelChange)="description.set($event)"
-            rows="3"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-          ></textarea>
-        </div>
-
-        <button
-          (click)="saveProjectDetails()"
-          class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        >
-          Save Details
-        </button>
       </div>
-    </div>
+    }
 
     <!-- Context Options Section -->
-    <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">Context Options</h2>
+    @if (canEdit()) {
+      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+        <h2 class="mb-4 text-xl font-semibold text-gray-900">Context Options</h2>
 
-      <div class="space-y-4">
-        <!-- Crime -->
-        <label class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            [ngModel]="enableCrime()"
-            (ngModelChange)="enableCrime.set($event)"
-            class="h-4 w-4 rounded border-gray-300"
-          />
-          <span class="text-sm font-medium text-gray-700">Enable Crime Data</span>
-        </label>
-
-        <!-- Schools -->
-        <div>
-          <label class="mb-2 flex items-center gap-2">
+        <div class="space-y-4">
+          <!-- Crime -->
+          <label class="flex items-center gap-2">
             <input
               type="checkbox"
-              [ngModel]="enableSchools()"
-              (ngModelChange)="enableSchools.set($event)"
+              [ngModel]="enableCrime()"
+              (ngModelChange)="enableCrime.set($event)"
               class="h-4 w-4 rounded border-gray-300"
             />
-            <span class="text-sm font-medium text-gray-700">Enable Schools Data</span>
+            <span class="text-sm font-medium text-gray-700">Enable Crime Data</span>
           </label>
 
-          @if (enableSchools()) {
-            <div class="ml-6 space-y-2">
-              @for (type of schoolTypeKeys; track type) {
-                <label class="flex items-center gap-2">
+          <!-- Schools -->
+          <div>
+            <label class="mb-2 flex items-center gap-2">
+              <input
+                type="checkbox"
+                [ngModel]="enableSchools()"
+                (ngModelChange)="enableSchools.set($event)"
+                class="h-4 w-4 rounded border-gray-300"
+              />
+              <span class="text-sm font-medium text-gray-700">Enable Schools Data</span>
+            </label>
+
+            @if (enableSchools()) {
+              <div class="ml-6 space-y-2">
+                @for (type of schoolTypeKeys; track type) {
+                  <label class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      [checked]="schoolTypes().includes(type)"
+                      (change)="toggleSchoolType(type)"
+                      class="h-4 w-4 rounded border-gray-300"
+                    />
+                    <span class="text-sm text-gray-600">{{ SCHOOL_TYPE_LABELS[type] }}</span>
+                  </label>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Broadband -->
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              [ngModel]="enableBroadband()"
+              (ngModelChange)="enableBroadband.set($event)"
+              class="h-4 w-4 rounded border-gray-300"
+            />
+            <span class="text-sm font-medium text-gray-700">Enable Broadband Data</span>
+          </label>
+
+          <!-- Mobile -->
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              [ngModel]="enableMobile()"
+              (ngModelChange)="enableMobile.set($event)"
+              class="h-4 w-4 rounded border-gray-300"
+            />
+            <span class="text-sm font-medium text-gray-700">Enable Mobile Data</span>
+          </label>
+
+          <!-- Council Tax -->
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              [ngModel]="enableCouncilTax()"
+              (ngModelChange)="enableCouncilTax.set($event)"
+              class="h-4 w-4 rounded border-gray-300"
+            />
+            <span class="text-sm font-medium text-gray-700">Enable Council Tax Data</span>
+          </label>
+
+          <!-- POI -->
+          <div>
+            <label class="mb-2 flex items-center gap-2">
+              <input
+                type="checkbox"
+                [ngModel]="enablePoi()"
+                (ngModelChange)="enablePoi.set($event)"
+                class="h-4 w-4 rounded border-gray-300"
+              />
+              <span class="text-sm font-medium text-gray-700">Enable Points of Interest</span>
+            </label>
+
+            @if (enablePoi()) {
+              <div class="ml-6 space-y-3">
+                <div>
+                  <label class="mb-2 block text-sm text-gray-600">Search Radius (meters)</label>
                   <input
-                    type="checkbox"
-                    [checked]="schoolTypes().includes(type)"
-                    (change)="toggleSchoolType(type)"
-                    class="h-4 w-4 rounded border-gray-300"
+                    type="number"
+                    [ngModel]="poiRadius()"
+                    (ngModelChange)="poiRadius.set($event)"
+                    min="100"
+                    max="5000"
+                    step="100"
+                    class="w-40 rounded-lg border border-gray-300 px-3 py-1 focus:border-blue-500 focus:outline-none"
                   />
-                  <span class="text-sm text-gray-600">{{ SCHOOL_TYPE_LABELS[type] }}</span>
-                </label>
-              }
-            </div>
-          }
-        </div>
+                </div>
 
-        <!-- Broadband -->
-        <label class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            [ngModel]="enableBroadband()"
-            (ngModelChange)="enableBroadband.set($event)"
-            class="h-4 w-4 rounded border-gray-300"
-          />
-          <span class="text-sm font-medium text-gray-700">Enable Broadband Data</span>
-        </label>
-
-        <!-- Mobile -->
-        <label class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            [ngModel]="enableMobile()"
-            (ngModelChange)="enableMobile.set($event)"
-            class="h-4 w-4 rounded border-gray-300"
-          />
-          <span class="text-sm font-medium text-gray-700">Enable Mobile Data</span>
-        </label>
-
-        <!-- Council Tax -->
-        <label class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            [ngModel]="enableCouncilTax()"
-            (ngModelChange)="enableCouncilTax.set($event)"
-            class="h-4 w-4 rounded border-gray-300"
-          />
-          <span class="text-sm font-medium text-gray-700">Enable Council Tax Data</span>
-        </label>
-
-        <!-- POI -->
-        <div>
-          <label class="mb-2 flex items-center gap-2">
-            <input
-              type="checkbox"
-              [ngModel]="enablePoi()"
-              (ngModelChange)="enablePoi.set($event)"
-              class="h-4 w-4 rounded border-gray-300"
-            />
-            <span class="text-sm font-medium text-gray-700">Enable Points of Interest</span>
-          </label>
-
-          @if (enablePoi()) {
-            <div class="ml-6 space-y-3">
-              <div>
-                <label class="mb-2 block text-sm text-gray-600">Search Radius (meters)</label>
-                <input
-                  type="number"
-                  [ngModel]="poiRadius()"
-                  (ngModelChange)="poiRadius.set($event)"
-                  min="100"
-                  max="5000"
-                  step="100"
-                  class="w-40 rounded-lg border border-gray-300 px-3 py-1 focus:border-blue-500 focus:outline-none"
-                />
+                <div class="grid grid-cols-2 gap-2">
+                  @for (type of poiTypeKeys; track type) {
+                    <label class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        [checked]="poiTypes().includes(type)"
+                        (change)="togglePoiType(type)"
+                        class="h-4 w-4 rounded border-gray-300"
+                      />
+                      <span class="text-sm text-gray-600">{{ POI_TYPE_LABELS[type] }}</span>
+                    </label>
+                  }
+                </div>
               </div>
+            }
+          </div>
 
-              <div class="grid grid-cols-2 gap-2">
-                @for (type of poiTypeKeys; track type) {
-                  <label class="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      [checked]="poiTypes().includes(type)"
-                      (change)="togglePoiType(type)"
-                      class="h-4 w-4 rounded border-gray-300"
-                    />
-                    <span class="text-sm text-gray-600">{{ POI_TYPE_LABELS[type] }}</span>
-                  </label>
+          <!-- Saved Locations -->
+          <div>
+            <label class="mb-2 flex items-center gap-2">
+              <input
+                type="checkbox"
+                [ngModel]="enableSavedLocations()"
+                (ngModelChange)="enableSavedLocations.set($event)"
+                class="h-4 w-4 rounded border-gray-300"
+              />
+              <span class="text-sm font-medium text-gray-700">Enable Saved Locations</span>
+            </label>
+
+            @if (enableSavedLocations()) {
+              <div class="ml-6 space-y-2">
+                @if (savedLocations().length === 0) {
+                  <p class="text-sm text-gray-500 italic">No saved locations available</p>
+                } @else {
+                  <label class="mb-2 block text-sm text-gray-600">Select locations:</label>
+                  @for (location of savedLocations(); track location.uuid) {
+                    <label class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        [checked]="savedLocationUuids().includes(location.uuid)"
+                        (change)="toggleSavedLocation(location.uuid)"
+                        class="h-4 w-4 rounded border-gray-300"
+                      />
+                      <span class="text-sm text-gray-600"
+                        >{{ location.name }} ({{ location.postcode }})</span
+                      >
+                    </label>
+                  }
                 }
               </div>
-            </div>
-          }
+            }
+          </div>
+
+          <button
+            (click)="saveContextOptions()"
+            class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Save Context Options
+          </button>
         </div>
-
-        <!-- Saved Locations -->
-        <div>
-          <label class="mb-2 flex items-center gap-2">
-            <input
-              type="checkbox"
-              [ngModel]="enableSavedLocations()"
-              (ngModelChange)="enableSavedLocations.set($event)"
-              class="h-4 w-4 rounded border-gray-300"
-            />
-            <span class="text-sm font-medium text-gray-700">Enable Saved Locations</span>
-          </label>
-
-          @if (enableSavedLocations()) {
-            <div class="ml-6 space-y-2">
-              @if (savedLocations().length === 0) {
-                <p class="text-sm text-gray-500 italic">No saved locations available</p>
-              } @else {
-                <label class="mb-2 block text-sm text-gray-600">Select locations:</label>
-                @for (location of savedLocations(); track location.uuid) {
-                  <label class="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      [checked]="savedLocationUuids().includes(location.uuid)"
-                      (change)="toggleSavedLocation(location.uuid)"
-                      class="h-4 w-4 rounded border-gray-300"
-                    />
-                    <span class="text-sm text-gray-600"
-                      >{{ location.name }} ({{ location.postcode }})</span
-                    >
-                  </label>
-                }
-              }
-            </div>
-          }
-        </div>
-
-        <button
-          (click)="saveContextOptions()"
-          class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        >
-          Save Context Options
-        </button>
       </div>
-    </div>
+    }
 
     <!-- Rating Criteria Section -->
-    <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">Rating Criteria</h2>
+    @if (canEdit()) {
+      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+        <h2 class="mb-4 text-xl font-semibold text-gray-900">Rating Criteria</h2>
 
-      <div class="space-y-4">
-        <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-            Select Rating Criteria
-          </label>
-          <p class="mb-3 text-sm text-gray-600">
-            Choose how properties will be rated and scored for this project
-          </p>
+        <div class="space-y-4">
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700">
+              Select Rating Criteria
+            </label>
+            <p class="mb-3 text-sm text-gray-600">
+              Choose how properties will be rated and scored for this project
+            </p>
 
-          @if (ratingCriteriaStore.loading()) {
-            <div class="flex items-center gap-2 py-2">
-              <div class="h-5 w-5 animate-spin rounded-full border-b-2 border-blue-600"></div>
-              <span class="text-sm text-gray-600">Loading criteria...</span>
-            </div>
-          } @else {
-            <select
-              [ngModel]="ratingCriteria()"
-              (ngModelChange)="ratingCriteria.set($event)"
-              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-            >
-              <option value="">None (No rating criteria)</option>
-              @for (criteria of ratingCriteriaStore.allCriteria(); track criteria.uuid) {
-                <option [value]="criteria.uuid">
-                  {{ criteria.name }} ({{ criteria.criteria_count }} criteria)
-                </option>
-              }
-            </select>
-          }
-
-          @if (selectedCriteriaName) {
-            <div class="mt-2 rounded-lg bg-blue-50 px-3 py-2">
-              <p class="text-sm text-blue-800">
-                <strong>Current:</strong> {{ selectedCriteriaName }}
-                @if (hasSourceCriteria) {
-                  <span class="ml-1 text-xs">(Copied from shared criteria)</span>
+            @if (ratingCriteriaStore.loading()) {
+              <div class="flex items-center gap-2 py-2">
+                <div class="h-5 w-5 animate-spin rounded-full border-b-2 border-blue-600"></div>
+                <span class="text-sm text-gray-600">Loading criteria...</span>
+              </div>
+            } @else {
+              <select
+                [ngModel]="ratingCriteria()"
+                (ngModelChange)="ratingCriteria.set($event)"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+              >
+                <option value="">None (No rating criteria)</option>
+                @for (criteria of ratingCriteriaStore.allCriteria(); track criteria.uuid) {
+                  <option [value]="criteria.uuid">
+                    {{ criteria.name }} ({{ criteria.criteria_count }} criteria)
+                  </option>
                 }
-              </p>
-            </div>
-          }
-        </div>
+              </select>
+            }
 
-        <div class="flex gap-3">
-          <button
-            (click)="createNewCriteria()"
-            class="rounded-lg border border-blue-600 px-4 py-2 text-blue-600 hover:bg-blue-50"
-          >
-            Create New Criteria
-          </button>
+            @if (selectedCriteriaName) {
+              <div class="mt-2 rounded-lg bg-blue-50 px-3 py-2">
+                <p class="text-sm text-blue-800">
+                  <strong>Current:</strong> {{ selectedCriteriaName }}
+                  @if (hasSourceCriteria) {
+                    <span class="ml-1 text-xs">(Copied from shared criteria)</span>
+                  }
+                </p>
+              </div>
+            }
+          </div>
 
-          @if (ratingCriteria()) {
+          <div class="flex gap-3">
             <button
-              (click)="editCriteria()"
-              class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+              (click)="createNewCriteria()"
+              class="rounded-lg border border-blue-600 px-4 py-2 text-blue-600 hover:bg-blue-50"
             >
-              Edit Criteria
+              Create New Criteria
             </button>
 
-            @if (hasSourceCriteria) {
+            @if (ratingCriteria()) {
               <button
-                (click)="copyCriteria()"
+                (click)="editCriteria()"
                 class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
-                title="Create a personal copy of shared criteria"
               >
-                Copy Criteria
+                Edit Criteria
               </button>
-            }
-          }
-        </div>
 
-        <button
-          (click)="saveRatingCriteria()"
-          class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        >
-          Save Rating Criteria
-        </button>
-      </div>
-    </div>
-
-    <!-- Viewers/Contributors Section -->
-    <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">Viewers & Contributors</h2>
-
-      <div class="space-y-6">
-        <!-- Viewers -->
-        <div>
-          <h3 class="mb-3 text-sm font-medium text-gray-700">Viewers (Read-only access)</h3>
-
-          <div class="mb-3 flex gap-2">
-            <input
-              type="email"
-              [ngModel]="newViewer()"
-              (ngModelChange)="newViewer.set($event)"
-              placeholder="Enter email address"
-              (keyup.enter)="addViewer()"
-              class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-            />
-            <button
-              (click)="addViewer()"
-              class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            >
-              Add
-            </button>
-          </div>
-
-          <div class="space-y-2">
-            @for (viewer of viewers(); track viewer) {
-              <div
-                class="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
-              >
-                <span class="text-sm text-gray-700">{{ viewer }}</span>
-                <button (click)="removeViewer(viewer)" class="text-red-600 hover:text-red-800">
-                  Remove
-                </button>
-              </div>
-            }
-            @if (viewers().length === 0) {
-              <p class="text-sm text-gray-500 italic">No viewers added</p>
-            }
-          </div>
-        </div>
-
-        <!-- Contributors -->
-        <div>
-          <h3 class="mb-3 text-sm font-medium text-gray-700">Contributors (Edit access)</h3>
-
-          <div class="mb-3 flex gap-2">
-            <input
-              type="email"
-              [ngModel]="newContributor()"
-              (ngModelChange)="newContributor.set($event)"
-              placeholder="Enter email address"
-              (keyup.enter)="addContributor()"
-              class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-            />
-            <button
-              (click)="addContributor()"
-              class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            >
-              Add
-            </button>
-          </div>
-
-          <div class="space-y-2">
-            @for (contributor of contributors(); track contributor) {
-              <div
-                class="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
-              >
-                <span class="text-sm text-gray-700">{{ contributor }}</span>
+              @if (hasSourceCriteria) {
                 <button
-                  (click)="removeContributor(contributor)"
-                  class="text-red-600 hover:text-red-800"
+                  (click)="copyCriteria()"
+                  class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                  title="Create a personal copy of shared criteria"
                 >
-                  Remove
+                  Copy Criteria
                 </button>
-              </div>
-            }
-            @if (contributors().length === 0) {
-              <p class="text-sm text-gray-500 italic">No contributors added</p>
+              }
             }
           </div>
+
+          <button
+            (click)="saveRatingCriteria()"
+            class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Save Rating Criteria
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Sharing Section -->
+    @if (isOwner()) {
+      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+        <h2 class="mb-1 text-xl font-semibold text-gray-900">Sharing</h2>
+        <p class="mb-4 text-sm text-gray-500">Manage who has access to this project.</p>
+
+        <!-- Tab toggle -->
+        <div class="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
+          <button
+            (click)="shareTab.set('direct')"
+            [class.bg-white]="shareTab() === 'direct'"
+            [class.shadow-sm]="shareTab() === 'direct'"
+            class="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all"
+          >
+            Add User Directly
+          </button>
+          <button
+            (click)="shareTab.set('invite'); loadInvitations()"
+            [class.bg-white]="shareTab() === 'invite'"
+            [class.shadow-sm]="shareTab() === 'invite'"
+            class="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all"
+          >
+            Send Invite Link
+          </button>
         </div>
 
-        <button
-          (click)="saveViewersContributors()"
-          class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        >
-          Save Viewers & Contributors
-        </button>
+        @if (shareTab() === 'direct') {
+          <!-- Direct add -->
+          <div class="space-y-4">
+            <div class="relative">
+              <div class="flex gap-2">
+                <div class="relative flex-1">
+                  <input
+                    type="text"
+                    [ngModel]="userSearchQuery()"
+                    (ngModelChange)="onSearchInput($event)"
+                    placeholder="Search by name or email..."
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+                  />
+                  @if (userSearchResults().length > 0) {
+                    <div
+                      class="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg"
+                    >
+                      @for (result of userSearchResults(); track result.email) {
+                        <button
+                          type="button"
+                          (click)="selectSearchResult(result)"
+                          class="w-full px-4 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50"
+                        >
+                          <span class="font-medium"
+                            >{{ result.first_name }} {{ result.last_name }}</span
+                          >
+                          <span class="ml-1 text-gray-500">{{ result.email }}</span>
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+                <select
+                  [ngModel]="newMemberRole()"
+                  (ngModelChange)="newMemberRole.set($event)"
+                  class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none"
+                >
+                  <option value="viewer">Viewer</option>
+                  <option value="contributor">Contributor</option>
+                </select>
+                <button
+                  (click)="addMemberDirect()"
+                  [disabled]="!selectedUser()"
+                  class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+                >
+                  Add
+                </button>
+              </div>
+              @if (selectedUser()) {
+                <div
+                  class="mt-2 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-800"
+                >
+                  <span
+                    >{{ selectedUser()!.first_name }} {{ selectedUser()!.last_name }} ({{
+                      selectedUser()!.email
+                    }})</span
+                  >
+                  <button
+                    (click)="selectedUser.set(null); userSearchQuery.set('')"
+                    class="ml-auto text-blue-600 hover:text-blue-800"
+                  >
+                    ×
+                  </button>
+                </div>
+              }
+            </div>
+
+            <!-- Current members -->
+            @if (members()) {
+              <div class="mt-4 space-y-3">
+                <div>
+                  <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                    Owner
+                  </h4>
+                  <div
+                    class="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-2"
+                  >
+                    <span class="text-sm text-gray-700">{{ members()!.owner.email }}</span>
+                    <span class="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600"
+                      >Owner</span
+                    >
+                  </div>
+                </div>
+                @if (members()!.contributors.length > 0) {
+                  <div>
+                    <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                      Contributors
+                    </h4>
+                    @for (m of members()!.contributors; track m.email) {
+                      <div
+                        class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
+                      >
+                        <div>
+                          <span class="text-sm font-medium text-gray-900"
+                            >{{ m.first_name }} {{ m.last_name }}</span
+                          >
+                          <span class="ml-2 text-xs text-gray-500">{{ m.email }}</span>
+                        </div>
+                        <button
+                          (click)="removeMember(m.email)"
+                          class="text-xs text-red-600 hover:text-red-800"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+                @if (members()!.viewers.length > 0) {
+                  <div>
+                    <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                      Viewers
+                    </h4>
+                    @for (m of members()!.viewers; track m.email) {
+                      <div
+                        class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
+                      >
+                        <div>
+                          <span class="text-sm font-medium text-gray-900"
+                            >{{ m.first_name }} {{ m.last_name }}</span
+                          >
+                          <span class="ml-2 text-xs text-gray-500">{{ m.email }}</span>
+                        </div>
+                        <button
+                          (click)="removeMember(m.email)"
+                          class="text-xs text-red-600 hover:text-red-800"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        @if (shareTab() === 'invite') {
+          <!-- Invite link -->
+          <div class="space-y-4">
+            <div class="flex gap-2">
+              <input
+                type="email"
+                [ngModel]="inviteEmail()"
+                (ngModelChange)="inviteEmail.set($event)"
+                placeholder="Recipient email address"
+                class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+              />
+              <select
+                [ngModel]="inviteRole()"
+                (ngModelChange)="inviteRole.set($event)"
+                class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none"
+              >
+                <option value="viewer">Viewer</option>
+                <option value="contributor">Contributor</option>
+              </select>
+              <button
+                (click)="sendInvite()"
+                [disabled]="!inviteEmail() || sendingInvite()"
+                class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+              >
+                @if (sendingInvite()) {
+                  Sending...
+                } @else {
+                  Send Invite
+                }
+              </button>
+            </div>
+
+            @if (lastInviteUrl()) {
+              <div class="rounded-lg border border-green-200 bg-green-50 p-3">
+                <p class="mb-1 text-xs font-medium text-green-700">Invite sent! Share this link:</p>
+                <div class="flex gap-2">
+                  <input
+                    type="text"
+                    [value]="lastInviteUrl()"
+                    readonly
+                    class="flex-1 rounded border border-green-200 bg-white px-3 py-1.5 text-xs text-gray-700"
+                  />
+                  <button
+                    (click)="copyInviteUrl()"
+                    class="rounded bg-green-600 px-3 py-1.5 text-xs text-white hover:bg-green-700"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Pending invitations (shown for all tabs) -->
+        @if (pendingInvitations().length > 0) {
+          <div class="mt-6 border-t border-gray-200 pt-6">
+            <h4 class="mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+              Pending Invitations
+            </h4>
+            <div class="overflow-hidden rounded-lg border border-gray-200">
+              <table class="w-full text-sm">
+                <thead class="bg-gray-50 text-xs text-gray-500">
+                  <tr>
+                    <th class="px-4 py-2 text-left">Email</th>
+                    <th class="px-4 py-2 text-left">Role</th>
+                    <th class="px-4 py-2 text-left">Status</th>
+                    <th class="px-4 py-2 text-left">Expires</th>
+                    <th class="px-4 py-2"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (inv of pendingInvitations(); track inv.uuid) {
+                    <tr class="border-t border-gray-100">
+                      <td class="px-4 py-2 text-gray-700">{{ inv.invited_email }}</td>
+                      <td class="px-4 py-2 text-gray-600 capitalize">{{ inv.role }}</td>
+                      <td class="px-4 py-2">
+                        <span
+                          class="rounded-full px-2 py-0.5 text-xs font-medium capitalize"
+                          [class.bg-yellow-100]="inv.status === 'pending'"
+                          [class.text-yellow-800]="inv.status === 'pending'"
+                          [class.bg-green-100]="inv.status === 'accepted'"
+                          [class.text-green-800]="inv.status === 'accepted'"
+                          [class.bg-red-100]="inv.status === 'declined'"
+                          [class.text-red-800]="inv.status === 'declined'"
+                          [class.bg-gray-100]="inv.status === 'revoked'"
+                          [class.text-gray-800]="inv.status === 'revoked'"
+                        >
+                          {{ inv.status }}
+                        </span>
+                      </td>
+                      <td class="px-4 py-2 text-xs text-gray-500">
+                        {{ formatInviteDate(inv.expires_at) }}
+                      </td>
+                      <td class="px-4 py-2 text-right">
+                        @if (inv.status === 'pending') {
+                          <button
+                            (click)="revokeInvitation(inv.uuid)"
+                            class="text-xs text-red-600 hover:text-red-800"
+                          >
+                            Revoke
+                          </button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
       </div>
-    </div>
+    }
 
     <!-- Delete Project Section -->
-    <div class="rounded-lg border border-red-200 bg-red-50 p-6">
-      <h2 class="mb-4 text-xl font-semibold text-red-900">Danger Zone</h2>
+    @if (isOwner()) {
+      <div class="rounded-lg border border-red-200 bg-red-50 p-6">
+        <h2 class="mb-4 text-xl font-semibold text-red-900">Danger Zone</h2>
 
-      <div class="space-y-3">
-        <p class="text-sm text-red-800">
-          Deleting this project will permanently remove all property lists and data. This action
-          cannot be undone.
-        </p>
+        <div class="space-y-3">
+          <p class="text-sm text-red-800">
+            Deleting this project will permanently remove all property lists and data. This action
+            cannot be undone.
+          </p>
 
-        <button
-          (click)="openDeleteModal()"
-          class="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-        >
-          Delete Project
-        </button>
+          <button
+            (click)="openDeleteModal()"
+            class="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+          >
+            Delete Project
+          </button>
+        </div>
       </div>
-    </div>
+    }
   } @else {
     <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
       <h3 class="mb-2 font-semibold">Project not found</h3>

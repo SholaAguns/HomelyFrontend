@@ -4,14 +4,17 @@ import { Router, provideRouter } from '@angular/router';
 import { HeaderComponent } from './header.component';
 import { UiStore } from '../../../core/stores/ui.store';
 import { AuthStore } from '../../../core/stores/auth-store/auth.store';
+import { NotificationStore } from '../../../core/stores/notification-store/notification.store';
 import { signal } from '@angular/core';
+import { createNotificationStoreMock } from '../../mocks/notification-store.mock';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUiStore: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAuthStore: any;
-  let mockRouter: any;
 
   beforeEach(async () => {
     mockUiStore = {
@@ -25,16 +28,13 @@ describe('HeaderComponent', () => {
       logout: vi.fn(),
     };
 
-    mockRouter = {
-      navigate: vi.fn(),
-    };
-
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
       providers: [
         provideRouter([]),
         { provide: UiStore, useValue: mockUiStore },
         { provide: AuthStore, useValue: mockAuthStore },
+        { provide: NotificationStore, useValue: createNotificationStoreMock() },
       ],
     }).compileComponents();
 

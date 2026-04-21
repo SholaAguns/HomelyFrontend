@@ -1,9 +1,19 @@
-import { Component, inject, input, computed, effect, signal, OnDestroy } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  computed,
+  effect,
+  signal,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ContextDataStore } from '../../store/context-data.store';
 import { PropertyStore } from '../../../property/store/property.store';
 import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
+import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { CrimeReportComponent } from '../crime-report/crime-report.component';
 import { SchoolsReportComponent } from '../schools-report/schools-report.component';
 import { BroadbandReportComponent } from '../broadband-report/broadband-report.component';
@@ -38,13 +48,22 @@ import {
   templateUrl: './context-reports.component.html',
   styleUrl: './context-reports.component.css',
 })
-export class ContextReportsComponent implements OnDestroy {
+export class ContextReportsComponent implements OnInit, OnDestroy {
   propertyId = input.required<string>();
+  projectUuid = input.required<string>();
 
   private contextDataStore = inject(ContextDataStore);
   private propertyStore = inject(PropertyStore);
   private propertyWebSocketService = inject(PropertyWebSocketService);
+  private authService = inject(AuthService);
   private wsSubscription?: Subscription;
+  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+
+  canEdit = computed(() => {
+    const pUuid = this.projectUuid();
+    if (!pUuid) return false;
+    return this.authService.canEdit(pUuid, this.userRole());
+  });
 
   // Collapsed state for each service (true = collapsed)
   crimeCollapsed = signal(true);
@@ -62,6 +81,16 @@ export class ContextReportsComponent implements OnDestroy {
         this.contextDataStore.load(currentPropertyId);
       }
     });
+  }
+
+  ngOnInit(): void {
+    const pUuid = this.projectUuid();
+    if (pUuid) {
+      this.authService.getUserRole(pUuid).subscribe({
+        next: (role) => this.userRole.set(role),
+        error: () => {},
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -90,6 +119,7 @@ export class ContextReportsComponent implements OnDestroy {
             started_at: null,
             completed_at: update.status === 'COMPLETE' ? new Date().toISOString() : null,
             cached: false,
+            project_uuid: this.projectUuid(),
           };
           this.contextDataStore.updateService(propertyId, contextData);
         } else if (update.type === 'stage2_complete') {
