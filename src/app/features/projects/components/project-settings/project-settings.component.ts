@@ -130,7 +130,12 @@ export class ProjectSettingsComponent implements OnInit {
 
     if (this.projectUuid) {
       this.authService.getUserRole(this.projectUuid).subscribe({
-        next: (role) => this.userRole.set(role),
+        next: (role) => {
+          this.userRole.set(role);
+          if (role === 'owner') {
+            this.loadInvitations();
+          }
+        },
         error: () => {},
       });
     }
@@ -161,7 +166,6 @@ export class ProjectSettingsComponent implements OnInit {
       }, 500);
 
       this.loadMembers();
-      this.loadInvitations();
     }
   }
 
