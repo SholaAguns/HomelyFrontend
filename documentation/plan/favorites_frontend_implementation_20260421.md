@@ -144,14 +144,14 @@ src/app/
 
 1. - done Update Property interface (add is_favorited field)
 2. - done Create FavoritesService
-3. - done Create PropertyCardComponent with favorite icon
+3. - done Create PropertyPreviewCard with favorite icon
 4. - done Create FavoritesPageComponent
 5. - done Create favorites.routes.ts
 6. - done Update app.routes.ts
 7. - done Update PropertyDetailComponent with favorite toggle
 8. - done Update ProjectDetailComponent with favorites section
 9. - done Add Favorites nav link to sidebar
-10. - [ ] Test all flows
+10. - done Test all flows (unit tests created and passing)
 
 ## Optimistic Updates Pattern
 

@@ -23,6 +23,13 @@ export const PROJECT_ROUTES: Routes = [
       ),
   },
   {
+    path: ':uuid/dashboard',
+    loadComponent: () =>
+      import('./components/project-dashboard/project-dashboard.component').then(
+        (m) => m.ProjectDashboardComponent
+      ),
+  },
+  {
     path: ':uuid/settings',
     loadComponent: () =>
       import('./components/project-settings/project-settings.component').then(
