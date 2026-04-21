@@ -14,6 +14,7 @@ export class SidebarComponent {
 
   protected readonly navItems = [
     { path: '/projects', icon: 'list', label: 'Projects' },
+    { path: '/favorites', icon: 'heart', label: 'Favorites' },
     { path: '/rating-criteria', icon: 'star', label: 'Rating Criteria' },
     { path: '/saved-locations', icon: 'map-pin', label: 'Saved Locations' },
     { path: '/profile', icon: 'user', label: 'Profile' },

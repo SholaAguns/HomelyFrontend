@@ -76,6 +76,9 @@ export interface Property {
   images: PropertyImage[];
   primary_image: PropertyImage | null;
 
+  // Favorites
+  is_favorited: boolean;
+
   // Timestamps
   created_at: string;
   updated_at: string;

@@ -1,0 +1,48 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">My Favorites</h1>
+    <p class="mt-2 text-gray-600">Properties you've favorited across all projects</p>
+  </div>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+    </div>
+  } @else if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+      <h3 class="mb-2 font-semibold">Error loading favorites</h3>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (favorites().length === 0) {
+    <div class="py-16 text-center">
+      <svg
+        class="mx-auto mb-4 h-24 w-24 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+        />
+      </svg>
+      <h3 class="mb-2 text-xl font-semibold text-gray-900">No favorites yet</h3>
+      <p class="text-gray-600">
+        Start adding properties to your favorites by clicking the star icon
+      </p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      @for (property of favorites(); track property.uuid) {
+        <app-property-preview-card
+          [property]="property"
+          [showFavoriteToggle]="true"
+          (favoriteToggle)="onFavoriteToggle($event)"
+        />
+      }
+    </div>
+  }
+</div>

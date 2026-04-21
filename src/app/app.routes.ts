@@ -50,6 +50,12 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'favorites',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/favorites/favorites.routes').then((m) => m.FAVORITES_ROUTES),
+  },
+  {
     path: 'saved-locations',
     canActivate: [authGuard],
     loadChildren: () =>

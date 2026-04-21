@@ -6,6 +6,7 @@ import { PropertyService } from '../../../../core/services/property-service/prop
 import { PropertyStore } from '../../store/property.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
+import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
 import { PropertyDetail } from '../../../../shared/models/property-models';
 import { RatingCompleteData } from '../../../../shared/models/context-data.models';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
@@ -34,6 +35,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   private propertyStore = inject(PropertyStore);
   private notificationService = inject(NotificationService);
   private propertyWebSocketService = inject(PropertyWebSocketService);
+  private favoritesService = inject(FavoritesService);
   private authService = inject(AuthService);
   private propertyListService = inject(PropertyListService);
 
@@ -221,5 +223,29 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
 
   closeGallery(): void {
     this.galleryOpen.set(false);
+  }
+
+  toggleFavorite(): void {
+    const propertyValue = this.property();
+    if (!propertyValue) return;
+
+    const wasFavorited = propertyValue.is_favorited;
+    propertyValue.is_favorited = !wasFavorited;
+
+    const action = wasFavorited
+      ? this.favoritesService.removeFavorite(propertyValue.uuid)
+      : this.favoritesService.addFavorite(propertyValue.uuid);
+
+    action.subscribe({
+      next: () => {
+        this.notificationService.success(
+          wasFavorited ? 'Removed from favorites' : 'Added to favorites'
+        );
+      },
+      error: () => {
+        propertyValue.is_favorited = wasFavorited;
+        this.notificationService.error('Failed to update favorite');
+      },
+    });
   }
 }

@@ -61,6 +61,7 @@ export const mockProperty: Property = {
   updated_at: '2024-01-15T10:00:00Z',
   images: [mockPropertyImage],
   primary_image: mockPropertyImage,
+  is_favorited: false,
 };
 
 export const mockPropertyStage2Complete: Property = {

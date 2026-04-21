@@ -16,7 +16,9 @@ export class PropertyPreviewCard {
   property = input.required<Property>();
   selectable = input<boolean>(false);
   selected = input<boolean>(false);
+  showFavoriteToggle = input<boolean>(false);
   selectionChange = output<void>();
+  favoriteToggle = output<string>();
 
   viewDetails(): void {
     if (!this.selectable()) {
@@ -27,5 +29,11 @@ export class PropertyPreviewCard {
   onCheckboxChange(event: Event): void {
     event.stopPropagation();
     this.selectionChange.emit();
+  }
+
+  onFavoriteClick(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.favoriteToggle.emit(this.property().uuid);
   }
 }
