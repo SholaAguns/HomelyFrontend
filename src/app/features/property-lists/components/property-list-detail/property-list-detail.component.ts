@@ -14,6 +14,7 @@ import { LoadingSpinnerComponent } from '../../../../shared/components/loading-s
 import { InlineModalComponent } from '../../../../shared/components/inline-modal/inline-modal.component';
 import { ContextOptionsFormComponent } from '../context-options-form/context-options-form.component';
 import { forkJoin, Subscription } from 'rxjs';
+import { AuthService } from '../../../../core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-property-list-detail',
@@ -36,6 +37,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private propertyService = inject(PropertyService);
   private propertyWebSocketService = inject(PropertyWebSocketService);
   private contextDataService = inject(ContextDataService);
+  private authService = inject(AuthService);
   searchTaskStore = inject(SearchTaskStore);
   projectStore = inject(ProjectStore);
 
@@ -49,7 +51,14 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   selectedPropertyUuids = signal<Set<string>>(new Set());
   showContextOptionsModal = signal(false);
   showDropdown = signal(false);
+  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
   private wsSubscription?: Subscription;
+
+  canEdit = computed(() => {
+    const listData = this.list();
+    if (!listData) return false;
+    return this.authService.canEdit(listData.project, this.userRole());
+  });
 
   paginatedProperties = computed(() => {
     const listData = this.list();
@@ -91,6 +100,8 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.authService.getCurrentUser().subscribe();
+
     const uuid = this.route.snapshot.paramMap.get('uuid');
     if (uuid) {
       this.loadList(uuid);
@@ -165,6 +176,12 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         if (list.project) {
           this.projectStore.loadDetail(list.project);
         }
+
+        // Get user role for permissions
+        this.authService.getUserRole(list.project).subscribe({
+          next: (role) => this.userRole.set(role),
+          error: () => {},
+        });
 
         // Connect to WebSocket if any properties are in stage 2 progress
         if (list.status_summary.stage2_in_progress > 0) {

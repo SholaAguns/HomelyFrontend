@@ -19,6 +19,7 @@ export const mockStatusSummary: PropertyListStatusSummary = {
 
 export const mockPropertyList: PropertyList = {
   uuid: 'test-uuid-1',
+  project: 'test-project-1',
   owner: 'owner-uuid',
   title: 'Test Property List',
   state: 'DRAFT',

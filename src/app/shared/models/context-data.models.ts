@@ -18,6 +18,7 @@ export interface ContextData {
   started_at: string | null;
   completed_at: string | null;
   cached: boolean;
+  project_uuid: string;
 }
 
 export interface ServiceProgress {

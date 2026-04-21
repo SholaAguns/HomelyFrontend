@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,7 @@ import { SavedLocationService } from '../../../../core/services/saved-location.s
 import { SavedLocation } from '../../../../shared/models/saved-location-models';
 import { RatingCriteriaStore } from '../../store/rating-criteria.store';
 import { SharingService } from '../../../../core/services/sharing-service/sharing.service';
+import { AuthService } from '../../../../core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -39,12 +40,17 @@ export class ProjectSettingsComponent implements OnInit {
   private savedLocationService = inject(SavedLocationService);
   readonly ratingCriteriaStore = inject(RatingCriteriaStore);
   private sharingService = inject(SharingService);
+  private authService = inject(AuthService);
 
   private previousLoadingState = false;
   private isSaving = false;
 
   projectUuid = '';
   loading = signal(false);
+  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+
+  isOwner = computed(() => this.authService.isOwner(this.projectUuid, this.userRole()));
+  canEdit = computed(() => this.authService.canEdit(this.projectUuid, this.userRole()));
 
   // Project details
   title = signal('');
@@ -119,6 +125,15 @@ export class ProjectSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.projectUuid = this.route.snapshot.paramMap.get('uuid') || '';
+
+    this.authService.getCurrentUser().subscribe();
+
+    if (this.projectUuid) {
+      this.authService.getUserRole(this.projectUuid).subscribe({
+        next: (role) => this.userRole.set(role),
+        error: () => {},
+      });
+    }
 
     this.savedLocationService.getAll().subscribe({
       next: (locations) => this.savedLocations.set(locations),

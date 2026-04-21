@@ -1,5 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import { Observable, of, tap } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, of, tap, map } from 'rxjs';
 import { ApiService } from '../api-service/api.service';
 import {
   LoginCredentials,
@@ -9,6 +9,8 @@ import {
 } from '../../../shared/models/auth-models';
 import { EditUserProfileRequest, User, UserProfile } from '../../../shared/models/user-models';
 
+type ProjectRole = 'owner' | 'contributor' | 'viewer' | null;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,6 +19,9 @@ export class AuthService {
   private readonly ACCESS_TOKEN_KEY = 'access_token';
   private readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private readonly AUTH_ENDPOINT = 'accounts/';
+
+  currentUserEmail = signal<string>('');
+  private roleCache = new Map<string, ProjectRole>();
 
   login(credentials: LoginCredentials): Observable<LoginResponse> {
     let endpoint = this.AUTH_ENDPOINT + 'login/';
@@ -74,7 +79,50 @@ export class AuthService {
   getCurrentUser(): Observable<User> {
     let endpoint = this.AUTH_ENDPOINT + 'users/me/';
 
-    return this.api.get<User>(endpoint);
+    return this.api.get<User>(endpoint).pipe(tap((user) => this.currentUserEmail.set(user.email)));
+  }
+
+  getUserRole(projectUuid: string): Observable<ProjectRole> {
+    if (this.roleCache.has(projectUuid)) {
+      return of(this.roleCache.get(projectUuid)!);
+    }
+
+    return this.api.get<{ role: ProjectRole }>(`property/projects/${projectUuid}/user-role/`).pipe(
+      map((response) => response.role),
+      tap((role) => this.roleCache.set(projectUuid, role))
+    );
+  }
+
+  clearRoleCache(projectUuid?: string): void {
+    if (projectUuid) {
+      this.roleCache.delete(projectUuid);
+    } else {
+      this.roleCache.clear();
+    }
+  }
+
+  canEdit(projectUuid: string, role?: ProjectRole): boolean {
+    if (role !== undefined) {
+      return role === 'owner' || role === 'contributor';
+    }
+    const cachedRole = this.roleCache.get(projectUuid);
+    return cachedRole === 'owner' || cachedRole === 'contributor';
+  }
+
+  isOwner(projectUuid: string, role?: ProjectRole): boolean {
+    if (role !== undefined) {
+      return role === 'owner';
+    }
+    const cachedRole = this.roleCache.get(projectUuid);
+    return cachedRole === 'owner';
+  }
+
+  canView(projectUuid: string, role?: ProjectRole): boolean {
+    if (role !== undefined) {
+      return role !== null;
+    }
+    const cachedRole = this.roleCache.get(projectUuid);
+    return cachedRole !== null;
   }
 
   editUserProfile(requestData: EditUserProfileRequest): Observable<UserProfile> {

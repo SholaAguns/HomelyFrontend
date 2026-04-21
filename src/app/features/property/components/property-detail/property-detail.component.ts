@@ -11,6 +11,8 @@ import { RatingCompleteData } from '../../../../shared/models/context-data.model
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { ImageGalleryComponent } from '../../../../shared/components/image-gallery/image-gallery.component';
 import { ContextReportsComponent } from '../../../context/components/context-reports/context-reports.component';
+import { AuthService } from '../../../../core/services/auth-service/auth.service';
+import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
 
 @Component({
   selector: 'app-property-detail',
@@ -32,12 +34,22 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   private propertyStore = inject(PropertyStore);
   private notificationService = inject(NotificationService);
   private propertyWebSocketService = inject(PropertyWebSocketService);
+  private authService = inject(AuthService);
+  private propertyListService = inject(PropertyListService);
 
   property = signal<PropertyDetail | null>(null);
   loading = signal(true);
   galleryOpen = signal(false);
   galleryInitialIndex = signal(0);
+  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+  projectUuid = signal<string>('');
   private wsSubscription?: Subscription;
+
+  canEdit = computed(() => {
+    const pUuid = this.projectUuid();
+    if (!pUuid) return false;
+    return this.authService.canEdit(pUuid, this.userRole());
+  });
 
   displayedImages = computed(() => {
     const propertyData = this.property();
@@ -57,6 +69,8 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe();
+
     const uuid = this.route.snapshot.paramMap.get('uuid');
     if (uuid) {
       this.loadProperty(uuid);
@@ -74,6 +88,21 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
         this.property.set(property);
         this.propertyStore.addProperty(property);
         this.loading.set(false);
+
+        // Get project_uuid from one of the property lists
+        const propertyListUuids = Object.keys(property.property_lists);
+        if (propertyListUuids.length > 0) {
+          this.propertyListService.getByUuid(propertyListUuids[0]).subscribe({
+            next: (list) => {
+              this.projectUuid.set(list.project);
+              this.authService.getUserRole(list.project).subscribe({
+                next: (role) => this.userRole.set(role),
+                error: () => {},
+              });
+            },
+            error: () => {},
+          });
+        }
       },
       error: (err) => {
         this.notificationService.error(err.message || 'Failed to load property');

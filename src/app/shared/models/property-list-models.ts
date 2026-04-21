@@ -5,7 +5,7 @@ export type PropertyListState = 'DRAFT' | 'ACTIVE';
 export interface PropertyList {
   uuid: string;
   owner: string;
-  project?: string;
+  project: string;
   project_title?: string;
   title: string;
   state?: PropertyListState;
