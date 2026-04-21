@@ -256,7 +256,9 @@
                   [property]="property"
                   [selectable]="selectionMode()"
                   [selected]="isPropertySelected(property.uuid)"
+                  [showFavoriteToggle]="!selectionMode()"
                   (selectionChange)="togglePropertySelection(property.uuid)"
+                  (favoriteToggle)="onFavoriteToggle($event)"
                 />
               }
             </div>

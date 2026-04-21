@@ -5,6 +5,8 @@ import { PropertyListService } from '../../../../core/services/property-list-ser
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
 import { ContextDataService } from '../../../../core/services/context-data-service/context-data.service';
+import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { ProjectStore } from '../../../projects/store/project.store';
 import { PropertyListDetail } from '../../../../shared/models/property-list-models';
 import { PropertyListFormComponent } from '../property-list-form/property-list-form.component';
@@ -37,6 +39,8 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private propertyService = inject(PropertyService);
   private propertyWebSocketService = inject(PropertyWebSocketService);
   private contextDataService = inject(ContextDataService);
+  private favoritesService = inject(FavoritesService);
+  private notificationService = inject(NotificationService);
   private authService = inject(AuthService);
   searchTaskStore = inject(SearchTaskStore);
   projectStore = inject(ProjectStore);
@@ -375,5 +379,32 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
   closeDropdown() {
     this.showDropdown.set(false);
+  }
+
+  onFavoriteToggle(propertyUuid: string): void {
+    const listData = this.list();
+    if (!listData) return;
+
+    const property = listData.properties.find((p) => p.uuid === propertyUuid);
+    if (!property) return;
+
+    const wasFavorited = property.is_favorited;
+    property.is_favorited = !wasFavorited;
+
+    const action = wasFavorited
+      ? this.favoritesService.removeFavorite(propertyUuid)
+      : this.favoritesService.addFavorite(propertyUuid);
+
+    action.subscribe({
+      next: () => {
+        this.notificationService.success(
+          wasFavorited ? 'Removed from favorites' : 'Added to favorites'
+        );
+      },
+      error: () => {
+        property.is_favorited = wasFavorited;
+        this.notificationService.error('Failed to update favorite');
+      },
+    });
   }
 }
