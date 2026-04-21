@@ -52,7 +52,7 @@ describe('SharingService', () => {
   describe('createInvite', () => {
     it('should POST invite and return invitation', async () => {
       apiMock.post.mockReturnValue(of(mockProjectInvitation));
-      const dto = { invited_email: 'alice@example.com', role: 'viewer' as const };
+      const dto = { email: 'alice@example.com', role: 'viewer' as const };
       const result = await firstValueFrom(service.createInvite(PROJECT_UUID, dto));
       expect(result).toEqual(mockProjectInvitation);
       expect(apiMock.post).toHaveBeenCalledWith(`property/projects/${PROJECT_UUID}/invite/`, dto);

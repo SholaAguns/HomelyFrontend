@@ -20,6 +20,7 @@ describe('ContextDataStore', () => {
       started_at: null,
       completed_at: null,
       cached: false,
+      project_uuid: 'test-project-uuid',
     },
     {
       id: '2',
@@ -31,6 +32,7 @@ describe('ContextDataStore', () => {
       started_at: null,
       completed_at: null,
       cached: false,
+      project_uuid: 'test-project-uuid',
     },
     {
       id: '3',
@@ -42,6 +44,7 @@ describe('ContextDataStore', () => {
       started_at: null,
       completed_at: null,
       cached: false,
+      project_uuid: 'test-project-uuid',
     },
   ];
 
@@ -179,6 +182,7 @@ describe('ContextDataStore', () => {
         started_at: null,
         completed_at: null,
         cached: false,
+        project_uuid: 'test-project-uuid',
       };
 
       store.updateService('prop-1', mockContextData[0]);
@@ -199,6 +203,7 @@ describe('ContextDataStore', () => {
         started_at: null,
         completed_at: null,
         cached: false,
+        project_uuid: 'test-project-uuid',
       };
 
       store.updateService('prop-1', newData);

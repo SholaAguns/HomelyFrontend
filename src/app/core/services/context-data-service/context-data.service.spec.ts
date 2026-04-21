@@ -74,6 +74,7 @@ describe('ContextDataService', () => {
           started_at: null,
           completed_at: null,
           cached: false,
+          project_uuid: 'test-project-uuid',
         },
       ];
 
@@ -101,6 +102,7 @@ describe('ContextDataService', () => {
         started_at: null,
         completed_at: null,
         cached: false,
+        project_uuid: 'test-project-uuid',
       };
 
       contextDataService.getServiceData(propertyId, serviceName).subscribe((data) => {
