@@ -23,6 +23,18 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit, OnDestr
   charts: Chart[] = [];
   chartsInitialized = signal(false);
 
+  constructor() {
+    effect(() => {
+      const stats = this.projectStore.selectedStats();
+      if (stats && !this.chartsInitialized()) {
+        setTimeout(() => {
+          this.renderCharts(stats);
+          this.chartsInitialized.set(true);
+        }, 100);
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.projectUuid = this.route.snapshot.paramMap.get('uuid') || '';
     if (this.projectUuid) {
@@ -32,16 +44,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngAfterViewInit(): void {
-    // Wait a bit for DOM to be ready
-    setTimeout(() => {
-      effect(() => {
-        const stats = this.projectStore.selectedStats();
-        if (stats && !this.chartsInitialized()) {
-          this.renderCharts(stats);
-          this.chartsInitialized.set(true);
-        }
-      });
-    }, 100);
+    // Effect is now in constructor
   }
 
   ngOnDestroy(): void {

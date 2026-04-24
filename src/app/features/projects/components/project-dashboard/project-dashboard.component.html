@@ -88,7 +88,7 @@
             <p class="text-sm font-medium text-gray-600">Average Price</p>
             <p class="mt-2 text-3xl font-bold text-gray-900">
               @if (projectStore.selectedStats()!.avg_price !== null) {
-                £{{ projectStore.selectedStats()!.avg_price!.toLocaleString() }}
+                £{{ projectStore.selectedStats()!.avg_price!.toFixed(0) }}
               } @else {
                 N/A
               }
@@ -115,20 +115,22 @@
       <!-- Price Range -->
       <div class="rounded-lg border-l-4 border-purple-500 bg-white p-6 shadow-md">
         <div class="flex items-center justify-between">
-          <div>
+          <div class="w-full">
             <p class="text-sm font-medium text-gray-600">Price Range</p>
-            <p class="mt-2 text-xl font-bold text-gray-900">
-              @if (
-                projectStore.selectedStats()!.min_price !== null &&
-                projectStore.selectedStats()!.max_price !== null
-              ) {
-                £{{ projectStore.selectedStats()!.min_price!.toLocaleString() }}
-                <span class="text-sm font-normal text-gray-500">to</span>
-                £{{ projectStore.selectedStats()!.max_price!.toLocaleString() }}
-              } @else {
-                N/A
-              }
-            </p>
+            @if (
+              projectStore.selectedStats()!.min_price !== null &&
+              projectStore.selectedStats()!.max_price !== null
+            ) {
+              <p class="mt-2 text-lg font-bold text-gray-900">
+                £{{ projectStore.selectedStats()!.min_price!.toFixed(0) }}
+              </p>
+              <p class="text-xs text-gray-500">to</p>
+              <p class="text-lg font-bold text-gray-900">
+                £{{ projectStore.selectedStats()!.max_price!.toFixed(0) }}
+              </p>
+            } @else {
+              <p class="mt-2 text-3xl font-bold text-gray-900">N/A</p>
+            }
           </div>
           <div class="rounded-full bg-purple-100 p-3">
             <svg

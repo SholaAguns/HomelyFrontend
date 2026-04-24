@@ -29,7 +29,8 @@
       "Bash(\"C:\\\\Repos\\\\HomelyFrontend/src/app/features/property-lists/components/property-list-detail/property-list-detail.component.html\":*)",
       "Bash(pkill -f \"ng test\")",
       "Bash(grep -E \"\\\\.\\(py|md\\)$\")",
-      "Bash(tee logs/build_logs.log)"
+      "Bash(tee logs/build_logs.log)",
+      "Bash(.venv/Scripts/python manage.py makemigrations property --empty --name remove_duplicate_criteria)"
     ]
   }
 }
