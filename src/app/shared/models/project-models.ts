@@ -31,6 +31,8 @@ export interface ProjectStats {
   by_area: AreaBreakdown[];
   price_distribution: PriceDistribution[];
   property_types: PropertyTypeDistribution[];
+  ratings: RatingsBreakdown;
+  by_property_list: PropertyListBreakdown[];
 }
 
 export interface AreaBreakdown {
@@ -48,6 +50,35 @@ export interface PriceDistribution {
 export interface PropertyTypeDistribution {
   type: string;
   count: number;
+}
+
+export interface RatingsBreakdown {
+  total_rated: number;
+  avg_rating: number | null;
+  rating_distribution: RatingDistribution[];
+  disqualified_count: number;
+  top_rated: TopRatedProperty[];
+}
+
+export interface RatingDistribution {
+  range: string;
+  count: number;
+}
+
+export interface TopRatedProperty {
+  uuid: string;
+  title: string;
+  rating: number;
+}
+
+export interface PropertyListBreakdown {
+  uuid: string;
+  title: string;
+  property_count: number;
+  avg_price: number | null;
+  avg_rating: number | null;
+  stage2_complete: number;
+  stage3_complete: number;
 }
 
 export interface CreateProjectDto {

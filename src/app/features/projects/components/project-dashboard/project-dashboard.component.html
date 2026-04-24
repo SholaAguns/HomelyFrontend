@@ -26,7 +26,7 @@
     </div>
   } @else if (projectStore.selectedStats()) {
     <!-- Key Metrics Cards -->
-    <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
       <!-- Total Properties -->
       <div class="rounded-lg border-l-4 border-blue-500 bg-white p-6 shadow-md">
         <div class="flex items-center justify-between">
@@ -147,6 +147,45 @@
           </div>
         </div>
       </div>
+
+      <!-- Average Rating -->
+      @if (projectStore.selectedStats()?.ratings) {
+        <div class="rounded-lg border-l-4 border-pink-500 bg-white p-6 shadow-md">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Avg Rating</p>
+              <p class="mt-2 text-3xl font-bold text-gray-900">
+                @if (projectStore.selectedStats()!.ratings.avg_rating !== null) {
+                  {{ projectStore.selectedStats()!.ratings.avg_rating!.toFixed(1) }}
+                } @else {
+                  N/A
+                }
+              </p>
+              <p class="mt-1 text-xs text-gray-500">
+                {{ projectStore.selectedStats()!.ratings.total_rated }} rated
+                @if (projectStore.selectedStats()!.ratings.disqualified_count > 0) {
+                  , {{ projectStore.selectedStats()!.ratings.disqualified_count }} disqualified
+                }
+              </p>
+            </div>
+            <div class="rounded-full bg-pink-100 p-3">
+              <svg
+                class="h-8 w-8 text-pink-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      }
     </div>
 
     <!-- Charts Grid -->
@@ -178,7 +217,118 @@
           <canvas id="propTypesChart"></canvas>
         </div>
       </div>
+
+      <!-- Ratings Distribution Chart -->
+      @if (projectStore.selectedStats()?.ratings) {
+        <div class="rounded-lg bg-white p-6 shadow-md">
+          <div class="h-80">
+            <canvas id="ratingsDistChart"></canvas>
+          </div>
+        </div>
+      }
     </div>
+
+    <!-- Property Lists Breakdown Table -->
+    @if (
+      projectStore.selectedStats()?.by_property_list &&
+      projectStore.selectedStats()!.by_property_list.length > 0
+    ) {
+      <div class="mt-8 rounded-lg bg-white p-6 shadow-md">
+        <h2 class="mb-4 text-xl font-bold text-gray-900">Property Lists Breakdown</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                >
+                  List
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                >
+                  Properties
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                >
+                  Avg Price
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                >
+                  Avg Rating
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                >
+                  Stage 2
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                >
+                  Stage 3
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              @for (list of projectStore.selectedStats()!.by_property_list; track list.uuid) {
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+                    {{ list.title }}
+                  </td>
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                    {{ list.property_count }}
+                  </td>
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                    @if (list.avg_price !== null) {
+                      £{{ list.avg_price.toLocaleString() }}
+                    } @else {
+                      N/A
+                    }
+                  </td>
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                    @if (list.avg_rating !== null) {
+                      {{ list.avg_rating.toFixed(1) }}
+                    } @else {
+                      N/A
+                    }
+                  </td>
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                    {{ list.stage2_complete }}
+                  </td>
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                    {{ list.stage3_complete }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- Top Rated Properties -->
+    @if (
+      projectStore.selectedStats()?.ratings?.top_rated &&
+      projectStore.selectedStats()!.ratings.top_rated.length > 0
+    ) {
+      <div class="mt-8 rounded-lg bg-white p-6 shadow-md">
+        <h2 class="mb-4 text-xl font-bold text-gray-900">Top Rated Properties</h2>
+        <div class="space-y-3">
+          @for (property of projectStore.selectedStats()!.ratings.top_rated; track property.uuid) {
+            <div
+              class="flex items-center justify-between rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+            >
+              <span class="text-sm font-medium text-gray-900">{{ property.title }}</span>
+              <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-800">
+                {{ property.rating }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    }
   } @else {
     <!-- Empty State -->
     <div class="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 py-16 text-center">

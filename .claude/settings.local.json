@@ -28,7 +28,8 @@
       "Bash(bash -c \"source .venv/Scripts/activate && echo 'y' | python manage.py makemigrations property -n rename_saved_location_ids_to_uuids\")",
       "Bash(\"C:\\\\Repos\\\\HomelyFrontend/src/app/features/property-lists/components/property-list-detail/property-list-detail.component.html\":*)",
       "Bash(pkill -f \"ng test\")",
-      "Bash(grep -E \"\\\\.\\(py|md\\)$\")"
+      "Bash(grep -E \"\\\\.\\(py|md\\)$\")",
+      "Bash(tee logs/build_logs.log)"
     ]
   }
 }

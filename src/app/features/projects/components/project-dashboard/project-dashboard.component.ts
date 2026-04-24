@@ -249,6 +249,56 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit, OnDestr
         })
       );
     }
+
+    // Ratings Distribution Chart
+    const ratingsDistCtx = document.getElementById('ratingsDistChart') as HTMLCanvasElement;
+    if (
+      ratingsDistCtx &&
+      stats.ratings?.rating_distribution &&
+      stats.ratings.rating_distribution.length > 0
+    ) {
+      this.charts.push(
+        new Chart(ratingsDistCtx, {
+          type: 'bar',
+          data: {
+            labels: stats.ratings.rating_distribution.map((r) => r.range),
+            datasets: [
+              {
+                label: 'Properties',
+                data: stats.ratings.rating_distribution.map((r) => r.count),
+                backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                borderColor: 'rgba(168, 85, 247, 1)',
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+              title: {
+                display: true,
+                text: `Ratings Distribution (Avg: ${stats.ratings.avg_rating?.toFixed(1) || 'N/A'}, Total: ${stats.ratings.total_rated})`,
+                font: {
+                  size: 16,
+                },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+            },
+          },
+        })
+      );
+    }
   }
 
   private destroyCharts(): void {
