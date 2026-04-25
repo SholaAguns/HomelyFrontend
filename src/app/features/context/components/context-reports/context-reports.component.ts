@@ -31,6 +31,7 @@ import {
   SavedLocationReportData,
   ContextData,
 } from '../../../../shared/models/context-data.models';
+import { ProjectRole } from '../../../../shared/models/auth-models';
 
 @Component({
   selector: 'app-context-reports',
@@ -57,7 +58,7 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
   private propertyWebSocketService = inject(PropertyWebSocketService);
   private authService = inject(AuthService);
   private wsSubscription?: Subscription;
-  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+  userRole = signal<ProjectRole>(null);
 
   canEdit = computed(() => {
     const pUuid = this.projectUuid();
@@ -81,17 +82,21 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
         this.contextDataStore.load(currentPropertyId);
       }
     });
+
+    effect(() => {
+      const pUuid = this.projectUuid();
+      if (pUuid) {
+        this.authService.getUserRole(pUuid).subscribe({
+          next: (roleResponse) => {
+            this.userRole.set(roleResponse.role);
+          },
+          error: () => {},
+        });
+      }
+    });
   }
 
-  ngOnInit(): void {
-    const pUuid = this.projectUuid();
-    if (pUuid) {
-      this.authService.getUserRole(pUuid).subscribe({
-        next: (role) => this.userRole.set(role),
-        error: () => {},
-      });
-    }
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.wsSubscription?.unsubscribe();

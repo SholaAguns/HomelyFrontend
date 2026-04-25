@@ -29,3 +29,9 @@ export interface RegisterResponse {
   access: string;
   refresh: string;
 }
+
+export type ProjectRole = 'owner' | 'contributor' | 'viewer' | null;
+
+export interface ProjectRoleResponse {
+  role: ProjectRole;
+}

@@ -276,6 +276,34 @@
                             }
                           </select>
                         </div>
+                        <div class="control-group">
+                          <label>Distance Calculation</label>
+                          <select
+                            #distancePreferenceSelect
+                            (change)="
+                              updateCriterionCalculationPreference(
+                                criterion,
+                                $any(distancePreferenceSelect.value),
+                                'poi'
+                              )
+                            "
+                            class="form-control-sm"
+                          >
+                            @for (
+                              calculationType of distanceCalculationLabels | keyvalue;
+                              track calculationType
+                            ) {
+                              <option
+                                [value]="calculationType.key"
+                                [selected]="
+                                  criterion.distance_calculation_preference === calculationType.key
+                                "
+                              >
+                                {{ calculationType.value }}
+                              </option>
+                            }
+                          </select>
+                        </div>
                       </div>
                     </div>
                   }

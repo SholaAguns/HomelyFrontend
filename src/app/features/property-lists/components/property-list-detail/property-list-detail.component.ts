@@ -17,6 +17,7 @@ import { InlineModalComponent } from '../../../../shared/components/inline-modal
 import { ContextOptionsFormComponent } from '../context-options-form/context-options-form.component';
 import { forkJoin, Subscription } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
+import { ProjectRole } from '../../../../shared/models/auth-models';
 
 @Component({
   selector: 'app-property-list-detail',
@@ -55,7 +56,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   selectedPropertyUuids = signal<Set<string>>(new Set());
   showContextOptionsModal = signal(false);
   showDropdown = signal(false);
-  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+  userRole = signal<ProjectRole>(null);
   private wsSubscription?: Subscription;
 
   canEdit = computed(() => {
@@ -183,7 +184,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
         // Get user role for permissions
         this.authService.getUserRole(list.project).subscribe({
-          next: (role) => this.userRole.set(role),
+          next: (roleResponse) => this.userRole.set(roleResponse.role),
           error: () => {},
         });
 

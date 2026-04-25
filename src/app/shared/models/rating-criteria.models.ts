@@ -1,4 +1,8 @@
 export type CriterionSource = 'property' | 'context_report';
+export type DistanceCalculationPreference =
+  | 'straight_distance'
+  | 'walking_distance'
+  | 'driving_distance';
 
 export interface DealbreakerThreshold {
   below_price_threshold?: number;
@@ -17,6 +21,7 @@ export interface Criterion {
   weight: number;
   created_at?: string;
   updated_at?: string;
+  distance_calculation_preference?: DistanceCalculationPreference;
 }
 
 export interface RatingCriteria {
@@ -50,4 +55,10 @@ export const WEIGHT_VALUES = [0.25, 0.5, 1.0, 1.5];
 export const CRITERION_SOURCE_LABELS: Record<CriterionSource, string> = {
   property: 'Property Field',
   context_report: 'Context Report',
+};
+
+export const DISTANCE_CALCULATION_LABELS: Record<DistanceCalculationPreference, string> = {
+  straight_distance: 'Straight Distance (km)',
+  walking_distance: 'Walking distance (mins)',
+  driving_distance: 'Driving distance (mins)',
 };

@@ -4,12 +4,12 @@ import { ApiService } from '../api-service/api.service';
 import {
   LoginCredentials,
   LoginResponse,
+  ProjectRole,
+  ProjectRoleResponse,
   RegisterData,
   RegisterResponse,
 } from '../../../shared/models/auth-models';
 import { EditUserProfileRequest, User, UserProfile } from '../../../shared/models/user-models';
-
-type ProjectRole = 'owner' | 'contributor' | 'viewer' | null;
 
 @Injectable({
   providedIn: 'root',
@@ -82,7 +82,7 @@ export class AuthService {
     return this.api.get<User>(endpoint).pipe(tap((user) => this.currentUserEmail.set(user.email)));
   }
 
-  getUserRole(projectUuid: string): Observable<ProjectRole> {
+  getUserRoleOld(projectUuid: string): Observable<ProjectRole> {
     if (this.roleCache.has(projectUuid)) {
       return of(this.roleCache.get(projectUuid)!);
     }
@@ -91,6 +91,10 @@ export class AuthService {
       map((response) => response.role),
       tap((role) => this.roleCache.set(projectUuid, role))
     );
+  }
+
+  getUserRole(projectUuid: string): Observable<ProjectRoleResponse> {
+    return this.api.get<ProjectRoleResponse>(`property/projects/${projectUuid}/user-role/`).pipe();
   }
 
   clearRoleCache(projectUuid?: string): void {

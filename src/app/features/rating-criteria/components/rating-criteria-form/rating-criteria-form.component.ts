@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RatingCriteriaStore } from '../../../projects/store/rating-criteria.store';
 import {
   Criterion,
+  DISTANCE_CALCULATION_LABELS,
   RatingCriteria,
   WEIGHT_LABELS,
   WEIGHT_VALUES,
@@ -42,6 +43,7 @@ export class RatingCriteriaFormComponent implements OnInit {
 
   readonly weightLabels = WEIGHT_LABELS;
   readonly weightValues = WEIGHT_VALUES;
+  readonly distanceCalculationLabels = DISTANCE_CALCULATION_LABELS;
 
   // System criteria (built-in) - enabled by default
   defaultCriteria = signal<Criterion[]>([
@@ -305,6 +307,25 @@ export class RatingCriteriaFormComponent implements OnInit {
       case 'poi':
         this.poiCriteria.update((list) =>
           list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
+        );
+        break;
+    }
+  }
+
+  updateCriterionCalculationPreference(
+    criterion: Criterion,
+    calculationPreference: string,
+    criterionListType: string
+  ): void {
+    switch (criterionListType) {
+      case 'savedLocation':
+        this.savedLocationCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, calculationPreference } : c))
+        );
+        break;
+      case 'poi':
+        this.poiCriteria.update((list) =>
+          list.map((c) => (c.name === criterion.name ? { ...c, calculationPreference } : c))
         );
         break;
     }

@@ -24,6 +24,7 @@ import { SavedLocation } from '../../../../shared/models/saved-location-models';
 import { RatingCriteriaStore } from '../../store/rating-criteria.store';
 import { SharingService } from '../../../../core/services/sharing-service/sharing.service';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
+import { ProjectRole } from '../../../../shared/models/auth-models';
 
 @Component({
   selector: 'app-project-settings',
@@ -47,7 +48,7 @@ export class ProjectSettingsComponent implements OnInit {
 
   projectUuid = '';
   loading = signal(false);
-  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+  userRole = signal<ProjectRole>(null);
 
   isOwner = computed(() => this.authService.isOwner(this.projectUuid, this.userRole()));
   canEdit = computed(() => this.authService.canEdit(this.projectUuid, this.userRole()));
@@ -130,9 +131,9 @@ export class ProjectSettingsComponent implements OnInit {
 
     if (this.projectUuid) {
       this.authService.getUserRole(this.projectUuid).subscribe({
-        next: (role) => {
-          this.userRole.set(role);
-          if (role === 'owner') {
+        next: (roleResponse) => {
+          this.userRole.set(roleResponse.role);
+          if (roleResponse.role === 'owner') {
             this.loadInvitations();
           }
         },

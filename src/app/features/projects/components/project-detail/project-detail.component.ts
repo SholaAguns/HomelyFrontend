@@ -10,6 +10,7 @@ import { AuthService } from '../../../../core/services/auth-service/auth.service
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { Property } from '../../../../shared/models/property-models';
+import { ProjectRole } from '../../../../shared/models/auth-models';
 
 @Component({
   selector: 'app-project-detail',
@@ -35,7 +36,7 @@ export class ProjectDetailComponent implements OnInit {
   projectUuid = '';
   loading = signal(false);
   error = signal<string | null>(null);
-  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+  userRole = signal<ProjectRole>(null);
   projectFavorites = signal<Property[]>([]);
   favoritesExpanded = signal(false);
 
@@ -53,7 +54,7 @@ export class ProjectDetailComponent implements OnInit {
       this.loading.set(true);
 
       this.authService.getUserRole(this.projectUuid).subscribe({
-        next: (role) => this.userRole.set(role),
+        next: (roleResponse) => this.userRole.set(roleResponse.role),
         error: () => {},
       });
 

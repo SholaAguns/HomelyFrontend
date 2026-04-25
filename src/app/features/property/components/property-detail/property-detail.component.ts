@@ -14,6 +14,7 @@ import { ImageGalleryComponent } from '../../../../shared/components/image-galle
 import { ContextReportsComponent } from '../../../context/components/context-reports/context-reports.component';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
+import { ProjectRole } from '../../../../shared/models/auth-models';
 
 @Component({
   selector: 'app-property-detail',
@@ -43,7 +44,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   loading = signal(true);
   galleryOpen = signal(false);
   galleryInitialIndex = signal(0);
-  userRole = signal<'owner' | 'contributor' | 'viewer' | null>(null);
+  userRole = signal<ProjectRole>(null);
   projectUuid = signal<string>('');
   private wsSubscription?: Subscription;
 
@@ -98,7 +99,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
             next: (list) => {
               this.projectUuid.set(list.project);
               this.authService.getUserRole(list.project).subscribe({
-                next: (role) => this.userRole.set(role),
+                next: (role) => this.userRole.set(role.role),
                 error: () => {},
               });
             },
