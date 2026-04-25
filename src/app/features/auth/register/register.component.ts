@@ -1,9 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthStore } from '../../../core/stores/auth-store/auth.store';
 import { RegisterData } from '../../../shared/models/auth-models';
+
+const PENDING_INVITE_KEY = 'pending_invite_token';
 
 @Component({
   selector: 'app-register',
@@ -11,9 +14,17 @@ import { RegisterData } from '../../../shared/models/auth-models';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
   protected readonly authStore = inject(AuthStore);
+
+  ngOnInit(): void {
+    const inviteToken = this.route.snapshot.queryParamMap.get('invite_token');
+    if (inviteToken) {
+      localStorage.setItem(PENDING_INVITE_KEY, inviteToken);
+    }
+  }
 
   registerForm: FormGroup = this.formBuilder.group(
     {
