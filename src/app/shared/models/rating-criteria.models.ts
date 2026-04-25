@@ -15,8 +15,6 @@ export interface Criterion {
   field_name?: string;
   enabled: boolean;
   weight: number;
-  is_dealbreaker: boolean;
-  dealbreaker_threshold?: DealbreakerThreshold | null;
   created_at?: string;
   updated_at?: string;
 }

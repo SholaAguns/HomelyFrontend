@@ -51,7 +51,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'price',
       enabled: true,
       weight: 1.0,
-      is_dealbreaker: false,
     },
     {
       name: 'Bedrooms',
@@ -59,7 +58,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'bedrooms',
       enabled: true,
       weight: 1.0,
-      is_dealbreaker: false,
     },
     {
       name: 'Bathrooms',
@@ -67,59 +65,24 @@ export class RatingCriteriaFormComponent implements OnInit {
       field_name: 'bathrooms',
       enabled: true,
       weight: 1.0,
-      is_dealbreaker: false,
     },
   ]);
 
   // User criteria (configurable) - disabled by default
   additionalCriteria = signal<Criterion[]>([
     {
-      name: 'Garden',
-      source: 'property',
-      field_name: 'garden',
-      enabled: false,
-      weight: 0.5,
-      is_dealbreaker: false,
-    },
-    {
       name: 'Council Tax Band',
       source: 'context_report',
       field_name: 'council_tax',
       enabled: true,
       weight: 0.5,
-      is_dealbreaker: false,
     },
     {
       name: 'Crime Rating',
       source: 'context_report',
       field_name: 'crime',
       enabled: true,
-      weight: 1.0,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Broadband Speed',
-      source: 'context_report',
-      field_name: 'broadband',
-      enabled: false,
       weight: 0.5,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'Mobile Coverage',
-      source: 'context_report',
-      field_name: 'mobile',
-      enabled: false,
-      weight: 0.5,
-      is_dealbreaker: false,
-    },
-    {
-      name: 'School Rating',
-      source: 'context_report',
-      field_name: 'schools',
-      enabled: false,
-      weight: 0.5,
-      is_dealbreaker: false,
     },
   ]);
 
@@ -209,7 +172,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       const normalizedCriterion: Criterion = {
         ...criterion,
         weight: Number(criterion.weight),
-        is_dealbreaker: Boolean(criterion.is_dealbreaker),
         enabled: Boolean(criterion.enabled),
       };
 
@@ -283,7 +245,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       saved_location_uuid: uuid,
       enabled: true,
       weight: 1.0,
-      is_dealbreaker: false,
     };
     console.log('Saved Location Criterion:');
     console.log('%j', savedLocationCriterion);
@@ -311,7 +272,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       poi_category: poiCategory,
       enabled: true,
       weight: 1.0,
-      is_dealbreaker: false,
     };
 
     this.poiCriteria.update((list) => [...list, poiCriterion]);
@@ -345,35 +305,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       case 'poi':
         this.poiCriteria.update((list) =>
           list.map((c) => (c.name === criterion.name ? { ...c, weight } : c))
-        );
-        break;
-    }
-  }
-
-  updateCriterionDealbreaker(
-    criterion: Criterion,
-    isDealbreaker: boolean,
-    criterionListType: string
-  ): void {
-    switch (criterionListType) {
-      case 'default':
-        this.defaultCriteria.update((list) =>
-          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
-        );
-        break;
-      case 'additional':
-        this.additionalCriteria.update((list) =>
-          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
-        );
-        break;
-      case 'savedLocation':
-        this.savedLocationCriteria.update((list) =>
-          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
-        );
-        break;
-      case 'poi':
-        this.poiCriteria.update((list) =>
-          list.map((c) => (c.name === criterion.name ? { ...c, is_dealbreaker: isDealbreaker } : c))
         );
         break;
     }

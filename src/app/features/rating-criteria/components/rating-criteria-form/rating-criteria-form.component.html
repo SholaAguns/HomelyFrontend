@@ -55,23 +55,6 @@
                     }
                   </select>
                 </div>
-
-                <div class="control-group">
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      [checked]="criterion.is_dealbreaker"
-                      (change)="
-                        updateCriterionDealbreaker(
-                          criterion,
-                          $any($event.target).checked,
-                          'default'
-                        )
-                      "
-                    />
-                    <span>Dealbreaker</span>
-                  </label>
-                </div>
               </div>
             }
           </div>
@@ -116,23 +99,6 @@
                       </option>
                     }
                   </select>
-                </div>
-
-                <div class="control-group">
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      [checked]="criterion.is_dealbreaker"
-                      (change)="
-                        updateCriterionDealbreaker(
-                          criterion,
-                          $any($event.target).checked,
-                          'additional'
-                        )
-                      "
-                    />
-                    <span>Dealbreaker</span>
-                  </label>
                 </div>
               </div>
             }
@@ -231,23 +197,6 @@
                             }
                           </select>
                         </div>
-
-                        <div class="control-group">
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              [checked]="criterion.is_dealbreaker"
-                              (change)="
-                                updateCriterionDealbreaker(
-                                  criterion,
-                                  $any($event.target).checked,
-                                  'savedLocation'
-                                )
-                              "
-                            />
-                            <span>Dealbreaker</span>
-                          </label>
-                        </div>
                       </div>
                     </div>
                   }
@@ -326,23 +275,6 @@
                               </option>
                             }
                           </select>
-                        </div>
-
-                        <div class="control-group">
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              [checked]="criterion.is_dealbreaker"
-                              (change)="
-                                updateCriterionDealbreaker(
-                                  criterion,
-                                  $any($event.target).checked,
-                                  'poi'
-                                )
-                              "
-                            />
-                            <span>Dealbreaker</span>
-                          </label>
                         </div>
                       </div>
                     </div>

@@ -12,7 +12,6 @@ export const mockCriterion1: Criterion = {
   field_name: 'price',
   enabled: true,
   weight: 1.0,
-  is_dealbreaker: false,
   created_at: '2024-01-01T10:00:00Z',
   updated_at: '2024-01-01T10:00:00Z',
 };
@@ -24,8 +23,6 @@ export const mockCriterion2: Criterion = {
   field_name: 'crime',
   enabled: true,
   weight: 1.5,
-  is_dealbreaker: true,
-  dealbreaker_threshold: { above_price_threshold: 5 },
   created_at: '2024-01-01T10:00:00Z',
   updated_at: '2024-01-01T10:00:00Z',
 };
@@ -38,7 +35,6 @@ export const mockCriterion3: Criterion = {
   poi_category: 'supermarket',
   enabled: true,
   weight: 0.5,
-  is_dealbreaker: false,
   created_at: '2024-01-01T10:00:00Z',
   updated_at: '2024-01-01T10:00:00Z',
 };
@@ -72,7 +68,6 @@ export const mockCreateRatingCriteriaDto: CreateRatingCriteriaDto = {
       field_name: 'price',
       enabled: true,
       weight: 1.0,
-      is_dealbreaker: false,
     },
   ],
 };
@@ -86,8 +81,6 @@ export const mockUpdateRatingCriteriaDto: UpdateRatingCriteriaDto = {
       field_name: 'price',
       enabled: true,
       weight: 1.5,
-      is_dealbreaker: true,
-      dealbreaker_threshold: { above_price_threshold: 500000 },
     },
   ],
 };

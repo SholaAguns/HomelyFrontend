@@ -1,11 +1,11 @@
 # Features
 P0:
 - ~~Rating Criteria Page~~
-- Sharing project with other users
+- ~~Sharing project with other users~~
 - Updates when running stage 2
 - Updates when running stage 3
 - ~~Project stats dashboard~~
-- favourites section
+- ~~favourites section~~
 - authentication and login/logout issues
 - Improve Property data extraction
 - error handling /logging
