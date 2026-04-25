@@ -43,7 +43,7 @@
           }
         </div>
 
-        @if (favoritesExpanded() || favoritesCount() < 6) {
+        @if (favoritesExpanded()) {
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             @for (property of projectFavorites(); track property.uuid) {
               <app-property-preview-card

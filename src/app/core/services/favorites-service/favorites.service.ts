@@ -1,10 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../api-service/api.service';
 import { Property } from '../../../shared/models/property-models';
 
 export interface AddFavoriteDto {
   property_uuid: string;
+}
+
+export interface ProjectFavoritesResponse {
+  project_id: string;
+  project_name: string;
+  total_favorites: number;
+  properties: Property[];
 }
 
 @Injectable({
@@ -19,7 +27,9 @@ export class FavoritesService {
   }
 
   getProjectFavorites(projectUuid: string): Observable<Property[]> {
-    return this.api.get<Property[]>(`property/projects/${projectUuid}/favorites/`);
+    return this.api
+      .get<ProjectFavoritesResponse>(`property/projects/${projectUuid}/favorites/`)
+      .pipe(map((response) => response.properties));
   }
 
   addFavorite(propertyUuid: string): Observable<void> {

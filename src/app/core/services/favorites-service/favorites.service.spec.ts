@@ -53,9 +53,15 @@ describe('FavoritesService', () => {
   });
 
   describe('getProjectFavorites', () => {
-    it('should call API get with project uuid parameter', async () => {
+    it('should call API get with project uuid parameter and extract properties array', async () => {
       const mockFavorites = [{ ...mockProperty, is_favorited: true }];
-      apiServiceMock.get.mockReturnValue(of(mockFavorites));
+      const mockResponse = {
+        project_id: 'project-uuid-1',
+        project_name: 'Test Project',
+        total_favorites: 1,
+        properties: mockFavorites,
+      };
+      apiServiceMock.get.mockReturnValue(of(mockResponse));
 
       const response = await firstValueFrom(favoritesService.getProjectFavorites('project-uuid-1'));
 
@@ -66,7 +72,13 @@ describe('FavoritesService', () => {
     });
 
     it('should return empty array when no favorites in project', async () => {
-      apiServiceMock.get.mockReturnValue(of([]));
+      const mockResponse = {
+        project_id: 'project-uuid-2',
+        project_name: 'Test Project 2',
+        total_favorites: 0,
+        properties: [],
+      };
+      apiServiceMock.get.mockReturnValue(of(mockResponse));
 
       const response = await firstValueFrom(favoritesService.getProjectFavorites('project-uuid-2'));
 
