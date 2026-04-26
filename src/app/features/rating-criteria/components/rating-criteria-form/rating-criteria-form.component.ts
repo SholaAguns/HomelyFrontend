@@ -6,6 +6,7 @@ import { RatingCriteriaStore } from '../../../projects/store/rating-criteria.sto
 import {
   Criterion,
   DISTANCE_CALCULATION_LABELS,
+  DistanceCalculationPreference,
   RatingCriteria,
   WEIGHT_LABELS,
   WEIGHT_VALUES,
@@ -237,9 +238,6 @@ export class RatingCriteriaFormComponent implements OnInit {
   }
 
   addSavedLocationCriterion(uuid: string, name: string): void {
-    console.log(`Adding ${name}`);
-    console.log(`Addig id ${uuid}`);
-
     let savedLocationCriterion: Criterion = {
       name: 'Distance to ' + name,
       source: 'context_report',
@@ -247,6 +245,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       saved_location_uuid: uuid,
       enabled: true,
       weight: 1.0,
+      distance_calculation_preference: 'straight_distance',
     };
     console.log('Saved Location Criterion:');
     console.log('%j', savedLocationCriterion);
@@ -274,6 +273,7 @@ export class RatingCriteriaFormComponent implements OnInit {
       poi_category: poiCategory,
       enabled: true,
       weight: 1.0,
+      distance_calculation_preference: 'straight_distance',
     };
 
     this.poiCriteria.update((list) => [...list, poiCriterion]);
@@ -314,18 +314,22 @@ export class RatingCriteriaFormComponent implements OnInit {
 
   updateCriterionCalculationPreference(
     criterion: Criterion,
-    calculationPreference: string,
+    distance_calculation_preference: DistanceCalculationPreference,
     criterionListType: string
   ): void {
     switch (criterionListType) {
       case 'savedLocation':
         this.savedLocationCriteria.update((list) =>
-          list.map((c) => (c.name === criterion.name ? { ...c, calculationPreference } : c))
+          list.map((c) =>
+            c.name === criterion.name ? { ...c, distance_calculation_preference } : c
+          )
         );
         break;
       case 'poi':
         this.poiCriteria.update((list) =>
-          list.map((c) => (c.name === criterion.name ? { ...c, calculationPreference } : c))
+          list.map((c) =>
+            c.name === criterion.name ? { ...c, distance_calculation_preference } : c
+          )
         );
         break;
     }

@@ -1,8 +1,5 @@
 export type CriterionSource = 'property' | 'context_report';
-export type DistanceCalculationPreference =
-  | 'straight_distance'
-  | 'walking_distance'
-  | 'driving_distance';
+export type DistanceCalculationPreference = 'straight_distance' | 'walking_time' | 'driving_time';
 
 export interface DealbreakerThreshold {
   below_price_threshold?: number;
@@ -58,7 +55,7 @@ export const CRITERION_SOURCE_LABELS: Record<CriterionSource, string> = {
 };
 
 export const DISTANCE_CALCULATION_LABELS: Record<DistanceCalculationPreference, string> = {
-  straight_distance: 'Straight Distance (km)',
-  walking_distance: 'Walking distance (mins)',
-  driving_distance: 'Driving distance (mins)',
+  straight_distance: 'Straight distance (km)',
+  walking_time: 'Walking time (mins)',
+  driving_time: 'Driving time (mins)',
 };

@@ -12,10 +12,11 @@ P0:
 
 
 P1:
-- POI and Saved location rating by distance or time
+- ~~POI and Saved location rating by distance or time~~
+- Support SavedLocation time calculation
 - Review all caching strategies
 - Zoopla service
-- Remove unused rating criteria and dealbreakers
+- ~~Remove unused rating criteria and dealbreakers~~
 - Social login
 - ~~Allow rerunning Stage 2~~
 - Context report section layout
