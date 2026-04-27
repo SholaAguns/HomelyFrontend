@@ -135,6 +135,7 @@ export interface CreatePropertyDto {
 }
 
 export interface UpdatePropertyDto {
+  summary?: string | null;
   title?: string;
   address_line_1?: string;
   address_line_2?: string;
@@ -143,6 +144,8 @@ export interface UpdatePropertyDto {
   latitude?: number | null;
   longitude?: number | null;
   price?: number;
+  price_frequency?: string | null;
+  description?: string | null;
   bedrooms?: number;
   bathrooms?: number;
   square_area?: number | null;

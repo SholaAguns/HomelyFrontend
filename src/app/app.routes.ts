@@ -50,6 +50,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'properties/:uuid/edit',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/property/components/property-edit/property-edit.component').then(
+        (m) => m.PropertyEditComponent
+      ),
+  },
+  {
     path: 'favorites',
     canActivate: [authGuard],
     loadChildren: () =>
