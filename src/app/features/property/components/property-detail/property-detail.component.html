@@ -93,10 +93,23 @@
           </p>
         </div>
 
+        @if (property()!.summary) {
+          <div class="mb-4 text-gray-700">{{ property()!.summary }}</div>
+        }
+
         <div class="mb-6">
-          <div class="text-3xl font-bold text-green-600">
-            £{{ property()!.price.toLocaleString() }}
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-bold text-green-600">
+              {{ property()!.currency_code === 'GBP' ? '£' : property()!.currency_code || '£'
+              }}{{ property()!.price.toLocaleString() }}
+            </span>
+            @if (property()!.price_frequency) {
+              <span class="text-lg text-gray-500">{{ property()!.price_frequency }}</span>
+            }
           </div>
+          @if (property()!.added_or_reduced) {
+            <div class="mt-1 text-sm text-gray-500">{{ property()!.added_or_reduced }}</div>
+          }
         </div>
 
         <div class="mb-6 flex items-center gap-4">
@@ -146,6 +159,12 @@
     <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
       <h2 class="mb-4 text-xl font-semibold">Key Features</h2>
       <div class="grid grid-cols-2 gap-4">
+        @if (property()!.property_type) {
+          <div>
+            <span class="text-sm text-gray-600">Property Type</span>
+            <div class="text-lg font-medium">{{ property()!.property_type }}</div>
+          </div>
+        }
         <div>
           <span class="text-sm text-gray-600">Bedrooms</span>
           <div class="text-lg font-medium">{{ property()!.bedrooms }}</div>
@@ -154,7 +173,12 @@
           <span class="text-sm text-gray-600">Bathrooms</span>
           <div class="text-lg font-medium">{{ property()!.bathrooms }}</div>
         </div>
-        @if (property()!.square_area) {
+        @if (property()!.display_size) {
+          <div>
+            <span class="text-sm text-gray-600">Size</span>
+            <div class="text-lg font-medium">{{ property()!.display_size }}</div>
+          </div>
+        } @else if (property()!.square_area) {
           <div>
             <span class="text-sm text-gray-600">Area</span>
             <div class="text-lg font-medium">{{ property()!.square_area }} sq ft</div>
@@ -172,8 +196,33 @@
           <span class="text-sm text-gray-600">Parking</span>
           <div class="text-lg font-medium">{{ property()!.parking ? 'Yes' : 'No' }}</div>
         </div>
+        @if (property()!.let_available_date) {
+          <div>
+            <span class="text-sm text-gray-600">Available From</span>
+            <div class="text-lg font-medium">{{ property()!.let_available_date }}</div>
+          </div>
+        }
       </div>
+
+      @if (property()!.key_features && property()!.key_features.length > 0) {
+        <ul class="mt-4 space-y-1">
+          @for (feature of property()!.key_features; track feature.order) {
+            <li class="flex items-start gap-2 text-sm text-gray-700">
+              <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-500"></span>
+              {{ feature.description }}
+            </li>
+          }
+        </ul>
+      }
     </div>
+
+    <!-- Description -->
+    @if (property()!.description) {
+      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+        <h2 class="mb-4 text-xl font-semibold">Description</h2>
+        <p class="whitespace-pre-line text-gray-700">{{ property()!.description }}</p>
+      </div>
+    }
 
     <!-- Additional Details -->
     <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
@@ -211,6 +260,24 @@
           <div>
             <span class="text-sm text-gray-600">Completion Date</span>
             <div class="text-lg font-medium">{{ property()!.completion_date }}</div>
+          </div>
+        }
+        @if (property()!.first_visible_date) {
+          <div>
+            <span class="text-sm text-gray-600">First Listed</span>
+            <div class="text-lg font-medium">{{ property()!.first_visible_date }}</div>
+          </div>
+        }
+        @if (property()!.listing_update_date) {
+          <div>
+            <span class="text-sm text-gray-600">Last Updated</span>
+            <div class="text-lg font-medium">{{ property()!.listing_update_date }}</div>
+          </div>
+        }
+        @if (property()!.listing_update_reason) {
+          <div>
+            <span class="text-sm text-gray-600">Update Reason</span>
+            <div class="text-lg font-medium">{{ property()!.listing_update_reason }}</div>
           </div>
         }
       </div>

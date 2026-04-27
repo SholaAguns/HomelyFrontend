@@ -14,6 +14,11 @@ export type PropertyState =
   | 'STAGE3_IN_PROGRESS'
   | 'STAGE3_COMPLETE';
 
+export interface KeyFeature {
+  order: number;
+  description: string;
+}
+
 export interface PropertyImage {
   id: number;
   source_url: string;
@@ -42,13 +47,27 @@ export interface Property {
   longitude: number | null;
 
   // Characteristics
+  summary: string | null;
   price: number;
+  price_frequency: string | null;
+  currency_code: string | null;
+  property_type: string | null;
+  description: string | null;
   bedrooms: number;
   bathrooms: number;
   square_area: number | null;
   garden: boolean;
   parking: boolean;
   furnished_status: string;
+
+  // Listing metadata
+  let_available_date: string | null;
+  first_visible_date: string | null;
+  key_features: KeyFeature[];
+  added_or_reduced: string | null;
+  display_size: string | null;
+  listing_update_reason: string | null;
+  listing_update_date: string | null;
 
   // Additional details
   council_tax_band: string;

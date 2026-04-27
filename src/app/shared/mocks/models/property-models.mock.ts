@@ -12,7 +12,14 @@ import {
   PropertyListTask,
   ScrapeProgressEvent,
   PropertyImage,
+  KeyFeature,
 } from '../../models/property-models';
+
+export const mockKeyFeatures: KeyFeature[] = [
+  { order: 1, description: 'Recently refurbished kitchen' },
+  { order: 2, description: 'Close to local amenities' },
+  { order: 3, description: 'Double glazed throughout' },
+];
 
 export const mockPropertyImage: PropertyImage = {
   id: 121,
@@ -36,13 +43,26 @@ export const mockProperty: Property = {
   postcode: 'SW1A 1AA',
   latitude: 51.5074,
   longitude: -0.1278,
+  summary: 'A well-presented 2 bedroom flat in a popular location.',
   price: 450000,
+  price_frequency: 'pcm',
+  currency_code: 'GBP',
+  property_type: 'Flat',
+  description:
+    'This spacious flat features a modern kitchen, bright living room, and two double bedrooms. Located close to transport links and local amenities.',
   bedrooms: 2,
   bathrooms: 1,
   square_area: 850,
   garden: false,
   parking: true,
   furnished_status: 'UNFURNISHED',
+  let_available_date: '2024-03-01',
+  first_visible_date: '2024-01-10',
+  key_features: mockKeyFeatures,
+  added_or_reduced: 'Added on 10/01/2024',
+  display_size: '850 sq ft / 79 sq m',
+  listing_update_reason: 'price_reduced',
+  listing_update_date: '2024-01-20',
   council_tax_band: 'D',
   epc_rating: 'C',
   lease_length: 99,

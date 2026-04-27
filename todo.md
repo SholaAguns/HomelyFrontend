@@ -40,10 +40,11 @@ P1:
 - split up rating services into separate files
 - get rid of report_transformers.py
 - Keep criterion score when deleting criterion?
+- Record price frequency
 
 ## P3:
 - Energy Efficiency, EPC Rating, Square Area, Garden, Child Suitable, Furnished Status, Parking, Lease Length
-
+- Use structural directive to handle permissions
 
 
 
