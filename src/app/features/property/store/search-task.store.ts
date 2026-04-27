@@ -4,12 +4,14 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY, interval, takeUntil, Subject } from 'rxjs';
 import { PropertyCreationService } from '../../../core/services/property-creation-service/property-creation.service';
+import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import {
   PropertyListTask,
   CreateFromSearchRequest,
   ScrapeProgressEvent,
   TaskStatus,
 } from '../../../shared/models/property-models';
+import { AppError } from '../../../shared/models/error-models';
 
 type SearchTaskState = {
   currentTask: PropertyListTask | null;
@@ -46,7 +48,12 @@ export const SearchTaskStore = signalStore(
     }),
   })),
   withMethods(
-    (store, propertyCreationService = inject(PropertyCreationService), router = inject(Router)) => {
+    (
+      store,
+      propertyCreationService = inject(PropertyCreationService),
+      router = inject(Router),
+      notificationService = inject(NotificationService)
+    ) => {
       const stopPolling$ = new Subject<void>();
 
       const methods = {
@@ -91,12 +98,13 @@ export const SearchTaskStore = signalStore(
                   // Navigate to property list detail page
                   router.navigate(['/lists', response.property_list_uuid]);
                 }),
-                catchError((error) => {
+                catchError((error: AppError) => {
                   patchState(store, {
                     errors: [error.message],
                     loading: false,
                     status: 'FAILED',
                   });
+                  notificationService.error('Property search failed. Please try again.');
                   return EMPTY;
                 })
               )

@@ -1,10 +1,8 @@
 # Features
 P0:
-
 - Updates when running stage 2
 - Updates when running stage 3
 - error handling
-- logging
 - ~~Rating Criteria Page~~
 - ~~Sharing project with other users~~
 - ~~Project stats dashboard~~
@@ -15,18 +13,21 @@ P0:
 
 
 P1:
-
 - Support SavedLocation time calculation
+- logging
+- Tasklist
+- Comments
 - Review all caching strategies
 - Zoopla service
-- - Context report section layout
+- Rating override
+- Context report section layout
 - Remove rating criteria from property list edit page
 - Only include options for POI rating criteria that are included in project context options
 - Only include options for Saved Location rating criteria that are included in project context options
 - delete modal confirmation only
 - poi_search_radius_meters should be in Km
-- - Social login
-- - ~~POI and Saved location rating by distance or time~~
+- Social login
+- ~~POI and Saved location rating by distance or time~~
 - ~~Remove unused rating criteria and dealbreakers~~
 - ~~Allow rerunning Stage 2~~
 - 

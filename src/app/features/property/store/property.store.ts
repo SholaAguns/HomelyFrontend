@@ -3,12 +3,14 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, exhaustMap, catchError, EMPTY } from 'rxjs';
 import { PropertyService } from '../../../core/services/property-service/property.service';
+import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import {
   Property,
   CreatePropertyDto,
   UpdatePropertyDto,
   CreateFromInputRequest,
 } from '../../../shared/models/property-models';
+import { AppError } from '../../../shared/models/error-models';
 
 type PropertyState = {
   entities: Record<string, Property>;
@@ -49,169 +51,184 @@ export const PropertyStore = signalStore(
           .filter((property) => property.state === state)
     ),
   })),
-  withMethods((store, propertyService = inject(PropertyService)) => ({
-    load: rxMethod<string | undefined>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((propertyListUuid) =>
-          propertyService.getAll(propertyListUuid).pipe(
-            tap((properties) => {
-              const entities = properties.reduce(
-                (accumulator, property) => ({ ...accumulator, [property.uuid]: property }),
-                {}
-              );
-              const ids = properties.map((property) => property.uuid);
-              patchState(store, { entities, ids, loading: false });
-            }),
-            catchError((error) => {
-              patchState(store, { error: error.message, loading: false });
-              return EMPTY;
-            })
-          )
-        )
-      )
-    ),
-    create: rxMethod<CreatePropertyDto>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        exhaustMap((data) =>
-          propertyService.create(data).pipe(
-            tap((property) => {
-              const entities = { ...store.entities(), [property.uuid]: property };
-              const ids = [...store.ids(), property.uuid];
-              patchState(store, { entities, ids, loading: false });
-            }),
-            catchError((error) => {
-              patchState(store, { error: error.message, loading: false });
-              return EMPTY;
-            })
-          )
-        )
-      )
-    ),
-    update: rxMethod<{ uuid: string; data: UpdatePropertyDto }>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        exhaustMap(({ uuid, data }) =>
-          propertyService.update(uuid, data).pipe(
-            tap((property) => {
-              const entities = { ...store.entities(), [property.uuid]: property };
-              patchState(store, { entities, loading: false });
-            }),
-            catchError((error) => {
-              patchState(store, { error: error.message, loading: false });
-              return EMPTY;
-            })
-          )
-        )
-      )
-    ),
-    delete: rxMethod<string>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((uuid) =>
-          propertyService.delete(uuid).pipe(
-            tap(() => {
-              const entities = { ...store.entities() };
-              delete entities[uuid];
-              const ids = store.ids().filter((id) => id !== uuid);
-              patchState(store, { entities, ids, loading: false });
-            }),
-            catchError((error) => {
-              patchState(store, { error: error.message, loading: false });
-              return EMPTY;
-            })
-          )
-        )
-      )
-    ),
-    createFromInput: rxMethod<CreateFromInputRequest>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        exhaustMap((request) =>
-          propertyService.createFromInput(request).pipe(
-            tap((response) => {
-              if (response.success && response.property) {
-                const entities = {
-                  ...store.entities(),
-                  [response.property.uuid]: response.property,
-                };
-                const ids = [...store.ids(), response.property.uuid];
+  withMethods(
+    (
+      store,
+      propertyService = inject(PropertyService),
+      notificationService = inject(NotificationService)
+    ) => ({
+      load: rxMethod<string | undefined>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap((propertyListUuid) =>
+            propertyService.getAll(propertyListUuid).pipe(
+              tap((properties) => {
+                const entities = properties.reduce(
+                  (accumulator, property) => ({ ...accumulator, [property.uuid]: property }),
+                  {}
+                );
+                const ids = properties.map((property) => property.uuid);
                 patchState(store, { entities, ids, loading: false });
-              } else {
-                patchState(store, { loading: false });
-              }
-            }),
-            catchError((error) => {
-              patchState(store, { error: error.message, loading: false });
-              return EMPTY;
-            })
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error('Could not load properties.');
+                return EMPTY;
+              })
+            )
           )
         )
-      )
-    ),
-    runStage2: rxMethod<string>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((uuid) =>
-          propertyService.runStage2(uuid).pipe(
-            tap((result) => {
-              const entity = store.entities()[uuid];
-              if (entity) {
-                const updatedEntity = { ...entity, state: result.state };
-                const entities = { ...store.entities(), [uuid]: updatedEntity };
+      ),
+      create: rxMethod<CreatePropertyDto>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          exhaustMap((data) =>
+            propertyService.create(data).pipe(
+              tap((property) => {
+                const entities = { ...store.entities(), [property.uuid]: property };
+                const ids = [...store.ids(), property.uuid];
+                patchState(store, { entities, ids, loading: false });
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error('Could not add property. Please try again.');
+                return EMPTY;
+              })
+            )
+          )
+        )
+      ),
+      update: rxMethod<{ uuid: string; data: UpdatePropertyDto }>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          exhaustMap(({ uuid, data }) =>
+            propertyService.update(uuid, data).pipe(
+              tap((property) => {
+                const entities = { ...store.entities(), [property.uuid]: property };
                 patchState(store, { entities, loading: false });
-              }
-            }),
-            catchError((error) => {
-              patchState(store, { error: error.message, loading: false });
-              return EMPTY;
-            })
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error('Could not update property. Please try again.');
+                return EMPTY;
+              })
+            )
           )
         )
-      )
-    ),
-    runStage3: rxMethod<string>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((uuid) =>
-          propertyService.runStage3(uuid).pipe(
-            tap((result) => {
-              const entity = store.entities()[uuid];
-              if (entity) {
-                const updatedEntity = { ...entity, state: result.state };
-                const entities = { ...store.entities(), [uuid]: updatedEntity };
-                patchState(store, { entities, loading: false });
-              }
-            }),
-            catchError((error) => {
-              patchState(store, { error: error.message, loading: false });
-              return EMPTY;
-            })
+      ),
+      delete: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap((uuid) =>
+            propertyService.delete(uuid).pipe(
+              tap(() => {
+                const entities = { ...store.entities() };
+                delete entities[uuid];
+                const ids = store.ids().filter((id) => id !== uuid);
+                patchState(store, { entities, ids, loading: false });
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error('Could not delete property. Please try again.');
+                return EMPTY;
+              })
+            )
           )
         )
-      )
-    ),
-    select: (uuid: string | null) => patchState(store, { selectedId: uuid }),
-    addProperty: (property: Property) => {
-      const entities = { ...store.entities(), [property.uuid]: property };
-      const ids = [...store.ids(), property.uuid];
-      patchState(store, { entities, ids });
-    },
-    checkDuplicate: (externalId: string): Property | null => {
-      const duplicateEntity = store
-        .ids()
-        .map((id) => store.entities()[id])
-        .find((property) => property.external_id === externalId);
-      return duplicateEntity || null;
-    },
-    updatePropertyState: (uuid: string, state: string) => {
-      const entity = store.entities()[uuid];
-      if (entity) {
-        const updatedEntity = { ...entity, state: state as any };
-        const entities = { ...store.entities(), [uuid]: updatedEntity };
-        patchState(store, { entities });
-      }
-    },
-  }))
+      ),
+      createFromInput: rxMethod<CreateFromInputRequest>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          exhaustMap((request) =>
+            propertyService.createFromInput(request).pipe(
+              tap((response) => {
+                if (response.success && response.property) {
+                  const entities = {
+                    ...store.entities(),
+                    [response.property.uuid]: response.property,
+                  };
+                  const ids = [...store.ids(), response.property.uuid];
+                  patchState(store, { entities, ids, loading: false });
+                } else {
+                  patchState(store, { loading: false });
+                }
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error(
+                  'Could not create property from input. Please try again.'
+                );
+                return EMPTY;
+              })
+            )
+          )
+        )
+      ),
+      runStage2: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap((uuid) =>
+            propertyService.runStage2(uuid).pipe(
+              tap((result) => {
+                const entity = store.entities()[uuid];
+                if (entity) {
+                  const updatedEntity = { ...entity, state: result.state };
+                  const entities = { ...store.entities(), [uuid]: updatedEntity };
+                  patchState(store, { entities, loading: false });
+                }
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error('Could not retrieve context data. Please try again.');
+                return EMPTY;
+              })
+            )
+          )
+        )
+      ),
+      runStage3: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap((uuid) =>
+            propertyService.runStage3(uuid).pipe(
+              tap((result) => {
+                const entity = store.entities()[uuid];
+                if (entity) {
+                  const updatedEntity = { ...entity, state: result.state };
+                  const entities = { ...store.entities(), [uuid]: updatedEntity };
+                  patchState(store, { entities, loading: false });
+                }
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error('Could not calculate rating. Please try again.');
+                return EMPTY;
+              })
+            )
+          )
+        )
+      ),
+      select: (uuid: string | null) => patchState(store, { selectedId: uuid }),
+      addProperty: (property: Property) => {
+        const entities = { ...store.entities(), [property.uuid]: property };
+        const ids = [...store.ids(), property.uuid];
+        patchState(store, { entities, ids });
+      },
+      checkDuplicate: (externalId: string): Property | null => {
+        const duplicateEntity = store
+          .ids()
+          .map((id) => store.entities()[id])
+          .find((property) => property.external_id === externalId);
+        return duplicateEntity || null;
+      },
+      updatePropertyState: (uuid: string, state: string) => {
+        const entity = store.entities()[uuid];
+        if (entity) {
+          const updatedEntity = { ...entity, state: state as any };
+          const entities = { ...store.entities(), [uuid]: updatedEntity };
+          patchState(store, { entities });
+        }
+      },
+    })
+  )
 );

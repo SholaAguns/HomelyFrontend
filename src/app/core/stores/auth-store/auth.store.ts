@@ -9,6 +9,7 @@ import {
   RegisterData,
   RegisterResponse,
 } from '../../../shared/models/auth-models';
+import { AppError } from '../../../shared/models/error-models';
 import { User } from '../../../shared/models/user-models';
 import { NotificationService } from '../../services/notification-service/notification.service';
 import { AuthService } from '../../services/auth-service/auth.service';
@@ -73,12 +74,9 @@ export const AuthStore = signalStore(
                   notificationService.success('Login successful');
                   postAuthRedirect(response.access);
                 }),
-                catchError((error: Error) => {
-                  patchState(store, {
-                    error: error.message,
-                    loading: false,
-                  });
-                  notificationService.error('Login failed: ' + error.message);
+                catchError((error: AppError) => {
+                  patchState(store, { error: error.message, loading: false });
+                  notificationService.error('Login failed. Please try again.');
                   return EMPTY;
                 })
               )
@@ -101,12 +99,9 @@ export const AuthStore = signalStore(
                   notificationService.success('Registration successful');
                   postAuthRedirect(response.access);
                 }),
-                catchError((error: Error) => {
-                  patchState(store, {
-                    error: error.message,
-                    loading: false,
-                  });
-                  notificationService.error('Registration failed: ' + error.message);
+                catchError((error: AppError) => {
+                  patchState(store, { error: error.message, loading: false });
+                  notificationService.error('Registration failed. Please try again.');
                   return EMPTY;
                 })
               )
