@@ -24,7 +24,7 @@ export interface Task {
   status_display: string;
   priority: TaskPriority;
   priority_display: string;
-  assigned_to: string | null;
+  assigned_to_email: string | null;
   due_date: string | null;
   order: number;
   created_at: string;
@@ -44,7 +44,7 @@ export interface CreateTaskDto {
   description?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
-  assigned_to?: string | null;
+  assigned_to_input?: string | null;
   due_date?: string | null;
   order?: number;
 }
@@ -59,7 +59,7 @@ export interface UpdateTaskDto {
   description?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
-  assigned_to?: string | null;
+  assigned_to_input?: string | null;
   due_date?: string | null;
   order?: number;
 }

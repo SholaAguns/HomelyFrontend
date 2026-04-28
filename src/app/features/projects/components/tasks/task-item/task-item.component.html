@@ -3,6 +3,7 @@
     <app-task-form
       [taskListUuid]="task().task_list_uuid"
       [existingTask]="task()"
+      [members]="members()"
       (submitted)="onEditSubmit($event)"
       (cancelled)="onEditCancel()"
     />
@@ -58,6 +59,9 @@
       }
       @if (task().due_date) {
         <p class="mt-0.5 text-xs text-gray-400">Due: {{ task().due_date }}</p>
+      }
+      @if (task().assigned_to_email) {
+        <p class="mt-0.5 text-xs text-gray-400">Assigned: {{ task().assigned_to_email }}</p>
       }
     </div>
 

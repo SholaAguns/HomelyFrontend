@@ -50,6 +50,22 @@
     />
   </div>
 
+  @if (members().length > 0) {
+    <div class="mb-3">
+      <select
+        formControlName="assigned_to_input"
+        class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+      >
+        <option [value]="null">Unassigned</option>
+        @for (member of members(); track member.email) {
+          <option [value]="member.email">
+            {{ member.first_name }} {{ member.last_name }} ({{ member.email }})
+          </option>
+        }
+      </select>
+    </div>
+  }
+
   <div class="flex gap-2">
     <button
       type="submit"

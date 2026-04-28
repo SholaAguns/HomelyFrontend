@@ -90,6 +90,7 @@
         <app-task-item
           [task]="task"
           [canEdit]="canEdit()"
+          [members]="members()"
           (statusChanged)="onTaskStatusChanged($event)"
           (taskUpdated)="onTaskUpdated($event)"
           (taskDeleted)="onTaskDeleted($event)"
@@ -101,6 +102,7 @@
           <app-task-form
             [taskListUuid]="taskList().uuid"
             [existingTask]="null"
+            [members]="members()"
             (submitted)="onTaskFormSubmit($event)"
             (cancelled)="onTaskFormCancel()"
           />

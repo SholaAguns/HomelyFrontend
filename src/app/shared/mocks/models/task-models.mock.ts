@@ -16,7 +16,7 @@ export const mockTask: Task = {
   status_display: 'To Do',
   priority: 'MEDIUM',
   priority_display: 'Medium',
-  assigned_to: null,
+  assigned_to_email: null,
   due_date: '2026-05-15',
   order: 0,
   created_at: '2026-04-01T10:00:00Z',

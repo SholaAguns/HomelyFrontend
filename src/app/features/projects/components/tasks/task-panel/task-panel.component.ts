@@ -1,15 +1,16 @@
-import { Component, inject, input, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, input, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskStore } from '../../../store/task.store';
 import { TaskListItemComponent } from '../task-list-item/task-list-item.component';
 import { TaskListFormComponent } from '../task-list-form/task-list-form.component';
-import { signal } from '@angular/core';
+import { SharingService } from '../../../../../core/services/sharing-service/sharing.service';
 import {
   CreateTaskDto,
   UpdateTaskDto,
   CreateTaskListDto,
   UpdateTaskListDto,
 } from '../../../../../shared/models/task-models';
+import { ProjectMember } from '../../../../../shared/models/project-models';
 
 @Component({
   selector: 'app-task-panel',
@@ -19,14 +20,23 @@ import {
 })
 export class TaskPanelComponent implements OnInit, OnDestroy {
   readonly taskStore = inject(TaskStore);
+  private sharingService = inject(SharingService);
 
   projectUuid = input.required<string>();
   canEdit = input<boolean>(false);
 
   showAddListForm = signal(false);
+  projectMembers = signal<ProjectMember[]>([]);
 
   ngOnInit() {
     this.taskStore.loadForProject(this.projectUuid());
+    this.sharingService.getMembers(this.projectUuid()).subscribe({
+      next: (members) => {
+        const allMembers = [members.owner, ...members.contributors, ...members.viewers];
+        this.projectMembers.set(allMembers);
+      },
+      error: () => {},
+    });
   }
 
   ngOnDestroy() {

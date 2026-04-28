@@ -6,6 +6,7 @@ import {
   CreateTaskDto,
   TaskStatus,
 } from '../../../../../shared/models/task-models';
+import { ProjectMember } from '../../../../../shared/models/project-models';
 import { TaskFormComponent } from '../task-form/task-form.component';
 
 @Component({
@@ -17,6 +18,7 @@ import { TaskFormComponent } from '../task-form/task-form.component';
 export class TaskItemComponent {
   task = input.required<Task>();
   canEdit = input<boolean>(false);
+  members = input<ProjectMember[]>([]);
 
   statusChanged = output<{ uuid: string; taskListUuid: string; dto: UpdateTaskDto }>();
   taskUpdated = output<{ uuid: string; taskListUuid: string; dto: UpdateTaskDto }>();

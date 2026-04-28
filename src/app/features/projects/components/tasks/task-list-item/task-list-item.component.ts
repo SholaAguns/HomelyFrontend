@@ -8,6 +8,7 @@ import {
   CreateTaskListDto,
   UpdateTaskListDto,
 } from '../../../../../shared/models/task-models';
+import { ProjectMember } from '../../../../../shared/models/project-models';
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { TaskListFormComponent } from '../task-list-form/task-list-form.component';
@@ -22,6 +23,7 @@ export class TaskListItemComponent {
   taskList = input.required<TaskListDetail>();
   canEdit = input<boolean>(false);
   projectUuid = input.required<string>();
+  members = input<ProjectMember[]>([]);
 
   taskListUpdated = output<{ uuid: string; dto: UpdateTaskListDto }>();
   taskListDeleted = output<string>();

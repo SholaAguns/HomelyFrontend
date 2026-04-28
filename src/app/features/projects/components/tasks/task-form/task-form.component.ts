@@ -8,6 +8,7 @@ import {
   TaskStatus,
   TaskPriority,
 } from '../../../../../shared/models/task-models';
+import { ProjectMember } from '../../../../../shared/models/project-models';
 
 @Component({
   selector: 'app-task-form',
@@ -20,6 +21,7 @@ export class TaskFormComponent {
 
   taskListUuid = input.required<string>();
   existingTask = input<Task | null>(null);
+  members = input<ProjectMember[]>([]);
 
   submitted = output<CreateTaskDto | UpdateTaskDto>();
   cancelled = output<void>();
@@ -44,6 +46,7 @@ export class TaskFormComponent {
     status: ['TODO' as TaskStatus],
     priority: ['MEDIUM' as TaskPriority],
     due_date: [null as string | null],
+    assigned_to_input: [null as string | null],
   });
 
   get isEditing(): boolean {
@@ -60,6 +63,7 @@ export class TaskFormComponent {
           status: existing.status,
           priority: existing.priority,
           due_date: existing.due_date,
+          assigned_to_input: existing.assigned_to_email,
         });
       }
     });
@@ -68,7 +72,7 @@ export class TaskFormComponent {
   onSubmit() {
     if (this.form.invalid) return;
 
-    const { title, description, status, priority, due_date } = this.form.value;
+    const { title, description, status, priority, due_date, assigned_to_input } = this.form.value;
 
     if (this.isEditing) {
       this.submitted.emit({
@@ -77,6 +81,7 @@ export class TaskFormComponent {
         status: status as TaskStatus,
         priority: priority as TaskPriority,
         due_date: due_date ?? null,
+        assigned_to_input: assigned_to_input ?? null,
       } as UpdateTaskDto);
     } else {
       this.submitted.emit({
@@ -86,6 +91,7 @@ export class TaskFormComponent {
         status: status as TaskStatus,
         priority: priority as TaskPriority,
         due_date: due_date ?? null,
+        assigned_to_input: assigned_to_input ?? null,
       } as CreateTaskDto);
     }
   }

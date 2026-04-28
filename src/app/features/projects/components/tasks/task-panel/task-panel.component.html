@@ -45,6 +45,7 @@
           [taskList]="taskList"
           [canEdit]="canEdit()"
           [projectUuid]="projectUuid()"
+          [members]="projectMembers()"
           (taskListUpdated)="onTaskListUpdated($event)"
           (taskListDeleted)="onTaskListDeleted($event)"
           (taskCreated)="onTaskCreated($event)"
