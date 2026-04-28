@@ -3,7 +3,7 @@ export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
 export interface TaskList {
   uuid: string;
-  project: string;
+  project_uuid: string;
   title: string;
   description: string;
   tasks_count: number;
@@ -17,7 +17,7 @@ export interface TaskListDetail extends TaskList {
 
 export interface Task {
   uuid: string;
-  task_list: string;
+  task_list_uuid: string;
   title: string;
   description: string;
   status: TaskStatus;

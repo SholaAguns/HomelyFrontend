@@ -177,7 +177,7 @@ describe('TaskStore', () => {
     });
 
     it('should add task to correct task list on success', async () => {
-      const newTask = { ...mockTask, task_list: mockTaskListEmpty.uuid };
+      const newTask = { ...mockTask, task_list_uuid: mockTaskListEmpty.uuid };
       taskServiceMock.createTask.mockReturnValue(of(newTask));
 
       store.createTask({ ...mockCreateTaskDto, task_list_input: mockTaskListEmpty.uuid });

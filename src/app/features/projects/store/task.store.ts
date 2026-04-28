@@ -130,7 +130,7 @@ export const TaskStore = signalStore(
           exhaustMap((dto) =>
             taskService.createTask(dto).pipe(
               tap((newTask) => {
-                const taskListUuid = newTask.task_list;
+                const taskListUuid = newTask.task_list_uuid;
                 const existingTaskList = store.taskLists()[taskListUuid];
                 if (existingTaskList) {
                   const updatedTaskList: TaskListDetail = {

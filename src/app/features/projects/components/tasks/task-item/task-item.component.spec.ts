@@ -52,7 +52,7 @@ describe('TaskItemComponent', () => {
 
       expect(spy).toHaveBeenCalledWith({
         uuid: mockTask.uuid,
-        taskListUuid: mockTask.task_list,
+        taskListUuid: mockTask.task_list_uuid,
         dto: { status: 'IN_PROGRESS' },
       });
     });
@@ -101,7 +101,7 @@ describe('TaskItemComponent', () => {
 
       expect(spy).toHaveBeenCalledWith({
         uuid: mockTask.uuid,
-        taskListUuid: mockTask.task_list,
+        taskListUuid: mockTask.task_list_uuid,
         dto: { title: 'Updated', status: 'DONE' },
       });
       expect(component.isEditing()).toBe(false);
@@ -125,7 +125,7 @@ describe('TaskItemComponent', () => {
 
       expect(spy).toHaveBeenCalledWith({
         uuid: mockTask.uuid,
-        taskListUuid: mockTask.task_list,
+        taskListUuid: mockTask.task_list_uuid,
       });
     });
   });

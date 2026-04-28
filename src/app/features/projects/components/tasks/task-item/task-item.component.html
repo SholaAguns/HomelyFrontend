@@ -1,7 +1,7 @@
 @if (isEditing()) {
   <div class="mb-1">
     <app-task-form
-      [taskListUuid]="task().task_list"
+      [taskListUuid]="task().task_list_uuid"
       [existingTask]="task()"
       (submitted)="onEditSubmit($event)"
       (cancelled)="onEditCancel()"

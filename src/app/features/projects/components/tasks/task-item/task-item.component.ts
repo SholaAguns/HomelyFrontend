@@ -47,7 +47,7 @@ export class TaskItemComponent {
     const nextStatus = this.statusCycle[(currentIndex + 1) % this.statusCycle.length];
     this.statusChanged.emit({
       uuid: currentTask.uuid,
-      taskListUuid: currentTask.task_list,
+      taskListUuid: currentTask.task_list_uuid,
       dto: { status: nextStatus },
     });
   }
@@ -59,7 +59,7 @@ export class TaskItemComponent {
   onEditSubmit(dto: UpdateTaskDto | CreateTaskDto) {
     this.taskUpdated.emit({
       uuid: this.task().uuid,
-      taskListUuid: this.task().task_list,
+      taskListUuid: this.task().task_list_uuid,
       dto: dto as UpdateTaskDto,
     });
     this.isEditing.set(false);
@@ -70,6 +70,6 @@ export class TaskItemComponent {
   }
 
   onDelete() {
-    this.taskDeleted.emit({ uuid: this.task().uuid, taskListUuid: this.task().task_list });
+    this.taskDeleted.emit({ uuid: this.task().uuid, taskListUuid: this.task().task_list_uuid });
   }
 }

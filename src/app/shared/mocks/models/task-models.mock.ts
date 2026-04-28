@@ -9,7 +9,7 @@ import {
 
 export const mockTask: Task = {
   uuid: 'task-uuid-1',
-  task_list: 'task-list-uuid-1',
+  task_list_uuid: 'task-list-uuid-1',
   title: 'Book viewings',
   description: 'Contact agents to arrange viewings',
   status: 'TODO',
@@ -49,7 +49,7 @@ export const mockTaskDone: Task = {
 
 export const mockTaskList: TaskListDetail = {
   uuid: 'task-list-uuid-1',
-  project: 'project-uuid-1',
+  project_uuid: 'project-uuid-1',
   title: 'Viewing Checklist',
   description: 'Tasks to complete before and after viewings',
   tasks_count: 2,
@@ -60,7 +60,7 @@ export const mockTaskList: TaskListDetail = {
 
 export const mockTaskListEmpty: TaskListDetail = {
   uuid: 'task-list-uuid-2',
-  project: 'project-uuid-1',
+  project_uuid: 'project-uuid-1',
   title: 'Research Tasks',
   description: '',
   tasks_count: 0,
