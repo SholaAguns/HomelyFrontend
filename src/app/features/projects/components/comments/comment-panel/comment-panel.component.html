@@ -1,0 +1,29 @@
+<div class="mb-8">
+  <div class="mb-4">
+    <h2 class="text-2xl font-semibold text-gray-900">Comments</h2>
+  </div>
+
+  <div class="mb-4">
+    <app-comment-form (submitted)="onCommentSubmitted($event)" (cancelled)="($event)" />
+  </div>
+
+  @if (commentStore.loading()) {
+    <div class="flex items-center justify-center py-8">
+      <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+    </div>
+  } @else if (commentStore.comments().length === 0) {
+    <div class="rounded-lg border-2 border-dashed border-gray-300 py-8 text-center">
+      <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+    </div>
+  } @else {
+    <div class="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white px-4">
+      @for (comment of commentStore.comments(); track comment.uuid) {
+        <app-comment-item
+          [comment]="comment"
+          [currentUserEmail]="currentUserEmail"
+          (commentDeleted)="onCommentDeleted($event)"
+        />
+      }
+    </div>
+  }
+</div>

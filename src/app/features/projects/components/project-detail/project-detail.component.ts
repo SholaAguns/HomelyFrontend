@@ -7,6 +7,7 @@ import { ProjectStatsPanelComponent } from '../project-stats-panel/project-stats
 import { PropertyListCardComponent } from '../../../property-lists/components/property-list-card/property-list-card.component';
 import { PropertyPreviewCard } from '../../../property-lists/components/property-preview-card/property-preview-card';
 import { TaskPanelComponent } from '../tasks/task-panel/task-panel.component';
+import { CommentPanelComponent } from '../comments/comment-panel/comment-panel.component';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
@@ -22,6 +23,7 @@ import { ProjectRole } from '../../../../shared/models/auth-models';
     PropertyListCardComponent,
     PropertyPreviewCard,
     TaskPanelComponent,
+    CommentPanelComponent,
   ],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css',

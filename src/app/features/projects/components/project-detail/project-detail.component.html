@@ -107,6 +107,7 @@
       }
     </div>
     <app-task-panel [projectUuid]="projectUuid" [canEdit]="canEdit()" />
+    <app-comment-panel [projectUuid]="projectUuid" />
   } @else {
     <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
       <h3 class="mb-2 font-semibold">Project not found</h3>

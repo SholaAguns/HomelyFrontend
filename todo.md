@@ -2,7 +2,7 @@
 P0:
 - Updates when running stage 2
 - Updates when running stage 3
-- error handling
+- ~~error handling~~
 - ~~Rating Criteria Page~~
 - ~~Sharing project with other users~~
 - ~~Project stats dashboard~~
@@ -33,7 +33,7 @@ P1:
 
 
 ## P2:
-- Tasklist
+- ~~Tasklist~~
 - Comments
 - Endpoint for user to leave project
 - Admin dashboard
