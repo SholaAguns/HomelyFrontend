@@ -1,0 +1,43 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="rounded-lg border border-blue-200 bg-blue-50 p-4"
+>
+  <div class="mb-3">
+    <input
+      formControlName="title"
+      type="text"
+      placeholder="Task list name"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+    />
+    @if (form.get('title')?.invalid && form.get('title')?.touched) {
+      <p class="mt-1 text-xs text-red-600">Title is required.</p>
+    }
+  </div>
+
+  <div class="mb-4">
+    <textarea
+      formControlName="description"
+      placeholder="Description (optional)"
+      rows="2"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+    ></textarea>
+  </div>
+
+  <div class="flex gap-2">
+    <button
+      type="submit"
+      [disabled]="form.invalid"
+      class="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+    >
+      {{ isEditing ? 'Save' : 'Create List' }}
+    </button>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="rounded-md border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+    >
+      Cancel
+    </button>
+  </div>
+</form>

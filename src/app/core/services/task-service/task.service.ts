@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api-service/api.service';
 import {
-  TaskList,
+  TaskListDetail,
   Task,
   CreateTaskListDto,
   CreateTaskDto,
@@ -18,23 +18,23 @@ export class TaskService {
   private readonly taskListEndpoint = 'property/task-lists/';
   private readonly taskEndpoint = 'property/tasks/';
 
-  getAllTaskLists(projectUuid?: string): Observable<TaskList[]> {
+  getAllTaskLists(projectUuid?: string): Observable<TaskListDetail[]> {
     const url = projectUuid
       ? `${this.taskListEndpoint}?project=${projectUuid}`
       : this.taskListEndpoint;
-    return this.api.get<TaskList[]>(url);
+    return this.api.get<TaskListDetail[]>(url);
   }
 
-  getTaskList(uuid: string): Observable<TaskList> {
-    return this.api.get<TaskList>(`${this.taskListEndpoint}${uuid}/`);
+  getTaskList(uuid: string): Observable<TaskListDetail> {
+    return this.api.get<TaskListDetail>(`${this.taskListEndpoint}${uuid}/`);
   }
 
-  createTaskList(data: CreateTaskListDto): Observable<TaskList> {
-    return this.api.post<TaskList>(this.taskListEndpoint, data);
+  createTaskList(data: CreateTaskListDto): Observable<TaskListDetail> {
+    return this.api.post<TaskListDetail>(this.taskListEndpoint, data);
   }
 
-  updateTaskList(uuid: string, data: UpdateTaskListDto): Observable<TaskList> {
-    return this.api.patch<TaskList>(`${this.taskListEndpoint}${uuid}/`, data);
+  updateTaskList(uuid: string, data: UpdateTaskListDto): Observable<TaskListDetail> {
+    return this.api.patch<TaskListDetail>(`${this.taskListEndpoint}${uuid}/`, data);
   }
 
   deleteTaskList(uuid: string): Observable<void> {

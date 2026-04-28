@@ -1,0 +1,111 @@
+<div class="rounded-lg border border-gray-200 bg-white shadow-sm">
+  @if (isEditingList()) {
+    <div class="p-4">
+      <app-task-list-form
+        [projectUuid]="projectUuid()"
+        [existingTaskList]="taskList()"
+        (submitted)="onListEditSubmit($event)"
+        (cancelled)="onListEditCancel()"
+      />
+    </div>
+  } @else {
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+      <button (click)="toggleCollapse()" class="flex items-center gap-2 text-left">
+        <svg
+          class="h-4 w-4 text-gray-400 transition-transform"
+          [class.rotate-[-90deg]]="isCollapsed()"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+        <span class="font-semibold text-gray-900">{{ taskList().title }}</span>
+        <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+          {{ taskList().tasks_count }}
+        </span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        @if (canEdit()) {
+          <button
+            (click)="onAddTask()"
+            class="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-blue-700"
+          >
+            + Add Task
+          </button>
+          <button
+            (click)="startEditList()"
+            class="rounded p-1 text-gray-400 transition-colors hover:text-blue-600"
+            title="Edit list"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="onDeleteList()"
+            class="rounded p-1 text-gray-400 transition-colors hover:text-red-600"
+            title="Delete list"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (taskList().description) {
+      <p class="border-b border-gray-100 px-4 py-2 text-sm text-gray-500">
+        {{ taskList().description }}
+      </p>
+    }
+  }
+
+  <!-- Tasks body -->
+  @if (!isCollapsed() && !isEditingList()) {
+    <div class="divide-y divide-gray-50">
+      @if (sortedTasks.length === 0 && !showAddTaskForm()) {
+        <p class="px-4 py-4 text-sm text-gray-400 italic">No tasks yet.</p>
+      }
+
+      @for (task of sortedTasks; track task.uuid) {
+        <app-task-item
+          [task]="task"
+          [canEdit]="canEdit()"
+          (statusChanged)="onTaskStatusChanged($event)"
+          (taskUpdated)="onTaskUpdated($event)"
+          (taskDeleted)="onTaskDeleted($event)"
+        />
+      }
+
+      @if (showAddTaskForm()) {
+        <div class="p-3">
+          <app-task-form
+            [taskListUuid]="taskList().uuid"
+            [existingTask]="null"
+            (submitted)="onTaskFormSubmit($event)"
+            (cancelled)="onTaskFormCancel()"
+          />
+        </div>
+      }
+    </div>
+  }
+</div>

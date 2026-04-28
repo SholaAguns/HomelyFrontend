@@ -1,0 +1,69 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="rounded-lg border border-gray-200 bg-gray-50 p-3"
+>
+  <div class="mb-2">
+    <input
+      formControlName="title"
+      type="text"
+      placeholder="Task title"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+    />
+    @if (form.get('title')?.invalid && form.get('title')?.touched) {
+      <p class="mt-1 text-xs text-red-600">Title is required.</p>
+    }
+  </div>
+
+  <div class="mb-2">
+    <textarea
+      formControlName="description"
+      placeholder="Description (optional)"
+      rows="2"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+    ></textarea>
+  </div>
+
+  <div class="mb-3 flex gap-2">
+    <select
+      formControlName="status"
+      class="flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+    >
+      @for (opt of statusOptions; track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
+
+    <select
+      formControlName="priority"
+      class="flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+    >
+      @for (opt of priorityOptions; track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
+
+    <input
+      formControlName="due_date"
+      type="date"
+      class="flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+    />
+  </div>
+
+  <div class="flex gap-2">
+    <button
+      type="submit"
+      [disabled]="form.invalid"
+      class="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+    >
+      {{ isEditing ? 'Save Task' : 'Add Task' }}
+    </button>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="rounded-md border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+    >
+      Cancel
+    </button>
+  </div>
+</form>

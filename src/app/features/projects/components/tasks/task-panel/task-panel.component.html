@@ -1,0 +1,57 @@
+<div class="mb-8">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-2xl font-semibold text-gray-900">Task Lists</h2>
+    @if (canEdit()) {
+      <button
+        (click)="onAddList()"
+        class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
+      >
+        + Add Task List
+      </button>
+    }
+  </div>
+
+  @if (showAddListForm()) {
+    <div class="mb-4">
+      <app-task-list-form
+        [projectUuid]="projectUuid()"
+        [existingTaskList]="null"
+        (submitted)="onListFormSubmit($event)"
+        (cancelled)="onListFormCancel()"
+      />
+    </div>
+  }
+
+  @if (taskStore.loading()) {
+    <div class="flex items-center justify-center py-8">
+      <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+    </div>
+  } @else if (taskStore.allTaskLists().length === 0 && !showAddListForm()) {
+    <div class="rounded-lg border-2 border-dashed border-gray-300 py-12 text-center">
+      <p class="mb-2 text-gray-500">No task lists yet</p>
+      @if (canEdit()) {
+        <button
+          (click)="onAddList()"
+          class="mt-2 rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
+        >
+          Create First Task List
+        </button>
+      }
+    </div>
+  } @else {
+    <div class="space-y-4">
+      @for (taskList of taskStore.allTaskLists(); track taskList.uuid) {
+        <app-task-list-item
+          [taskList]="taskList"
+          [canEdit]="canEdit()"
+          [projectUuid]="projectUuid()"
+          (taskListUpdated)="onTaskListUpdated($event)"
+          (taskListDeleted)="onTaskListDeleted($event)"
+          (taskCreated)="onTaskCreated($event)"
+          (taskUpdated)="onTaskUpdated($event)"
+          (taskDeleted)="onTaskDeleted($event)"
+        />
+      }
+    </div>
+  }
+</div>

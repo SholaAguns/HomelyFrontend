@@ -1,5 +1,5 @@
-export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE';
-export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
 export interface TaskList {
   uuid: string;
@@ -9,6 +9,10 @@ export interface TaskList {
   tasks_count: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface TaskListDetail extends TaskList {
+  tasks: Task[];
 }
 
 export interface Task {
@@ -25,16 +29,17 @@ export interface Task {
   order: number;
   created_at: string;
   updated_at: string;
+  completed_at: string | null;
 }
 
 export interface CreateTaskListDto {
-  project: string;
+  project_input: string;
   title: string;
   description?: string;
 }
 
 export interface CreateTaskDto {
-  task_list: string;
+  task_list_input: string;
   title: string;
   description?: string;
   status?: TaskStatus;
