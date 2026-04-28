@@ -84,6 +84,47 @@ describe('TaskItemComponent', () => {
     });
   });
 
+  describe('toggleComplete', () => {
+    it('should not emit statusChanged when canEdit is false', () => {
+      const spy = vi.fn();
+      component.statusChanged.subscribe(spy);
+
+      component.toggleComplete();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should emit DONE status when task is not completed', () => {
+      fixture.componentRef.setInput('canEdit', true);
+      fixture.componentRef.setInput('task', mockTask);
+      fixture.detectChanges();
+
+      const spy = vi.fn();
+      component.statusChanged.subscribe(spy);
+
+      component.toggleComplete();
+
+      expect(spy).toHaveBeenCalledWith({
+        uuid: mockTask.uuid,
+        taskListUuid: mockTask.task_list_uuid,
+        dto: { status: 'DONE' },
+      });
+    });
+
+    it('should emit TODO status when task is already DONE', () => {
+      fixture.componentRef.setInput('canEdit', true);
+      fixture.componentRef.setInput('task', mockTaskDone);
+      fixture.detectChanges();
+
+      const spy = vi.fn();
+      component.statusChanged.subscribe(spy);
+
+      component.toggleComplete();
+
+      expect(spy).toHaveBeenCalledWith(expect.objectContaining({ dto: { status: 'TODO' } }));
+    });
+  });
+
   describe('startEdit', () => {
     it('should set isEditing to true', () => {
       component.startEdit();

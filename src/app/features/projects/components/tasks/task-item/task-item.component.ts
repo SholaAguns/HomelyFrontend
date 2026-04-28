@@ -40,6 +40,17 @@ export class TaskItemComponent {
     URGENT: 'bg-red-50 text-red-700',
   };
 
+  toggleComplete() {
+    if (!this.canEdit()) return;
+    const currentTask = this.task();
+    const newStatus: TaskStatus = currentTask.status === 'DONE' ? 'TODO' : 'DONE';
+    this.statusChanged.emit({
+      uuid: currentTask.uuid,
+      taskListUuid: currentTask.task_list_uuid,
+      dto: { status: newStatus },
+    });
+  }
+
   cycleStatus() {
     if (!this.canEdit()) return;
     const currentTask = this.task();
