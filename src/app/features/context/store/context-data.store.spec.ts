@@ -3,11 +3,14 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { ContextDataStore } from './context-data.store';
 import { ContextDataService } from '../../../core/services/context-data-service/context-data.service';
+import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import { ContextData } from '../../../shared/models/context-data.models';
+import { createNotificationServiceMock } from '../../../shared/mocks/notification-service.mock';
 
 describe('ContextDataStore', () => {
   let store: InstanceType<typeof ContextDataStore>;
   let contextDataService: any;
+  let notificationServiceMock: ReturnType<typeof createNotificationServiceMock>;
 
   const mockContextData: ContextData[] = [
     {
@@ -54,9 +57,14 @@ describe('ContextDataStore', () => {
       triggerStage2: vi.fn(),
       retryService: vi.fn(),
     };
+    notificationServiceMock = createNotificationServiceMock();
 
     TestBed.configureTestingModule({
-      providers: [ContextDataStore, { provide: ContextDataService, useValue: contextDataService }],
+      providers: [
+        ContextDataStore,
+        { provide: ContextDataService, useValue: contextDataService },
+        { provide: NotificationService, useValue: notificationServiceMock },
+      ],
     });
 
     store = TestBed.inject(ContextDataStore);
@@ -95,6 +103,7 @@ describe('ContextDataStore', () => {
 
       expect(store.error()['prop-1']).toBe(errorMessage);
       expect(store.loading()['prop-1']).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('Could not load context data.');
     });
   });
 
@@ -167,6 +176,9 @@ describe('ContextDataStore', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(store.error()['prop-1']).toBe(errorMessage);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not trigger context retrieval. Please try again.'
+      );
     });
   });
 
@@ -234,6 +246,9 @@ describe('ContextDataStore', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(store.error()['prop-1']).toBe(errorMessage);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not retry service. Please try again.'
+      );
     });
   });
 });

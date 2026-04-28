@@ -30,7 +30,8 @@
       "Bash(pkill -f \"ng test\")",
       "Bash(grep -E \"\\\\.\\(py|md\\)$\")",
       "Bash(tee logs/build_logs.log)",
-      "Bash(.venv/Scripts/python manage.py makemigrations property --empty --name remove_duplicate_criteria)"
+      "Bash(.venv/Scripts/python manage.py makemigrations property --empty --name remove_duplicate_criteria)",
+      "Bash(git stash *)"
     ]
   }
 }

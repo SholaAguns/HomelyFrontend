@@ -132,9 +132,7 @@ describe('AuthStore', () => {
       expect(service.error()).toBe('Invalid credentials');
       expect(service.loading()).toBe(false);
       expect(service.isAuthenticated()).toBe(false);
-      expect(notificationServiceMock.error).toHaveBeenCalledWith(
-        'Login failed: Invalid credentials'
-      );
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('Login failed. Please try again.');
     });
   });
 
@@ -174,7 +172,7 @@ describe('AuthStore', () => {
       await new Promise((resolve) => setTimeout(resolve, 200));
       expect(service.error()).toBe('Email already exists');
       expect(notificationServiceMock.error).toHaveBeenCalledWith(
-        'Registration failed: Email already exists'
+        'Registration failed. Please try again.'
       );
     });
   });

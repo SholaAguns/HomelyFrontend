@@ -3,7 +3,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { ContextOptionsStore } from './context-options.store';
 import { ContextOptionsService } from '../../../core/services/context-options-service/context-options.service';
+import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import { createContextOptionsServiceMock } from '../../../shared/mocks/context-options-service.mock';
+import { createNotificationServiceMock } from '../../../shared/mocks/notification-service.mock';
 import {
   mockContextOptions,
   mockContextOptionsAllDisabled,
@@ -13,16 +15,19 @@ import {
 describe('ContextOptionsStore', () => {
   let store: InstanceType<typeof ContextOptionsStore>;
   let contextOptionsServiceMock: ReturnType<typeof createContextOptionsServiceMock>;
+  let notificationServiceMock: ReturnType<typeof createNotificationServiceMock>;
 
   const propertyListUuid = 'test-uuid-1';
 
   beforeEach(() => {
     contextOptionsServiceMock = createContextOptionsServiceMock();
+    notificationServiceMock = createNotificationServiceMock();
 
     TestBed.configureTestingModule({
       providers: [
         ContextOptionsStore,
         { provide: ContextOptionsService, useValue: contextOptionsServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
       ],
     });
 
@@ -84,6 +89,7 @@ describe('ContextOptionsStore', () => {
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to load context options');
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('Could not load context options.');
     });
 
     it('should load context options for multiple property lists independently', async () => {
@@ -140,6 +146,9 @@ describe('ContextOptionsStore', () => {
 
       expect(store.saving()).toBe(false);
       expect(store.error()).toBe('Failed to save context options');
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not save context options. Please try again.'
+      );
     });
   });
 });

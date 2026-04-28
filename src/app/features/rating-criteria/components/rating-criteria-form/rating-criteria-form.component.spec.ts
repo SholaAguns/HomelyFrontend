@@ -25,7 +25,7 @@ describe('RatingCriteriaFormComponent', () => {
 
   it('should initialize with default and additional criteria', () => {
     expect(component.defaultCriteria().length).toBe(3);
-    expect(component.additionalCriteria().length).toBe(6);
+    expect(component.additionalCriteria().length).toBe(2);
   });
 
   it('should require name field', () => {
@@ -47,15 +47,6 @@ describe('RatingCriteriaFormComponent', () => {
     expect(updatedCriterion?.weight).not.toBe(originalWeight);
   });
 
-  it('should update criterion dealbreaker status', () => {
-    const criterion = component.defaultCriteria()[0];
-
-    component.updateCriterionDealbreaker(criterion, true, 'default');
-
-    const updatedCriterion = component.defaultCriteria().find((c) => c.name === criterion.name);
-    expect(updatedCriterion?.is_dealbreaker).toBe(true);
-  });
-
   describe('savedLocationCriteria', () => {
     it('should initialize with empty savedLocationCriteria', () => {
       expect(component.savedLocationCriteria().length).toBe(0);
@@ -75,7 +66,6 @@ describe('RatingCriteriaFormComponent', () => {
       expect(criterion.saved_location_uuid).toBe(uuid);
       expect(criterion.enabled).toBe(true);
       expect(criterion.weight).toBe(1.0);
-      expect(criterion.is_dealbreaker).toBe(false);
     });
 
     it('should add multiple saved location criteria', () => {
@@ -108,16 +98,6 @@ describe('RatingCriteriaFormComponent', () => {
       const updated = component.savedLocationCriteria()[0];
       expect(updated.weight).toBe(2.0);
     });
-
-    it('should update saved location criterion dealbreaker status', () => {
-      component.addSavedLocationCriterion('uuid-1', 'Office');
-      const criterion = component.savedLocationCriteria()[0];
-
-      component.updateCriterionDealbreaker(criterion, true, 'savedLocation');
-
-      const updated = component.savedLocationCriteria()[0];
-      expect(updated.is_dealbreaker).toBe(true);
-    });
   });
 
   describe('poiCriteria', () => {
@@ -136,7 +116,6 @@ describe('RatingCriteriaFormComponent', () => {
       expect(criterion.poi_category).toBe('supermarket');
       expect(criterion.enabled).toBe(true);
       expect(criterion.weight).toBe(1.0);
-      expect(criterion.is_dealbreaker).toBe(false);
     });
 
     it('should add multiple POI criteria', () => {
@@ -167,16 +146,6 @@ describe('RatingCriteriaFormComponent', () => {
 
       const updated = component.poiCriteria()[0];
       expect(updated.weight).toBe(1.5);
-    });
-
-    it('should update POI criterion dealbreaker status', () => {
-      component.addPoiCriterion('supermarket');
-      const criterion = component.poiCriteria()[0];
-
-      component.updateCriterionDealbreaker(criterion, true, 'poi');
-
-      const updated = component.poiCriteria()[0];
-      expect(updated.is_dealbreaker).toBe(true);
     });
   });
 });

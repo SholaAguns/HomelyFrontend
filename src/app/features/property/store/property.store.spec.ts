@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { PropertyStore } from './property.store';
 import { PropertyService } from '../../../core/services/property-service/property.service';
+import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import { of, throwError } from 'rxjs';
 import {
   mockProperty,
@@ -14,16 +15,23 @@ import {
   mockCreateFromInputResponseWithProperty,
 } from '../../../shared/mocks/models/property-models.mock';
 import { createPropertyServiceMock } from '../../../shared/mocks/property-service.mock';
+import { createNotificationServiceMock } from '../../../shared/mocks/notification-service.mock';
 
 describe('PropertyStore', () => {
   let propertyStore: InstanceType<typeof PropertyStore>;
   let propertyServiceMock: ReturnType<typeof createPropertyServiceMock>;
+  let notificationServiceMock: ReturnType<typeof createNotificationServiceMock>;
 
   beforeEach(() => {
     propertyServiceMock = createPropertyServiceMock();
+    notificationServiceMock = createNotificationServiceMock();
 
     TestBed.configureTestingModule({
-      providers: [PropertyStore, { provide: PropertyService, useValue: propertyServiceMock }],
+      providers: [
+        PropertyStore,
+        { provide: PropertyService, useValue: propertyServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
+      ],
     });
 
     propertyStore = TestBed.inject(PropertyStore);
@@ -149,6 +157,7 @@ describe('PropertyStore', () => {
 
       expect(propertyStore.error()).toBe(errorMessage);
       expect(propertyStore.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('Could not load properties.');
     });
   });
 
@@ -174,6 +183,9 @@ describe('PropertyStore', () => {
 
       expect(propertyStore.error()).toBe(errorMessage);
       expect(propertyStore.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not add property. Please try again.'
+      );
     });
   });
 
@@ -206,6 +218,9 @@ describe('PropertyStore', () => {
 
       expect(propertyStore.error()).toBe(errorMessage);
       expect(propertyStore.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not update property. Please try again.'
+      );
     });
   });
 
@@ -235,6 +250,9 @@ describe('PropertyStore', () => {
 
       expect(propertyStore.error()).toBe(errorMessage);
       expect(propertyStore.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not delete property. Please try again.'
+      );
     });
   });
 
@@ -277,6 +295,9 @@ describe('PropertyStore', () => {
 
       expect(propertyStore.error()).toBe(errorMessage);
       expect(propertyStore.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not create property from input. Please try again.'
+      );
     });
   });
 
@@ -305,6 +326,9 @@ describe('PropertyStore', () => {
 
       expect(propertyStore.error()).toBe(errorMessage);
       expect(propertyStore.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not retrieve context data. Please try again.'
+      );
     });
   });
 
@@ -339,6 +363,9 @@ describe('PropertyStore', () => {
 
       expect(propertyStore.error()).toBe(errorMessage);
       expect(propertyStore.loading()).toBe(false);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not calculate rating. Please try again.'
+      );
     });
   });
 

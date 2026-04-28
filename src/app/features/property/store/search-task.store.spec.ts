@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SearchTaskStore } from './search-task.store';
 import { PropertyCreationService } from '../../../core/services/property-creation-service/property-creation.service';
 import { PropertyWebSocketService } from '../../../core/services/property-websocket-service/property-websocket.service';
+import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import { of, throwError, Subject } from 'rxjs';
 import {
   mockCreateFromSearchRequest,
@@ -16,17 +17,20 @@ import {
 import { createPropertyCreationServiceMock } from '../../../shared/mocks/property-creation-service.mock';
 import { createPropertyWebSocketServiceMock } from '../../../shared/mocks/property-websocket-service.mock';
 import { createRouterMock } from '../../../shared/mocks/router.mock';
+import { createNotificationServiceMock } from '../../../shared/mocks/notification-service.mock';
 
 describe('SearchTaskStore', () => {
   let searchTaskStore: InstanceType<typeof SearchTaskStore>;
   let routerMock: any;
   let propertyCreationServiceMock: ReturnType<typeof createPropertyCreationServiceMock>;
   let propertyWebSocketServiceMock: ReturnType<typeof createPropertyWebSocketServiceMock>;
+  let notificationServiceMock: ReturnType<typeof createNotificationServiceMock>;
 
   beforeEach(() => {
     routerMock = createRouterMock();
     propertyCreationServiceMock = createPropertyCreationServiceMock();
     propertyWebSocketServiceMock = createPropertyWebSocketServiceMock();
+    notificationServiceMock = createNotificationServiceMock();
 
     TestBed.configureTestingModule({
       providers: [
@@ -34,6 +38,7 @@ describe('SearchTaskStore', () => {
         { provide: Router, useValue: routerMock },
         { provide: PropertyCreationService, useValue: propertyCreationServiceMock },
         { provide: PropertyWebSocketService, useValue: propertyWebSocketServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
       ],
     });
 
@@ -143,6 +148,9 @@ describe('SearchTaskStore', () => {
       expect(searchTaskStore.errors()).toContain(errorMessage);
       expect(searchTaskStore.loading()).toBe(false);
       expect(searchTaskStore.status()).toBe('FAILED');
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Property search failed. Please try again.'
+      );
     });
 
     it('should clear previous errors when starting new search', async () => {

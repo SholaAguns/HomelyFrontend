@@ -15,11 +15,10 @@ P0:
 P1:
 - Support SavedLocation time calculation
 - logging
-- Tasklist
-- Comments
 - Review all caching strategies
 - Zoopla service
 - Rating override
+- User settings page
 - Context report section layout
 - Remove rating criteria from property list edit page
 - Only include options for POI rating criteria that are included in project context options
@@ -34,6 +33,8 @@ P1:
 
 
 ## P2:
+- Tasklist
+- Comments
 - Endpoint for user to leave project
 - Admin dashboard
 - prices types - per week, per month

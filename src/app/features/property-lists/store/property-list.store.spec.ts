@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { PropertyListStore } from './property-list.store';
 import { PropertyListService } from '../../../core/services/property-list-service/property-list.service';
+import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import { of, throwError } from 'rxjs';
 import {
   mockPropertyList,
@@ -9,18 +10,22 @@ import {
   mockUpdatePropertyListDto,
 } from '../../../shared/mocks/models/property-list-models.mock';
 import { createPropertyListServiceMock } from '../../../shared/mocks/property-list-service.mock';
+import { createNotificationServiceMock } from '../../../shared/mocks/notification-service.mock';
 
 describe('PropertyListStore', () => {
   let store: InstanceType<typeof PropertyListStore>;
   let propertyListServiceMock: ReturnType<typeof createPropertyListServiceMock>;
+  let notificationServiceMock: ReturnType<typeof createNotificationServiceMock>;
 
   beforeEach(async () => {
     propertyListServiceMock = createPropertyListServiceMock();
+    notificationServiceMock = createNotificationServiceMock();
 
     await TestBed.configureTestingModule({
       providers: [
         PropertyListStore,
         { provide: PropertyListService, useValue: propertyListServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
       ],
     }).compileComponents();
 
@@ -97,6 +102,9 @@ describe('PropertyListStore', () => {
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to load');
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not load your property lists.'
+      );
     });
   });
 
@@ -125,6 +133,9 @@ describe('PropertyListStore', () => {
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to create');
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not create property list. Please try again.'
+      );
     });
   });
 
@@ -162,6 +173,9 @@ describe('PropertyListStore', () => {
 
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to update');
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not update property list. Please try again.'
+      );
     });
   });
 
@@ -199,6 +213,9 @@ describe('PropertyListStore', () => {
       expect(store.loading()).toBe(false);
       expect(store.error()).toBe('Failed to delete');
       expect(store.ids()).toContain(mockPropertyList.uuid);
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        'Could not delete property list. Please try again.'
+      );
     });
   });
 
