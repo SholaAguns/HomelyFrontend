@@ -1,6 +1,6 @@
 # Features
 P0:
-- Updates when running stage 2
+- Updates when running stage 2 (SSE?)
 - Updates when running stage 3
 - ~~error handling~~
 - ~~Rating Criteria Page~~
