@@ -25,6 +25,8 @@ const LIST_EVENTS = new Set([
   'scrape_failed',
 ]);
 
+const COMMENT_EVENTS = new Set(['connected', 'comment_created', 'comment_deleted']);
+
 @Injectable({ providedIn: 'root' })
 export class PropertySseService {
   private sseService = inject(SseService);
@@ -39,5 +41,11 @@ export class PropertySseService {
     return this.sseService
       .connect(`property/property-lists/${listUuid}/stream/`)
       .pipe(filter((e: SseEvent) => LIST_EVENTS.has(e.type)));
+  }
+
+  connectToProjectComments(projectUuid: string): Observable<SseEvent> {
+    return this.sseService
+      .connect(`property/projects/${projectUuid}/comments/stream/`)
+      .pipe(filter((e: SseEvent) => COMMENT_EVENTS.has(e.type)));
   }
 }

@@ -77,6 +77,17 @@ export const CommentStore = signalStore(
         )
       ),
 
+      addCommentIfNew(comment: ProjectComment) {
+        const exists = store.comments().some((c) => c.uuid === comment.uuid);
+        if (!exists) {
+          patchState(store, { comments: [comment, ...store.comments()] });
+        }
+      },
+
+      removeCommentByUuid(uuid: string) {
+        patchState(store, { comments: store.comments().filter((c) => c.uuid !== uuid) });
+      },
+
       clearComments() {
         patchState(store, initialState);
       },

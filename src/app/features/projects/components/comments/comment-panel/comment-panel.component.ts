@@ -1,7 +1,10 @@
 import { Component, inject, input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { CommentStore } from '../../../store/comment.store';
 import { AuthService } from '../../../../../core/services/auth-service/auth.service';
+import { PropertySseService } from '../../../../../core/services/property-sse-service/property-sse.service';
+import { ProjectComment } from '../../../../../shared/models/comment-models';
 import { CommentItemComponent } from '../comment-item/comment-item.component';
 import { CommentFormComponent } from '../comment-form/comment-form.component';
 
@@ -14,6 +17,8 @@ import { CommentFormComponent } from '../comment-form/comment-form.component';
 export class CommentPanelComponent implements OnInit, OnDestroy {
   readonly commentStore = inject(CommentStore);
   private authService = inject(AuthService);
+  private propertySseService = inject(PropertySseService);
+  private sseSubscription?: Subscription;
 
   projectUuid = input.required<string>();
 
@@ -23,9 +28,22 @@ export class CommentPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.commentStore.loadForProject(this.projectUuid());
+    this.sseSubscription = this.propertySseService
+      .connectToProjectComments(this.projectUuid())
+      .subscribe({
+        next: (event) => {
+          if (event.type === 'comment_created') {
+            this.commentStore.addCommentIfNew(event.data as ProjectComment);
+          } else if (event.type === 'comment_deleted') {
+            this.commentStore.removeCommentByUuid(event.data.uuid);
+          }
+        },
+        error: () => {},
+      });
   }
 
   ngOnDestroy() {
+    this.sseSubscription?.unsubscribe();
     this.commentStore.clearComments();
   }
 

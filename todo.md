@@ -17,7 +17,7 @@ P1:
 - logging
 - Review all caching strategies
 - Zoopla service
-- User settings page
+- User settings page: change email, names, delete account
 - Use defined constants for search criteria
 - Context report section layout
 - Remove rating criteria from property list edit page
