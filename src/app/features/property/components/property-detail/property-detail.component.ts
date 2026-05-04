@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, TimeoutError, timeout, catchError, EMPTY } from 'rxjs';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { PropertyStore } from '../../store/property.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
-import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
+import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
-import { PropertyDetail } from '../../../../shared/models/property-models';
+import { PropertyDetail, PropertyState } from '../../../../shared/models/property-models';
 import { RatingCompleteData } from '../../../../shared/models/context-data.models';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { ImageGalleryComponent } from '../../../../shared/components/image-gallery/image-gallery.component';
@@ -35,7 +35,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   private propertyService = inject(PropertyService);
   private propertyStore = inject(PropertyStore);
   private notificationService = inject(NotificationService);
-  private propertyWebSocketService = inject(PropertyWebSocketService);
+  private propertySseService = inject(PropertySseService);
   private favoritesService = inject(FavoritesService);
   private authService = inject(AuthService);
   private propertyListService = inject(PropertyListService);
@@ -122,99 +122,110 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     const propertyValue = this.property();
     if (!propertyValue) return;
 
-    this.propertyService.runStage2(propertyValue.uuid).subscribe({
-      next: () => {
-        this.notificationService.success('Stage 2 started successfully');
-        this.loadProperty(propertyValue.uuid);
-      },
-      error: (err) => {
-        this.notificationService.error(err.message || 'Failed to run stage 2');
-      },
-    });
+    this.wsSubscription?.unsubscribe();
+
+    this.wsSubscription = this.propertySseService
+      .connectToProperty(propertyValue.uuid)
+      .pipe(
+        timeout(5 * 60 * 1000),
+        catchError((err) => {
+          if (err instanceof TimeoutError) {
+            this.notificationService.error('Stage 2 timed out. Please try again.');
+          }
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: (event) => {
+          if (event.type === 'connected') {
+            this.propertyService.runStage2(propertyValue.uuid).subscribe({
+              next: () => this.notificationService.success('Stage 2 started successfully'),
+              error: (err) => {
+                this.notificationService.error(err.message || 'Failed to run stage 2');
+                this.wsSubscription?.unsubscribe();
+              },
+            });
+            return;
+          }
+
+          if (event.type === 'stage2_complete') {
+            this.propertyStore.updatePropertyState(propertyValue.uuid, 'STAGE2_COMPLETE');
+            this.property.update((current) =>
+              current ? { ...current, state: 'STAGE2_COMPLETE' } : null
+            );
+            this.notificationService.success('Context retrieval complete!');
+            this.wsSubscription?.unsubscribe();
+          }
+        },
+        error: () => {},
+      });
   }
 
   runStage3(): void {
     const propertyValue = this.property();
     if (!propertyValue) return;
 
-    // Subscribe to WebSocket FIRST, then trigger Stage 3
-    this.subscribeToRatingUpdates(propertyValue.uuid, () => {
-      console.log('🚀 TRIGGERING STAGE 3 (Rating Calculation)');
-      this.propertyService.runStage3(propertyValue.uuid).subscribe({
-        next: () => {
-          this.notificationService.success('Stage 3 started successfully');
-        },
-        error: (err) => {
-          this.notificationService.error(err.message || 'Failed to run stage 3');
-          this.wsSubscription?.unsubscribe();
-          this.propertyWebSocketService.disconnect();
-        },
-      });
-    });
-  }
-
-  private subscribeToRatingUpdates(propertyId: string, onConnected?: () => void): void {
     this.wsSubscription?.unsubscribe();
 
-    console.log('🔌 WEBSOCKET: Connecting to property channel for rating updates...', propertyId);
-
-    this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
-      next: (update) => {
-        console.log('📨 WEBSOCKET UPDATE RECEIVED:', update.type, update);
-
-        if (update.type === 'rating_complete') {
-          console.log('🎉 RATING COMPLETE - Updating property with rating data');
-
-          // Update property with rating data from WebSocket message
-          const currentProperty = this.property();
-          if (currentProperty && update.data) {
-            const ratingData = update.data as RatingCompleteData;
-            const updatedProperty = {
-              ...currentProperty,
-              state: ratingData.property_state || 'STAGE3_COMPLETE',
-              overall_rating: ratingData.overall_rating,
-              rating_breakdown: ratingData.rating_breakdown,
-              disqualified: ratingData.disqualified,
-              disqualification_reason: ratingData.disqualification_reason,
-            } as PropertyDetail;
-
-            this.property.set(updatedProperty);
-            this.propertyStore.updatePropertyState(
-              propertyId,
-              ratingData.property_state || 'STAGE3_COMPLETE'
-            );
+    this.wsSubscription = this.propertySseService
+      .connectToProperty(propertyValue.uuid)
+      .pipe(
+        timeout(5 * 60 * 1000),
+        catchError((err) => {
+          if (err instanceof TimeoutError) {
+            this.notificationService.error('Rating timed out. Please try again.');
+          }
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: (event) => {
+          if (event.type === 'connected') {
+            this.propertyService.runStage3(propertyValue.uuid).subscribe({
+              next: () => this.notificationService.success('Stage 3 started successfully'),
+              error: (err) => {
+                this.notificationService.error(err.message || 'Failed to run stage 3');
+                this.wsSubscription?.unsubscribe();
+              },
+            });
+            return;
           }
 
-          this.notificationService.success('Rating calculation complete!');
-
-          // Disconnect after a short delay
-          setTimeout(() => {
-            console.log('🔌 CLOSING WEBSOCKET CONNECTION (Rating complete)');
+          if (event.type === 'rating_complete' && event.data) {
+            const ratingData = event.data as RatingCompleteData;
+            this.property.update((current) =>
+              current
+                ? {
+                    ...current,
+                    state: (ratingData.property_state || 'STAGE3_COMPLETE') as PropertyState,
+                    overall_rating: ratingData.overall_rating,
+                    rating_breakdown: ratingData.rating_breakdown,
+                    disqualified: ratingData.disqualified,
+                    disqualification_reason: ratingData.disqualification_reason,
+                  }
+                : null
+            );
+            this.propertyStore.updatePropertyState(
+              propertyValue.uuid,
+              ratingData.property_state || 'STAGE3_COMPLETE'
+            );
+            this.notificationService.success('Rating calculation complete!');
             this.wsSubscription?.unsubscribe();
-            this.propertyWebSocketService.disconnect();
-          }, 1000);
-        }
-      },
-      error: (err) => {
-        console.error('❌ WEBSOCKET ERROR:', err);
-      },
-      complete: () => {
-        console.log('🔌 WEBSOCKET CONNECTION CLOSED');
-      },
-    });
+          }
 
-    // Call the callback after a short delay to ensure connection is established
-    if (onConnected) {
-      setTimeout(() => {
-        console.log('🔌 WEBSOCKET: Connection ready, calling callback');
-        onConnected();
-      }, 200);
-    }
+          if (event.type === 'rating_failed') {
+            this.notificationService.error(
+              event.data?.error || 'Rating calculation failed. Please try again.'
+            );
+            this.wsSubscription?.unsubscribe();
+          }
+        },
+        error: () => {},
+      });
   }
 
   ngOnDestroy(): void {
     this.wsSubscription?.unsubscribe();
-    this.propertyWebSocketService.disconnect();
   }
 
   openGallery(index: number = 0): void {

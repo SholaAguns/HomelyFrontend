@@ -89,7 +89,7 @@ export interface Property {
   overall_rating: number | null;
   rating_breakdown: RatingBreakdown | null;
   disqualified: boolean;
-  disqualification_reason: string;
+  disqualification_reason: string | null;
 
   // Images
   images: PropertyImage[];

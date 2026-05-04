@@ -9,10 +9,11 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Subscription, TimeoutError, timeout, catchError, EMPTY } from 'rxjs';
 import { ContextDataStore } from '../../store/context-data.store';
 import { PropertyStore } from '../../../property/store/property.store';
-import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
+import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { CrimeReportComponent } from '../crime-report/crime-report.component';
 import { SchoolsReportComponent } from '../schools-report/schools-report.component';
@@ -55,7 +56,8 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
 
   private contextDataStore = inject(ContextDataStore);
   private propertyStore = inject(PropertyStore);
-  private propertyWebSocketService = inject(PropertyWebSocketService);
+  private propertySseService = inject(PropertySseService);
+  private notificationService = inject(NotificationService);
   private authService = inject(AuthService);
   private wsSubscription?: Subscription;
   userRole = signal<ProjectRole>(null);
@@ -100,60 +102,48 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.wsSubscription?.unsubscribe();
-    this.propertyWebSocketService.disconnect();
   }
 
-  private subscribeToUpdates(propertyId: string, onConnected?: () => void): void {
-    this.wsSubscription?.unsubscribe();
-
-    console.log('🔌 WEBSOCKET: Connecting to property channel immediately...', propertyId);
-
-    this.wsSubscription = this.propertyWebSocketService.connectToProperty(propertyId).subscribe({
-      next: (update) => {
-        console.log('📨 WEBSOCKET UPDATE RECEIVED:', update.type, update);
-
-        if (update.type === 'service_update' && update.service && update.status) {
-          console.log(`✅ SERVICE UPDATE: ${update.service} → ${update.status}`);
-          const contextData: ContextData = {
-            id: `${propertyId}-${update.service}`,
-            property_id: propertyId,
-            service_name: update.service as any,
-            status: update.status as any,
-            data: update.data,
-            error_message: null,
-            started_at: null,
-            completed_at: update.status === 'COMPLETE' ? new Date().toISOString() : null,
-            cached: false,
-            project_uuid: this.projectUuid(),
-          };
-          this.contextDataStore.updateService(propertyId, contextData);
-        } else if (update.type === 'stage2_complete') {
-          console.log('🎉 STAGE 2 COMPLETE - Reloading context data and updating property state');
-          this.contextDataStore.load(propertyId);
-          this.propertyStore.updatePropertyState(propertyId, 'STAGE2_COMPLETE');
-          // Wait for load to complete before disconnecting
-          setTimeout(() => {
-            console.log('🔌 CLOSING WEBSOCKET CONNECTION (Stage 2 complete)');
+  private subscribeToPropertyUpdates(propertyId: string, onConnected: () => void): Subscription {
+    return this.propertySseService
+      .connectToProperty(propertyId)
+      .pipe(
+        timeout(5 * 60 * 1000),
+        catchError((err) => {
+          if (err instanceof TimeoutError) {
+            this.notificationService.error('Stage 2 timed out. Please retry.');
+          }
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: (event) => {
+          if (event.type === 'connected') {
+            onConnected();
+            return;
+          }
+          if (event.type === 'service_update' && event.data?.service && event.data?.status) {
+            const contextData: ContextData = {
+              id: `${propertyId}-${event.data.service}`,
+              property_id: propertyId,
+              service_name: event.data.service,
+              status: event.data.status,
+              data: event.data.data,
+              error_message: event.data.error ?? null,
+              started_at: null,
+              completed_at: event.data.status === 'COMPLETE' ? new Date().toISOString() : null,
+              cached: false,
+              project_uuid: this.projectUuid(),
+            };
+            this.contextDataStore.updateService(propertyId, contextData);
+          } else if (event.type === 'stage2_complete') {
+            this.contextDataStore.load(propertyId);
+            this.propertyStore.updatePropertyState(propertyId, 'STAGE2_COMPLETE');
             this.wsSubscription?.unsubscribe();
-            this.propertyWebSocketService.disconnect();
-          }, 1000);
-        }
-      },
-      error: (err) => {
-        console.error('❌ WEBSOCKET ERROR:', err);
-      },
-      complete: () => {
-        console.log('🔌 WEBSOCKET CONNECTION CLOSED');
-      },
-    });
-
-    // Call the callback after a short delay to ensure connection is established
-    if (onConnected) {
-      setTimeout(() => {
-        console.log('🔌 WEBSOCKET: Connection ready, calling callback');
-        onConnected();
-      }, 200);
-    }
+          }
+        },
+        error: () => {},
+      });
   }
 
   contextData = computed(() => this.contextDataStore.forProperty()(this.propertyId()));
@@ -176,12 +166,8 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
 
   triggerStage2(services?: string[]): void {
     const propertyId = this.propertyId();
-    // Subscribe FIRST, then trigger stage 2 after connection established
-    this.subscribeToUpdates(propertyId, () => {
-      console.log(
-        '🚀 TRIGGERING STAGE 2',
-        services ? `for services: ${services.join(', ')}` : '(all services)'
-      );
+    this.wsSubscription?.unsubscribe();
+    this.wsSubscription = this.subscribeToPropertyUpdates(propertyId, () => {
       this.contextDataStore.triggerStage2({ propertyId, services });
     });
   }
@@ -203,13 +189,9 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
 
   retryService(serviceName: string): void {
     const propertyId = this.propertyId();
-    // Subscribe FIRST, then retry service after connection established
-    this.subscribeToUpdates(propertyId, () => {
-      console.log('🔄 RETRYING SERVICE:', serviceName);
-      this.contextDataStore.retry({
-        propertyId,
-        service: serviceName,
-      });
+    this.wsSubscription?.unsubscribe();
+    this.wsSubscription = this.subscribeToPropertyUpdates(propertyId, () => {
+      this.contextDataStore.retry({ propertyId, service: serviceName });
     });
   }
 

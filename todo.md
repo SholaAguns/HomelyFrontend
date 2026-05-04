@@ -17,8 +17,8 @@ P1:
 - logging
 - Review all caching strategies
 - Zoopla service
-- Rating override
 - User settings page
+- Use defined constants for search criteria
 - Context report section layout
 - Remove rating criteria from property list edit page
 - Only include options for POI rating criteria that are included in project context options
@@ -34,7 +34,8 @@ P1:
 
 ## P2:
 - ~~Tasklist~~
-- Comments
+- ~~Comments~~
+- Rating override
 - Endpoint for user to leave project
 - Admin dashboard
 - prices types - per week, per month
@@ -53,5 +54,6 @@ P1:
 - Use structural directive to handle permissions
 
 
-
+## Bugs
+- Retry all failed stage 2: http://localhost:4200/properties/d1929282-446d-467e-b292-82b8fac42683
 

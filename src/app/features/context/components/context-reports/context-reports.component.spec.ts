@@ -4,14 +4,15 @@ import { ContextReportsComponent } from './context-reports.component';
 import { ContextDataStore } from '../../store/context-data.store';
 import { signal, computed } from '@angular/core';
 import { PropertyStore } from '../../../property/store/property.store';
-import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
+import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
+import { EMPTY } from 'rxjs';
 
 describe('ContextReportsComponent', () => {
   let component: ContextReportsComponent;
   let fixture: ComponentFixture<ContextReportsComponent>;
   let mockContextDataStore: Partial<InstanceType<typeof ContextDataStore>>;
   let mockPropertyStore: Partial<InstanceType<typeof PropertyStore>>;
-  let mockWebSocketService: Partial<PropertyWebSocketService>;
+  let mockSseService: Partial<PropertySseService>;
   let contextDataSignal: any;
   let setContextData: (data: any[]) => void;
   let progressSignal: any;
@@ -46,11 +47,8 @@ describe('ContextReportsComponent', () => {
       updatePropertyState: vi.fn(),
     };
 
-    mockWebSocketService = {
-      connectToProperty: vi.fn().mockReturnValue({
-        subscribe: vi.fn(),
-      }),
-      disconnect: vi.fn(),
+    mockSseService = {
+      connectToProperty: vi.fn().mockReturnValue(EMPTY),
     };
 
     await TestBed.configureTestingModule({
@@ -58,7 +56,7 @@ describe('ContextReportsComponent', () => {
       providers: [
         { provide: ContextDataStore, useValue: mockContextDataStore },
         { provide: PropertyStore, useValue: mockPropertyStore },
-        { provide: PropertyWebSocketService, useValue: mockWebSocketService },
+        { provide: PropertySseService, useValue: mockSseService },
       ],
     }).compileComponents();
 
@@ -154,14 +152,14 @@ describe('ContextReportsComponent', () => {
 
     component.triggerStage2();
 
-    expect(mockWebSocketService.connectToProperty).toHaveBeenCalledWith('test-property-id');
+    expect(mockSseService.connectToProperty).toHaveBeenCalledWith('test-property-id');
   });
 
   it('should call triggerStage2 with specific services list', () => {
     const services = ['crime', 'schools'];
     component.triggerStage2(services);
 
-    expect(mockWebSocketService.connectToProperty).toHaveBeenCalledWith('test-property-id');
+    expect(mockSseService.connectToProperty).toHaveBeenCalledWith('test-property-id');
   });
 
   it('should retry all failed services when retryAllFailed called', () => {
@@ -174,7 +172,7 @@ describe('ContextReportsComponent', () => {
 
     component.retryAllFailed();
 
-    expect(mockWebSocketService.connectToProperty).toHaveBeenCalledWith('test-property-id');
+    expect(mockSseService.connectToProperty).toHaveBeenCalledWith('test-property-id');
   });
 
   it('should display retry all failed button when failures exist', () => {

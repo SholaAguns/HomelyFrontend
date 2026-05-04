@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PropertyListService } from '../../../../core/services/property-list-service/property-list.service';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
-import { PropertyWebSocketService } from '../../../../core/services/property-websocket-service/property-websocket.service';
+import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
 import { ContextDataService } from '../../../../core/services/context-data-service/context-data.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
@@ -15,7 +15,16 @@ import { SearchTaskStore } from '../../../property/store/search-task.store';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { InlineModalComponent } from '../../../../shared/components/inline-modal/inline-modal.component';
 import { ContextOptionsFormComponent } from '../context-options-form/context-options-form.component';
-import { forkJoin, Subscription } from 'rxjs';
+import {
+  forkJoin,
+  Subscription,
+  from,
+  mergeMap,
+  TimeoutError,
+  timeout,
+  catchError,
+  EMPTY,
+} from 'rxjs';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { ProjectRole } from '../../../../shared/models/auth-models';
 
@@ -38,7 +47,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private propertyListService = inject(PropertyListService);
   private propertyService = inject(PropertyService);
-  private propertyWebSocketService = inject(PropertyWebSocketService);
+  private propertySseService = inject(PropertySseService);
   private contextDataService = inject(ContextDataService);
   private favoritesService = inject(FavoritesService);
   private notificationService = inject(NotificationService);
@@ -129,43 +138,43 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.searchTaskStore.reset();
     this.wsSubscription?.unsubscribe();
-    this.propertyWebSocketService.disconnect();
   }
 
-  private subscribeToListUpdates(listUuid: string): void {
+  private subscribeToListEvents(
+    listUuid: string,
+    propertyCount: number,
+    onConnected: () => void
+  ): void {
     this.wsSubscription?.unsubscribe();
+    let stage2CompletedCount = 0;
 
-    console.log('🔌 WEBSOCKET: Connecting to property list channel in 1 second...', listUuid);
-
-    setTimeout(() => {
-      this.wsSubscription = this.propertyWebSocketService
-        .subscribeToPropertyList(listUuid)
-        .subscribe({
-          next: (update) => {
-            console.log('📨 WEBSOCKET UPDATE RECEIVED (LIST):', update.type, update);
-
-            if (update.type === 'service_update') {
-              console.log(
-                `✅ SERVICE UPDATE (LIST): Property ${update.property_id}, ${update.service} → ${update.status}`
-              );
-            } else if (update.type === 'stage2_complete') {
-              console.log(
-                '🎉 STAGE 2 COMPLETE (LIST): Property',
-                update.property_id,
-                '- Reloading list'
-              );
-              this.loadList(listUuid);
+    this.wsSubscription = this.propertySseService
+      .connectToPropertyList(listUuid)
+      .pipe(
+        timeout(10 * 60 * 1000),
+        catchError((err) => {
+          if (err instanceof TimeoutError) {
+            this.notificationService.error('Operation timed out. Refresh for latest state.');
+          }
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: (event) => {
+          if (event.type === 'connected') {
+            onConnected();
+            return;
+          }
+          if (event.type === 'stage2_complete') {
+            stage2CompletedCount++;
+            this.loadList(listUuid);
+            if (stage2CompletedCount >= propertyCount) {
+              this.wsSubscription?.unsubscribe();
             }
-          },
-          error: (err) => {
-            console.error('❌ WEBSOCKET ERROR (LIST):', err);
-          },
-          complete: () => {
-            console.log('🔌 WEBSOCKET CONNECTION CLOSED (LIST)');
-          },
-        });
-      console.log('🔌 WEBSOCKET: List connection established');
-    }, 1000);
+          }
+        },
+        error: () => {},
+      });
   }
 
   loadList(uuid: string) {
@@ -177,21 +186,14 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         this.currentPage.set(1);
         this.loading.set(false);
 
-        // Load project to check context options
         if (list.project) {
           this.projectStore.loadDetail(list.project);
         }
 
-        // Get user role for permissions
         this.authService.getUserRole(list.project).subscribe({
           next: (roleResponse) => this.userRole.set(roleResponse.role),
           error: () => {},
         });
-
-        // Connect to WebSocket if any properties are in stage 2 progress
-        if (list.status_summary.stage2_in_progress > 0) {
-          this.subscribeToListUpdates(uuid);
-        }
       },
       error: (err) => {
         this.error.set(err.message);
@@ -338,24 +340,25 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const propertiesToProcess = listData.properties.filter((p) => p.state === 'NEW');
 
     if (propertiesToProcess.length === 0) {
-      this.error.set('No properties to process');
+      this.notificationService.error('No new properties to process');
       return;
     }
 
-    this.loading.set(true);
-    const stage2Observables = propertiesToProcess.map((property) =>
-      this.contextDataService.triggerStage2(property.uuid)
-    );
-
-    forkJoin(stage2Observables).subscribe({
-      next: () => {
-        this.loadList(listData.uuid);
-        this.subscribeToListUpdates(listData.uuid);
-      },
-      error: (err) => {
-        this.error.set(err.message);
-        this.loading.set(false);
-      },
+    this.subscribeToListEvents(listData.uuid, propertiesToProcess.length, () => {
+      from(propertiesToProcess)
+        .pipe(
+          mergeMap((property) =>
+            this.contextDataService.triggerStage2(property.uuid).pipe(
+              catchError(() => {
+                this.notificationService.error(
+                  `Failed to start context retrieval for ${property.address_line_1 || property.uuid}`
+                );
+                return EMPTY;
+              })
+            )
+          )
+        )
+        .subscribe();
     });
   }
 
