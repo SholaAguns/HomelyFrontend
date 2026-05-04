@@ -48,7 +48,10 @@ export const CommentStore = signalStore(
           exhaustMap((dto) =>
             commentService.createComment(dto).pipe(
               tap((newComment) => {
-                patchState(store, { comments: [newComment, ...store.comments()] });
+                const exists = store.comments().some((c) => c.uuid === newComment.uuid);
+                if (!exists) {
+                  patchState(store, { comments: [newComment, ...store.comments()] });
+                }
               }),
               catchError((err: AppError) => {
                 notificationService.error(err.message || 'Failed to add comment');
