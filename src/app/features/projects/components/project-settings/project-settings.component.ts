@@ -91,7 +91,6 @@ export class ProjectSettingsComponent implements OnInit {
 
   // Delete confirmation
   showDeleteModal = signal(false);
-  deleteConfirmation = signal('');
 
   readonly POI_TYPE_LABELS = POI_TYPE_LABELS;
   readonly SCHOOL_TYPE_LABELS = SCHOOL_TYPE_LABELS;
@@ -356,25 +355,21 @@ export class ProjectSettingsComponent implements OnInit {
 
   openDeleteModal() {
     this.showDeleteModal.set(true);
-    this.deleteConfirmation.set('');
   }
 
   closeDeleteModal() {
     this.showDeleteModal.set(false);
-    this.deleteConfirmation.set('');
   }
 
   confirmDelete() {
-    if (this.deleteConfirmation().toLowerCase() === 'delete') {
-      this.projectStore.delete(this.projectUuid);
+    this.projectStore.delete(this.projectUuid);
 
-      const checkDeletion = setInterval(() => {
-        if (!this.projectStore.loading()) {
-          clearInterval(checkDeletion);
-          this.router.navigate(['/projects']);
-        }
-      }, 100);
-    }
+    const checkDeletion = setInterval(() => {
+      if (!this.projectStore.loading()) {
+        clearInterval(checkDeletion);
+        this.router.navigate(['/projects']);
+      }
+    }, 100);
   }
 
   navigateBack() {

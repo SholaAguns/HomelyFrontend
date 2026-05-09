@@ -191,23 +191,15 @@ describe('ProjectSettingsComponent', () => {
     expect(component.showDeleteModal()).toBe(false);
   });
 
-  it('should delete project when confirmation matches', () => {
+  it('should call delete project store and navigate to projects on confirmDelete', () => {
     vi.useFakeTimers();
     mockProjectStore.loading.set(false);
     component.projectUuid = 'test-uuid';
-    component.deleteConfirmation.set('delete');
     component.confirmDelete();
     expect(mockProjectStore.delete).toHaveBeenCalledWith('test-uuid');
     vi.advanceTimersByTime(200);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/projects']);
     vi.useRealTimers();
-  });
-
-  it('should not delete when confirmation does not match', () => {
-    component.projectUuid = 'test-uuid';
-    component.deleteConfirmation.set('wrong');
-    component.confirmDelete();
-    expect(mockProjectStore.delete).not.toHaveBeenCalled();
   });
 
   it('should navigate back to project', () => {

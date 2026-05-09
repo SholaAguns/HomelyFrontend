@@ -620,16 +620,6 @@
         <strong>{{ projectStore.selectedDetail()?.title }}</strong> and all its property lists.
       </p>
 
-      <p class="mb-4 text-gray-700">Type <strong>DELETE</strong> to confirm:</p>
-
-      <input
-        type="text"
-        [ngModel]="deleteConfirmation()"
-        (ngModelChange)="deleteConfirmation.set($event)"
-        placeholder="Type DELETE"
-        class="mb-4 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-red-500 focus:outline-none"
-      />
-
       <div class="flex justify-end gap-3">
         <button
           (click)="closeDeleteModal()"
@@ -639,9 +629,6 @@
         </button>
         <button
           (click)="confirmDelete()"
-          [disabled]="deleteConfirmation().toLowerCase() !== 'delete'"
-          [class.opacity-50]="deleteConfirmation().toLowerCase() !== 'delete'"
-          [class.cursor-not-allowed]="deleteConfirmation().toLowerCase() !== 'delete'"
           class="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
         >
           Delete Project
