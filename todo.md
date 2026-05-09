@@ -18,12 +18,12 @@ P1:
 - Review all caching strategies
 - Zoopla service
 - User settings page: change email, names, delete account
-- Use defined constants for search criteria
+- ~~Use defined constants for search criteria~~
 - Context report section layout
 - Remove rating criteria from property list edit page
 - Only include options for POI rating criteria that are included in project context options
 - Only include options for Saved Location rating criteria that are included in project context options
-- delete modal confirmation only
+- ~~delete modal confirmation only~~
 - poi_search_radius_meters should be in Km
 - Social login
 - ~~POI and Saved location rating by distance or time~~

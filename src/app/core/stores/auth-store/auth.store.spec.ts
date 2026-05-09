@@ -200,7 +200,12 @@ describe('AuthStore', () => {
 
   describe('initializeFromStorage', () => {
     it('should load tokens and connect notifications from storage', async () => {
-      const mockUser = { id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
+      const mockUser = {
+        id: '1',
+        email: 'test@example.com',
+        first_name: 'Test',
+        last_name: 'User',
+      };
       authServiceMock.getAccessToken.mockReturnValue('serviced-access-token');
       authServiceMock.getRefreshToken.mockReturnValue('serviced-refresh-token');
       authServiceMock.getCurrentUser.mockReturnValue(of(mockUser));

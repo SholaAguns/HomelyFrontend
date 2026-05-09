@@ -203,8 +203,8 @@ describe('RegisterComponent', () => {
       component.onSubmit();
 
       expect(mockAuthStore.register).toHaveBeenCalledWith({
-        firstName: 'John',
-        lastName: 'Doe',
+        first_name: 'John',
+        last_name: 'Doe',
         email: 'test@example.com',
         password: 'password123',
         password2: 'password123',

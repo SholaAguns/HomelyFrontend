@@ -6,8 +6,8 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData extends LoginCredentials {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   password2: string;
 }
 

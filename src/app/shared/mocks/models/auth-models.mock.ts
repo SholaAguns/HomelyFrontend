@@ -15,8 +15,8 @@ export const mockRegisterData: RegisterData = {
   email: 'test@example.com',
   password: 'password123',
   password2: 'password123',
-  firstName: 'John',
-  lastName: 'Doe',
+  first_name: 'John',
+  last_name: 'Doe',
 };
 
 export const mockLoginResponse: LoginResponse = {

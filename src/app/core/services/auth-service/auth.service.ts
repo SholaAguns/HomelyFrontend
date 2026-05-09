@@ -9,7 +9,13 @@ import {
   RegisterData,
   RegisterResponse,
 } from '../../../shared/models/auth-models';
-import { EditUserProfileRequest, User, UserProfile } from '../../../shared/models/user-models';
+import {
+  ChangePasswordRequest,
+  EditUserProfileRequest,
+  UpdateAccountDetailsRequest,
+  User,
+  UserProfile,
+} from '../../../shared/models/user-models';
 
 @Injectable({
   providedIn: 'root',
@@ -133,6 +139,21 @@ export class AuthService {
     let endpoint = this.AUTH_ENDPOINT + 'users/profile/';
 
     return this.api.put<UserProfile>(endpoint, requestData);
+  }
+
+  updateAccountDetails(requestData: UpdateAccountDetailsRequest): Observable<UserProfile> {
+    return this.api.patch<UserProfile>(this.AUTH_ENDPOINT + 'users/profile/', requestData);
+  }
+
+  changePassword(requestData: ChangePasswordRequest): Observable<{ message: string }> {
+    return this.api.post<{ message: string }>(
+      this.AUTH_ENDPOINT + 'users/change_password/',
+      requestData
+    );
+  }
+
+  deleteAccount(): Observable<void> {
+    return this.api.delete<void>(this.AUTH_ENDPOINT + 'users/delete_account/');
   }
 
   getAccessToken(): string | null {

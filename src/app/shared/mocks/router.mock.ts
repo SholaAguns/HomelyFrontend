@@ -12,7 +12,7 @@ export function createRouterMock() {
     navigate: vi.fn(),
     events: of(),
     createUrlTree: vi.fn(),
-    serializeUrl: vi.fn()
+    serializeUrl: vi.fn(),
   };
 }
 
@@ -40,8 +40,8 @@ export function createActivatedRouteMock() {
       firstChild: null,
       children: [],
       pathFromRoot: [],
-      paramMap: of({} as any),
-      queryParamMap: of({} as any)
-    }
+      paramMap: { get: vi.fn().mockReturnValue(null) },
+      queryParamMap: { get: vi.fn().mockReturnValue(null) },
+    },
   };
 }

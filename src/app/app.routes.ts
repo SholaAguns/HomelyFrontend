@@ -85,6 +85,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/user-settings/user-settings.routes').then((m) => m.USER_SETTINGS_ROUTES),
+  },
+  {
     path: 'accept-invite',
     loadComponent: () =>
       import('./features/auth/accept-invite/accept-invite.component').then(

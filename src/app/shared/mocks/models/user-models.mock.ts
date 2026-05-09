@@ -6,13 +6,13 @@ export const mockUserProfile: UserProfile = {
   phone_number: '+1234567890',
   avatar: 'https://example.com/avatar.jpg',
   created_at: '2024-01-01T00:00:00Z',
-  updated_at: '2024-01-01T00:00:00Z'
+  updated_at: '2024-01-01T00:00:00Z',
 };
 
 export const mockUser: User = {
   email: 'test@example.com',
-  firstName: 'John',
-  lastName: 'Doe',
+  first_name: 'John',
+  last_name: 'Doe',
   date_joined: '2024-01-01T00:00:00Z',
-  profile: mockUserProfile
+  profile: mockUserProfile,
 };

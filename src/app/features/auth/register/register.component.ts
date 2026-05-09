@@ -47,9 +47,11 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      const { confirmPassword, ...formData } = this.registerForm.value;
+      const { firstName, lastName, confirmPassword, ...formData } = this.registerForm.value;
       const registerData: RegisterData = {
         ...formData,
+        first_name: firstName,
+        last_name: lastName,
         password2: confirmPassword,
       };
       this.authStore.register(registerData);
