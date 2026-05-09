@@ -189,6 +189,30 @@ export const SEARCH_CRITERIA_PRICES = [
   9000, 10000, 12500, 15000, 17500, 18000, 19000, 20000, 25000, 30000, 35000, 40000,
 ];
 
+export const SEARCH_CRITERIA_BEDROOMS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+export const SEARCH_CRITERIA_RADII: { value: number; label: string }[] = [
+  { value: 0, label: 'This area only' },
+  { value: 0.25, label: 'Within 1/4 mile' },
+  { value: 0.5, label: 'Within 1/2 mile' },
+  { value: 1.0, label: 'Within 1 mile' },
+  { value: 3.0, label: 'Within 3 miles' },
+  { value: 5.0, label: 'Within 5 miles' },
+  { value: 10.0, label: 'Within 10 miles' },
+  { value: 15.0, label: 'Within 15 miles' },
+  { value: 20, label: 'Within 20 miles' },
+  { value: 30.0, label: 'Within 30 miles' },
+  { value: 40.0, label: 'Within 40 miles' },
+];
+
+export const SEARCH_CRITERIA_DAYS_SINCE_ADDED: { value: number | null; label: string }[] = [
+  { value: null, label: 'Anytime' },
+  { value: 1, label: 'Last 24 hours' },
+  { value: 3, label: 'Last 3 days' },
+  { value: 7, label: 'Last 7 days' },
+  { value: 14, label: 'Last 14 days' },
+];
+
 // Search criteria for bulk property creation
 export interface SearchCriteria {
   area: string;

@@ -1,7 +1,13 @@
 import { Component, output, input, effect } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SearchCriteria } from '../../models/property-models';
+import {
+  SearchCriteria,
+  SEARCH_CRITERIA_PRICES,
+  SEARCH_CRITERIA_BEDROOMS,
+  SEARCH_CRITERIA_RADII,
+  SEARCH_CRITERIA_DAYS_SINCE_ADDED,
+} from '../../models/property-models';
 
 @Component({
   selector: 'app-search-criteria-form',
@@ -19,6 +25,11 @@ export class SearchCriteriaFormComponent {
   searchForm: FormGroup;
   searchSubmit = output<SearchCriteria>();
   cancel = output<void>();
+
+  priceOptions = SEARCH_CRITERIA_PRICES;
+  bedroomOptions = SEARCH_CRITERIA_BEDROOMS;
+  radiusOptions = SEARCH_CRITERIA_RADII;
+  daysSinceAddedOptions = SEARCH_CRITERIA_DAYS_SINCE_ADDED;
 
   propertyTypes = [
     { value: '', label: 'Any' },

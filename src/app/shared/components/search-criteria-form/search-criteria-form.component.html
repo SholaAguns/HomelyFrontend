@@ -20,60 +20,116 @@
     <!-- Radius -->
     <div class="form-group mb-4">
       <label for="radius" class="mb-1 block text-sm font-medium">Search Radius (miles)</label>
-      <select
-        id="radius"
-        formControlName="radius"
-        class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-      >
-        <option [value]="0">This area only</option>
-        <option [value]="0.25">Within 1/4 mile</option>
-        <option [value]="0.5">Within 1/2 mile</option>
-        <option [value]="1.0">Within 1 mile</option>
-        <option [value]="3.0">Within 3 miles</option>
-        <option [value]="5.0">Within 5 miles</option>
-        <option [value]="10.0">Within 10 miles</option>
-        <option [value]="15.0">Within 15 miles</option>
-        <option [value]="20">Within 20 miles</option>
-        <option [value]="30.0">Within 30 miles</option>
-        <option [value]="40.0">Within 40 miles</option>
-      </select>
+      <div class="relative">
+        <select
+          id="radius"
+          formControlName="radius"
+          class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+        >
+          @for (option of radiusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+          <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
 
     <!-- Property Types -->
     <div class="form-group mb-4">
       <label for="property_types" class="mb-1 block text-sm font-medium">Property Type</label>
-      <select
-        id="property_types"
-        formControlName="property_types"
-        class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-      >
-        @for (type of propertyTypes; track type.value) {
-          <option [value]="type.value">{{ type.label }}</option>
-        }
-      </select>
+      <div class="relative">
+        <select
+          id="property_types"
+          formControlName="property_types"
+          class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+        >
+          @for (type of propertyTypes; track type.value) {
+            <option [value]="type.value">{{ type.label }}</option>
+          }
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+          <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
 
     <!-- Bedrooms -->
     <div class="mb-4 grid grid-cols-2 gap-4">
       <div class="form-group">
         <label for="bedrooms_min" class="mb-1 block text-sm font-medium">Min Bedrooms</label>
-        <input
-          type="number"
-          id="bedrooms_min"
-          formControlName="bedrooms_min"
-          min="0"
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-        />
+        <div class="relative">
+          <select
+            id="bedrooms_min"
+            formControlName="bedrooms_min"
+            class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+          >
+            <option [value]="null">Any</option>
+            @for (bedroom of bedroomOptions; track bedroom) {
+              <option [value]="bedroom">{{ bedroom }}</option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label for="bedrooms_max" class="mb-1 block text-sm font-medium">Max Bedrooms</label>
-        <input
-          type="number"
-          id="bedrooms_max"
-          formControlName="bedrooms_max"
-          min="0"
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-        />
+        <div class="relative">
+          <select
+            id="bedrooms_max"
+            formControlName="bedrooms_max"
+            class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+          >
+            <option [value]="null">Any</option>
+            @for (bedroom of bedroomOptions; track bedroom) {
+              <option [value]="bedroom">{{ bedroom }}</option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -81,42 +137,90 @@
     <div class="mb-4 grid grid-cols-2 gap-4">
       <div class="form-group">
         <label for="price_min" class="mb-1 block text-sm font-medium">Min Price (£)</label>
-        <input
-          type="number"
-          id="price_min"
-          formControlName="price_min"
-          min="0"
-          placeholder="£"
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-        />
+        <div class="relative">
+          <select
+            id="price_min"
+            formControlName="price_min"
+            class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+          >
+            <option [value]="null">Any</option>
+            @for (price of priceOptions; track price) {
+              <option [value]="price">£{{ price | number }}</option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label for="price_max" class="mb-1 block text-sm font-medium">Max Price (£)</label>
-        <input
-          type="number"
-          id="price_max"
-          formControlName="price_max"
-          min="0"
-          placeholder="£"
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-        />
+        <div class="relative">
+          <select
+            id="price_max"
+            formControlName="price_max"
+            class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+          >
+            <option [value]="null">Any</option>
+            @for (price of priceOptions; track price) {
+              <option [value]="price">£{{ price | number }}</option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Max Days Since Added -->
     <div class="form-group mb-6">
       <label for="max_days_since_added" class="mb-1 block text-sm font-medium">Added within</label>
-      <select
-        id="max_days_since_added"
-        formControlName="max_days_since_added"
-        class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-      >
-        <option [value]="null">Anytime</option>
-        <option [value]="1">Last 24 hours</option>
-        <option [value]="3">Last 3 days</option>
-        <option [value]="7">Last 7 days</option>
-        <option [value]="14">Last 14 days</option>
-      </select>
+      <div class="relative">
+        <select
+          id="max_days_since_added"
+          formControlName="max_days_since_added"
+          class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+        >
+          @for (option of daysSinceAddedOptions; track option.label) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+          <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
 
     <!-- Submit Button -->
