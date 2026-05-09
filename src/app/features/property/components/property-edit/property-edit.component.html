@@ -209,15 +209,32 @@
             <label for="furnished_status" class="block text-sm font-medium text-gray-700"
               >Furnished Status</label
             >
-            <select
-              id="furnished_status"
-              formControlName="furnished_status"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              @for (option of furnishedStatusOptions; track option.value) {
-                <option [value]="option.value">{{ option.label }}</option>
-              }
-            </select>
+            <div class="relative mt-1">
+              <select
+                id="furnished_status"
+                formControlName="furnished_status"
+                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                @for (option of furnishedStatusOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                <svg
+                  class="h-4 w-4 text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
 
           <div>
@@ -287,32 +304,66 @@
             <label for="council_tax_band" class="block text-sm font-medium text-gray-700"
               >Council Tax Band</label
             >
-            <select
-              id="council_tax_band"
-              formControlName="council_tax_band"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Not specified</option>
-              @for (band of councilTaxBands; track band) {
-                <option [value]="band">{{ band }}</option>
-              }
-            </select>
+            <div class="relative mt-1">
+              <select
+                id="council_tax_band"
+                formControlName="council_tax_band"
+                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="">Not specified</option>
+                @for (band of councilTaxBands; track band) {
+                  <option [value]="band">{{ band }}</option>
+                }
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                <svg
+                  class="h-4 w-4 text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
 
           <div>
             <label for="epc_rating" class="block text-sm font-medium text-gray-700"
               >EPC Rating</label
             >
-            <select
-              id="epc_rating"
-              formControlName="epc_rating"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Not specified</option>
-              @for (rating of epcRatings; track rating) {
-                <option [value]="rating">{{ rating }}</option>
-              }
-            </select>
+            <div class="relative mt-1">
+              <select
+                id="epc_rating"
+                formControlName="epc_rating"
+                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="">Not specified</option>
+                @for (rating of epcRatings; track rating) {
+                  <option [value]="rating">{{ rating }}</option>
+                }
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                <svg
+                  class="h-4 w-4 text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
 
           <div class="col-span-2">

@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
   <!-- Basic Information -->
-  <div class="bg-white p-6 rounded-lg border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+  <div class="rounded-lg border border-gray-200 bg-white p-6">
+    <h3 class="mb-4 text-lg font-semibold text-gray-900">Basic Information</h3>
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <div class="sm:col-span-2">
         <label for="title" class="block text-sm font-medium text-gray-700">
@@ -28,7 +28,9 @@
           id="address_line_1"
           formControlName="address_line_1"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          [class.border-red-500]="form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched"
+          [class.border-red-500]="
+            form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched
+          "
         />
         @if (form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched) {
           <p class="mt-1 text-sm text-red-600">Address Line 1 is required</p>
@@ -76,8 +78,8 @@
   </div>
 
   <!-- Property Details -->
-  <div class="bg-white p-6 rounded-lg border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Property Details</h3>
+  <div class="rounded-lg border border-gray-200 bg-white p-6">
+    <h3 class="mb-4 text-lg font-semibold text-gray-900">Property Details</h3>
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <div>
         <label for="price" class="block text-sm font-medium text-gray-700">
@@ -143,15 +145,32 @@
         <label for="furnished_status" class="block text-sm font-medium text-gray-700">
           Furnished Status
         </label>
-        <select
-          id="furnished_status"
-          formControlName="furnished_status"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        >
-          @for (option of furnishedStatusOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
-          }
-        </select>
+        <div class="relative mt-1">
+          <select
+            id="furnished_status"
+            formControlName="furnished_status"
+            class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            @for (option of furnishedStatusOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
 
       <div>
@@ -174,9 +193,7 @@
             formControlName="garden"
             class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-          <label for="garden" class="ml-2 block text-sm text-gray-700">
-            Garden
-          </label>
+          <label for="garden" class="ml-2 block text-sm text-gray-700"> Garden </label>
         </div>
 
         <div class="flex items-center">
@@ -186,9 +203,7 @@
             formControlName="parking"
             class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-          <label for="parking" class="ml-2 block text-sm text-gray-700">
-            Parking
-          </label>
+          <label for="parking" class="ml-2 block text-sm text-gray-700"> Parking </label>
         </div>
 
         <div class="flex items-center">
@@ -207,39 +222,71 @@
   </div>
 
   <!-- Additional Information -->
-  <div class="bg-white p-6 rounded-lg border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
+  <div class="rounded-lg border border-gray-200 bg-white p-6">
+    <h3 class="mb-4 text-lg font-semibold text-gray-900">Additional Information</h3>
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <div>
         <label for="council_tax_band" class="block text-sm font-medium text-gray-700">
           Council Tax Band
         </label>
-        <select
-          id="council_tax_band"
-          formControlName="council_tax_band"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="">Select band</option>
-          @for (band of councilTaxBands; track band) {
-            <option [value]="band">{{ band }}</option>
-          }
-        </select>
+        <div class="relative mt-1">
+          <select
+            id="council_tax_band"
+            formControlName="council_tax_band"
+            class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            <option value="">Select band</option>
+            @for (band of councilTaxBands; track band) {
+              <option [value]="band">{{ band }}</option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
 
       <div>
-        <label for="epc_rating" class="block text-sm font-medium text-gray-700">
-          EPC Rating
-        </label>
-        <select
-          id="epc_rating"
-          formControlName="epc_rating"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="">Select rating</option>
-          @for (rating of epcRatings; track rating) {
-            <option [value]="rating">{{ rating }}</option>
-          }
-        </select>
+        <label for="epc_rating" class="block text-sm font-medium text-gray-700"> EPC Rating </label>
+        <div class="relative mt-1">
+          <select
+            id="epc_rating"
+            formControlName="epc_rating"
+            class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            <option value="">Select rating</option>
+            @for (rating of epcRatings; track rating) {
+              <option [value]="rating">{{ rating }}</option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
 
       <div>
@@ -293,13 +340,11 @@
   </div>
 
   <!-- Location Coordinates (Optional) -->
-  <div class="bg-white p-6 rounded-lg border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Location Coordinates (Optional)</h3>
+  <div class="rounded-lg border border-gray-200 bg-white p-6">
+    <h3 class="mb-4 text-lg font-semibold text-gray-900">Location Coordinates (Optional)</h3>
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <div>
-        <label for="latitude" class="block text-sm font-medium text-gray-700">
-          Latitude
-        </label>
+        <label for="latitude" class="block text-sm font-medium text-gray-700"> Latitude </label>
         <input
           type="number"
           step="any"
@@ -310,9 +355,7 @@
       </div>
 
       <div>
-        <label for="longitude" class="block text-sm font-medium text-gray-700">
-          Longitude
-        </label>
+        <label for="longitude" class="block text-sm font-medium text-gray-700"> Longitude </label>
         <input
           type="number"
           step="any"
@@ -329,7 +372,7 @@
     <button
       type="button"
       (click)="onCancel()"
-      class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      class="rounded-md border border-gray-300 bg-white px-6 py-2 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
     >
       Cancel
     </button>
@@ -337,7 +380,7 @@
       <button
         type="submit"
         [disabled]="!isValid || loading()"
-        class="px-6 py-2 border border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        class="rounded-md border border-transparent bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
       >
         @if (loading()) {
           <span>Submitting...</span>

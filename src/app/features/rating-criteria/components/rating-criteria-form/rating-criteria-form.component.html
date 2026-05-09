@@ -136,25 +136,42 @@
                 @if (availableLocationsForSelection.length > 0) {
                   <div>
                     <label class="mb-2 block text-sm font-medium text-gray-700">Add Location</label>
-                    <select
-                      #locationSelect
-                      (change)="
-                        addSavedLocationCriterion(
-                          locationSelect.value,
-                          getSelectedLocation(locationSelect.value)?.name || ''
-                        );
-                        locationSelect.value = ''
-                      "
-                      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select a location to add...</option>
-                      @for (location of availableLocationsForSelection; track location.uuid) {
-                        <option [value]="location.uuid">
-                          {{ location.name }} - {{ location.address_line_1 }},
-                          {{ location.postcode }}
-                        </option>
-                      }
-                    </select>
+                    <div class="relative">
+                      <select
+                        #locationSelect
+                        (change)="
+                          addSavedLocationCriterion(
+                            locationSelect.value,
+                            getSelectedLocation(locationSelect.value)?.name || ''
+                          );
+                          locationSelect.value = ''
+                        "
+                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select a location to add...</option>
+                        @for (location of availableLocationsForSelection; track location.uuid) {
+                          <option [value]="location.uuid">
+                            {{ location.name }} - {{ location.address_line_1 }},
+                            {{ location.postcode }}
+                          </option>
+                        }
+                      </select>
+                      <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                        <svg
+                          class="h-4 w-4 text-gray-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                 }
 
@@ -254,18 +271,35 @@
                 @if (availablePoiTypesForSelection.length > 0) {
                   <div>
                     <label class="mb-2 block text-sm font-medium text-gray-700">Add POI Type</label>
-                    <select
-                      #poiSelect
-                      (change)="addPoiCriterion($any(poiSelect.value)); poiSelect.value = ''"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select a POI type to add...</option>
-                      @for (poiType of availablePoiTypesForSelection; track poiType) {
-                        <option [value]="poiType">
-                          {{ POI_TYPE_LABELS[poiType] }}
-                        </option>
-                      }
-                    </select>
+                    <div class="relative">
+                      <select
+                        #poiSelect
+                        (change)="addPoiCriterion($any(poiSelect.value)); poiSelect.value = ''"
+                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select a POI type to add...</option>
+                        @for (poiType of availablePoiTypesForSelection; track poiType) {
+                          <option [value]="poiType">
+                            {{ POI_TYPE_LABELS[poiType] }}
+                          </option>
+                        }
+                      </select>
+                      <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                        <svg
+                          class="h-4 w-4 text-gray-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                 }
 

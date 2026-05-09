@@ -239,18 +239,35 @@
                 <span class="text-sm text-gray-600">Loading criteria...</span>
               </div>
             } @else {
-              <select
-                [ngModel]="ratingCriteria()"
-                (ngModelChange)="ratingCriteria.set($event)"
-                class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-              >
-                <option value="">None (No rating criteria)</option>
-                @for (criteria of ratingCriteriaStore.allCriteria(); track criteria.uuid) {
-                  <option [value]="criteria.uuid">
-                    {{ criteria.name }} ({{ criteria.criteria_count }} criteria)
-                  </option>
-                }
-              </select>
+              <div class="relative">
+                <select
+                  [ngModel]="ratingCriteria()"
+                  (ngModelChange)="ratingCriteria.set($event)"
+                  class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-4 focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="">None (No rating criteria)</option>
+                  @for (criteria of ratingCriteriaStore.allCriteria(); track criteria.uuid) {
+                    <option [value]="criteria.uuid">
+                      {{ criteria.name }} ({{ criteria.criteria_count }} criteria)
+                    </option>
+                  }
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                  <svg
+                    class="h-4 w-4 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
             }
 
             @if (selectedCriteriaName) {
@@ -361,14 +378,31 @@
                     </div>
                   }
                 </div>
-                <select
-                  [ngModel]="newMemberRole()"
-                  (ngModelChange)="newMemberRole.set($event)"
-                  class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none"
-                >
-                  <option value="viewer">Viewer</option>
-                  <option value="contributor">Contributor</option>
-                </select>
+                <div class="relative">
+                  <select
+                    [ngModel]="newMemberRole()"
+                    (ngModelChange)="newMemberRole.set($event)"
+                    class="appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:outline-none"
+                  >
+                    <option value="viewer">Viewer</option>
+                    <option value="contributor">Contributor</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                    <svg
+                      class="h-4 w-4 text-gray-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                </div>
                 <button
                   (click)="addMemberDirect()"
                   [disabled]="!selectedUser()"
@@ -478,14 +512,31 @@
                 placeholder="Recipient email address"
                 class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
               />
-              <select
-                [ngModel]="inviteRole()"
-                (ngModelChange)="inviteRole.set($event)"
-                class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none"
-              >
-                <option value="viewer">Viewer</option>
-                <option value="contributor">Contributor</option>
-              </select>
+              <div class="relative">
+                <select
+                  [ngModel]="inviteRole()"
+                  (ngModelChange)="inviteRole.set($event)"
+                  class="appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:outline-none"
+                >
+                  <option value="viewer">Viewer</option>
+                  <option value="contributor">Contributor</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                  <svg
+                    class="h-4 w-4 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
               <button
                 (click)="sendInvite()"
                 [disabled]="!inviteEmail() || sendingInvite()"
