@@ -33,7 +33,8 @@
       "Bash(.venv/Scripts/python manage.py makemigrations property --empty --name remove_duplicate_criteria)",
       "Bash(git stash *)",
       "Bash(xargs grep *)",
-      "Bash(grep -E \"app\\\\.ts$\")"
+      "Bash(grep -E \"app\\\\.ts$\")",
+      "PowerShell(Get-Content *)"
     ]
   }
 }
