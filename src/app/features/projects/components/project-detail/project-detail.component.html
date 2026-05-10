@@ -12,14 +12,52 @@
           </h1>
           <p class="mt-2 text-gray-600">{{ projectStore.selectedDetail()!.description }}</p>
         </div>
-        @if (canEdit()) {
-          <button
-            (click)="navigateToSettings()"
-            class="rounded-lg bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700"
-          >
-            Edit Project
-          </button>
-        }
+        <div class="flex items-center gap-2">
+          @if (canEdit()) {
+            <button
+              (click)="navigateToSettings()"
+              class="rounded-lg bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700"
+            >
+              Edit Project
+            </button>
+          }
+          @if (canLeave()) {
+            <div class="relative">
+              <button
+                (click)="showActionsMenu.set(!showActionsMenu())"
+                class="rounded-lg border border-gray-300 p-2 text-gray-600 transition-colors hover:bg-gray-50"
+                aria-label="Project actions"
+              >
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                  />
+                </svg>
+              </button>
+              @if (showActionsMenu()) {
+                <div class="fixed inset-0 z-10" (click)="showActionsMenu.set(false)"></div>
+                <div
+                  class="absolute right-0 z-20 mt-1 w-44 rounded-lg border border-gray-200 bg-white shadow-lg"
+                >
+                  <button
+                    (click)="showActionsMenu.set(false); showLeaveModal.set(true)"
+                    class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50"
+                  >
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    Leave Project
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
       </div>
 
       <app-project-stats-panel [projectUuid]="projectUuid" />
@@ -115,3 +153,33 @@
     </div>
   }
 </div>
+
+<!-- Leave Project Modal -->
+@if (showLeaveModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6">
+      <h3 class="mb-4 text-xl font-semibold text-gray-900">Leave Project</h3>
+      <p class="mb-6 text-gray-700">
+        Are you sure you want to leave
+        <span class="font-semibold">{{ projectStore.selectedDetail()?.title }}</span
+        >? You will lose access and will need to be re-invited to rejoin.
+      </p>
+      <div class="flex justify-end gap-3">
+        <button
+          (click)="showLeaveModal.set(false)"
+          [disabled]="leavingProject()"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmLeaveProject()"
+          [disabled]="leavingProject()"
+          class="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:bg-gray-400"
+        >
+          {{ leavingProject() ? 'Leaving...' : 'Leave Project' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

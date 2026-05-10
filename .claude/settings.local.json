@@ -35,7 +35,8 @@
       "Bash(xargs grep *)",
       "Bash(grep -E \"app\\\\.ts$\")",
       "PowerShell(Get-Content *)",
-      "Bash(ng test *)"
+      "Bash(ng test *)",
+      "Bash(iconv -f UTF-16LE -t UTF-8 /c/Repos/HomelyBackend/requirements.txt)"
     ]
   }
 }

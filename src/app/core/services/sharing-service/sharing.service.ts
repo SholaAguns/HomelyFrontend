@@ -36,6 +36,10 @@ export class SharingService {
     );
   }
 
+  leaveProject(projectUuid: string): Observable<void> {
+    return this.api.post<void>(`property/projects/${projectUuid}/leave/`, {});
+  }
+
   previewInvite(token: string): Observable<InvitePreview> {
     return this.api.get<InvitePreview>(
       `property/projects/preview-invite/?token=${encodeURIComponent(token)}`

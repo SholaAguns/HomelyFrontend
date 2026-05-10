@@ -111,6 +111,14 @@ describe('SharingService', () => {
     });
   });
 
+  describe('leaveProject', () => {
+    it('should POST to leave endpoint for given project', async () => {
+      apiMock.post.mockReturnValue(of(undefined));
+      await firstValueFrom(service.leaveProject(PROJECT_UUID));
+      expect(apiMock.post).toHaveBeenCalledWith(`property/projects/${PROJECT_UUID}/leave/`, {});
+    });
+  });
+
   describe('searchUsers', () => {
     it('should GET users matching query', async () => {
       apiMock.get.mockReturnValue(of([mockUserSearchResult, mockUserSearchResult2]));

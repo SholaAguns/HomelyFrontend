@@ -11,6 +11,7 @@ import { CommentPanelComponent } from '../comments/comment-panel/comment-panel.c
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { SharingService } from '../../../../core/services/sharing-service/sharing.service';
 import { Property } from '../../../../shared/models/property-models';
 import { ProjectRole } from '../../../../shared/models/auth-models';
 
@@ -34,6 +35,7 @@ export class ProjectDetailComponent implements OnInit {
   private authService = inject(AuthService);
   private favoritesService = inject(FavoritesService);
   private notificationService = inject(NotificationService);
+  private sharingService = inject(SharingService);
   readonly projectStore = inject(ProjectStore);
   readonly listStore = inject(PropertyListStore);
 
@@ -43,9 +45,14 @@ export class ProjectDetailComponent implements OnInit {
   userRole = signal<ProjectRole>(null);
   projectFavorites = signal<Property[]>([]);
   favoritesExpanded = signal(false);
+  showActionsMenu = signal(false);
+  showLeaveModal = signal(false);
+  leavingProject = signal(false);
 
   canEdit = computed(() => this.authService.canEdit(this.projectUuid, this.userRole()));
   canView = computed(() => this.authService.canView(this.projectUuid, this.userRole()));
+  isOwner = computed(() => this.authService.isOwner(this.projectUuid, this.userRole()));
+  canLeave = computed(() => !this.isOwner() && this.userRole() !== null);
   favoritesCount = computed(() => this.projectFavorites().length);
   shouldExpandFavorites = computed(() => this.favoritesCount() < 6);
 
@@ -126,5 +133,20 @@ export class ProjectDetailComponent implements OnInit {
 
   navigateToDashboard() {
     this.router.navigate(['/projects', this.projectUuid, 'dashboard']);
+  }
+
+  confirmLeaveProject(): void {
+    this.leavingProject.set(true);
+    this.sharingService.leaveProject(this.projectUuid).subscribe({
+      next: () => {
+        this.notificationService.success('You have left the project');
+        this.router.navigate(['/projects']);
+      },
+      error: () => {
+        this.notificationService.error('Failed to leave project');
+        this.leavingProject.set(false);
+        this.showLeaveModal.set(false);
+      },
+    });
   }
 }
