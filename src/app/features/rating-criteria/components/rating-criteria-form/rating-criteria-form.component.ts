@@ -247,9 +247,6 @@ export class RatingCriteriaFormComponent implements OnInit {
       weight: 1.0,
       distance_calculation_preference: 'straight_distance',
     };
-    console.log('Saved Location Criterion:');
-    console.log('%j', savedLocationCriterion);
-
     this.savedLocationCriteria.update((list) => [...list, savedLocationCriterion]);
     this.selectedSavedLocationUuids.update((uuids) => [...uuids, uuid]);
   }

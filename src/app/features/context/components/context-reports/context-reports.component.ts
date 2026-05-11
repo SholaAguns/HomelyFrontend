@@ -229,7 +229,6 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
       .map((d) => d.service_name);
 
     if (failedServices.length > 0) {
-      console.log('🔄 RETRYING ALL FAILED SERVICES:', failedServices);
       this.triggerStage2(failedServices);
     }
   }

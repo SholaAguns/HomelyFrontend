@@ -36,7 +36,8 @@
       "Bash(grep -E \"app\\\\.ts$\")",
       "PowerShell(Get-Content *)",
       "Bash(ng test *)",
-      "Bash(iconv -f UTF-16LE -t UTF-8 /c/Repos/HomelyBackend/requirements.txt)"
+      "Bash(iconv -f UTF-16LE -t UTF-8 /c/Repos/HomelyBackend/requirements.txt)",
+      "PowerShell(Get-ChildItem \"C:\\\\Repos\\\\HomelyBackend\\\\\" | Where-Object { $_.Name -match \"Procfile|sqlite3|requirements|gitignore|Dockerfile\" })"
     ]
   }
 }

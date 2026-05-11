@@ -1,4 +1,4 @@
-import { Signal, WritableSignal, computed, signal, effect } from '@angular/core';
+import { Signal, WritableSignal, computed, signal, effect, isDevMode } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
@@ -71,7 +71,9 @@ export function filterSignal<T>(
 export function debugSignal<T>(signalToDebug: Signal<T>, label?: string): void {
   effect(() => {
     const value = signalToDebug();
-    console.log(`[Signal${label ? ` ${label}` : ''}]:`, value);
+    if (isDevMode()) {
+      console.log(`[Signal${label ? ` ${label}` : ''}]:`, value);
+    }
   });
 }
 
