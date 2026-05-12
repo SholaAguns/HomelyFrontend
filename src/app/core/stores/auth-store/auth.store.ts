@@ -19,16 +19,12 @@ const PENDING_INVITE_KEY = 'pending_invite_token';
 
 type AuthState = {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
   loading: boolean;
   error: string | null;
 };
 
 const initialState: AuthState = {
   user: null,
-  accessToken: null,
-  refreshToken: null,
   loading: false,
   error: null,
 };
@@ -36,8 +32,8 @@ const initialState: AuthState = {
 export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ user, accessToken }) => ({
-    isAuthenticated: computed(() => !!user() && !!accessToken()),
+  withComputed(({ user }) => ({
+    isAuthenticated: computed(() => !!user()),
   })),
   withMethods(
     (
@@ -47,8 +43,8 @@ export const AuthStore = signalStore(
       notificationStore = inject(NotificationStore),
       router = inject(Router)
     ) => {
-      function postAuthRedirect(accessToken: string): void {
-        notificationStore.connect(accessToken);
+      function postAuthRedirect(): void {
+        notificationStore.connect();
         const pendingToken = localStorage.getItem(PENDING_INVITE_KEY);
         if (pendingToken) {
           localStorage.removeItem(PENDING_INVITE_KEY);
@@ -65,14 +61,9 @@ export const AuthStore = signalStore(
             switchMap((credentials) =>
               authService.login(credentials).pipe(
                 tap((response: LoginResponse) => {
-                  patchState(store, {
-                    user: response.user,
-                    accessToken: response.access,
-                    refreshToken: response.refresh,
-                    loading: false,
-                  });
+                  patchState(store, { user: response.user, loading: false });
                   notificationService.success('Login successful');
-                  postAuthRedirect(response.access);
+                  postAuthRedirect();
                 }),
                 catchError((error: AppError) => {
                   patchState(store, { error: error.message, loading: false });
@@ -90,14 +81,9 @@ export const AuthStore = signalStore(
             switchMap((data) =>
               authService.register(data).pipe(
                 tap((response: RegisterResponse) => {
-                  patchState(store, {
-                    user: null,
-                    accessToken: response.access,
-                    refreshToken: response.refresh,
-                    loading: false,
-                  });
+                  patchState(store, { user: response.user, loading: false });
                   notificationService.success('Registration successful');
-                  postAuthRedirect(response.access);
+                  postAuthRedirect();
                 }),
                 catchError((error: AppError) => {
                   patchState(store, { error: error.message, loading: false });
@@ -113,8 +99,6 @@ export const AuthStore = signalStore(
           pipe(
             switchMap(() => authService.logout()),
             tap(() => {
-              authService.removeToken('access_token');
-              authService.removeToken('refresh_token');
               notificationStore.disconnect();
               patchState(store, initialState);
               notificationService.info('Logged out successfully');
@@ -122,24 +106,17 @@ export const AuthStore = signalStore(
           )
         ),
 
-        initializeFromStorage: () => {
-          const accessToken = authService.getAccessToken();
-          const refreshToken = authService.getRefreshToken();
-          if (accessToken && refreshToken) {
-            patchState(store, { accessToken, refreshToken, loading: true });
-
-            authService.getCurrentUser().subscribe({
-              next: (user) => {
-                patchState(store, { user, loading: false });
-                notificationStore.connect(accessToken);
-              },
-              error: () => {
-                authService.removeToken('access_token');
-                authService.removeToken('refresh_token');
-                patchState(store, initialState);
-              },
-            });
-          }
+        initialize: () => {
+          patchState(store, { loading: true });
+          authService.getCurrentUser().subscribe({
+            next: (user) => {
+              patchState(store, { user, loading: false });
+              notificationStore.connect();
+            },
+            error: () => {
+              patchState(store, initialState);
+            },
+          });
         },
       };
     }

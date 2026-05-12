@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, of, tap, map } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { ApiService } from '../api-service/api.service';
 import {
   LoginCredentials,
@@ -22,123 +22,53 @@ import {
 })
 export class AuthService {
   private api = inject(ApiService);
-  private readonly ACCESS_TOKEN_KEY = 'access_token';
-  private readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private readonly AUTH_ENDPOINT = 'accounts/';
-
   currentUserEmail = signal<string>('');
-  private roleCache = new Map<string, ProjectRole>();
 
   login(credentials: LoginCredentials): Observable<LoginResponse> {
-    let endpoint = this.AUTH_ENDPOINT + 'login/';
-
-    return this.api.post<LoginResponse>(endpoint, credentials).pipe(
-      tap((response) => {
-        this.setToken(this.ACCESS_TOKEN_KEY, response.access);
-        this.setToken(this.REFRESH_TOKEN_KEY, response.refresh);
-      })
-    );
+    return this.api.post<LoginResponse>(this.AUTH_ENDPOINT + 'login/', credentials);
   }
 
   register(data: RegisterData): Observable<RegisterResponse> {
-    let endpoint = this.AUTH_ENDPOINT + 'register/';
-
-    return this.api.post<RegisterResponse>(endpoint, data).pipe(
-      tap((response) => {
-        this.setToken(this.ACCESS_TOKEN_KEY, response.access);
-        this.setToken(this.REFRESH_TOKEN_KEY, response.refresh);
-      })
-    );
+    return this.api.post<RegisterResponse>(this.AUTH_ENDPOINT + 'register/', data);
   }
 
   logout(): Observable<void> {
-    if (!this.isAuthenticated()) return of(undefined);
-
-    let endpoint = this.AUTH_ENDPOINT + 'logout/';
-    let data = {
-      refresh: this.getRefreshToken(),
-    };
-
-    return this.api.post<void>(endpoint, data);
+    return this.api.post<void>(this.AUTH_ENDPOINT + 'logout/', {});
   }
 
-  refreshToken(): Observable<RegisterResponse> {
-    let endpoint = this.AUTH_ENDPOINT + 'token/refresh/';
-    let data = {
-      refresh: this.getRefreshToken(),
-    };
-
-    return this.api.post<RegisterResponse>(endpoint, data).pipe(
-      tap((response) => {
-        this.setToken(this.ACCESS_TOKEN_KEY, response.access);
-        this.setToken(this.REFRESH_TOKEN_KEY, response.refresh);
-      })
-    );
+  refreshToken(): Observable<void> {
+    return this.api.post<void>(this.AUTH_ENDPOINT + 'token/refresh/', {});
   }
 
   getUser(userId: string): Observable<User> {
-    let endpoint = this.AUTH_ENDPOINT + `users/${userId}/`;
-
-    return this.api.get<User>(endpoint);
+    return this.api.get<User>(this.AUTH_ENDPOINT + `users/${userId}/`);
   }
 
   getCurrentUser(): Observable<User> {
-    let endpoint = this.AUTH_ENDPOINT + 'users/me/';
-
-    return this.api.get<User>(endpoint).pipe(tap((user) => this.currentUserEmail.set(user.email)));
-  }
-
-  getUserRoleOld(projectUuid: string): Observable<ProjectRole> {
-    if (this.roleCache.has(projectUuid)) {
-      return of(this.roleCache.get(projectUuid)!);
-    }
-
-    return this.api.get<{ role: ProjectRole }>(`property/projects/${projectUuid}/user-role/`).pipe(
-      map((response) => response.role),
-      tap((role) => this.roleCache.set(projectUuid, role))
-    );
+    return this.api
+      .get<User>(this.AUTH_ENDPOINT + 'users/me/')
+      .pipe(tap((user) => this.currentUserEmail.set(user.email)));
   }
 
   getUserRole(projectUuid: string): Observable<ProjectRoleResponse> {
-    return this.api.get<ProjectRoleResponse>(`property/projects/${projectUuid}/user-role/`).pipe();
+    return this.api.get<ProjectRoleResponse>(`property/projects/${projectUuid}/user-role/`);
   }
 
-  clearRoleCache(projectUuid?: string): void {
-    if (projectUuid) {
-      this.roleCache.delete(projectUuid);
-    } else {
-      this.roleCache.clear();
-    }
+  canEdit(_projectUuid: string, role?: ProjectRole): boolean {
+    return role === 'owner' || role === 'contributor';
   }
 
-  canEdit(projectUuid: string, role?: ProjectRole): boolean {
-    if (role !== undefined) {
-      return role === 'owner' || role === 'contributor';
-    }
-    const cachedRole = this.roleCache.get(projectUuid);
-    return cachedRole === 'owner' || cachedRole === 'contributor';
+  isOwner(_projectUuid: string, role?: ProjectRole): boolean {
+    return role === 'owner';
   }
 
-  isOwner(projectUuid: string, role?: ProjectRole): boolean {
-    if (role !== undefined) {
-      return role === 'owner';
-    }
-    const cachedRole = this.roleCache.get(projectUuid);
-    return cachedRole === 'owner';
-  }
-
-  canView(projectUuid: string, role?: ProjectRole): boolean {
-    if (role !== undefined) {
-      return role !== null;
-    }
-    const cachedRole = this.roleCache.get(projectUuid);
-    return cachedRole !== null;
+  canView(_projectUuid: string, role?: ProjectRole): boolean {
+    return role !== null && role !== undefined;
   }
 
   editUserProfile(requestData: EditUserProfileRequest): Observable<UserProfile> {
-    let endpoint = this.AUTH_ENDPOINT + 'users/profile/';
-
-    return this.api.put<UserProfile>(endpoint, requestData);
+    return this.api.put<UserProfile>(this.AUTH_ENDPOINT + 'users/profile/', requestData);
   }
 
   updateAccountDetails(requestData: UpdateAccountDetailsRequest): Observable<UserProfile> {
@@ -154,25 +84,5 @@ export class AuthService {
 
   deleteAccount(): Observable<void> {
     return this.api.delete<void>(this.AUTH_ENDPOINT + 'users/delete_account/');
-  }
-
-  getAccessToken(): string | null {
-    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
-  }
-
-  getRefreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
-  }
-
-  private setToken(key: string, token: string): void {
-    localStorage.setItem(key, token);
-  }
-
-  removeToken(key: string): void {
-    localStorage.removeItem(key);
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.getAccessToken();
   }
 }

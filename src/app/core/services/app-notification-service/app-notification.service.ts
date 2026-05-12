@@ -12,9 +12,9 @@ export class AppNotificationService {
 
   readonly incoming$: Observable<AppNotification> = this.notificationSubject.asObservable();
 
-  connect(token: string): void {
+  connect(): void {
     if (this.socket) return;
-    this.socket = new WebSocket(`${environment.wsUrl}/notifications/?token=${token}`);
+    this.socket = new WebSocket(`${environment.wsUrl}/notifications/`);
 
     this.socket.onmessage = (event) => {
       try {

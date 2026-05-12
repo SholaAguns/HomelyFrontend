@@ -12,6 +12,6 @@ export class App implements OnInit {
   private authStore = inject(AuthStore);
 
   ngOnInit() {
-    this.authStore.initializeFromStorage();
+    this.authStore.initialize();
   }
 }

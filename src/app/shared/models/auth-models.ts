@@ -13,21 +13,10 @@ export interface RegisterData extends LoginCredentials {
 
 export interface LoginResponse {
   user: User;
-  access: string;
-  refresh: string;
-}
-
-export interface LogoutRequest {
-  refresh: string;
-}
-
-export interface LogoutResponse {
-  message: string;
 }
 
 export interface RegisterResponse {
-  access: string;
-  refresh: string;
+  user: User;
 }
 
 export type ProjectRole = 'owner' | 'contributor' | 'viewer' | null;

@@ -16,7 +16,6 @@ function createAuthServiceMock() {
     updateAccountDetails: vi.fn().mockReturnValue(of({})),
     changePassword: vi.fn().mockReturnValue(of({ message: 'Password updated successfully' })),
     deleteAccount: vi.fn().mockReturnValue(of(undefined)),
-    removeToken: vi.fn(),
   };
 }
 
@@ -225,8 +224,6 @@ describe('UserSettingsComponent', () => {
       component.confirmDeleteAccount();
 
       expect(authServiceMock.deleteAccount).toHaveBeenCalled();
-      expect(authServiceMock.removeToken).toHaveBeenCalledWith('access_token');
-      expect(authServiceMock.removeToken).toHaveBeenCalledWith('refresh_token');
       expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
     });
 

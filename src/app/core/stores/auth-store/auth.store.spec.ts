@@ -23,9 +23,6 @@ describe('AuthStore', () => {
     login: ReturnType<typeof vi.fn>;
     register: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
-    getAccessToken: ReturnType<typeof vi.fn>;
-    getRefreshToken: ReturnType<typeof vi.fn>;
-    removeToken: ReturnType<typeof vi.fn>;
     getCurrentUser: ReturnType<typeof vi.fn>;
   };
   let notificationServiceMock: {
@@ -43,9 +40,6 @@ describe('AuthStore', () => {
       login: vi.fn(),
       register: vi.fn(),
       logout: vi.fn(),
-      getAccessToken: vi.fn(),
-      getRefreshToken: vi.fn(),
-      removeToken: vi.fn(),
       getCurrentUser: vi.fn(),
     };
 
@@ -77,23 +71,19 @@ describe('AuthStore', () => {
   it('should be created with initial state', () => {
     expect(service).toBeTruthy();
     expect(service.user()).toBeNull();
-    expect(service.accessToken()).toBeNull();
-    expect(service.refreshToken()).toBeNull();
     expect(service.loading()).toBe(false);
     expect(service.error()).toBeNull();
     expect(service.isAuthenticated()).toBe(false);
   });
 
   describe('login', () => {
-    it('should update state on successful login', async () => {
+    it('should update user state on successful login', async () => {
       authServiceMock.login.mockReturnValue(of(mockLoginResponse));
 
       service.login(mockLoginCredentials);
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(service.user()).toEqual(mockLoginResponse.user);
-      expect(service.accessToken()).toBe(mockLoginResponse.access);
-      expect(service.refreshToken()).toBe(mockLoginResponse.refresh);
       expect(service.loading()).toBe(false);
       expect(service.isAuthenticated()).toBe(true);
       expect(notificationServiceMock.success).toHaveBeenCalledWith('Login successful');
@@ -103,7 +93,7 @@ describe('AuthStore', () => {
       authServiceMock.login.mockReturnValue(of(mockLoginResponse));
       service.login(mockLoginCredentials);
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(notificationStoreMock.connect).toHaveBeenCalledWith(mockLoginResponse.access);
+      expect(notificationStoreMock.connect).toHaveBeenCalled();
     });
 
     it('should redirect to pending invite when token in localStorage', async () => {
@@ -137,12 +127,11 @@ describe('AuthStore', () => {
   });
 
   describe('register', () => {
-    it('should update state on successful registration', async () => {
+    it('should update user state on successful registration', async () => {
       authServiceMock.register.mockReturnValue(of(mockRegisterResponse));
       service.register(mockRegisterData);
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(service.accessToken()).toBe(mockRegisterResponse.access);
-      expect(service.refreshToken()).toBe(mockRegisterResponse.refresh);
+      expect(service.user()).toEqual(mockRegisterResponse.user);
       expect(service.loading()).toBe(false);
       expect(notificationServiceMock.success).toHaveBeenCalledWith('Registration successful');
     });
@@ -151,7 +140,7 @@ describe('AuthStore', () => {
       authServiceMock.register.mockReturnValue(of(mockRegisterResponse));
       service.register(mockRegisterData);
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(notificationStoreMock.connect).toHaveBeenCalledWith(mockRegisterResponse.access);
+      expect(notificationStoreMock.connect).toHaveBeenCalled();
     });
 
     it('should redirect to pending invite after registration', async () => {
@@ -183,10 +172,6 @@ describe('AuthStore', () => {
       service.logout();
       await new Promise((resolve) => setTimeout(resolve, 100));
       expect(service.user()).toBeNull();
-      expect(service.accessToken()).toBeNull();
-      expect(service.refreshToken()).toBeNull();
-      expect(authServiceMock.removeToken).toHaveBeenCalledWith('access_token');
-      expect(authServiceMock.removeToken).toHaveBeenCalledWith('refresh_token');
       expect(notificationServiceMock.info).toHaveBeenCalledWith('Logged out successfully');
     });
 
@@ -198,33 +183,30 @@ describe('AuthStore', () => {
     });
   });
 
-  describe('initializeFromStorage', () => {
-    it('should load tokens and connect notifications from storage', async () => {
+  describe('initialize', () => {
+    it('should load user and connect notifications when cookie session is active', async () => {
       const mockUser = {
         id: '1',
         email: 'test@example.com',
         first_name: 'Test',
         last_name: 'User',
       };
-      authServiceMock.getAccessToken.mockReturnValue('serviced-access-token');
-      authServiceMock.getRefreshToken.mockReturnValue('serviced-refresh-token');
       authServiceMock.getCurrentUser.mockReturnValue(of(mockUser));
 
-      service.initializeFromStorage();
+      service.initialize();
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      expect(service.accessToken()).toBe('serviced-access-token');
       expect(service.user()).toEqual(mockUser);
       expect(service.loading()).toBe(false);
-      expect(notificationStoreMock.connect).toHaveBeenCalledWith('serviced-access-token');
+      expect(notificationStoreMock.connect).toHaveBeenCalled();
     });
 
-    it('should not update state when no tokens in storage', () => {
-      authServiceMock.getAccessToken.mockReturnValue(null);
-      authServiceMock.getRefreshToken.mockReturnValue(null);
-      service.initializeFromStorage();
-      expect(service.accessToken()).toBeNull();
-      expect(authServiceMock.getCurrentUser).not.toHaveBeenCalled();
+    it('should reset state when no active session', async () => {
+      authServiceMock.getCurrentUser.mockReturnValue(throwError(() => ({ status: 401 })));
+      service.initialize();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(service.user()).toBeNull();
+      expect(service.isAuthenticated()).toBe(false);
     });
   });
 });

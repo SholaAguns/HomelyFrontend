@@ -22,8 +22,8 @@ export const NotificationStore = signalStore(
     unreadNotifications: computed(() => notifications().filter((n) => !n.is_read)),
   })),
   withMethods((store, svc = inject(AppNotificationService)) => ({
-    connect(token: string): void {
-      svc.connect(token);
+    connect(): void {
+      svc.connect();
       patchState(store, { isConnected: true });
 
       svc.incoming$.subscribe((notification) => {

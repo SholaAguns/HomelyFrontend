@@ -2,12 +2,10 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth-service/auth.service';
 import { AppError } from '../../shared/models/error-models';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
-  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((httpError: HttpErrorResponse) => {
@@ -19,8 +17,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       };
 
       if (httpError.status === 401) {
-        authService.removeToken('access_token');
-        authService.removeToken('refresh_token');
         router.navigate(['/login']);
       }
 

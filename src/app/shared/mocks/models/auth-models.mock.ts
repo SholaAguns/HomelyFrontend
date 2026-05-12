@@ -21,11 +21,8 @@ export const mockRegisterData: RegisterData = {
 
 export const mockLoginResponse: LoginResponse = {
   user: mockUser,
-  access: 'mock-access-token',
-  refresh: 'mock-refresh-token',
 };
 
 export const mockRegisterResponse: RegisterResponse = {
-  access: 'mock-access-token',
-  refresh: 'mock-refresh-token',
+  user: mockUser,
 };

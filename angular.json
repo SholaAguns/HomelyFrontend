@@ -60,7 +60,8 @@
               "buildTarget": "homely-frontend:build:production"
             },
             "development": {
-              "buildTarget": "homely-frontend:build:development"
+              "buildTarget": "homely-frontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

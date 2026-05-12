@@ -128,8 +128,6 @@ export class UserSettingsComponent implements OnInit {
 
     this.authService.deleteAccount().subscribe({
       next: () => {
-        this.authService.removeToken('access_token');
-        this.authService.removeToken('refresh_token');
         this.notificationService.info('Your account has been deleted');
         this.router.navigate(['/login']);
       },
