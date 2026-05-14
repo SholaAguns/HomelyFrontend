@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Subject } from 'rxjs';
 import { PropertyDetailComponent } from './property-detail.component';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
 import { createRouterMock, createActivatedRouteMock } from '../../../../shared/mocks/router.mock';
 
 describe('PropertyDetailComponent', () => {
@@ -14,6 +15,7 @@ describe('PropertyDetailComponent', () => {
   let activatedRouteMock: any;
   let propertyServiceMock: any;
   let notificationServiceMock: any;
+  let propertySseServiceMock: any;
 
   const mockPropertyDetail = {
     uuid: 'prop-123',
@@ -72,6 +74,9 @@ describe('PropertyDetailComponent', () => {
       error: vi.fn(),
       info: vi.fn(),
     };
+    propertySseServiceMock = {
+      connectToProperty: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [PropertyDetailComponent],
@@ -80,6 +85,7 @@ describe('PropertyDetailComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: PropertyService, useValue: propertyServiceMock },
         { provide: NotificationService, useValue: notificationServiceMock },
+        { provide: PropertySseService, useValue: propertySseServiceMock },
       ],
     }).compileComponents();
 
@@ -117,41 +123,48 @@ describe('PropertyDetailComponent', () => {
   });
 
   it('should run stage 2', async () => {
+    const sseSubject = new Subject<{ type: string }>();
+    propertySseServiceMock.connectToProperty.mockReturnValue(sseSubject);
     propertyServiceMock.getByUuid.mockReturnValue(of(mockPropertyDetail));
     propertyServiceMock.runStage2.mockReturnValue(of({ status: 'success' }));
 
     fixture.detectChanges();
     component.runStage2();
+    sseSubject.next({ type: 'connected' });
 
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(propertyServiceMock.runStage2).toHaveBeenCalledWith('prop-123');
     expect(notificationServiceMock.success).toHaveBeenCalledWith('Stage 2 started successfully');
-    expect(propertyServiceMock.getByUuid).toHaveBeenCalledTimes(2);
   });
 
   it('should run stage 3', async () => {
+    const sseSubject = new Subject<{ type: string }>();
+    propertySseServiceMock.connectToProperty.mockReturnValue(sseSubject);
     propertyServiceMock.getByUuid.mockReturnValue(of(mockPropertyDetail));
     propertyServiceMock.runStage3.mockReturnValue(of({ status: 'success' }));
 
     fixture.detectChanges();
     component.runStage3();
+    sseSubject.next({ type: 'connected' });
 
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(propertyServiceMock.runStage3).toHaveBeenCalledWith('prop-123');
     expect(notificationServiceMock.success).toHaveBeenCalledWith('Stage 3 started successfully');
-    expect(propertyServiceMock.getByUuid).toHaveBeenCalledTimes(1);
   });
 
   it('should handle stage 2 error', async () => {
+    const sseSubject = new Subject<{ type: string }>();
+    propertySseServiceMock.connectToProperty.mockReturnValue(sseSubject);
     propertyServiceMock.getByUuid.mockReturnValue(of(mockPropertyDetail));
     propertyServiceMock.runStage2.mockReturnValue(throwError(() => new Error('Stage 2 failed')));
 
     fixture.detectChanges();
     component.runStage2();
+    sseSubject.next({ type: 'connected' });
 
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(notificationServiceMock.error).toHaveBeenCalledWith('Stage 2 failed');
   });

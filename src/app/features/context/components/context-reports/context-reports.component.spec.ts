@@ -5,7 +5,9 @@ import { ContextDataStore } from '../../store/context-data.store';
 import { signal, computed } from '@angular/core';
 import { PropertyStore } from '../../../property/store/property.store';
 import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
-import { EMPTY } from 'rxjs';
+import { AuthService } from '../../../../core/services/auth-service/auth.service';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { EMPTY, of } from 'rxjs';
 
 describe('ContextReportsComponent', () => {
   let component: ContextReportsComponent;
@@ -13,6 +15,8 @@ describe('ContextReportsComponent', () => {
   let mockContextDataStore: Partial<InstanceType<typeof ContextDataStore>>;
   let mockPropertyStore: Partial<InstanceType<typeof PropertyStore>>;
   let mockSseService: Partial<PropertySseService>;
+  let mockAuthService: any;
+  let mockNotificationService: any;
   let contextDataSignal: any;
   let setContextData: (data: any[]) => void;
   let progressSignal: any;
@@ -51,18 +55,32 @@ describe('ContextReportsComponent', () => {
       connectToProperty: vi.fn().mockReturnValue(EMPTY),
     };
 
+    mockAuthService = {
+      getUserRole: vi.fn().mockReturnValue(of({ role: 'owner' })),
+      canEdit: vi.fn().mockReturnValue(true),
+    };
+
+    mockNotificationService = {
+      success: vi.fn(),
+      error: vi.fn(),
+      info: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [ContextReportsComponent],
       providers: [
         { provide: ContextDataStore, useValue: mockContextDataStore },
         { provide: PropertyStore, useValue: mockPropertyStore },
         { provide: PropertySseService, useValue: mockSseService },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: NotificationService, useValue: mockNotificationService },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContextReportsComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('propertyId', 'test-property-id');
+    fixture.componentRef.setInput('projectUuid', 'test-project-uuid');
     fixture.detectChanges();
   });
 

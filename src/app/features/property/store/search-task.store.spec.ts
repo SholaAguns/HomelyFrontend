@@ -186,22 +186,18 @@ describe('SearchTaskStore', () => {
 
   describe('startPolling', () => {
     it('should poll getSearchStatus and update state', async () => {
-      // Create task first
       const websocketSubject = new Subject();
       propertyCreationServiceMock.createFromSearch.mockReturnValue(
         of(mockCreateFromSearchResponse)
       );
       propertyWebSocketServiceMock.connectToPropertyList.mockReturnValue(websocketSubject);
+      propertyCreationServiceMock.getSearchStatus.mockReturnValue(of(mockPropertyListTask));
 
       searchTaskStore.startSearch({
         listUuid: 'list-uuid-1',
         request: mockCreateFromSearchRequest,
       });
-      await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Start polling
-      propertyCreationServiceMock.getSearchStatus.mockReturnValue(of(mockPropertyListTask));
-      searchTaskStore.startPolling('list-uuid-1');
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
       expect(propertyCreationServiceMock.getSearchStatus).toHaveBeenCalled();

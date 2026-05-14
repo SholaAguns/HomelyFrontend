@@ -32,6 +32,7 @@ describe('SidebarComponent', () => {
   it('should have correct navigation items', () => {
     expect((component as any).navItems).toEqual([
       { path: '/projects', icon: 'list', label: 'Projects' },
+      { path: '/favorites', icon: 'heart', label: 'Favorites' },
       { path: '/rating-criteria', icon: 'star', label: 'Rating Criteria' },
       { path: '/saved-locations', icon: 'map-pin', label: 'Saved Locations' },
       { path: '/profile', icon: 'user', label: 'Profile' },
@@ -74,7 +75,7 @@ describe('SidebarComponent', () => {
   it('should render all navigation items', () => {
     const compiled = fixture.nativeElement;
     const navLinks = compiled.querySelectorAll('nav a');
-    expect(navLinks.length).toBe(5);
+    expect(navLinks.length).toBe(6);
   });
 
   it('should have correct routerLink for Projects', () => {

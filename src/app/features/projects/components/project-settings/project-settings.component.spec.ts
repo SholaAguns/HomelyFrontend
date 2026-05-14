@@ -244,7 +244,7 @@ describe('ProjectSettingsComponent', () => {
       component.addMemberDirect();
       await new Promise((r) => setTimeout(r, 10));
       expect(mockSharingService.createInvite).toHaveBeenCalledWith('test-uuid', {
-        invited_email: mockUserSearchResult.email,
+        email: mockUserSearchResult.email,
         role: 'viewer',
       });
       expect(mockNotificationService.success).toHaveBeenCalled();
@@ -300,7 +300,7 @@ describe('ProjectSettingsComponent', () => {
       component.sendInvite();
       await new Promise((r) => setTimeout(r, 10));
       expect(mockSharingService.createInvite).toHaveBeenCalledWith('test-uuid', {
-        invited_email: 'alice@example.com',
+        email: 'alice@example.com',
         role: 'viewer',
       });
       expect(component.lastInviteUrl()).toBe(mockProjectInvitation.invite_url);
