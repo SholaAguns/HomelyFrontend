@@ -31,16 +31,16 @@ describe('NotificationStore', () => {
     it('should call svc.connect and set isConnected', async () => {
       svcMock.getAll.mockReturnValue(of([]));
       svcMock.getUnreadCount.mockReturnValue(of({ count: 0 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
-      expect(svcMock.connect).toHaveBeenCalledWith('token');
+      expect(svcMock.connect).toHaveBeenCalled();
       expect(store.isConnected()).toBe(true);
     });
 
     it('should load initial notifications and unread count', async () => {
       svcMock.getAll.mockReturnValue(of([mockAppNotification]));
       svcMock.getUnreadCount.mockReturnValue(of({ count: 1 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
       expect(store.notifications()).toEqual([mockAppNotification]);
       expect(store.unreadCount()).toBe(1);
@@ -49,7 +49,7 @@ describe('NotificationStore', () => {
     it('should prepend incoming WS notifications and increment unread count', async () => {
       svcMock.getAll.mockReturnValue(of([]));
       svcMock.getUnreadCount.mockReturnValue(of({ count: 0 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
 
       svcMock._subject.next(mockAppNotification);
@@ -64,7 +64,7 @@ describe('NotificationStore', () => {
     it('should call svc.disconnect and reset state', async () => {
       svcMock.getAll.mockReturnValue(of([mockAppNotification]));
       svcMock.getUnreadCount.mockReturnValue(of({ count: 1 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
 
       store.disconnect();
@@ -79,7 +79,7 @@ describe('NotificationStore', () => {
     it('should mark a notification as read and decrement unread count', async () => {
       svcMock.getAll.mockReturnValue(of([mockAppNotification]));
       svcMock.getUnreadCount.mockReturnValue(of({ count: 1 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
 
       svcMock.markRead.mockReturnValue(of({ ...mockAppNotification, is_read: true }));
@@ -93,7 +93,7 @@ describe('NotificationStore', () => {
     it('should not decrement below zero', async () => {
       svcMock.getAll.mockReturnValue(of([mockAppNotificationRead]));
       svcMock.getUnreadCount.mockReturnValue(of({ count: 0 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
 
       svcMock.markRead.mockReturnValue(of(mockAppNotificationRead));
@@ -110,7 +110,7 @@ describe('NotificationStore', () => {
         of([mockAppNotification, { ...mockAppNotification, uuid: 'notif-2' }])
       );
       svcMock.getUnreadCount.mockReturnValue(of({ count: 2 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
 
       svcMock.markAllRead.mockReturnValue(of(undefined));
@@ -126,7 +126,7 @@ describe('NotificationStore', () => {
     it('should return only unread notifications', async () => {
       svcMock.getAll.mockReturnValue(of([mockAppNotification, mockAppNotificationRead]));
       svcMock.getUnreadCount.mockReturnValue(of({ count: 1 }));
-      store.connect('token');
+      store.connect();
       await new Promise((r) => setTimeout(r, 50));
 
       expect(store.unreadNotifications()).toHaveLength(1);

@@ -45,20 +45,20 @@ describe('AppNotificationService', () => {
   });
 
   describe('connect', () => {
-    it('should open a WebSocket with token', () => {
-      service.connect('test-token');
+    it('should open a WebSocket connection to the notifications endpoint', () => {
+      service.connect();
       expect(MockWebSocket.instances.length).toBe(1);
-      expect(MockWebSocket.instances[0].url).toContain('test-token');
+      expect(MockWebSocket.instances[0].url).toContain('/notifications/');
     });
 
     it('should not open a second socket if already connected', () => {
-      service.connect('token-1');
-      service.connect('token-2');
+      service.connect();
+      service.connect();
       expect(MockWebSocket.instances.length).toBe(1);
     });
 
     it('should emit notification when socket receives a valid message', async () => {
-      service.connect('token');
+      service.connect();
       const ws = MockWebSocket.instances[0];
 
       const emitted: AppNotification[] = [];
@@ -74,7 +74,7 @@ describe('AppNotificationService', () => {
     });
 
     it('should ignore malformed socket messages', () => {
-      service.connect('token');
+      service.connect();
       const ws = MockWebSocket.instances[0];
       const emitted: AppNotification[] = [];
       service.incoming$.subscribe((n) => emitted.push(n));
@@ -84,7 +84,7 @@ describe('AppNotificationService', () => {
     });
 
     it('should ignore messages with wrong type', () => {
-      service.connect('token');
+      service.connect();
       const ws = MockWebSocket.instances[0];
       const emitted: AppNotification[] = [];
       service.incoming$.subscribe((n) => emitted.push(n));
@@ -96,12 +96,12 @@ describe('AppNotificationService', () => {
 
   describe('disconnect', () => {
     it('should close the socket and allow reconnecting', () => {
-      service.connect('token');
+      service.connect();
       const ws = MockWebSocket.instances[0];
       service.disconnect();
       expect(ws.close).toHaveBeenCalled();
 
-      service.connect('token2');
+      service.connect();
       expect(MockWebSocket.instances.length).toBe(2);
     });
 

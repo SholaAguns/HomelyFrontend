@@ -37,7 +37,9 @@
       "PowerShell(Get-Content *)",
       "Bash(ng test *)",
       "Bash(iconv -f UTF-16LE -t UTF-8 /c/Repos/HomelyBackend/requirements.txt)",
-      "PowerShell(Get-ChildItem \"C:\\\\Repos\\\\HomelyBackend\\\\\" | Where-Object { $_.Name -match \"Procfile|sqlite3|requirements|gitignore|Dockerfile\" })"
+      "PowerShell(Get-ChildItem \"C:\\\\Repos\\\\HomelyBackend\\\\\" | Where-Object { $_.Name -match \"Procfile|sqlite3|requirements|gitignore|Dockerfile\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Repos\\\\HomelyBackend\" | Where-Object { $_.Name -match \"manage|pytest|setup\\\\.cfg|pyproject\" } | Select-Object Name)",
+      "Bash(.venv/Scripts/python.exe -m pip list)"
     ]
   }
 }
