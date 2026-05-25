@@ -217,27 +217,21 @@
                         <div class="control-group">
                           <label>Distance Calculation</label>
                           <select
-                            #savedLocationDistanceSelect
                             (change)="
                               updateCriterionCalculationPreference(
                                 criterion,
-                                $any(savedLocationDistanceSelect.value),
+                                $any($event.target).value,
                                 'savedLocation'
                               )
                             "
                             class="form-control-sm"
                           >
-                            @for (
-                              calculationType of distanceCalculationLabels | keyvalue;
-                              track calculationType
-                            ) {
+                            @for (calcType of distanceCalculationValues; track calcType) {
                               <option
-                                [value]="calculationType.key"
-                                [selected]="
-                                  criterion.distance_calculation_preference === calculationType.key
-                                "
+                                [value]="calcType"
+                                [selected]="criterion.distance_calculation_preference === calcType"
                               >
-                                {{ calculationType.value }}
+                                {{ distanceCalculationLabels[calcType] }}
                               </option>
                             }
                           </select>
@@ -341,27 +335,21 @@
                         <div class="control-group">
                           <label>Distance Calculation</label>
                           <select
-                            #distancePreferenceSelect
                             (change)="
                               updateCriterionCalculationPreference(
                                 criterion,
-                                $any(distancePreferenceSelect.value),
+                                $any($event.target).value,
                                 'poi'
                               )
                             "
                             class="form-control-sm"
                           >
-                            @for (
-                              calculationType of distanceCalculationLabels | keyvalue;
-                              track calculationType
-                            ) {
+                            @for (calcType of distanceCalculationValues; track calcType) {
                               <option
-                                [value]="calculationType.key"
-                                [selected]="
-                                  criterion.distance_calculation_preference === calculationType.key
-                                "
+                                [value]="calcType"
+                                [selected]="criterion.distance_calculation_preference === calcType"
                               >
-                                {{ calculationType.value }}
+                                {{ distanceCalculationLabels[calcType] }}
                               </option>
                             }
                           </select>

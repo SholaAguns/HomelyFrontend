@@ -6,6 +6,7 @@ import { RatingCriteriaStore } from '../../../projects/store/rating-criteria.sto
 import {
   Criterion,
   DISTANCE_CALCULATION_LABELS,
+  DISTANCE_CALCULATION_VALUES,
   DistanceCalculationPreference,
   RatingCriteria,
   WEIGHT_LABELS,
@@ -45,6 +46,7 @@ export class RatingCriteriaFormComponent implements OnInit {
   readonly weightLabels = WEIGHT_LABELS;
   readonly weightValues = WEIGHT_VALUES;
   readonly distanceCalculationLabels = DISTANCE_CALCULATION_LABELS;
+  readonly distanceCalculationValues = DISTANCE_CALCULATION_VALUES;
 
   // System criteria (built-in) - enabled by default
   defaultCriteria = signal<Criterion[]>([
@@ -361,12 +363,11 @@ export class RatingCriteriaFormComponent implements OnInit {
       return;
     }
 
-    // Send all criteria (both enabled and disabled)
     const allCriteria = [
       ...this.defaultCriteria(),
       ...this.additionalCriteria(),
-      ...this.savedLocationCriteria(),
-      ...this.poiCriteria(),
+      ...(this.isSavedLocationTypeEnabled() ? this.savedLocationCriteria() : []),
+      ...(this.isPOITypeEnabled() ? this.poiCriteria() : []),
     ];
 
     const data = {

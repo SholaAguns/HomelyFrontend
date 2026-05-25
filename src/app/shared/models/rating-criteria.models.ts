@@ -59,3 +59,9 @@ export const DISTANCE_CALCULATION_LABELS: Record<DistanceCalculationPreference, 
   walking_time: 'Walking time (mins)',
   driving_time: 'Driving time (mins)',
 };
+
+export const DISTANCE_CALCULATION_VALUES: DistanceCalculationPreference[] = [
+  'straight_distance',
+  'walking_time',
+  'driving_time',
+];
