@@ -20,7 +20,7 @@ P1:
 - User settings page: change email, names, delete account
 - ~~Use defined constants for search criteria~~
 - Context report section layout
-- Remove rating criteria from property list edit page
+- ~~Remove rating criteria from property list edit page~~
 - Only include options for POI rating criteria that are included in project context options
 - Only include options for Saved Location rating criteria that are included in project context options
 - ~~delete modal confirmation only~~

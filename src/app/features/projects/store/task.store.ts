@@ -42,7 +42,9 @@ export const TaskStore = signalStore(
     ) => ({
       loadForProject: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
+          tap(() =>
+            patchState(store, { loading: true, error: null, taskLists: {}, taskListIds: [] })
+          ),
           switchMap((projectUuid) =>
             taskService.getAllTaskLists(projectUuid).pipe(
               tap((taskLists) => {

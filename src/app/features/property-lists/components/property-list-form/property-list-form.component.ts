@@ -1,11 +1,6 @@
 import { Component, inject, input, output, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   PropertyList,
   CreatePropertyListDto,
@@ -28,7 +23,6 @@ export class PropertyListFormComponent {
 
   form: FormGroup = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
-    rating_criteria: [null],
   });
 
   isSubmitting = false;
@@ -39,7 +33,6 @@ export class PropertyListFormComponent {
       if (listValue) {
         this.form.patchValue({
           title: listValue.title,
-          rating_criteria: listValue.rating_criteria,
         });
       }
     });
