@@ -17,10 +17,6 @@
   white-space: nowrap;
 }
 
-:host-context(.dark) .reports-header h2 {
-  color: #f9fafb;
-}
-
 .btn-primary {
   padding: 0.75rem 1.5rem;
   background-color: #4f46e5;
@@ -77,6 +73,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+  align-items: start;
 }
 
 .service-card {

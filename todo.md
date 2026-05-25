@@ -36,7 +36,8 @@ P1:
 - ~~Tasklist~~
 - ~~Comments~~
 - Rating override
-- Endpoint for user to leave project
+- Support dark mode
+- ~~Endpoint for user to leave project~~
 - Admin dashboard
 - prices types - per week, per month
 - Site wide toaster use
