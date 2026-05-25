@@ -2,6 +2,19 @@
   <!-- Header -->
   <div class="reports-header">
     <h2>Context Reports</h2>
+    @if (hasStarted()) {
+      <div class="progress-info">
+        <span class="progress-text">
+          {{ progress().complete }} / {{ progress().total }} services complete
+        </span>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="(progress().complete / progress().total) * 100"
+          ></div>
+        </div>
+      </div>
+    }
     @if (canEdit()) {
       <div class="header-actions">
         @if (showTriggerButton()) {
@@ -19,17 +32,6 @@
   <!-- Service Reports -->
   @if (hasStarted()) {
     <div class="reports-grid">
-      <div class="progress-info">
-        <span class="progress-text">
-          {{ progress().complete }} / {{ progress().total }} services complete
-        </span>
-        <div class="progress-bar">
-          <div
-            class="progress-fill"
-            [style.width.%]="(progress().complete / progress().total) * 100"
-          ></div>
-        </div>
-      </div>
       <!-- Crime -->
       @if (getServiceStatus('crime')) {
         <div class="service-card" [attr.data-status]="getServiceStatus('crime')">

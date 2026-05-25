@@ -13,7 +13,7 @@ P0:
 
 
 P1:
-- Support SavedLocation time calculation
+- ~~Support SavedLocation time calculation~~
 - logging
 - Review all caching strategies
 - Zoopla service

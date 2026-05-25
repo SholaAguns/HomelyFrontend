@@ -17,7 +17,6 @@ export class SidebarComponent {
     { path: '/favorites', icon: 'heart', label: 'Favorites' },
     { path: '/rating-criteria', icon: 'star', label: 'Rating Criteria' },
     { path: '/saved-locations', icon: 'map-pin', label: 'Saved Locations' },
-    { path: '/profile', icon: 'user', label: 'Profile' },
     { path: '/settings', icon: 'settings', label: 'Settings' },
   ];
 }
