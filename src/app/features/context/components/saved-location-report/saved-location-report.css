@@ -148,3 +148,34 @@
   color: #6b7280;
   font-style: italic;
 }
+
+.travel-times {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.travel-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.travel-pill.driving {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.travel-pill.walking {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.travel-icon {
+  font-size: 0.75rem;
+}

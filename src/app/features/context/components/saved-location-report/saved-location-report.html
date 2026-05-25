@@ -37,6 +37,22 @@
             <span class="address-icon">📌</span>
             <span>{{ location.address }}</span>
           </div>
+          @if (location.driving_time_mins != null || location.walking_time_mins != null) {
+            <div class="travel-times">
+              @if (location.driving_time_mins != null) {
+                <span class="travel-pill driving">
+                  <span class="travel-icon">🚗</span>
+                  {{ location.driving_time_mins }} min drive
+                </span>
+              }
+              @if (location.walking_time_mins != null) {
+                <span class="travel-pill walking">
+                  <span class="travel-icon">🚶</span>
+                  {{ location.walking_time_mins }} min walk
+                </span>
+              }
+            </div>
+          }
           <div class="location-coords">
             <span class="coords-label">Coordinates:</span>
             <span class="coords-value">{{ location.latitude }}, {{ location.longitude }}</span>

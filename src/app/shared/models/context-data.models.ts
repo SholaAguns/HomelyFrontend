@@ -210,6 +210,8 @@ export interface SavedLocationDistance {
   longitude: number;
   distance_km: number;
   distance_miles: number;
+  driving_time_mins?: number | null;
+  walking_time_mins?: number | null;
 }
 
 export interface SavedLocationReportData {
