@@ -87,3 +87,36 @@
   border-top: 1px solid #e5e7eb;
   line-height: 1.5;
 }
+
+:host-context(.dark) .metric-card {
+  background-color: #1f2937;
+}
+:host-context(.dark) .metric-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .metric-value {
+  color: #f9fafb;
+}
+:host-context(.dark) .authority-info {
+  background-color: #1e3a8a20;
+}
+:host-context(.dark) .authority-label {
+  color: #93c5fd;
+}
+:host-context(.dark) .authority-value {
+  color: #bfdbfe;
+}
+:host-context(.dark) .match-warning {
+  background-color: #92400e20;
+  border-left-color: #d97706;
+}
+:host-context(.dark) .warning-text {
+  color: #fcd34d;
+}
+:host-context(.dark) .no-data {
+  color: #9ca3af;
+}
+:host-context(.dark) .data-source {
+  color: #6b7280;
+  border-top-color: #374151;
+}

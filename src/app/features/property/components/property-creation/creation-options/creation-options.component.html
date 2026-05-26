@@ -1,27 +1,38 @@
 <div class="space-y-6">
   <div>
-    <h1 class="text-3xl font-bold text-gray-900">Add Properties</h1>
-    <p class="mt-2 text-gray-600">Choose how you would like to add properties to this list</p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Add Properties</h1>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">
+      Choose how you would like to add properties to this list
+    </p>
   </div>
 
   <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
     @for (option of options; track option.route) {
       <button
         (click)="selectOption(option)"
-        class="relative block p-6 bg-white border border-gray-200 rounded-lg hover:border-blue-500 
-              hover:shadow-md transition-all duration-200 text-left group"
+        class="group relative block rounded-lg border border-gray-200 bg-white p-6 text-left transition-all duration-200 hover:border-blue-500 hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
       >
-        <div class="flex items-center space-x-3 mb-3">
+        <div class="mb-3 flex items-center space-x-3">
           <span class="text-4xl">{{ option.icon }}</span>
-          <h3 class="text-xl font-semibold text-gray-900 group-hover:text-blue-600">
+          <h3 class="text-xl font-semibold text-gray-900 group-hover:text-blue-600 dark:text-white">
             {{ option.title }}
           </h3>
         </div>
-        <p class="text-gray-600">{{ option.description }}</p>
-        <div class="mt-4 flex items-center text-blue-600 font-medium">
+        <p class="text-gray-600 dark:text-gray-400">{{ option.description }}</p>
+        <div class="mt-4 flex items-center font-medium text-blue-600">
           <span>Choose this option</span>
-          <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          <svg
+            class="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </div>
       </button>

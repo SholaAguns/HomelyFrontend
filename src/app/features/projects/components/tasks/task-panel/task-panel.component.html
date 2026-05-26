@@ -1,6 +1,6 @@
 <div class="mb-8">
   <div class="mb-4 flex items-center justify-between">
-    <h2 class="text-2xl font-semibold text-gray-900">Task Lists</h2>
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Task Lists</h2>
     @if (canEdit()) {
       <button
         (click)="onAddList()"
@@ -27,8 +27,10 @@
       <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
     </div>
   } @else if (taskStore.allTaskLists().length === 0 && !showAddListForm()) {
-    <div class="rounded-lg border-2 border-dashed border-gray-300 py-12 text-center">
-      <p class="mb-2 text-gray-500">No task lists yet</p>
+    <div
+      class="rounded-lg border-2 border-dashed border-gray-300 py-12 text-center dark:border-gray-600"
+    >
+      <p class="mb-2 text-gray-500 dark:text-gray-400">No task lists yet</p>
       @if (canEdit()) {
         <button
           (click)="onAddList()"

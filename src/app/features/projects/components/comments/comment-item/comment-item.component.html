@@ -2,15 +2,17 @@
   <div class="min-w-0 flex-1">
     <div class="flex items-center justify-between gap-2">
       <div class="flex items-center gap-2">
-        <span class="text-sm font-medium text-gray-900">{{ comment().author_name }}</span>
-        <span class="text-xs text-gray-400">{{
+        <span class="text-sm font-medium text-gray-900 dark:text-white">{{
+          comment().author_name
+        }}</span>
+        <span class="text-xs text-gray-400 dark:text-gray-500">{{
           comment().created_at | date: 'dd MMM yyyy, HH:mm'
         }}</span>
       </div>
       @if (isOwn) {
         <button
           (click)="onDelete()"
-          class="shrink-0 rounded p-1 text-gray-400 transition-colors hover:text-red-600"
+          class="shrink-0 rounded p-1 text-gray-400 transition-colors hover:text-red-600 dark:text-gray-500"
           title="Delete comment"
         >
           <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,6 +26,8 @@
         </button>
       }
     </div>
-    <p class="mt-1 text-sm whitespace-pre-wrap text-gray-700">{{ comment().body }}</p>
+    <p class="mt-1 text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">
+      {{ comment().body }}
+    </p>
   </div>
 </div>

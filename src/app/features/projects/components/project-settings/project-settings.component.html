@@ -7,36 +7,42 @@
     <div class="mb-6">
       <button
         (click)="navigateBack()"
-        class="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+        class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
       >
         <span>←</span> Back to Project
       </button>
-      <h1 class="mt-4 text-3xl font-bold text-gray-900">Project Settings</h1>
+      <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">Project Settings</h1>
     </div>
 
     <!-- Project Details Section -->
     @if (canEdit()) {
-      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-xl font-semibold text-gray-900">Project Details</h2>
+      <div
+        class="mb-6 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Project Details</h2>
 
         <div class="space-y-4">
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700">Title</label>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >Title</label
+            >
             <input
               type="text"
               [ngModel]="title()"
               (ngModelChange)="title.set($event)"
-              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700">Description</label>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >Description</label
+            >
             <textarea
               [ngModel]="description()"
               (ngModelChange)="description.set($event)"
               rows="3"
-              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             ></textarea>
           </div>
 
@@ -52,8 +58,10 @@
 
     <!-- Context Options Section -->
     @if (canEdit()) {
-      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-xl font-semibold text-gray-900">Context Options</h2>
+      <div
+        class="mb-6 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Context Options</h2>
 
         <div class="space-y-4">
           <!-- Crime -->
@@ -64,7 +72,9 @@
               (ngModelChange)="enableCrime.set($event)"
               class="h-4 w-4 rounded border-gray-300"
             />
-            <span class="text-sm font-medium text-gray-700">Enable Crime Data</span>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >Enable Crime Data</span
+            >
           </label>
 
           <!-- Schools -->
@@ -76,7 +86,9 @@
                 (ngModelChange)="enableSchools.set($event)"
                 class="h-4 w-4 rounded border-gray-300"
               />
-              <span class="text-sm font-medium text-gray-700">Enable Schools Data</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Enable Schools Data</span
+              >
             </label>
 
             @if (enableSchools()) {
@@ -89,7 +101,9 @@
                       (change)="toggleSchoolType(type)"
                       class="h-4 w-4 rounded border-gray-300"
                     />
-                    <span class="text-sm text-gray-600">{{ SCHOOL_TYPE_LABELS[type] }}</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">{{
+                      SCHOOL_TYPE_LABELS[type]
+                    }}</span>
                   </label>
                 }
               </div>
@@ -104,7 +118,9 @@
               (ngModelChange)="enableBroadband.set($event)"
               class="h-4 w-4 rounded border-gray-300"
             />
-            <span class="text-sm font-medium text-gray-700">Enable Broadband Data</span>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >Enable Broadband Data</span
+            >
           </label>
 
           <!-- Mobile -->
@@ -115,7 +131,9 @@
               (ngModelChange)="enableMobile.set($event)"
               class="h-4 w-4 rounded border-gray-300"
             />
-            <span class="text-sm font-medium text-gray-700">Enable Mobile Data</span>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >Enable Mobile Data</span
+            >
           </label>
 
           <!-- Council Tax -->
@@ -126,7 +144,9 @@
               (ngModelChange)="enableCouncilTax.set($event)"
               class="h-4 w-4 rounded border-gray-300"
             />
-            <span class="text-sm font-medium text-gray-700">Enable Council Tax Data</span>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >Enable Council Tax Data</span
+            >
           </label>
 
           <!-- POI -->
@@ -138,13 +158,17 @@
                 (ngModelChange)="enablePoi.set($event)"
                 class="h-4 w-4 rounded border-gray-300"
               />
-              <span class="text-sm font-medium text-gray-700">Enable Points of Interest</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Enable Points of Interest</span
+              >
             </label>
 
             @if (enablePoi()) {
               <div class="ml-6 space-y-3">
                 <div>
-                  <label class="mb-2 block text-sm text-gray-600">Search Radius (meters)</label>
+                  <label class="mb-2 block text-sm text-gray-600 dark:text-gray-400"
+                    >Search Radius (meters)</label
+                  >
                   <input
                     type="number"
                     [ngModel]="poiRadius()"
@@ -152,7 +176,7 @@
                     min="100"
                     max="5000"
                     step="100"
-                    class="w-40 rounded-lg border border-gray-300 px-3 py-1 focus:border-blue-500 focus:outline-none"
+                    class="w-40 rounded-lg border border-gray-300 px-3 py-1 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
@@ -165,7 +189,9 @@
                         (change)="togglePoiType(type)"
                         class="h-4 w-4 rounded border-gray-300"
                       />
-                      <span class="text-sm text-gray-600">{{ POI_TYPE_LABELS[type] }}</span>
+                      <span class="text-sm text-gray-600 dark:text-gray-400">{{
+                        POI_TYPE_LABELS[type]
+                      }}</span>
                     </label>
                   }
                 </div>
@@ -182,15 +208,21 @@
                 (ngModelChange)="enableSavedLocations.set($event)"
                 class="h-4 w-4 rounded border-gray-300"
               />
-              <span class="text-sm font-medium text-gray-700">Enable Saved Locations</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Enable Saved Locations</span
+              >
             </label>
 
             @if (enableSavedLocations()) {
               <div class="ml-6 space-y-2">
                 @if (savedLocations().length === 0) {
-                  <p class="text-sm text-gray-500 italic">No saved locations available</p>
+                  <p class="text-sm text-gray-500 italic dark:text-gray-400">
+                    No saved locations available
+                  </p>
                 } @else {
-                  <label class="mb-2 block text-sm text-gray-600">Select locations:</label>
+                  <label class="mb-2 block text-sm text-gray-600 dark:text-gray-400"
+                    >Select locations:</label
+                  >
                   @for (location of savedLocations(); track location.uuid) {
                     <label class="flex items-center gap-2">
                       <input
@@ -199,7 +231,7 @@
                         (change)="toggleSavedLocation(location.uuid)"
                         class="h-4 w-4 rounded border-gray-300"
                       />
-                      <span class="text-sm text-gray-600"
+                      <span class="text-sm text-gray-600 dark:text-gray-400"
                         >{{ location.name }} ({{ location.postcode }})</span
                       >
                     </label>
@@ -221,29 +253,31 @@
 
     <!-- Rating Criteria Section -->
     @if (canEdit()) {
-      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-xl font-semibold text-gray-900">Rating Criteria</h2>
+      <div
+        class="mb-6 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Rating Criteria</h2>
 
         <div class="space-y-4">
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700">
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Select Rating Criteria
             </label>
-            <p class="mb-3 text-sm text-gray-600">
+            <p class="mb-3 text-sm text-gray-600 dark:text-gray-400">
               Choose how properties will be rated and scored for this project
             </p>
 
             @if (ratingCriteriaStore.loading()) {
               <div class="flex items-center gap-2 py-2">
                 <div class="h-5 w-5 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                <span class="text-sm text-gray-600">Loading criteria...</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Loading criteria...</span>
               </div>
             } @else {
               <div class="relative">
                 <select
                   [ngModel]="ratingCriteria()"
                   (ngModelChange)="ratingCriteria.set($event)"
-                  class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-4 focus:border-blue-500 focus:outline-none"
+                  class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-4 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 >
                   <option value="">None (No rating criteria)</option>
                   @for (criteria of ratingCriteriaStore.allCriteria(); track criteria.uuid) {
@@ -271,8 +305,8 @@
             }
 
             @if (selectedCriteriaName) {
-              <div class="mt-2 rounded-lg bg-blue-50 px-3 py-2">
-                <p class="text-sm text-blue-800">
+              <div class="mt-2 rounded-lg bg-blue-50 px-3 py-2 dark:bg-blue-900/20">
+                <p class="text-sm text-blue-800 dark:text-blue-300">
                   <strong>Current:</strong> {{ selectedCriteriaName }}
                   @if (hasSourceCriteria) {
                     <span class="ml-1 text-xs">(Copied from shared criteria)</span>
@@ -293,7 +327,7 @@
             @if (ratingCriteria()) {
               <button
                 (click)="editCriteria()"
-                class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Edit Criteria
               </button>
@@ -301,7 +335,7 @@
               @if (hasSourceCriteria) {
                 <button
                   (click)="copyCriteria()"
-                  class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                  class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                   title="Create a personal copy of shared criteria"
                 >
                   Copy Criteria
@@ -322,12 +356,16 @@
 
     <!-- Sharing Section -->
     @if (isOwner()) {
-      <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-1 text-xl font-semibold text-gray-900">Sharing</h2>
-        <p class="mb-4 text-sm text-gray-500">Manage who has access to this project.</p>
+      <div
+        class="mb-6 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-1 text-xl font-semibold text-gray-900 dark:text-white">Sharing</h2>
+        <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+          Manage who has access to this project.
+        </p>
 
         <!-- Tab toggle -->
-        <div class="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
+        <div class="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800">
           <button
             (click)="shareTab.set('direct')"
             [class.bg-white]="shareTab() === 'direct'"
@@ -357,22 +395,24 @@
                     [ngModel]="userSearchQuery()"
                     (ngModelChange)="onSearchInput($event)"
                     placeholder="Search by name or email..."
-                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   />
                   @if (userSearchResults().length > 0) {
                     <div
-                      class="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg"
+                      class="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
                     >
                       @for (result of userSearchResults(); track result.email) {
                         <button
                           type="button"
                           (click)="selectSearchResult(result)"
-                          class="w-full px-4 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50"
+                          class="w-full px-4 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                         >
-                          <span class="font-medium"
+                          <span class="font-medium dark:text-white"
                             >{{ result.first_name }} {{ result.last_name }}</span
                           >
-                          <span class="ml-1 text-gray-500">{{ result.email }}</span>
+                          <span class="ml-1 text-gray-500 dark:text-gray-400">{{
+                            result.email
+                          }}</span>
                         </button>
                       }
                     </div>
@@ -382,7 +422,7 @@
                   <select
                     [ngModel]="newMemberRole()"
                     (ngModelChange)="newMemberRole.set($event)"
-                    class="appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:outline-none"
+                    class="appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="viewer">Viewer</option>
                     <option value="contributor">Contributor</option>
@@ -413,7 +453,7 @@
               </div>
               @if (selectedUser()) {
                 <div
-                  class="mt-2 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-800"
+                  class="mt-2 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
                 >
                   <span
                     >{{ selectedUser()!.first_name }} {{ selectedUser()!.last_name }} ({{
@@ -438,28 +478,35 @@
                     Owner
                   </h4>
                   <div
-                    class="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-2"
+                    class="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900"
                   >
-                    <span class="text-sm text-gray-700">{{ members()!.owner.email }}</span>
-                    <span class="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600"
+                    <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                      members()!.owner.email
+                    }}</span>
+                    <span
+                      class="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400"
                       >Owner</span
                     >
                   </div>
                 </div>
                 @if (members()!.contributors.length > 0) {
                   <div>
-                    <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                    <h4
+                      class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >
                       Contributors
                     </h4>
                     @for (m of members()!.contributors; track m.email) {
                       <div
-                        class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
+                        class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2 dark:border-gray-700"
                       >
                         <div>
-                          <span class="text-sm font-medium text-gray-900"
+                          <span class="text-sm font-medium text-gray-900 dark:text-white"
                             >{{ m.first_name }} {{ m.last_name }}</span
                           >
-                          <span class="ml-2 text-xs text-gray-500">{{ m.email }}</span>
+                          <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">{{
+                            m.email
+                          }}</span>
                         </div>
                         <button
                           (click)="removeMember(m.email)"
@@ -473,18 +520,22 @@
                 }
                 @if (members()!.viewers.length > 0) {
                   <div>
-                    <h4 class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                    <h4
+                      class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >
                       Viewers
                     </h4>
                     @for (m of members()!.viewers; track m.email) {
                       <div
-                        class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2"
+                        class="mb-1 flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2 dark:border-gray-700"
                       >
                         <div>
-                          <span class="text-sm font-medium text-gray-900"
+                          <span class="text-sm font-medium text-gray-900 dark:text-white"
                             >{{ m.first_name }} {{ m.last_name }}</span
                           >
-                          <span class="ml-2 text-xs text-gray-500">{{ m.email }}</span>
+                          <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">{{
+                            m.email
+                          }}</span>
                         </div>
                         <button
                           (click)="removeMember(m.email)"
@@ -510,13 +561,13 @@
                 [ngModel]="inviteEmail()"
                 (ngModelChange)="inviteEmail.set($event)"
                 placeholder="Recipient email address"
-                class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+                class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
               />
               <div class="relative">
                 <select
                   [ngModel]="inviteRole()"
                   (ngModelChange)="inviteRole.set($event)"
-                  class="appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:outline-none"
+                  class="appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 >
                   <option value="viewer">Viewer</option>
                   <option value="contributor">Contributor</option>
@@ -551,14 +602,16 @@
             </div>
 
             @if (lastInviteUrl()) {
-              <div class="rounded-lg border border-green-200 bg-green-50 p-3">
-                <p class="mb-1 text-xs font-medium text-green-700">Invite sent! Share this link:</p>
+              <div class="rounded-lg border border-green-200 bg-green-50 p-3 dark:bg-green-900/20">
+                <p class="mb-1 text-xs font-medium text-green-700 dark:text-green-300">
+                  Invite sent! Share this link:
+                </p>
                 <div class="flex gap-2">
                   <input
                     type="text"
                     [value]="lastInviteUrl()"
                     readonly
-                    class="flex-1 rounded border border-green-200 bg-white px-3 py-1.5 text-xs text-gray-700"
+                    class="flex-1 rounded border border-green-200 bg-white px-3 py-1.5 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                   />
                   <button
                     (click)="copyInviteUrl()"
@@ -574,13 +627,13 @@
 
         <!-- Pending invitations (shown for all tabs) -->
         @if (pendingInvitations().length > 0) {
-          <div class="mt-6 border-t border-gray-200 pt-6">
+          <div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-700">
             <h4 class="mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase">
               Pending Invitations
             </h4>
-            <div class="overflow-hidden rounded-lg border border-gray-200">
+            <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
               <table class="w-full text-sm">
-                <thead class="bg-gray-50 text-xs text-gray-500">
+                <thead class="bg-gray-50 text-xs text-gray-500 dark:bg-gray-900 dark:text-gray-400">
                   <tr>
                     <th class="px-4 py-2 text-left">Email</th>
                     <th class="px-4 py-2 text-left">Role</th>
@@ -591,9 +644,13 @@
                 </thead>
                 <tbody>
                   @for (inv of pendingInvitations(); track inv.uuid) {
-                    <tr class="border-t border-gray-100">
-                      <td class="px-4 py-2 text-gray-700">{{ inv.invited_email }}</td>
-                      <td class="px-4 py-2 text-gray-600 capitalize">{{ inv.role }}</td>
+                    <tr class="border-t border-gray-100 dark:border-gray-700">
+                      <td class="px-4 py-2 text-gray-700 dark:text-gray-300">
+                        {{ inv.invited_email }}
+                      </td>
+                      <td class="px-4 py-2 text-gray-600 capitalize dark:text-gray-400">
+                        {{ inv.role }}
+                      </td>
                       <td class="px-4 py-2">
                         <span
                           class="rounded-full px-2 py-0.5 text-xs font-medium capitalize"
@@ -609,7 +666,7 @@
                           {{ inv.status }}
                         </span>
                       </td>
-                      <td class="px-4 py-2 text-xs text-gray-500">
+                      <td class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
                         {{ formatInviteDate(inv.expires_at) }}
                       </td>
                       <td class="px-4 py-2 text-right">
@@ -634,11 +691,13 @@
 
     <!-- Delete Project Section -->
     @if (isOwner()) {
-      <div class="rounded-lg border border-red-200 bg-red-50 p-6">
-        <h2 class="mb-4 text-xl font-semibold text-red-900">Danger Zone</h2>
+      <div
+        class="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20"
+      >
+        <h2 class="mb-4 text-xl font-semibold text-red-900 dark:text-red-400">Danger Zone</h2>
 
         <div class="space-y-3">
-          <p class="text-sm text-red-800">
+          <p class="text-sm text-red-800 dark:text-red-400">
             Deleting this project will permanently remove all property lists and data. This action
             cannot be undone.
           </p>
@@ -653,7 +712,9 @@
       </div>
     }
   } @else {
-    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
       <h3 class="mb-2 font-semibold">Project not found</h3>
       <p>The project you're trying to edit doesn't exist or you don't have access to it.</p>
     </div>
@@ -663,10 +724,10 @@
 <!-- Delete Confirmation Modal -->
 @if (showDeleteModal()) {
   <div class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
-    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6">
-      <h3 class="mb-4 text-xl font-semibold text-gray-900">Confirm Deletion</h3>
+    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 dark:bg-gray-800">
+      <h3 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Confirm Deletion</h3>
 
-      <p class="mb-4 text-gray-700">
+      <p class="mb-4 text-gray-700 dark:text-gray-300">
         This will permanently delete the project
         <strong>{{ projectStore.selectedDetail()?.title }}</strong> and all its property lists.
       </p>

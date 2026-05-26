@@ -2,7 +2,9 @@
   @if (loading()) {
     <app-loading-spinner message="Loading property list..." />
   } @else if (error()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
       <h3 class="mb-2 font-semibold">Error loading property list</h3>
       <p>{{ error() }}</p>
       <a routerLink="/lists" class="mt-4 inline-block text-blue-600 hover:underline">
@@ -17,28 +19,28 @@
         (cancel)="onCancelEdit()"
       />
     } @else {
-      <div class="rounded-lg bg-white p-6 shadow-md">
+      <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="mb-6 flex items-start justify-between">
           <div class="flex-1">
-            <h1 class="mb-2 text-3xl font-bold text-gray-900">
+            <h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
               {{ list()!.title }}
             </h1>
             <div class="flex items-center gap-3">
               <span
                 [class]="
                   list()!.state === 'ACTIVE'
-                    ? 'rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800'
-                    : 'rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800'
+                    ? 'rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                    : 'rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                 "
               >
                 {{ list()!.state }}
               </span>
-              <span class="text-gray-600">
+              <span class="text-gray-600 dark:text-gray-400">
                 {{ list()!.properties_count }}
                 {{ list()!.properties_count === 1 ? 'property' : 'properties' }}
               </span>
               @if (list()!.project_title) {
-                <span class="text-gray-400">•</span>
+                <span class="text-gray-400 dark:text-gray-500">•</span>
                 <a
                   [routerLink]="['/projects', list()!.project]"
                   class="text-blue-600 hover:underline"
@@ -52,7 +54,7 @@
             <div class="relative">
               <button
                 (click)="toggleDropdown()"
-                class="rounded-full p-2 text-gray-600 transition-colors hover:bg-gray-100"
+                class="rounded-full p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
                 aria-label="More options"
               >
                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -64,19 +66,19 @@
               @if (showDropdown()) {
                 <div class="fixed inset-0 z-10" (click)="closeDropdown()"></div>
                 <div
-                  class="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-md border border-gray-200 bg-white shadow-lg"
+                  class="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
                 >
                   <div class="py-1">
                     <button
                       (click)="onEdit(); closeDropdown()"
-                      class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                      class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     >
                       Edit
                     </button>
                     <button
                       (click)="triggerStage2ForList(); closeDropdown()"
                       [disabled]="list()!.status_summary.new === 0"
-                      class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400"
+                      class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:disabled:text-gray-600"
                     >
                       Run Stage 2
                     </button>
@@ -94,56 +96,64 @@
         </div>
 
         <div class="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <div class="rounded-lg bg-gray-50 p-4">
-            <div class="mb-1 text-sm text-gray-600">New</div>
-            <div class="text-2xl font-bold text-gray-900">
+          <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
+            <div class="mb-1 text-sm text-gray-600 dark:text-gray-400">New</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-white">
               {{ list()!.status_summary.new }}
             </div>
           </div>
-          <div class="rounded-lg bg-blue-50 p-4">
-            <div class="mb-1 text-sm text-gray-600">Stage 2 In Progress</div>
-            <div class="text-2xl font-bold text-blue-900">
+          <div class="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+            <div class="mb-1 text-sm text-gray-600 dark:text-gray-400">Stage 2 In Progress</div>
+            <div class="text-2xl font-bold text-blue-900 dark:text-blue-400">
               {{ list()!.status_summary.stage2_in_progress }}
             </div>
           </div>
-          <div class="rounded-lg bg-green-50 p-4">
-            <div class="mb-1 text-sm text-gray-600">Stage 2 Complete</div>
-            <div class="text-2xl font-bold text-green-900">
+          <div class="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
+            <div class="mb-1 text-sm text-gray-600 dark:text-gray-400">Stage 2 Complete</div>
+            <div class="text-2xl font-bold text-green-900 dark:text-green-400">
               {{ list()!.status_summary.stage2_complete }}
             </div>
           </div>
-          <div class="rounded-lg bg-purple-50 p-4">
-            <div class="mb-1 text-sm text-gray-600">Stage 3 Complete</div>
-            <div class="text-2xl font-bold text-purple-900">
+          <div class="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
+            <div class="mb-1 text-sm text-gray-600 dark:text-gray-400">Stage 3 Complete</div>
+            <div class="text-2xl font-bold text-purple-900 dark:text-purple-400">
               {{ list()!.status_summary.stage3_complete }}
             </div>
           </div>
         </div>
 
-        <div class="border-t border-gray-200 pt-6">
-          <h2 class="mb-4 text-xl font-semibold text-gray-900">Metadata</h2>
+        <div class="border-t border-gray-200 pt-6 dark:border-gray-700">
+          <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Metadata</h2>
           <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
             <div>
-              <span class="text-gray-600">Owner:</span>
-              <span class="ml-2 font-medium">{{ list()!.owner }}</span>
+              <span class="text-gray-600 dark:text-gray-400">Owner:</span>
+              <span class="ml-2 font-medium dark:text-gray-200">{{ list()!.owner }}</span>
             </div>
             <div>
-              <span class="text-gray-600">Created:</span>
-              <span class="ml-2 font-medium">{{ list()!.created_at | date: 'medium' }}</span>
+              <span class="text-gray-600 dark:text-gray-400">Created:</span>
+              <span class="ml-2 font-medium dark:text-gray-200">{{
+                list()!.created_at | date: 'medium'
+              }}</span>
             </div>
             <div>
-              <span class="text-gray-600">Updated:</span>
-              <span class="ml-2 font-medium">{{ list()!.updated_at | date: 'medium' }}</span>
+              <span class="text-gray-600 dark:text-gray-400">Updated:</span>
+              <span class="ml-2 font-medium dark:text-gray-200">{{
+                list()!.updated_at | date: 'medium'
+              }}</span>
             </div>
             <div>
-              <span class="text-gray-600">Rating Criteria:</span>
-              <span class="ml-2 font-medium">{{ list()!.rating_criteria || 'None' }}</span>
+              <span class="text-gray-600 dark:text-gray-400">Rating Criteria:</span>
+              <span class="ml-2 font-medium dark:text-gray-200">{{
+                list()!.rating_criteria || 'None'
+              }}</span>
             </div>
           </div>
         </div>
 
         @if (searchTaskStore.status() === 'QUEUED' || searchTaskStore.status() === 'IN_PROGRESS') {
-          <div class="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <div
+            class="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20"
+          >
             <div class="flex items-start gap-4">
               <div class="flex-shrink-0">
                 <div
@@ -151,17 +161,19 @@
                 ></div>
               </div>
               <div class="flex-1">
-                <h3 class="mb-2 font-semibold text-blue-900">Creating Properties from Search</h3>
+                <h3 class="mb-2 font-semibold text-blue-900 dark:text-blue-400">
+                  Creating Properties from Search
+                </h3>
                 <div class="flex gap-4 text-sm">
                   <div>
-                    <span class="text-blue-700">In Progress:</span>
-                    <span class="ml-2 font-medium text-blue-900">{{
+                    <span class="text-blue-700 dark:text-blue-400">In Progress:</span>
+                    <span class="ml-2 font-medium text-blue-900 dark:text-blue-300">{{
                       searchTaskStore.completedItems()
                     }}</span>
                   </div>
                   <div>
-                    <span class="text-blue-700">Total:</span>
-                    <span class="ml-2 font-medium text-blue-900">{{
+                    <span class="text-blue-700 dark:text-blue-400">Total:</span>
+                    <span class="ml-2 font-medium text-blue-900 dark:text-blue-300">{{
                       searchTaskStore.totalItems()
                     }}</span>
                   </div>
@@ -179,9 +191,9 @@
           </div>
         }
 
-        <div class="mt-8 border-t border-gray-200 pt-6">
+        <div class="mt-8 border-t border-gray-200 pt-6 dark:border-gray-700">
           <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-900">Properties</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Properties</h2>
             @if (canEdit()) {
               <div class="flex gap-2">
                 @if (list()!.properties.length > 0) {
@@ -190,7 +202,7 @@
                     [class]="
                       selectionMode()
                         ? 'rounded bg-gray-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700'
-                        : 'rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300'
+                        : 'rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                     "
                   >
                     {{ selectionMode() ? 'Cancel Selection' : 'Select Properties' }}
@@ -207,7 +219,9 @@
           </div>
 
           @if (selectionMode() && list()!.properties.length > 0) {
-            <div class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <div
+              class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20"
+            >
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
                   <label class="flex items-center gap-2">
@@ -215,12 +229,14 @@
                       type="checkbox"
                       [checked]="allSelected()"
                       (change)="allSelected() ? clearSelection() : selectAll()"
-                      class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                      class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
                     />
-                    <span class="text-sm font-medium text-blue-900">Select All</span>
+                    <span class="text-sm font-medium text-blue-900 dark:text-blue-400"
+                      >Select All</span
+                    >
                   </label>
                   @if (selectedCount() > 0) {
-                    <span class="text-sm text-blue-700">
+                    <span class="text-sm text-blue-700 dark:text-blue-400">
                       {{ selectedCount() }} {{ selectedCount() === 1 ? 'property' : 'properties' }}
                       selected
                     </span>
@@ -236,7 +252,7 @@
                     </button>
                     <button
                       (click)="clearSelection()"
-                      class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300"
+                      class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                       Clear Selection
                     </button>
@@ -246,8 +262,10 @@
             </div>
           }
           @if (list()!.properties.length === 0) {
-            <div class="rounded-lg bg-gray-50 py-8 text-center">
-              <p class="text-gray-600">No properties yet. Click "Add Properties" to get started.</p>
+            <div class="rounded-lg bg-gray-50 py-8 text-center dark:bg-gray-900">
+              <p class="text-gray-600 dark:text-gray-400">
+                No properties yet. Click "Add Properties" to get started.
+              </p>
             </div>
           } @else {
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -268,7 +286,7 @@
                 <button
                   (click)="previousPage()"
                   [disabled]="currentPage() === 1"
-                  class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                 >
                   Previous
                 </button>
@@ -280,7 +298,7 @@
                       [class]="
                         currentPage() === i + 1
                           ? 'rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white'
-                          : 'rounded bg-gray-200 px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300'
+                          : 'rounded bg-gray-200 px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                       "
                     >
                       {{ i + 1 }}
@@ -291,13 +309,13 @@
                 <button
                   (click)="nextPage()"
                   [disabled]="currentPage() === totalPages()"
-                  class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                 >
                   Next
                 </button>
               </div>
 
-              <div class="mt-2 text-center text-sm text-gray-600">
+              <div class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                 Showing {{ (currentPage() - 1) * itemsPerPage + 1 }} -
                 {{ Math.min(currentPage() * itemsPerPage, list()!.properties.length) }}
                 of {{ list()!.properties.length }} properties
@@ -316,7 +334,7 @@
   (closeModal)="onContextOptionsCancel()"
 >
   <div class="p-4">
-    <p class="mb-4 text-sm text-gray-600">
+    <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
       No context options configured for this project. Please configure which services to enable.
     </p>
     <button

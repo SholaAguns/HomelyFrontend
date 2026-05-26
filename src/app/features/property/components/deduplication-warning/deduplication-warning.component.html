@@ -4,9 +4,11 @@
 
   <!-- Modal -->
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
+    <div
+      class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl dark:bg-gray-800"
+    >
       <!-- Header -->
-      <div class="border-b border-yellow-200 bg-yellow-50 px-6 py-4">
+      <div class="border-b border-yellow-200 bg-yellow-50 px-6 py-4 dark:bg-yellow-900/20">
         <div class="flex items-start">
           <div class="flex-shrink-0">
             <svg
@@ -24,7 +26,9 @@
             </svg>
           </div>
           <div class="ml-3 flex-1">
-            <h3 class="text-lg font-medium text-yellow-800">Duplicate Property Detected</h3>
+            <h3 class="text-lg font-medium text-yellow-800 dark:text-yellow-300">
+              Duplicate Property Detected
+            </h3>
             <p class="mt-1 text-sm text-yellow-700">
               A property with this external ID already exists in your list.
             </p>
@@ -34,29 +38,37 @@
 
       <!-- Body -->
       <div class="space-y-4 px-6 py-4">
-        <div class="rounded-lg bg-gray-50 p-4">
-          <h4 class="mb-2 text-sm font-medium text-gray-700">Existing Property</h4>
+        <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
+          <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            Existing Property
+          </h4>
           <dl class="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <dt class="text-gray-600">Title</dt>
-              <dd class="font-medium text-gray-900">{{ existingProperty().title }}</dd>
+              <dt class="text-gray-600 dark:text-gray-400">Title</dt>
+              <dd class="font-medium text-gray-900 dark:text-white">
+                {{ existingProperty().title }}
+              </dd>
             </div>
             <div>
-              <dt class="text-gray-600">Price</dt>
-              <dd class="font-medium text-gray-900">£{{ existingProperty().price | number }}</dd>
+              <dt class="text-gray-600 dark:text-gray-400">Price</dt>
+              <dd class="font-medium text-gray-900 dark:text-white">
+                £{{ existingProperty().price | number }}
+              </dd>
             </div>
             <div class="col-span-2">
-              <dt class="text-gray-600">Address</dt>
-              <dd class="font-medium text-gray-900">
+              <dt class="text-gray-600 dark:text-gray-400">Address</dt>
+              <dd class="font-medium text-gray-900 dark:text-white">
                 {{ existingProperty().address_line_1 }}, {{ existingProperty().postcode }}
               </dd>
             </div>
             <div>
-              <dt class="text-gray-600">Bedrooms</dt>
-              <dd class="font-medium text-gray-900">{{ existingProperty().bedrooms }}</dd>
+              <dt class="text-gray-600 dark:text-gray-400">Bedrooms</dt>
+              <dd class="font-medium text-gray-900 dark:text-white">
+                {{ existingProperty().bedrooms }}
+              </dd>
             </div>
             <div>
-              <dt class="text-gray-600">State</dt>
+              <dt class="text-gray-600 dark:text-gray-400">State</dt>
               <dd>
                 <span
                   class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
@@ -67,7 +79,7 @@
             </div>
             @if (existingProperty().external_url) {
               <div class="col-span-2">
-                <dt class="text-gray-600">External URL</dt>
+                <dt class="text-gray-600 dark:text-gray-400">External URL</dt>
                 <dd class="truncate font-medium text-blue-600">
                   <a
                     [href]="existingProperty().external_url"
@@ -82,9 +94,11 @@
           </dl>
         </div>
 
-        <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h4 class="mb-2 text-sm font-medium text-blue-800">What would you like to do?</h4>
-          <ul class="space-y-1 text-sm text-blue-700">
+        <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:bg-blue-900/20">
+          <h4 class="mb-2 text-sm font-medium text-blue-800 dark:text-blue-300">
+            What would you like to do?
+          </h4>
+          <ul class="space-y-1 text-sm text-blue-700 dark:text-blue-300">
             <li><strong>View Existing:</strong> Navigate to the existing property details</li>
             <li>
               <strong>Force Create:</strong> Create a new property anyway (may result in duplicates)
@@ -95,11 +109,13 @@
       </div>
 
       <!-- Footer -->
-      <div class="flex justify-end space-x-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
+      <div
+        class="flex justify-end space-x-3 border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-900"
+      >
         <button
           type="button"
           (click)="onCancel()"
-          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50"
+          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         >
           Cancel
         </button>

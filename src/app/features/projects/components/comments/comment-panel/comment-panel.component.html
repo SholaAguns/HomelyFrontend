@@ -1,6 +1,6 @@
 <div class="mb-8">
   <div class="mb-4">
-    <h2 class="text-2xl font-semibold text-gray-900">Comments</h2>
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Comments</h2>
   </div>
 
   <div class="mb-4">
@@ -12,11 +12,15 @@
       <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
     </div>
   } @else if (commentStore.comments().length === 0) {
-    <div class="rounded-lg border-2 border-dashed border-gray-300 py-8 text-center">
-      <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+    <div
+      class="rounded-lg border-2 border-dashed border-gray-300 py-8 text-center dark:border-gray-600"
+    >
+      <p class="text-gray-500 dark:text-gray-400">No comments yet. Be the first to comment!</p>
     </div>
   } @else {
-    <div class="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white px-4">
+    <div
+      class="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white px-4 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800"
+    >
       @for (comment of commentStore.comments(); track comment.uuid) {
         <app-comment-item
           [comment]="comment"

@@ -13,10 +13,10 @@
         </svg>
         Back to Project
       </button>
-      <h1 class="text-3xl font-bold text-gray-900">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
         {{ projectStore.selectedDetail()?.title || 'Project' }} Dashboard
       </h1>
-      <p class="mt-1 text-gray-600">Analytics and statistics for your project</p>
+      <p class="mt-1 text-gray-600 dark:text-gray-400">Analytics and statistics for your project</p>
     </div>
   </div>
 
@@ -28,11 +28,11 @@
     <!-- Key Metrics Cards -->
     <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
       <!-- Total Properties -->
-      <div class="rounded-lg border-l-4 border-blue-500 bg-white p-6 shadow-md">
+      <div class="rounded-lg border-l-4 border-blue-500 bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Total Properties</p>
-            <p class="mt-2 text-3xl font-bold text-gray-900">
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Properties</p>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
               {{ projectStore.selectedStats()!.total_properties }}
             </p>
           </div>
@@ -58,8 +58,8 @@
       <div class="rounded-lg border-l-4 border-green-500 bg-white p-6 shadow-md">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Property Lists</p>
-            <p class="mt-2 text-3xl font-bold text-gray-900">
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Property Lists</p>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
               {{ projectStore.selectedStats()!.property_lists_count }}
             </p>
           </div>
@@ -82,11 +82,11 @@
       </div>
 
       <!-- Average Price -->
-      <div class="rounded-lg border-l-4 border-orange-500 bg-white p-6 shadow-md">
+      <div class="rounded-lg border-l-4 border-orange-500 bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Average Price</p>
-            <p class="mt-2 text-3xl font-bold text-gray-900">
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Average Price</p>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
               @if (projectStore.selectedStats()!.avg_price !== null) {
                 £{{ projectStore.selectedStats()!.avg_price!.toFixed(0) }}
               } @else {
@@ -113,23 +113,23 @@
       </div>
 
       <!-- Price Range -->
-      <div class="rounded-lg border-l-4 border-purple-500 bg-white p-6 shadow-md">
+      <div class="rounded-lg border-l-4 border-purple-500 bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="flex items-center justify-between">
           <div class="w-full">
-            <p class="text-sm font-medium text-gray-600">Price Range</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Price Range</p>
             @if (
               projectStore.selectedStats()!.min_price !== null &&
               projectStore.selectedStats()!.max_price !== null
             ) {
-              <p class="mt-2 text-lg font-bold text-gray-900">
+              <p class="mt-2 text-lg font-bold text-gray-900 dark:text-white">
                 £{{ projectStore.selectedStats()!.min_price!.toFixed(0) }}
               </p>
-              <p class="text-xs text-gray-500">to</p>
-              <p class="text-lg font-bold text-gray-900">
+              <p class="text-xs text-gray-500 dark:text-gray-400">to</p>
+              <p class="text-lg font-bold text-gray-900 dark:text-white">
                 £{{ projectStore.selectedStats()!.max_price!.toFixed(0) }}
               </p>
             } @else {
-              <p class="mt-2 text-3xl font-bold text-gray-900">N/A</p>
+              <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">N/A</p>
             }
           </div>
           <div class="rounded-full bg-purple-100 p-3">
@@ -152,18 +152,18 @@
 
       <!-- Average Rating -->
       @if (projectStore.selectedStats()?.ratings) {
-        <div class="rounded-lg border-l-4 border-pink-500 bg-white p-6 shadow-md">
+        <div class="rounded-lg border-l-4 border-pink-500 bg-white p-6 shadow-md dark:bg-gray-800">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm font-medium text-gray-600">Avg Rating</p>
-              <p class="mt-2 text-3xl font-bold text-gray-900">
+              <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Rating</p>
+              <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
                 @if (projectStore.selectedStats()!.ratings.avg_rating !== null) {
                   {{ projectStore.selectedStats()!.ratings.avg_rating!.toFixed(1) }}
                 } @else {
                   N/A
                 }
               </p>
-              <p class="mt-1 text-xs text-gray-500">
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 {{ projectStore.selectedStats()!.ratings.total_rated }} rated
                 @if (projectStore.selectedStats()!.ratings.disqualified_count > 0) {
                   , {{ projectStore.selectedStats()!.ratings.disqualified_count }} disqualified
@@ -193,28 +193,28 @@
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <!-- Price Distribution Chart -->
-      <div class="rounded-lg bg-white p-6 shadow-md">
+      <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="h-80">
           <canvas id="priceDistChart"></canvas>
         </div>
       </div>
 
       <!-- Area Properties Chart -->
-      <div class="rounded-lg bg-white p-6 shadow-md">
+      <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="h-80">
           <canvas id="areaPropsChart"></canvas>
         </div>
       </div>
 
       <!-- Area Average Price Chart -->
-      <div class="rounded-lg bg-white p-6 shadow-md">
+      <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="h-80">
           <canvas id="areaPriceChart"></canvas>
         </div>
       </div>
 
       <!-- Property Types Chart -->
-      <div class="rounded-lg bg-white p-6 shadow-md">
+      <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
         <div class="h-80">
           <canvas id="propTypesChart"></canvas>
         </div>
@@ -222,7 +222,7 @@
 
       <!-- Ratings Distribution Chart -->
       @if (projectStore.selectedStats()?.ratings) {
-        <div class="rounded-lg bg-white p-6 shadow-md">
+        <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
           <div class="h-80">
             <canvas id="ratingsDistChart"></canvas>
           </div>
@@ -235,71 +235,75 @@
       projectStore.selectedStats()?.by_property_list &&
       projectStore.selectedStats()!.by_property_list.length > 0
     ) {
-      <div class="mt-8 rounded-lg bg-white p-6 shadow-md">
-        <h2 class="mb-4 text-xl font-bold text-gray-900">Property Lists Breakdown</h2>
+      <div class="mt-8 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">
+          Property Lists Breakdown
+        </h2>
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-900">
               <tr>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
                 >
                   List
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
                 >
                   Properties
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
                 >
                   Avg Price
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
                 >
                   Avg Rating
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
                 >
                   Stage 2
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                  class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
                 >
                   Stage 3
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
+            <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
               @for (list of projectStore.selectedStats()!.by_property_list; track list.uuid) {
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td
+                    class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+                  >
                     {{ list.title }}
                   </td>
-                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">
                     {{ list.property_count }}
                   </td>
-                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">
                     @if (list.avg_price !== null) {
                       £{{ list.avg_price.toLocaleString() }}
                     } @else {
                       N/A
                     }
                   </td>
-                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">
                     @if (list.avg_rating !== null) {
                       {{ list.avg_rating.toFixed(1) }}
                     } @else {
                       N/A
                     }
                   </td>
-                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">
                     {{ list.stage2_complete }}
                   </td>
-                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                  <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">
                     {{ list.stage3_complete }}
                   </td>
                 </tr>
@@ -315,15 +319,19 @@
       projectStore.selectedStats()?.ratings?.top_rated &&
       projectStore.selectedStats()!.ratings.top_rated.length > 0
     ) {
-      <div class="mt-8 rounded-lg bg-white p-6 shadow-md">
-        <h2 class="mb-4 text-xl font-bold text-gray-900">Top Rated Properties</h2>
+      <div class="mt-8 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Top Rated Properties</h2>
         <div class="space-y-3">
           @for (property of projectStore.selectedStats()!.ratings.top_rated; track property.uuid) {
             <div
-              class="flex items-center justify-between rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+              class="flex items-center justify-between rounded-lg border border-gray-200 p-4 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
             >
-              <span class="text-sm font-medium text-gray-900">{{ property.title }}</span>
-              <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-800">
+              <span class="text-sm font-medium text-gray-900 dark:text-white">{{
+                property.title
+              }}</span>
+              <span
+                class="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
+              >
                 {{ property.rating }}
               </span>
             </div>
@@ -333,7 +341,9 @@
     }
   } @else {
     <!-- Empty State -->
-    <div class="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 py-16 text-center">
+    <div
+      class="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 py-16 text-center dark:border-gray-600 dark:bg-gray-900"
+    >
       <svg
         class="mx-auto h-16 w-16 text-gray-400"
         fill="none"
@@ -347,8 +357,10 @@
           d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
         />
       </svg>
-      <h3 class="mt-4 text-lg font-semibold text-gray-900">No data available</h3>
-      <p class="mt-2 text-gray-600">Add properties to your project to see statistics and charts</p>
+      <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-white">No data available</h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Add properties to your project to see statistics and charts
+      </p>
     </div>
   }
 </div>

@@ -239,3 +239,56 @@
   color: #10b981;
   font-weight: 500;
 }
+
+:host-context(.dark) .reports-header h2 {
+  color: #f9fafb;
+}
+:host-context(.dark) .service-card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+:host-context(.dark) .service-card[data-status='COMPLETE'] {
+  border-color: #10b981;
+}
+:host-context(.dark) .service-card[data-status='FAILED'] {
+  border-color: #ef4444;
+}
+:host-context(.dark) .service-card[data-status='IN_PROGRESS'],
+:host-context(.dark) .service-card[data-status='PENDING'] {
+  border-color: #f59e0b;
+}
+:host-context(.dark) .service-header:hover {
+  background-color: #374151;
+}
+:host-context(.dark) .service-header h3 {
+  color: #f9fafb;
+}
+:host-context(.dark) .status-badge[data-status='COMPLETE'] {
+  background-color: #064e3b;
+  color: #6ee7b7;
+}
+:host-context(.dark) .status-badge[data-status='FAILED'] {
+  background-color: #450a0a;
+  color: #fca5a5;
+}
+:host-context(.dark) .status-badge[data-status='IN_PROGRESS'] {
+  background-color: #451a03;
+  color: #fcd34d;
+}
+:host-context(.dark) .status-badge[data-status='PENDING'] {
+  background-color: #374151;
+  color: #9ca3af;
+}
+:host-context(.dark) .spinner {
+  border-color: #374151;
+  border-top-color: #818cf8;
+}
+:host-context(.dark) .service-loading p {
+  color: #9ca3af;
+}
+:host-context(.dark) .service-error {
+  background-color: #450a0a;
+}
+:host-context(.dark) .error-message {
+  color: #fca5a5;
+}

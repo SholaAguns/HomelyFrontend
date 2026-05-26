@@ -11,34 +11,38 @@
       >
         ← Back to property
       </a>
-      <h1 class="text-2xl font-bold text-gray-900">Edit Property</h1>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Edit Property</h1>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Basic Info -->
-      <div class="rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">Basic Information</h2>
+      <div
+        class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h2>
         <div class="space-y-4">
           <div>
-            <label for="summary" class="block text-sm font-medium text-gray-700">Summary</label>
+            <label for="summary" class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >Summary</label
+            >
             <textarea
               id="summary"
               formControlName="summary"
               rows="5"
               placeholder="Short summary of the property"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             ></textarea>
           </div>
 
           <div>
-            <label for="title" class="block text-sm font-medium text-gray-700">
+            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Title <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="title"
               formControlName="title"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
               [class.border-red-500]="form.get('title')?.invalid && form.get('title')?.touched"
             />
             @if (form.get('title')?.invalid && form.get('title')?.touched) {
@@ -47,7 +51,9 @@
           </div>
 
           <div>
-            <label for="description" class="block text-sm font-medium text-gray-700"
+            <label
+              for="description"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Description</label
             >
             <textarea
@@ -55,25 +61,30 @@
               formControlName="description"
               rows="5"
               placeholder="Full property description"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             ></textarea>
           </div>
         </div>
       </div>
 
       <!-- Address -->
-      <div class="rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">Address</h2>
+      <div
+        class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Address</h2>
         <div class="space-y-4">
           <div>
-            <label for="address_line_1" class="block text-sm font-medium text-gray-700">
+            <label
+              for="address_line_1"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Address Line 1 <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="address_line_1"
               formControlName="address_line_1"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
               [class.border-red-500]="
                 form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched
               "
@@ -84,36 +95,43 @@
           </div>
 
           <div>
-            <label for="address_line_2" class="block text-sm font-medium text-gray-700"
+            <label
+              for="address_line_2"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Address Line 2</label
             >
             <input
               type="text"
               id="address_line_2"
               formControlName="address_line_2"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+              <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >City</label
+              >
               <input
                 type="text"
                 id="city"
                 formControlName="city"
-                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
               />
             </div>
             <div>
-              <label for="postcode" class="block text-sm font-medium text-gray-700">
+              <label
+                for="postcode"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Postcode <span class="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 id="postcode"
                 formControlName="postcode"
-                class="mt-1 block w-full rounded-md border-gray-300 uppercase shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="mt-1 block w-full rounded-md border-gray-300 uppercase shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 [class.border-red-500]="
                   form.get('postcode')?.invalid && form.get('postcode')?.touched
                 "
@@ -127,11 +145,13 @@
       </div>
 
       <!-- Price -->
-      <div class="rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">Price</h2>
+      <div
+        class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Price</h2>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="price" class="block text-sm font-medium text-gray-700">
+            <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Price <span class="text-red-500">*</span>
             </label>
             <input
@@ -139,7 +159,7 @@
               id="price"
               formControlName="price"
               min="1"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
               [class.border-red-500]="form.get('price')?.invalid && form.get('price')?.touched"
             />
             @if (form.get('price')?.invalid && form.get('price')?.touched) {
@@ -148,7 +168,9 @@
           </div>
 
           <div>
-            <label for="price_frequency" class="block text-sm font-medium text-gray-700"
+            <label
+              for="price_frequency"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Frequency</label
             >
             <input
@@ -156,18 +178,23 @@
               id="price_frequency"
               formControlName="price_frequency"
               placeholder="e.g. pcm, pw"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
         </div>
       </div>
 
       <!-- Property Details -->
-      <div class="rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">Property Details</h2>
+      <div
+        class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Property Details</h2>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="bedrooms" class="block text-sm font-medium text-gray-700">
+            <label
+              for="bedrooms"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Bedrooms <span class="text-red-500">*</span>
             </label>
             <input
@@ -175,12 +202,15 @@
               id="bedrooms"
               formControlName="bedrooms"
               min="0"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label for="bathrooms" class="block text-sm font-medium text-gray-700">
+            <label
+              for="bathrooms"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Bathrooms <span class="text-red-500">*</span>
             </label>
             <input
@@ -188,12 +218,14 @@
               id="bathrooms"
               formControlName="bathrooms"
               min="0"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label for="square_area" class="block text-sm font-medium text-gray-700"
+            <label
+              for="square_area"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Area (sq ft)</label
             >
             <input
@@ -201,19 +233,21 @@
               id="square_area"
               formControlName="square_area"
               min="0"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label for="furnished_status" class="block text-sm font-medium text-gray-700"
+            <label
+              for="furnished_status"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Furnished Status</label
             >
             <div class="relative mt-1">
               <select
                 id="furnished_status"
                 formControlName="furnished_status"
-                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               >
                 @for (option of furnishedStatusOptions; track option.value) {
                   <option [value]="option.value">{{ option.label }}</option>
@@ -238,19 +272,23 @@
           </div>
 
           <div>
-            <label for="floor_level" class="block text-sm font-medium text-gray-700"
+            <label
+              for="floor_level"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Floor Level</label
             >
             <input
               type="number"
               id="floor_level"
               formControlName="floor_level"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label for="lease_length" class="block text-sm font-medium text-gray-700"
+            <label
+              for="lease_length"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Lease Length (years)</label
             >
             <input
@@ -258,7 +296,7 @@
               id="lease_length"
               formControlName="lease_length"
               min="0"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
@@ -297,18 +335,22 @@
       </div>
 
       <!-- Additional Details -->
-      <div class="rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">Additional Details</h2>
+      <div
+        class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Additional Details</h2>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="council_tax_band" class="block text-sm font-medium text-gray-700"
+            <label
+              for="council_tax_band"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Council Tax Band</label
             >
             <div class="relative mt-1">
               <select
                 id="council_tax_band"
                 formControlName="council_tax_band"
-                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               >
                 <option value="">Not specified</option>
                 @for (band of councilTaxBands; track band) {
@@ -334,14 +376,16 @@
           </div>
 
           <div>
-            <label for="epc_rating" class="block text-sm font-medium text-gray-700"
+            <label
+              for="epc_rating"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >EPC Rating</label
             >
             <div class="relative mt-1">
               <select
                 id="epc_rating"
                 formControlName="epc_rating"
-                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="block w-full appearance-none rounded-md border-gray-300 py-2 pr-10 pl-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               >
                 <option value="">Not specified</option>
                 @for (rating of epcRatings; track rating) {
@@ -367,7 +411,9 @@
           </div>
 
           <div class="col-span-2">
-            <label for="external_url" class="block text-sm font-medium text-gray-700"
+            <label
+              for="external_url"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Listing URL</label
             >
             <input
@@ -375,19 +421,21 @@
               id="external_url"
               formControlName="external_url"
               placeholder="https://..."
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label for="external_id" class="block text-sm font-medium text-gray-700"
+            <label
+              for="external_id"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >External ID</label
             >
             <input
               type="text"
               id="external_id"
               formControlName="external_id"
-              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
         </div>
@@ -398,7 +446,7 @@
         <button
           type="button"
           (click)="onCancel()"
-          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         >
           Cancel
         </button>

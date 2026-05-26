@@ -1,22 +1,24 @@
 <div class="space-y-6">
   <div>
-    <h1 class="text-3xl font-bold text-gray-900">Create from URL or Text</h1>
-    <p class="mt-2 text-gray-600">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create from URL or Text</h1>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">
       Extract and create property from a Rightmove URL or paste property description text
     </p>
   </div>
 
   @if (error()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
       <p class="font-medium">Error</p>
       <p class="text-sm">{{ error() }}</p>
     </div>
   }
 
   <!-- Input Form -->
-  <div class="space-y-6 rounded-lg bg-white p-6 shadow">
+  <div class="space-y-6 rounded-lg bg-white p-6 shadow dark:bg-gray-800">
     <!-- Input Mode Toggle -->
-    <div class="flex space-x-2 border-b border-gray-200">
+    <div class="flex space-x-2 border-b border-gray-200 dark:border-gray-700">
       <button
         type="button"
         (click)="toggleInputMode('url')"
@@ -45,7 +47,10 @@
     <form [formGroup]="inputForm" (ngSubmit)="onExtract()" class="space-y-4">
       @if (inputMode() === 'url') {
         <div>
-          <label for="urlInput" class="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            for="urlInput"
+            class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Property URL
           </label>
           <input
@@ -53,9 +58,9 @@
             type="url"
             formControlName="inputData"
             placeholder="https://www.rightmove.co.uk/properties/..."
-            class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
           />
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Enter a Rightmove property URL to automatically extract details
           </p>
         </div>
@@ -69,9 +74,11 @@
             formControlName="inputData"
             rows="8"
             placeholder="Paste property description text here..."
-            class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
           ></textarea>
-          <p class="mt-1 text-sm text-gray-500">Paste a property description to extract details</p>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Paste a property description to extract details
+          </p>
         </div>
       }
 
@@ -79,7 +86,7 @@
         <button
           type="button"
           (click)="onFormCancel()"
-          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50"
+          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           [disabled]="loading()"
         >
           Cancel

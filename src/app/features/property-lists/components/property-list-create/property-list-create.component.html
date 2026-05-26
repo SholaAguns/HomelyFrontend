@@ -1,14 +1,16 @@
 <div class="container mx-auto max-w-2xl px-4 py-8">
-  <h1 class="mb-8 text-3xl font-bold text-gray-900">Create Property List</h1>
+  <h1 class="mb-8 text-3xl font-bold text-gray-900 dark:text-white">Create Property List</h1>
 
   @if (error()) {
-    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+    <div
+      class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
       <h3 class="mb-2 font-semibold">Error</h3>
       <p>{{ error() }}</p>
     </div>
   }
 
-  <div class="rounded-lg bg-white p-8 shadow-md">
+  <div class="rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
     <app-search-criteria-form (searchSubmit)="onSearchSubmit($event)" (cancel)="onCancel()" />
   </div>
 </div>

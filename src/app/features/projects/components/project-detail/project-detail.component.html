@@ -7,10 +7,12 @@
     <div class="mb-8">
       <div class="mb-4 flex items-center justify-between">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
             {{ projectStore.selectedDetail()!.title }}
           </h1>
-          <p class="mt-2 text-gray-600">{{ projectStore.selectedDetail()!.description }}</p>
+          <p class="mt-2 text-gray-600 dark:text-gray-400">
+            {{ projectStore.selectedDetail()!.description }}
+          </p>
         </div>
         <div class="flex items-center gap-2">
           @if (canEdit()) {
@@ -25,7 +27,7 @@
             <div class="relative">
               <button
                 (click)="showActionsMenu.set(!showActionsMenu())"
-                class="rounded-lg border border-gray-300 p-2 text-gray-600 transition-colors hover:bg-gray-50"
+                class="rounded-lg border border-gray-300 p-2 text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
                 aria-label="Project actions"
               >
                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -37,7 +39,7 @@
               @if (showActionsMenu()) {
                 <div class="fixed inset-0 z-10" (click)="showActionsMenu.set(false)"></div>
                 <div
-                  class="absolute right-0 z-20 mt-1 w-44 rounded-lg border border-gray-200 bg-white shadow-lg"
+                  class="absolute right-0 z-20 mt-1 w-44 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
                 >
                   <button
                     (click)="showActionsMenu.set(false); showLeaveModal.set(true)"
@@ -67,9 +69,11 @@
     @if (favoritesCount() > 0) {
       <div class="mb-8">
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-2xl font-semibold text-gray-900">
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
             Favorites
-            <span class="ml-2 text-lg text-gray-500">({{ favoritesCount() }})</span>
+            <span class="ml-2 text-lg text-gray-500 dark:text-gray-400"
+              >({{ favoritesCount() }})</span
+            >
           </h2>
           @if (favoritesCount() >= 6) {
             <button
@@ -92,7 +96,7 @@
             }
           </div>
         } @else {
-          <p class="text-gray-600 italic">
+          <p class="text-gray-600 italic dark:text-gray-400">
             Click "Show All" to view {{ favoritesCount() }} favorited properties in this project
           </p>
         }
@@ -101,11 +105,11 @@
 
     <div class="mb-8">
       <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-2xl font-semibold text-gray-900">Property Lists</h2>
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Property Lists</h2>
         <div class="space-x-3">
           <button
             (click)="navigateToDashboard()"
-            class="rounded-lg border border-gray-300 px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            class="rounded-lg border border-gray-300 px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             View Dashboard
           </button>
@@ -125,8 +129,10 @@
           <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
         </div>
       } @else if (listStore.count() === 0) {
-        <div class="rounded-lg border-2 border-dashed border-gray-300 py-12 text-center">
-          <p class="mb-4 text-gray-600">No property lists yet</p>
+        <div
+          class="rounded-lg border-2 border-dashed border-gray-300 py-12 text-center dark:border-gray-600"
+        >
+          <p class="mb-4 text-gray-600 dark:text-gray-400">No property lists yet</p>
           @if (canEdit()) {
             <button
               (click)="navigateToCreateList()"
@@ -147,7 +153,9 @@
     <app-task-panel [projectUuid]="projectUuid" [canEdit]="canEdit()" />
     <app-comment-panel [projectUuid]="projectUuid" />
   } @else {
-    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
       <h3 class="mb-2 font-semibold">Project not found</h3>
       <p>The project you're looking for doesn't exist or you don't have access to it.</p>
     </div>
@@ -157,9 +165,9 @@
 <!-- Leave Project Modal -->
 @if (showLeaveModal()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6">
-      <h3 class="mb-4 text-xl font-semibold text-gray-900">Leave Project</h3>
-      <p class="mb-6 text-gray-700">
+    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 dark:bg-gray-800">
+      <h3 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Leave Project</h3>
+      <p class="mb-6 text-gray-700 dark:text-gray-300">
         Are you sure you want to leave
         <span class="font-semibold">{{ projectStore.selectedDetail()?.title }}</span
         >? You will lose access and will need to be re-invited to rejoin.
@@ -168,7 +176,7 @@
         <button
           (click)="showLeaveModal.set(false)"
           [disabled]="leavingProject()"
-          class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           Cancel
         </button>

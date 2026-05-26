@@ -121,12 +121,20 @@
           </div>
 
           @if (isSavedLocationTypeEnabled()) {
-            <div class="border-t border-gray-200 bg-blue-50 p-4">
+            <div
+              class="border-t border-gray-200 bg-blue-50 p-4 dark:border-gray-700 dark:bg-blue-900/20"
+            >
               @if (loadingSavedLocations()) {
-                <div class="py-4 text-center text-sm text-gray-500">Loading saved locations...</div>
+                <div class="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                  Loading saved locations...
+                </div>
               } @else if (availableSavedLocations().length === 0) {
-                <div class="rounded-lg border border-gray-200 bg-white p-4 text-center">
-                  <p class="mb-2 text-sm text-gray-600">No saved locations found.</p>
+                <div
+                  class="rounded-lg border border-gray-200 bg-white p-4 text-center dark:border-gray-700 dark:bg-gray-800"
+                >
+                  <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                    No saved locations found.
+                  </p>
                   <a routerLink="/saved-locations" class="text-sm text-blue-600 hover:underline">
                     Create your first saved location
                   </a>
@@ -135,7 +143,9 @@
                 <!-- Add Location Dropdown -->
                 @if (availableLocationsForSelection.length > 0) {
                   <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-700">Add Location</label>
+                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >Add Location</label
+                    >
                     <div class="relative">
                       <select
                         #locationSelect
@@ -146,7 +156,7 @@
                           );
                           locationSelect.value = ''
                         "
-                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                       >
                         <option value="">Select a location to add...</option>
                         @for (location of availableLocationsForSelection; track location.uuid) {
@@ -260,16 +270,20 @@
             </div>
 
             @if (isPOITypeEnabled()) {
-              <div class="border-t border-gray-200 bg-blue-50 p-4">
+              <div
+                class="border-t border-gray-200 bg-blue-50 p-4 dark:border-gray-700 dark:bg-blue-900/20"
+              >
                 <!-- Add POI Type Dropdown -->
                 @if (availablePoiTypesForSelection.length > 0) {
                   <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-700">Add POI Type</label>
+                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >Add POI Type</label
+                    >
                     <div class="relative">
                       <select
                         #poiSelect
                         (change)="addPoiCriterion($any(poiSelect.value)); poiSelect.value = ''"
-                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                       >
                         <option value="">Select a POI type to add...</option>
                         @for (poiType of availablePoiTypesForSelection; track poiType) {

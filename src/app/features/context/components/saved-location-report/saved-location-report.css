@@ -179,3 +179,42 @@
 .travel-icon {
   font-size: 0.75rem;
 }
+
+:host-context(.dark) .stat-card {
+  background-color: #1f2937;
+}
+:host-context(.dark) .stat-card.closest {
+  background-color: #064e3b20;
+  border-color: #065f46;
+}
+:host-context(.dark) .stat-value {
+  color: #f9fafb;
+}
+:host-context(.dark) .stat-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .location-card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+:host-context(.dark) .location-name {
+  color: #f9fafb;
+}
+:host-context(.dark) .distance-badge {
+  background-color: #1e3a8a40;
+}
+:host-context(.dark) .distance-value {
+  color: #93c5fd;
+}
+:host-context(.dark) .distance-value-alt {
+  color: #6b7280;
+}
+:host-context(.dark) .location-address {
+  color: #9ca3af;
+}
+:host-context(.dark) .location-coords {
+  color: #6b7280;
+}
+:host-context(.dark) .no-data {
+  color: #9ca3af;
+}

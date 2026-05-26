@@ -1,11 +1,13 @@
-<div class="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
-  <h2 class="mb-2 text-2xl font-bold text-gray-900">Configure Context Options</h2>
-  <p class="mb-6 text-sm text-gray-500">
+<div class="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+  <h2 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Configure Context Options</h2>
+  <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
     Select which context services to run when retrieving data for properties in this list.
   </p>
 
   @if (error || validationError()) {
-    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+    <div
+      class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
       {{ error || validationError() }}
     </div>
   }
@@ -14,7 +16,7 @@
     <!-- Service Toggles -->
     <div class="mb-6">
       <div class="mb-3 flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-800">Context Services</h3>
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Context Services</h3>
         <button
           type="button"
           (click)="toggleAllContextServices()"
@@ -25,7 +27,7 @@
       </div>
       <div class="space-y-3">
         <label
-          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
         >
           <input
             type="checkbox"
@@ -33,13 +35,15 @@
             class="h-4 w-4 rounded text-blue-600"
           />
           <div>
-            <span class="font-medium text-gray-700">Crime Statistics</span>
-            <p class="text-xs text-gray-500">Local crime rate data from Police UK API</p>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Crime Statistics</span>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Local crime rate data from Police UK API
+            </p>
           </div>
         </label>
 
         <label
-          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
         >
           <input
             type="checkbox"
@@ -47,8 +51,10 @@
             class="h-4 w-4 rounded text-blue-600"
           />
           <div>
-            <span class="font-medium text-gray-700">Schools</span>
-            <p class="text-xs text-gray-500">Nearby school ratings from Ofsted</p>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Schools</span>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Nearby school ratings from Ofsted
+            </p>
           </div>
         </label>
       </div>
@@ -56,11 +62,15 @@
 
     <!-- Schools Configuration (shown only when Schools enabled) -->
     @if (isSchoolsEnabled) {
-      <div class="mb-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
-        <h3 class="mb-3 text-base font-semibold text-gray-800">School Type Settings</h3>
+      <div
+        class="mb-6 rounded-lg border border-blue-100 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20"
+      >
+        <h3 class="mb-3 text-base font-semibold text-gray-800 dark:text-gray-200">
+          School Type Settings
+        </h3>
         <div>
           <div class="mb-2 flex items-center justify-between">
-            <label class="text-sm font-medium text-gray-700">School Types</label>
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">School Types</label>
             <button
               type="button"
               (click)="toggleAllSchoolTypes()"
@@ -72,7 +82,7 @@
           <div class="grid grid-cols-2 gap-2">
             @for (entry of schoolTypeEntries; track entry[0]) {
               <label
-                class="flex cursor-pointer items-center gap-2 rounded border border-gray-200 bg-white p-2 text-sm hover:bg-gray-50"
+                class="flex cursor-pointer items-center gap-2 rounded border border-gray-200 bg-white p-2 text-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
               >
                 <input
                   type="checkbox"
@@ -80,7 +90,7 @@
                   (change)="onSchoolTypeToggle(entry[0])"
                   class="h-3.5 w-3.5 rounded text-blue-600"
                 />
-                <span class="text-gray-700">{{ entry[1] }}</span>
+                <span class="text-gray-700 dark:text-gray-300">{{ entry[1] }}</span>
               </label>
             }
           </div>
@@ -91,7 +101,7 @@
     <div class="mb-6">
       <div class="space-y-3">
         <label
-          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
         >
           <input
             type="checkbox"
@@ -99,13 +109,15 @@
             class="h-4 w-4 rounded text-blue-600"
           />
           <div>
-            <span class="font-medium text-gray-700">Broadband</span>
-            <p class="text-xs text-gray-500">Available broadband speeds at the property</p>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Broadband</span>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Available broadband speeds at the property
+            </p>
           </div>
         </label>
 
         <label
-          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
         >
           <input
             type="checkbox"
@@ -113,13 +125,15 @@
             class="h-4 w-4 rounded text-blue-600"
           />
           <div>
-            <span class="font-medium text-gray-700">Mobile Coverage</span>
-            <p class="text-xs text-gray-500">Indoor and outdoor mobile coverage by operator</p>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Mobile Coverage</span>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Indoor and outdoor mobile coverage by operator
+            </p>
           </div>
         </label>
 
         <label
-          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
+          class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
         >
           <input
             type="checkbox"
@@ -127,32 +141,38 @@
             class="h-4 w-4 rounded text-blue-600"
           />
           <div>
-            <span class="font-medium text-gray-700">Council Tax</span>
-            <p class="text-xs text-gray-500">Council tax band and valuation range</p>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Council Tax</span>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Council tax band and valuation range
+            </p>
           </div>
         </label>
 
         <!-- Saved Locations with Config -->
-        <div class="rounded-lg border border-gray-200">
-          <label class="flex cursor-pointer items-center gap-3 p-3 hover:bg-gray-50">
+        <div class="rounded-lg border border-gray-200 dark:border-gray-700">
+          <label
+            class="flex cursor-pointer items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
             <input
               type="checkbox"
               formControlName="enable_saved_locations"
               class="h-4 w-4 rounded text-blue-600"
             />
             <div class="flex-1">
-              <span class="font-medium text-gray-700">Saved Locations</span>
-              <p class="text-xs text-gray-500">Distances to your saved locations</p>
+              <span class="font-medium text-gray-700 dark:text-gray-300">Saved Locations</span>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Distances to your saved locations
+              </p>
             </div>
             @if (isSavedLocationsEnabled) {
               <button
                 type="button"
                 (click)="toggleSavedLocationsConfig(); $event.preventDefault()"
-                class="rounded p-1 hover:bg-gray-100"
+                class="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
                 title="Toggle configuration"
               >
                 <svg
-                  class="h-5 w-5 text-gray-600 transition-transform"
+                  class="h-5 w-5 text-gray-600 transition-transform dark:text-gray-400"
                   [class.rotate-180]="savedLocationsConfigExpanded()"
                   fill="none"
                   stroke="currentColor"
@@ -171,12 +191,20 @@
 
           <!-- Saved Locations Configuration -->
           @if (isSavedLocationsEnabled && savedLocationsConfigExpanded()) {
-            <div class="border-t border-gray-200 bg-blue-50 p-4">
+            <div
+              class="border-t border-gray-200 bg-blue-50 p-4 dark:border-gray-700 dark:bg-blue-900/20"
+            >
               @if (loadingSavedLocations()) {
-                <div class="py-4 text-center text-sm text-gray-500">Loading saved locations...</div>
+                <div class="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                  Loading saved locations...
+                </div>
               } @else if (availableSavedLocations().length === 0) {
-                <div class="rounded-lg border border-gray-200 bg-white p-4 text-center">
-                  <p class="mb-2 text-sm text-gray-600">No saved locations found.</p>
+                <div
+                  class="rounded-lg border border-gray-200 bg-white p-4 text-center dark:border-gray-700 dark:bg-gray-800"
+                >
+                  <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                    No saved locations found.
+                  </p>
                   <a routerLink="/saved-locations" class="text-sm text-blue-600 hover:underline">
                     Create your first saved location
                   </a>
@@ -185,18 +213,20 @@
                 <!-- Selected Locations -->
                 @if (selectedSavedLocationUuids().length > 0) {
                   <div class="mb-4">
-                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Selected Locations ({{ selectedSavedLocationUuids().length }})
                     </label>
                     <div class="space-y-2">
                       @for (uuid of selectedSavedLocationUuids(); track uuid) {
                         @if (getSelectedLocation(uuid); as location) {
                           <div
-                            class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3"
+                            class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800"
                           >
                             <div class="flex-1">
-                              <div class="font-medium text-gray-900">{{ location.name }}</div>
-                              <div class="text-xs text-gray-500">
+                              <div class="font-medium text-gray-900 dark:text-white">
+                                {{ location.name }}
+                              </div>
+                              <div class="text-xs text-gray-500 dark:text-gray-400">
                                 {{ location.address_line_1 }}, {{ location.postcode }}
                               </div>
                             </div>
@@ -230,12 +260,14 @@
                 <!-- Add Location Dropdown -->
                 @if (availableLocationsForSelection.length > 0) {
                   <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-700">Add Location</label>
+                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >Add Location</label
+                    >
                     <div class="relative">
                       <select
                         #locationSelect
                         (change)="addSavedLocation(locationSelect.value); locationSelect.value = ''"
-                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                       >
                         <option value="">Select a location to add...</option>
                         @for (location of availableLocationsForSelection; track location.uuid) {
@@ -275,26 +307,30 @@
         </div>
 
         <!-- Places of Interest with Config -->
-        <div class="rounded-lg border border-gray-200">
-          <label class="flex cursor-pointer items-center gap-3 p-3 hover:bg-gray-50">
+        <div class="rounded-lg border border-gray-200 dark:border-gray-700">
+          <label
+            class="flex cursor-pointer items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
             <input
               type="checkbox"
               formControlName="enable_poi"
               class="h-4 w-4 rounded text-blue-600"
             />
             <div class="flex-1">
-              <span class="font-medium text-gray-700">Places of Interest</span>
-              <p class="text-xs text-gray-500">Nearby amenities via Google Maps</p>
+              <span class="font-medium text-gray-700 dark:text-gray-300">Places of Interest</span>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Nearby amenities via Google Maps
+              </p>
             </div>
             @if (isPoiEnabled) {
               <button
                 type="button"
                 (click)="togglePoiConfig(); $event.preventDefault()"
-                class="rounded p-1 hover:bg-gray-100"
+                class="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
                 title="Toggle configuration"
               >
                 <svg
-                  class="h-5 w-5 text-gray-600 transition-transform"
+                  class="h-5 w-5 text-gray-600 transition-transform dark:text-gray-400"
                   [class.rotate-180]="poiConfigExpanded()"
                   fill="none"
                   stroke="currentColor"
@@ -313,15 +349,17 @@
 
           <!-- POI Configuration -->
           @if (isPoiEnabled && poiConfigExpanded()) {
-            <div class="border-t border-gray-200 bg-blue-50 p-4">
+            <div
+              class="border-t border-gray-200 bg-blue-50 p-4 dark:border-gray-700 dark:bg-blue-900/20"
+            >
               <div class="mb-4">
-                <label class="mb-2 block text-sm font-medium text-gray-700">
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Search Radius (metres)
                 </label>
                 <div class="relative">
                   <select
                     formControlName="poi_search_radius_meters"
-                    class="w-full appearance-none rounded-lg border border-gray-300 py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                    class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   >
                     <option [value]="800">800m (~10 min walk)</option>
                     <option [value]="1600">1600m (~20 min walk)</option>
@@ -348,7 +386,9 @@
 
               <div>
                 <div class="mb-2 flex items-center justify-between">
-                  <label class="text-sm font-medium text-gray-700">POI Types</label>
+                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >POI Types</label
+                  >
                   <button
                     type="button"
                     (click)="toggleAllPoiTypes()"
@@ -360,7 +400,7 @@
                 <div class="grid grid-cols-2 gap-2">
                   @for (entry of poiTypeEntries; track entry[0]) {
                     <label
-                      class="flex cursor-pointer items-center gap-2 rounded border border-gray-200 bg-white p-2 text-sm hover:bg-gray-50"
+                      class="flex cursor-pointer items-center gap-2 rounded border border-gray-200 bg-white p-2 text-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
                     >
                       <input
                         type="checkbox"
@@ -368,7 +408,7 @@
                         (change)="onPoiTypeToggle(entry[0])"
                         class="h-3.5 w-3.5 rounded text-blue-600"
                       />
-                      <span class="text-gray-700">{{ entry[1] }}</span>
+                      <span class="text-gray-700 dark:text-gray-300">{{ entry[1] }}</span>
                     </label>
                   }
                 </div>
@@ -397,7 +437,7 @@
       <button
         type="button"
         (click)="onCancel()"
-        class="rounded-lg border border-gray-300 px-6 py-2 font-medium transition-colors hover:bg-gray-50"
+        class="rounded-lg border border-gray-300 px-6 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
       >
         Cancel
       </button>

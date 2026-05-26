@@ -1,14 +1,14 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="rounded-lg border border-blue-200 bg-blue-50 p-4"
+  class="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:bg-blue-900/20"
 >
   <div class="mb-3">
     <input
       formControlName="title"
       type="text"
       placeholder="Task list name"
-      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
     />
     @if (form.get('title')?.invalid && form.get('title')?.touched) {
       <p class="mt-1 text-xs text-red-600">Title is required.</p>
@@ -20,7 +20,7 @@
       formControlName="description"
       placeholder="Description (optional)"
       rows="2"
-      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
     ></textarea>
   </div>
 
@@ -35,7 +35,7 @@
     <button
       type="button"
       (click)="onCancel()"
-      class="rounded-md border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+      class="rounded-md border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
     >
       Cancel
     </button>

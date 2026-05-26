@@ -76,3 +76,29 @@
   border-top: 1px solid #e5e7eb;
   line-height: 1.5;
 }
+
+:host-context(.dark) .metric-card {
+  background-color: #1f2937;
+}
+:host-context(.dark) .metric-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .metric-value {
+  color: #f9fafb;
+}
+:host-context(.dark) .fibre-info h4 {
+  color: #f9fafb;
+}
+:host-context(.dark) .fibre-stat {
+  background-color: #1e3a8a20;
+}
+:host-context(.dark) .fibre-label {
+  color: #93c5fd;
+}
+:host-context(.dark) .fibre-value {
+  color: #bfdbfe;
+}
+:host-context(.dark) .data-source {
+  color: #6b7280;
+  border-top-color: #374151;
+}

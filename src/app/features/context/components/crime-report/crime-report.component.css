@@ -172,3 +172,49 @@
   padding-top: 1rem;
   border-top: 1px solid #e5e7eb;
 }
+
+:host-context(.dark) .metric-card {
+  background-color: #1f2937;
+}
+:host-context(.dark) .metric-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .metric-value {
+  color: #f9fafb;
+}
+:host-context(.dark) .metric-period {
+  color: #6b7280;
+}
+:host-context(.dark) .top-categories h4 {
+  color: #f9fafb;
+}
+:host-context(.dark) .category-item {
+  background-color: #1f2937;
+}
+:host-context(.dark) .category-name {
+  color: #d1d5db;
+}
+:host-context(.dark) .category-count {
+  color: #f9fafb;
+  background-color: #374151;
+}
+:host-context(.dark) .monthly-breakdown h4 {
+  color: #f9fafb;
+}
+:host-context(.dark) .month-item {
+  background-color: #1f2937;
+}
+:host-context(.dark) .month-item.month-failed {
+  background-color: #450a0a;
+  border-color: #7f1d1d;
+}
+:host-context(.dark) .month-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .month-count {
+  color: #f9fafb;
+}
+:host-context(.dark) .data-source {
+  color: #6b7280;
+  border-top-color: #374151;
+}

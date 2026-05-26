@@ -1,13 +1,13 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
-  <div class="rounded-lg border border-gray-200 bg-white p-6">
-    <h3 class="mb-4 text-lg font-semibold text-gray-900">
+  <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+    <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
       {{ mode() === 'create' ? 'Add New Location' : 'Edit Location' }}
     </h3>
 
     <div class="space-y-4">
       <!-- Name -->
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700">
+        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Name <span class="text-red-500">*</span>
         </label>
         <input
@@ -15,7 +15,7 @@
           id="name"
           formControlName="name"
           placeholder="e.g., Home, Work, Parents"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
           [class.border-red-500]="form.get('name')?.invalid && form.get('name')?.touched"
         />
         @if (form.get('name')?.invalid && form.get('name')?.touched) {
@@ -25,7 +25,7 @@
 
       <!-- Postcode -->
       <div>
-        <label for="postcode" class="block text-sm font-medium text-gray-700">
+        <label for="postcode" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Postcode <span class="text-red-500">*</span>
         </label>
         <input
@@ -33,7 +33,7 @@
           id="postcode"
           formControlName="postcode"
           placeholder="e.g., SW1A 1AA"
-          class="mt-1 block w-full rounded-md border-gray-300 uppercase shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 block w-full rounded-md border-gray-300 uppercase shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
           [class.border-red-500]="form.get('postcode')?.invalid && form.get('postcode')?.touched"
         />
         @if (form.get('postcode')?.invalid && form.get('postcode')?.touched) {
@@ -43,7 +43,10 @@
 
       <!-- Address Line 1 -->
       <div>
-        <label for="address_line_1" class="block text-sm font-medium text-gray-700">
+        <label
+          for="address_line_1"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           Address Line 1 <span class="text-red-500">*</span>
         </label>
         <input
@@ -51,7 +54,7 @@
           id="address_line_1"
           formControlName="address_line_1"
           placeholder="e.g., 123 Main Street"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
           [class.border-red-500]="
             form.get('address_line_1')?.invalid && form.get('address_line_1')?.touched
           "
@@ -63,7 +66,10 @@
 
       <!-- Address Line 2 -->
       <div>
-        <label for="address_line_2" class="block text-sm font-medium text-gray-700">
+        <label
+          for="address_line_2"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           Address Line 2
         </label>
         <input
@@ -71,19 +77,21 @@
           id="address_line_2"
           formControlName="address_line_2"
           placeholder="e.g., Flat 4, Building Name"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
         />
       </div>
 
       <!-- City -->
       <div>
-        <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+        <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >City</label
+        >
         <input
           type="text"
           id="city"
           formControlName="city"
           placeholder="e.g., London"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
         />
       </div>
     </div>
@@ -94,7 +102,7 @@
     <button
       type="button"
       (click)="onCancel()"
-      class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+      class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
     >
       Cancel
     </button>

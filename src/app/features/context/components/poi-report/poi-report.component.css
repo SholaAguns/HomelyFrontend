@@ -361,3 +361,49 @@
 .info-text {
   color: #6b7280;
 }
+
+:host-context(.dark) .category-group {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+:host-context(.dark) .category-header {
+  background-color: #111827;
+  border-bottom-color: #374151;
+}
+:host-context(.dark) .category-header:hover {
+  background-color: #1f2937;
+}
+:host-context(.dark) .category-header h4 {
+  color: #f9fafb;
+}
+:host-context(.dark) .places-grid {
+  background-color: #111827;
+}
+:host-context(.dark) .place-card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+:host-context(.dark) .place-name {
+  color: #f9fafb;
+}
+:host-context(.dark) .place-address {
+  color: #9ca3af;
+}
+:host-context(.dark) .place-rating-section {
+  border-top-color: #374151;
+}
+:host-context(.dark) .rating-value {
+  color: #f9fafb;
+}
+:host-context(.dark) .review-count {
+  color: #9ca3af;
+}
+:host-context(.dark) .data-info {
+  border-top-color: #374151;
+}
+:host-context(.dark) .info-badge {
+  background-color: #1f2937;
+}
+:host-context(.dark) .info-text {
+  color: #9ca3af;
+}

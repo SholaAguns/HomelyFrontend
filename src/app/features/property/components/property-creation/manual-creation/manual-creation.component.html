@@ -1,11 +1,15 @@
 <div class="space-y-6">
   <div>
-    <h1 class="text-3xl font-bold text-gray-900">Manual Property Entry</h1>
-    <p class="mt-2 text-gray-600">Enter property details manually using the form below</p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Manual Property Entry</h1>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">
+      Enter property details manually using the form below
+    </p>
   </div>
 
   @if (error()) {
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
       <p class="font-medium">Error</p>
       <p class="text-sm">{{ error() }}</p>
     </div>

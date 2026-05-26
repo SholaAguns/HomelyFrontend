@@ -245,3 +245,53 @@
 .info-value {
   color: #111827;
 }
+
+:host-context(.dark) .section-title {
+  color: #f9fafb;
+}
+:host-context(.dark) .coverage-card {
+  background-color: #1f2937;
+  border-color: #374151;
+  box-shadow: none;
+}
+:host-context(.dark) .coverage-card-header {
+  border-bottom-color: #374151;
+}
+:host-context(.dark) .coverage-card-header h5 {
+  color: #f9fafb;
+}
+:host-context(.dark) .network-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .network-value {
+  color: #f9fafb;
+}
+:host-context(.dark) .network-bar {
+  background-color: #374151;
+}
+:host-context(.dark) .provider-card {
+  background-color: #1f2937;
+  border-color: #374151;
+  box-shadow: none;
+}
+:host-context(.dark) .provider-name {
+  color: #f9fafb;
+}
+:host-context(.dark) .metric-row {
+  border-bottom-color: #374151;
+}
+:host-context(.dark) .metric-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .metric-value {
+  color: #f9fafb;
+}
+:host-context(.dark) .data-info {
+  border-top-color: #374151;
+}
+:host-context(.dark) .info-label {
+  color: #9ca3af;
+}
+:host-context(.dark) .info-value {
+  color: #f9fafb;
+}
