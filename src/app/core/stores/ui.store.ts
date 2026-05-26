@@ -28,11 +28,13 @@ export const UiStore = signalStore(
       const newTheme = store.theme() === 'light' ? 'dark' : 'light';
       patchState(store, { theme: newTheme });
       document.documentElement.classList.toggle('dark', newTheme === 'dark');
+      localStorage.setItem('theme', newTheme);
     },
 
     setTheme: (theme: 'light' | 'dark') => {
       patchState(store, { theme });
       document.documentElement.classList.toggle('dark', theme === 'dark');
+      localStorage.setItem('theme', theme);
     },
 
     setViewMode: (viewMode: 'grid' | 'list') => {
@@ -43,10 +45,11 @@ export const UiStore = signalStore(
       const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
       const savedViewMode = localStorage.getItem('viewMode') as 'grid' | 'list' | null;
 
-      if (savedTheme) {
-        patchState(store, { theme: savedTheme });
-        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-      }
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const resolvedTheme: 'light' | 'dark' = savedTheme ?? (prefersDark ? 'dark' : 'light');
+
+      patchState(store, { theme: resolvedTheme });
+      document.documentElement.classList.toggle('dark', resolvedTheme === 'dark');
 
       if (savedViewMode) {
         patchState(store, { viewMode: savedViewMode });
