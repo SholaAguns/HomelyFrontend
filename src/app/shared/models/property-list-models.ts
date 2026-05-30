@@ -19,8 +19,7 @@ export interface PropertyList {
   average_price?: number | null;
   highest_price?: number | null;
   lowest_price?: number | null;
-  scraping_task_uuid?: string;
-  scraping_status?: string;
+  scraping_tasks?: { uuid: string; status: string; source: string }[];
   created_at: string;
   updated_at: string;
 }

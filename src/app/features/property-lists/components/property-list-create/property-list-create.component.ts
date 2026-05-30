@@ -55,11 +55,10 @@ export class PropertyListCreateComponent implements OnInit {
             .find((l) => l.search_criteria?.area === searchCriteria.area);
           if (createdList) {
             // If list has scraping task info, initialize SearchTaskStore and start polling
-            if (createdList.scraping_task_uuid && createdList.scraping_status) {
-              this.searchTaskStore.initializeFromListCreation(
+            if (createdList.scraping_tasks?.length) {
+              this.searchTaskStore.initializeFromTasks(
                 createdList.uuid,
-                createdList.scraping_task_uuid,
-                createdList.scraping_status as any
+                createdList.scraping_tasks
               );
             }
 

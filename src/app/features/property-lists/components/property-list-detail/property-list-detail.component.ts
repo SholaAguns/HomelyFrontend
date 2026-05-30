@@ -27,6 +27,7 @@ import {
 } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { ProjectRole } from '../../../../shared/models/auth-models';
+import { ScrapeProgressEvent } from '../../../../shared/models/property-models';
 
 @Component({
   selector: 'app-property-list-detail',
@@ -67,6 +68,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   showDropdown = signal(false);
   userRole = signal<ProjectRole>(null);
   private wsSubscription?: Subscription;
+  private scrapeSubscription?: Subscription;
 
   canEdit = computed(() => {
     const listData = this.list();
@@ -131,6 +133,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         (taskStatus === 'QUEUED' || taskStatus === 'IN_PROGRESS')
       ) {
         this.searchTaskStore.startPolling(uuid);
+        this.subscribeToScrapeEvents(uuid);
       }
     }
   }
@@ -138,6 +141,29 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.searchTaskStore.reset();
     this.wsSubscription?.unsubscribe();
+    this.scrapeSubscription?.unsubscribe();
+  }
+
+  private subscribeToScrapeEvents(listUuid: string): void {
+    this.scrapeSubscription?.unsubscribe();
+    this.scrapeSubscription = this.propertySseService
+      .connectToPropertyList(listUuid)
+      .pipe(
+        timeout(30 * 60 * 1000),
+        catchError(() => EMPTY)
+      )
+      .subscribe({
+        next: (event) => {
+          if (
+            event.type === 'scrape_progress' ||
+            event.type === 'scrape_complete' ||
+            event.type === 'scrape_failed'
+          ) {
+            this.searchTaskStore.updateProgress(event.data as ScrapeProgressEvent);
+          }
+        },
+        error: () => {},
+      });
   }
 
   private subscribeToListEvents(

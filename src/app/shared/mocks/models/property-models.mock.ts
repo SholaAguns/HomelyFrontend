@@ -233,25 +233,11 @@ export const mockPropertyListTaskFailed: PropertyListTask = {
 };
 
 export const mockCreateFromSearchResponse: CreateFromSearchResponse = {
-  uuid: 'task-uuid-1',
-  property_list_uuid: 'list-uuid-1',
-  task_type: 'SCRAPE_SEARCH',
-  status: 'QUEUED',
-  websocket_url: 'ws://localhost:8000/ws/property_list.list-uuid-1',
-  property_list: 'list-uuid-1',
-  celery_task_id: 'celery-task-123',
-  total_items: 0,
-  completed_items: 0,
-  failed_items: 0,
-  progress_percentage: 0,
-  errors: [],
-  metadata: { search_criteria: mockSearchCriteria },
-  created_at: '2024-01-15T10:00:00Z',
-  updated_at: '2024-01-15T10:00:00Z',
+  tasks: [mockPropertyListTask],
 };
 
 export const mockScrapeProgressEvent: ScrapeProgressEvent = {
-  uuid: 'task-uuid-1',
+  task_uuid: 'task-uuid-1',
   status: 'IN_PROGRESS',
   completed_items: 25,
   total_items: 50,

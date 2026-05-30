@@ -2,7 +2,17 @@ import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap, catchError, EMPTY, interval, takeUntil, Subject } from 'rxjs';
+import {
+  pipe,
+  switchMap,
+  tap,
+  catchError,
+  EMPTY,
+  interval,
+  takeUntil,
+  Subject,
+  forkJoin,
+} from 'rxjs';
 import { PropertyCreationService } from '../../../core/services/property-creation-service/property-creation.service';
 import { NotificationService } from '../../../core/services/notification-service/notification.service';
 import {
@@ -14,7 +24,7 @@ import {
 import { AppError } from '../../../shared/models/error-models';
 
 type SearchTaskState = {
-  currentTask: PropertyListTask | null;
+  tasks: PropertyListTask[];
   status: TaskStatus | null;
   completedItems: number;
   totalItems: number;
@@ -26,7 +36,7 @@ type SearchTaskState = {
 };
 
 const initialState: SearchTaskState = {
-  currentTask: null,
+  tasks: [],
   status: null,
   completedItems: 0,
   totalItems: 0,
@@ -37,15 +47,43 @@ const initialState: SearchTaskState = {
   propertyListUuid: null,
 };
 
+function aggregateProgress(tasks: PropertyListTask[]): {
+  status: TaskStatus | null;
+  completedItems: number;
+  totalItems: number;
+  failedItems: number;
+  errors: string[];
+} {
+  if (!tasks.length)
+    return { status: null, completedItems: 0, totalItems: 0, failedItems: 0, errors: [] };
+  const allDone = tasks.every((t) => t.status === 'COMPLETED' || t.status === 'FAILED');
+  const allFailed = tasks.every((t) => t.status === 'FAILED');
+  const anyInProgress = tasks.some((t) => t.status === 'IN_PROGRESS');
+  let status: TaskStatus;
+  if (allDone) {
+    status = allFailed ? 'FAILED' : 'COMPLETED';
+  } else {
+    status = anyInProgress ? 'IN_PROGRESS' : 'QUEUED';
+  }
+  return {
+    status,
+    completedItems: tasks.reduce((sum, t) => sum + t.completed_items, 0),
+    totalItems: tasks.reduce((sum, t) => sum + t.total_items, 0),
+    failedItems: tasks.reduce((sum, t) => sum + t.failed_items, 0),
+    errors: tasks.flatMap((t) => t.errors),
+  };
+}
+
 export const SearchTaskStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ completedItems, totalItems }) => ({
+  withComputed(({ completedItems, totalItems, tasks }) => ({
     progressPercentage: computed(() => {
       const total = totalItems();
       const completed = completedItems();
       return total > 0 ? Math.round((completed / total) * 100) : 0;
     }),
+    currentTask: computed(() => tasks()[0] ?? null),
   })),
   withMethods(
     (
@@ -63,40 +101,24 @@ export const SearchTaskStore = signalStore(
             switchMap(({ listUuid, request }) =>
               propertyCreationService.createFromSearch(listUuid, request).pipe(
                 tap((response) => {
-                  const task: PropertyListTask = {
-                    uuid: response.uuid,
-                    property_list: response.property_list,
-                    task_type: response.task_type,
-                    status: response.status,
-                    celery_task_id: response.celery_task_id,
-                    total_items: response.total_items,
-                    completed_items: response.completed_items,
-                    failed_items: response.failed_items,
-                    progress_percentage: response.progress_percentage,
-                    errors: response.errors,
-                    metadata: response.metadata,
-                    websocket_url: response.websocket_url,
-                    created_at: response.created_at,
-                    updated_at: response.updated_at,
-                  };
+                  const tasks = response.tasks;
+                  const aggregated = aggregateProgress(tasks);
+                  const propertyListUuid = tasks[0]?.property_list ?? listUuid;
 
                   patchState(store, {
-                    currentTask: task,
-                    status: response.status,
-                    completedItems: response.completed_items,
-                    totalItems: response.total_items,
-                    failedItems: response.failed_items,
-                    errors: response.errors,
+                    tasks,
+                    status: aggregated.status,
+                    completedItems: aggregated.completedItems,
+                    totalItems: aggregated.totalItems,
+                    failedItems: aggregated.failedItems,
+                    errors: aggregated.errors,
                     loading: false,
-                    propertyListUuid: response.property_list_uuid,
+                    propertyListUuid,
                     usingPollingFallback: true,
                   });
 
-                  // Start polling for updates
                   methods.startPolling(listUuid);
-
-                  // Navigate to property list detail page
-                  router.navigate(['/lists', response.property_list_uuid]);
+                  router.navigate(['/lists', propertyListUuid]);
                 }),
                 catchError((error: AppError) => {
                   patchState(store, {
@@ -113,26 +135,36 @@ export const SearchTaskStore = signalStore(
         ),
 
         startPolling(listUuid: string): void {
-          const taskUuid = store.currentTask()?.uuid;
-          if (!taskUuid) return;
+          const taskUuids = store
+            .tasks()
+            .map((t) => t.uuid)
+            .filter(Boolean);
+          if (!taskUuids.length) return;
 
           stopPolling$.next();
 
           interval(2000)
             .pipe(
               takeUntil(stopPolling$),
-              switchMap(() => propertyCreationService.getSearchStatus(listUuid, taskUuid)),
-              tap((task) => {
+              switchMap(() =>
+                forkJoin(
+                  taskUuids.map((uuid) => propertyCreationService.getSearchStatus(listUuid, uuid))
+                )
+              ),
+              tap((freshTasks) => {
+                const updatedTasks = store
+                  .tasks()
+                  .map((t) => freshTasks.find((ft) => ft.uuid === t.uuid) ?? t);
+                const aggregated = aggregateProgress(updatedTasks);
                 patchState(store, {
-                  currentTask: task,
-                  status: task.status,
-                  completedItems: task.completed_items,
-                  totalItems: task.total_items,
-                  failedItems: task.failed_items,
-                  errors: task.errors,
+                  tasks: updatedTasks,
+                  status: aggregated.status,
+                  completedItems: aggregated.completedItems,
+                  totalItems: aggregated.totalItems,
+                  failedItems: aggregated.failedItems,
+                  errors: aggregated.errors,
                 });
-
-                if (task.status === 'COMPLETED' || task.status === 'FAILED') {
+                if (aggregated.status === 'COMPLETED' || aggregated.status === 'FAILED') {
                   stopPolling$.next();
                 }
               }),
@@ -145,30 +177,32 @@ export const SearchTaskStore = signalStore(
         },
 
         updateProgress(event: ScrapeProgressEvent): void {
-          patchState(store, {
-            status: event.status,
-            completedItems: event.completed_items,
-            totalItems: event.total_items,
-            failedItems: event.failed_items,
-            errors: event.errors,
+          const tasks = store.tasks();
+          const updatedTasks = tasks.map((t, i) => {
+            const matches = event.task_uuid ? t.uuid === event.task_uuid : i === 0;
+            if (!matches) return t;
+            return {
+              ...t,
+              status: event.status,
+              completed_items: event.completed_items,
+              total_items: event.total_items,
+              failed_items: event.failed_items,
+              progress_percentage: event.progress_percentage,
+              errors: event.errors,
+            };
           });
 
-          const currentTask = store.currentTask();
-          if (currentTask) {
-            patchState(store, {
-              currentTask: {
-                ...currentTask,
-                status: event.status,
-                completed_items: event.completed_items,
-                total_items: event.total_items,
-                failed_items: event.failed_items,
-                progress_percentage: event.progress_percentage,
-                errors: event.errors,
-              },
-            });
-          }
+          const aggregated = aggregateProgress(updatedTasks);
+          patchState(store, {
+            tasks: updatedTasks,
+            status: aggregated.status,
+            completedItems: aggregated.completedItems,
+            totalItems: aggregated.totalItems,
+            failedItems: aggregated.failedItems,
+            errors: aggregated.errors,
+          });
 
-          if (event.status === 'COMPLETED' || event.status === 'FAILED') {
+          if (aggregated.status === 'COMPLETED' || aggregated.status === 'FAILED') {
             stopPolling$.next();
           }
         },
@@ -176,6 +210,42 @@ export const SearchTaskStore = signalStore(
         reset(): void {
           stopPolling$.next();
           patchState(store, initialState);
+        },
+
+        initializeFromTasks(
+          listUuid: string,
+          scrapingTasks: { uuid: string; status: string; source: string }[]
+        ): void {
+          const tasks: PropertyListTask[] = scrapingTasks.map((t) => ({
+            uuid: t.uuid,
+            property_list: listUuid,
+            task_type: 'SCRAPE_SEARCH',
+            status: t.status as TaskStatus,
+            celery_task_id: null,
+            total_items: 0,
+            completed_items: 0,
+            failed_items: 0,
+            progress_percentage: 0,
+            errors: [],
+            metadata: { source: t.source },
+            websocket_url: '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }));
+
+          const aggregated = aggregateProgress(tasks);
+          patchState(store, {
+            tasks,
+            status: aggregated.status,
+            completedItems: 0,
+            totalItems: 0,
+            failedItems: 0,
+            errors: [],
+            propertyListUuid: listUuid,
+            usingPollingFallback: true,
+          });
+
+          methods.startPolling(listUuid);
         },
 
         initializeFromListCreation(
@@ -201,7 +271,7 @@ export const SearchTaskStore = signalStore(
           };
 
           patchState(store, {
-            currentTask: task,
+            tasks: [task],
             status: taskStatus,
             completedItems: 0,
             totalItems: 0,
@@ -211,7 +281,6 @@ export const SearchTaskStore = signalStore(
             usingPollingFallback: true,
           });
 
-          // Start polling for updates
           methods.startPolling(listUuid);
         },
       };

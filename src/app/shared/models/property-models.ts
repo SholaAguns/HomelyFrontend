@@ -250,29 +250,17 @@ export interface PropertyListTask {
 }
 
 export interface CreateFromSearchResponse {
-  uuid: string;
-  property_list_uuid: string;
-  task_type: string;
-  status: TaskStatus;
-  websocket_url: string;
-  property_list: string;
-  celery_task_id: string | null;
-  total_items: number;
-  completed_items: number;
-  failed_items: number;
-  progress_percentage: number;
-  errors: string[];
-  metadata: Record<string, any>;
-  created_at: string;
-  updated_at: string;
+  tasks: PropertyListTask[];
 }
 
 export interface ScrapeProgressEvent {
-  uuid: string;
+  task_uuid?: string;
+  source?: 'rightmove' | 'zoopla';
   status: TaskStatus;
   completed_items: number;
   total_items: number;
   failed_items: number;
   progress_percentage: number;
   errors: string[];
+  message?: string;
 }
