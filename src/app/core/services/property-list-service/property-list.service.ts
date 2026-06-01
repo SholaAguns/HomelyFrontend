@@ -5,6 +5,7 @@ import {
   PropertyList,
   PropertyListDetail,
   CreatePropertyListDto,
+  CreateBlankPropertyListDto,
   UpdatePropertyListDto,
 } from '../../../shared/models/property-list-models';
 
@@ -26,6 +27,10 @@ export class PropertyListService {
 
   create(data: CreatePropertyListDto): Observable<PropertyList> {
     return this.api.post<PropertyList>(this.endpoint, data);
+  }
+
+  createBlank(data: CreateBlankPropertyListDto): Observable<PropertyList> {
+    return this.api.post<PropertyList>(`${this.endpoint}create-blank/`, data);
   }
 
   update(uuid: string, data: UpdatePropertyListDto): Observable<PropertyList> {

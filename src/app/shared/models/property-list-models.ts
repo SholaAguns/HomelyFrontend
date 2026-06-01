@@ -46,6 +46,11 @@ export interface CreatePropertyListDto {
   contributors?: string[];
 }
 
+export interface CreateBlankPropertyListDto {
+  project_uuid: string;
+  title?: string;
+}
+
 export interface UpdatePropertyListDto {
   title?: string;
   rating_criteria?: string | null;

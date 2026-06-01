@@ -7,6 +7,7 @@ import { NotificationService } from '../../../core/services/notification-service
 import {
   PropertyList,
   CreatePropertyListDto,
+  CreateBlankPropertyListDto,
   UpdatePropertyListDto,
   PropertyListDetail,
 } from '../../../shared/models/property-list-models';
@@ -78,6 +79,25 @@ export const PropertyListStore = signalStore(
           tap(() => patchState(store, { loading: true, error: null })),
           exhaustMap((data) =>
             service.create(data).pipe(
+              tap((list) => {
+                const entities = { ...store.entities(), [list.uuid]: list };
+                const ids = [...store.ids(), list.uuid];
+                patchState(store, { entities, ids, loading: false });
+              }),
+              catchError((error: AppError) => {
+                patchState(store, { error: error.message, loading: false });
+                notificationService.error('Could not create property list. Please try again.');
+                return EMPTY;
+              })
+            )
+          )
+        )
+      ),
+      createBlank: rxMethod<CreateBlankPropertyListDto>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          exhaustMap((data) =>
+            service.createBlank(data).pipe(
               tap((list) => {
                 const entities = { ...store.entities(), [list.uuid]: list };
                 const ids = [...store.ids(), list.uuid];
