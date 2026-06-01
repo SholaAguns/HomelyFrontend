@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, AfterViewInit, OnDestroy, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import { Chart, ChartConfiguration, TooltipItem, registerables } from 'chart.js';
 import { ProjectStore } from '../../store/project.store';
 import { ProjectStats } from '../../../../shared/models/project-models';
 
@@ -184,7 +184,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit, OnDestr
               },
               tooltip: {
                 callbacks: {
-                  label: (context) => {
+                  label: (context: TooltipItem<'line'>) => {
                     const value = context.parsed.y;
                     return value !== null ? `£${value.toLocaleString()}` : 'N/A';
                   },
@@ -195,7 +195,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit, OnDestr
               y: {
                 beginAtZero: true,
                 ticks: {
-                  callback: (value) => `£${Number(value).toLocaleString()}`,
+                  callback: (value: string | number) => `£${Number(value).toLocaleString()}`,
                 },
               },
             },

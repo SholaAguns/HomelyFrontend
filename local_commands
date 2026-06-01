@@ -4,3 +4,6 @@ Run /install-github-app to tag @claude right from your Github issues and PRs
 Working with HTML/CSS? Add the frontend-design plugin:
 
 claude --add-dir ../HomelyBackend
+
+
+build_logs.log

@@ -57,4 +57,4 @@ P1:
 
 ## Bugs
 - Retry all failed stage 2: http://localhost:4200/properties/d1929282-446d-467e-b292-82b8fac42683
-
+-  Client error: {'search_criteria': {'bedrooms_min': [ErrorDetail(string='A valid integer is required.', code='invalid')], 'bedrooms_max': [ErrorDetail(string='A valid integer is required.', code='invalid')]}}

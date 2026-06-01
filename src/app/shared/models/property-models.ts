@@ -171,15 +171,19 @@ export interface PropertyStateTransition {
 
 export interface CreateFromInputRequest {
   input_data: string;
-  input_type: 'url' | 'text';
+  input_type: 'url' | 'text' | 'html';
   property_list_uuid?: string;
+  source?: 'rightmove' | 'zoopla';
 }
 
 export interface CreateFromInputResponse {
   success: boolean;
-  property: Property;
-  created: boolean;
-  message: string;
+  property?: Property;
+  created: boolean | number;
+  updated?: number;
+  failed?: number;
+  total?: number;
+  message?: string;
   source?: string;
 }
 

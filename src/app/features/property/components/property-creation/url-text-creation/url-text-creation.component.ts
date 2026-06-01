@@ -15,8 +15,16 @@ import {
   Property,
 } from '../../../../../shared/models/property-models';
 
-type InputMode = 'url' | 'text';
-type Step = 'input' | 'review';
+type InputMode = 'url' | 'text' | 'html';
+type Step = 'input' | 'review' | 'batch-result';
+
+interface BatchResult {
+  created: number;
+  updated: number;
+  failed: number;
+  total: number;
+  source: string;
+}
 
 @Component({
   selector: 'app-url-text-creation',
@@ -28,29 +36,28 @@ type Step = 'input' | 'review';
 export class UrlTextCreationComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  router = inject(Router);
   private propertyService = inject(PropertyService);
   private propertyStore = inject(PropertyStore);
 
-  // State
   propertyListUuid = signal<string>('');
   inputMode = signal<InputMode>('url');
+  htmlSource = signal<'rightmove' | 'zoopla'>('rightmove');
   loading = signal(false);
   error = signal<string | null>(null);
   currentStep = signal<Step>('input');
   extractedData = signal<CreatePropertyDto | undefined>(undefined);
   showDuplicateModal = signal(false);
   duplicateProperty = signal<Property | null>(null);
+  batchResult = signal<BatchResult | null>(null);
 
-  // Form
   inputForm!: FormGroup;
 
   ngOnInit() {
-    const uuid = this.route.parent?.parent?.snapshot.paramMap.get('uuid');
+    const uuid = this.route.parent?.snapshot.paramMap.get('uuid');
     if (uuid) {
       this.propertyListUuid.set(uuid);
     }
-
     this.initInputForm();
   }
 
@@ -64,17 +71,28 @@ export class UrlTextCreationComponent implements OnInit {
     this.inputMode.set(mode);
     this.inputForm.reset();
     this.error.set(null);
+    this.batchResult.set(null);
+    this.currentStep.set('input');
+  }
+
+  setHtmlSource(source: 'rightmove' | 'zoopla') {
+    this.htmlSource.set(source);
   }
 
   onExtract() {
     if (!this.inputForm.valid) return;
+
+    if (this.inputMode() === 'html') {
+      this.onImportHtml();
+      return;
+    }
 
     this.loading.set(true);
     this.error.set(null);
 
     const request: CreateFromInputRequest = {
       input_data: this.inputForm.value.inputData,
-      input_type: this.inputMode(),
+      input_type: this.inputMode() as 'url' | 'text',
       property_list_uuid: this.propertyListUuid(),
     };
 
@@ -105,6 +123,37 @@ export class UrlTextCreationComponent implements OnInit {
       error: (err) => {
         this.loading.set(false);
         const errorMessage = err.error?.message || err.message || 'Failed to create property';
+        this.error.set(errorMessage);
+      },
+    });
+  }
+
+  onImportHtml() {
+    this.loading.set(true);
+    this.error.set(null);
+
+    const request: CreateFromInputRequest = {
+      input_data: this.inputForm.value.inputData,
+      input_type: 'html',
+      source: this.htmlSource(),
+      property_list_uuid: this.propertyListUuid(),
+    };
+
+    this.propertyService.createFromInput(request).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+        this.batchResult.set({
+          created: response.created as number,
+          updated: response.updated ?? 0,
+          failed: response.failed ?? 0,
+          total: response.total ?? 0,
+          source: response.source ?? '',
+        });
+        this.currentStep.set('batch-result');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const errorMessage = err.error?.message || err.message || 'Import failed';
         this.error.set(errorMessage);
       },
     });

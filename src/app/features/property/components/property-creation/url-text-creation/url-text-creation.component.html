@@ -1,8 +1,8 @@
 <div class="space-y-6">
   <div>
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create from URL or Text</h1>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Add Properties</h1>
     <p class="mt-2 text-gray-600 dark:text-gray-400">
-      Extract and create property from a Rightmove URL or paste property description text
+      Extract a single property from a URL or text, or import a batch from a search results page
     </p>
   </div>
 
@@ -15,114 +15,228 @@
     </div>
   }
 
-  <!-- Input Form -->
-  <div class="space-y-6 rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-    <!-- Input Mode Toggle -->
-    <div class="flex space-x-2 border-b border-gray-200 dark:border-gray-700">
-      <button
-        type="button"
-        (click)="toggleInputMode('url')"
-        [class.border-b-2]="inputMode() === 'url'"
-        [class.border-blue-500]="inputMode() === 'url'"
-        [class.text-blue-600]="inputMode() === 'url'"
-        [class.text-gray-600]="inputMode() !== 'url'"
-        class="-mb-px px-4 py-2 font-medium"
-      >
-        URL
-      </button>
-      <button
-        type="button"
-        (click)="toggleInputMode('text')"
-        [class.border-b-2]="inputMode() === 'text'"
-        [class.border-blue-500]="inputMode() === 'text'"
-        [class.text-blue-600]="inputMode() === 'text'"
-        [class.text-gray-600]="inputMode() !== 'text'"
-        class="-mb-px px-4 py-2 font-medium"
-      >
-        Text
-      </button>
-    </div>
-
-    <!-- Input Form -->
-    <form [formGroup]="inputForm" (ngSubmit)="onExtract()" class="space-y-4">
-      @if (inputMode() === 'url') {
-        <div>
-          <label
-            for="urlInput"
-            class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            Property URL
-          </label>
-          <input
-            id="urlInput"
-            type="url"
-            formControlName="inputData"
-            placeholder="https://www.rightmove.co.uk/properties/..."
-            class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-          />
-          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Enter a Rightmove property URL to automatically extract details
+  @if (currentStep() === 'batch-result' && batchResult()) {
+    <div class="space-y-4 rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Import Complete</h2>
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-lg bg-green-50 p-4 text-center dark:bg-green-900/20">
+          <p class="text-2xl font-bold text-green-700 dark:text-green-400">
+            {{ batchResult()!.created }}
           </p>
+          <p class="text-sm text-green-600 dark:text-green-500">Created</p>
         </div>
-      } @else {
-        <div>
-          <label for="textInput" class="mb-1 block text-sm font-medium text-gray-700">
-            Property Description
-          </label>
-          <textarea
-            id="textInput"
-            formControlName="inputData"
-            rows="8"
-            placeholder="Paste property description text here..."
-            class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-          ></textarea>
-          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Paste a property description to extract details
+        <div class="rounded-lg bg-blue-50 p-4 text-center dark:bg-blue-900/20">
+          <p class="text-2xl font-bold text-blue-700 dark:text-blue-400">
+            {{ batchResult()!.updated }}
           </p>
+          <p class="text-sm text-blue-600 dark:text-blue-500">Updated</p>
         </div>
-      }
-
-      <div class="flex justify-end space-x-3">
+        <div class="rounded-lg bg-red-50 p-4 text-center dark:bg-red-900/20">
+          <p class="text-2xl font-bold text-red-700 dark:text-red-400">
+            {{ batchResult()!.failed }}
+          </p>
+          <p class="text-sm text-red-600 dark:text-red-500">Failed</p>
+        </div>
+        <div class="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700">
+          <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
+            {{ batchResult()!.total }}
+          </p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total</p>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-3 pt-2">
         <button
           type="button"
-          (click)="onFormCancel()"
+          (click)="toggleInputMode('html')"
           class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-          [disabled]="loading()"
         >
-          Cancel
+          Import Another
         </button>
         <button
-          type="submit"
-          class="flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-          [disabled]="!inputForm.valid || loading()"
+          type="button"
+          (click)="router.navigate(['/lists', propertyListUuid()])"
+          class="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
-          @if (loading()) {
-            <svg
-              class="mr-2 -ml-1 h-4 w-4 animate-spin text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            Creating...
-          } @else {
-            Create Property
-          }
+          View List
         </button>
       </div>
-    </form>
-  </div>
+    </div>
+  }
+
+  @if (currentStep() !== 'batch-result') {
+    <div class="space-y-6 rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+      <!-- Tab Toggle -->
+      <div class="flex space-x-2 border-b border-gray-200 dark:border-gray-700">
+        <button
+          type="button"
+          (click)="toggleInputMode('url')"
+          [class.border-b-2]="inputMode() === 'url'"
+          [class.border-blue-500]="inputMode() === 'url'"
+          [class.text-blue-600]="inputMode() === 'url'"
+          [class.text-gray-600]="inputMode() !== 'url'"
+          class="-mb-px px-4 py-2 font-medium"
+        >
+          URL
+        </button>
+        <button
+          type="button"
+          (click)="toggleInputMode('text')"
+          [class.border-b-2]="inputMode() === 'text'"
+          [class.border-blue-500]="inputMode() === 'text'"
+          [class.text-blue-600]="inputMode() === 'text'"
+          [class.text-gray-600]="inputMode() !== 'text'"
+          class="-mb-px px-4 py-2 font-medium"
+        >
+          Text
+        </button>
+        <button
+          type="button"
+          (click)="toggleInputMode('html')"
+          [class.border-b-2]="inputMode() === 'html'"
+          [class.border-blue-500]="inputMode() === 'html'"
+          [class.text-blue-600]="inputMode() === 'html'"
+          [class.text-gray-600]="inputMode() !== 'html'"
+          class="-mb-px px-4 py-2 font-medium"
+        >
+          HTML Batch
+        </button>
+      </div>
+
+      <form [formGroup]="inputForm" (ngSubmit)="onExtract()" class="space-y-4">
+        @if (inputMode() === 'url') {
+          <div>
+            <label
+              for="urlInput"
+              class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Property URL
+            </label>
+            <input
+              id="urlInput"
+              type="url"
+              formControlName="inputData"
+              placeholder="https://www.rightmove.co.uk/properties/..."
+              class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+            />
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Enter a Rightmove or Zoopla property URL to automatically extract details
+            </p>
+          </div>
+        } @else if (inputMode() === 'text') {
+          <div>
+            <label
+              for="textInput"
+              class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Property Description
+            </label>
+            <textarea
+              id="textInput"
+              formControlName="inputData"
+              rows="8"
+              placeholder="Paste property description text here..."
+              class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+            ></textarea>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Paste a property description to extract details
+            </p>
+          </div>
+        } @else {
+          <!-- HTML Batch -->
+          <div class="space-y-4">
+            <div>
+              <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Source</label
+              >
+              <div class="flex space-x-3">
+                <button
+                  type="button"
+                  (click)="setHtmlSource('rightmove')"
+                  [class]="
+                    htmlSource() === 'rightmove'
+                      ? 'rounded-md border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-medium text-white'
+                      : 'rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                  "
+                >
+                  Rightmove
+                </button>
+                <button
+                  type="button"
+                  (click)="setHtmlSource('zoopla')"
+                  [class]="
+                    htmlSource() === 'zoopla'
+                      ? 'rounded-md border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-medium text-white'
+                      : 'rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                  "
+                >
+                  Zoopla
+                </button>
+              </div>
+            </div>
+            <div>
+              <label
+                for="htmlInput"
+                class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Search Results HTML
+              </label>
+              <textarea
+                id="htmlInput"
+                formControlName="inputData"
+                rows="12"
+                placeholder="Paste the full HTML source of a Rightmove or Zoopla search results page..."
+                class="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+              ></textarea>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Open a search results page, copy the full page source (Ctrl+U), paste it here and
+                click Import
+              </p>
+            </div>
+          </div>
+        }
+
+        <div class="flex justify-end space-x-3">
+          <button
+            type="button"
+            (click)="onFormCancel()"
+            class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            [disabled]="loading()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            [disabled]="!inputForm.valid || loading()"
+          >
+            @if (loading()) {
+              <svg
+                class="mr-2 -ml-1 h-4 w-4 animate-spin text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              {{ inputMode() === 'html' ? 'Importing...' : 'Creating...' }}
+            } @else {
+              {{ inputMode() === 'html' ? 'Import Properties' : 'Create Property' }}
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
 </div>
