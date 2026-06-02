@@ -8,6 +8,7 @@ import {
   CreateBlankPropertyListDto,
   UpdatePropertyListDto,
 } from '../../../shared/models/property-list-models';
+import { BulkEnrichRequest, PropertyListTask } from '../../../shared/models/property-models';
 
 @Injectable({
   providedIn: 'root',
@@ -39,5 +40,12 @@ export class PropertyListService {
 
   delete(uuid: string): Observable<void> {
     return this.api.delete<void>(`${this.endpoint}${uuid}/`);
+  }
+
+  enrichProperties(listUuid: string, request: BulkEnrichRequest): Observable<PropertyListTask> {
+    return this.api.post<PropertyListTask>(
+      `${this.endpoint}${listUuid}/enrich-properties/`,
+      request
+    );
   }
 }

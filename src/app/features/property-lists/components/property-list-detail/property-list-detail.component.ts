@@ -342,6 +342,31 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     return this.selectedPropertyUuids().has(uuid);
   }
 
+  enrichingSelected = signal(false);
+
+  enrichSelected(): void {
+    const listData = this.list();
+    if (!listData) return;
+    const uuids = Array.from(this.selectedPropertyUuids());
+    if (!uuids.length) return;
+
+    this.enrichingSelected.set(true);
+    this.propertyListService.enrichProperties(listData.uuid, { property_uuids: uuids }).subscribe({
+      next: () => {
+        this.notificationService.success(
+          `Enriching ${uuids.length} ${uuids.length === 1 ? 'property' : 'properties'}...`
+        );
+        this.clearSelection();
+        this.selectionMode.set(false);
+        this.enrichingSelected.set(false);
+      },
+      error: (err) => {
+        this.notificationService.error(err.message || 'Failed to start enrichment');
+        this.enrichingSelected.set(false);
+      },
+    });
+  }
+
   triggerStage2ForList() {
     const listData = this.list();
     if (!listData || !listData.project) return;

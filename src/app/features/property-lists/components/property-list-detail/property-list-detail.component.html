@@ -243,6 +243,15 @@
                   }
                 </div>
                 <div class="flex gap-2">
+                  @if (selectedCount() > 0 && selectedCount() <= 10) {
+                    <button
+                      (click)="enrichSelected()"
+                      [disabled]="enrichingSelected()"
+                      class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {{ enrichingSelected() ? 'Starting...' : 'Fetch full details' }}
+                    </button>
+                  }
                   @if (selectedCount() > 0) {
                     <button
                       (click)="deleteSelected()"

@@ -9,6 +9,7 @@ import {
   PropertyStateTransition,
   CreateFromInputRequest,
   CreateFromInputResponse,
+  EnrichPropertyResponse,
 } from '../../../shared/models/property-models';
 
 @Injectable({
@@ -42,30 +43,22 @@ export class PropertyService {
   }
 
   runStage2(uuid: string): Observable<PropertyStateTransition> {
-    return this.api.post<PropertyStateTransition>(
-      `${this.endpoint}${uuid}/run_stage2/`,
-      {}
-    );
+    return this.api.post<PropertyStateTransition>(`${this.endpoint}${uuid}/run_stage2/`, {});
   }
 
   runStage3(uuid: string): Observable<PropertyStateTransition> {
-    return this.api.post<PropertyStateTransition>(
-      `${this.endpoint}${uuid}/run_stage3/`,
-      {}
-    );
+    return this.api.post<PropertyStateTransition>(`${this.endpoint}${uuid}/run_stage3/`, {});
   }
 
   rerunServices(uuid: string): Observable<PropertyStateTransition> {
-    return this.api.post<PropertyStateTransition>(
-      `${this.endpoint}${uuid}/rerun_services/`,
-      {}
-    );
+    return this.api.post<PropertyStateTransition>(`${this.endpoint}${uuid}/rerun_services/`, {});
   }
 
   createFromInput(request: CreateFromInputRequest): Observable<CreateFromInputResponse> {
-    return this.api.post<CreateFromInputResponse>(
-      `${this.endpoint}create-from-input/`,
-      request
-    );
+    return this.api.post<CreateFromInputResponse>(`${this.endpoint}create-from-input/`, request);
+  }
+
+  enrich(uuid: string): Observable<EnrichPropertyResponse> {
+    return this.api.post<EnrichPropertyResponse>(`${this.endpoint}${uuid}/enrich/`, {});
   }
 }

@@ -72,6 +72,7 @@ export interface Property {
   // Additional details
   council_tax_band: string;
   epc_rating: string;
+  deposit: string;
   lease_length: number | null;
   floor_level: number | null;
   child_suitable: boolean;
@@ -80,6 +81,8 @@ export interface Property {
   // External refs
   external_id: string;
   external_url: string;
+  is_enriched: boolean;
+  enriched_at: string | null;
 
   // Deduplication
   normalized_address: string;
@@ -255,6 +258,15 @@ export interface PropertyListTask {
 
 export interface CreateFromSearchResponse {
   tasks: PropertyListTask[];
+}
+
+export interface EnrichPropertyResponse {
+  success: boolean;
+  property: PropertyDetail;
+}
+
+export interface BulkEnrichRequest {
+  property_uuids: string[];
 }
 
 export interface ScrapeProgressEvent {

@@ -152,6 +152,30 @@
               View Original Listing →
             </a>
           }
+
+          @if (property()!.is_enriched) {
+            <span
+              class="rounded bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/20 dark:text-green-300"
+            >
+              Full data
+            </span>
+          } @else if (canEnrich() && canEdit()) {
+            <span
+              class="rounded bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800 dark:bg-amber-900/20 dark:text-amber-300"
+            >
+              Basic data
+            </span>
+          }
+
+          @if (canEnrich() && canEdit()) {
+            <button
+              (click)="enrichProperty()"
+              [disabled]="enriching()"
+              class="rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {{ enriching() ? 'Fetching details...' : 'Fetch full details' }}
+            </button>
+          }
         </div>
 
         <!-- Property Lists -->

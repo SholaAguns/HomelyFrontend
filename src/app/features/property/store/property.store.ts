@@ -229,6 +229,12 @@ export const PropertyStore = signalStore(
           patchState(store, { entities });
         }
       },
+      upsertOne: (property: Property) => {
+        const alreadyPresent = store.ids().includes(property.uuid);
+        const entities = { ...store.entities(), [property.uuid]: property };
+        const ids = alreadyPresent ? store.ids() : [...store.ids(), property.uuid];
+        patchState(store, { entities, ids });
+      },
     })
   )
 );

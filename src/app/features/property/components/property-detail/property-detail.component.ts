@@ -54,6 +54,14 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     return this.authService.canEdit(pUuid, this.userRole());
   });
 
+  canEnrich = computed(() => {
+    const p = this.property();
+    if (!p?.external_url || p.is_enriched) return false;
+    return p.external_url.includes('zoopla') || p.external_url.includes('rightmove');
+  });
+
+  enriching = signal(false);
+
   displayedImages = computed(() => {
     const propertyData = this.property();
     if (!propertyData?.images || propertyData.images.length <= 1) return [];
@@ -235,6 +243,27 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
 
   closeGallery(): void {
     this.galleryOpen.set(false);
+  }
+
+  enrichProperty(): void {
+    const p = this.property();
+    if (!p) return;
+    this.enriching.set(true);
+    this.propertyService
+      .enrich(p.uuid)
+      .pipe(
+        catchError((err) => {
+          this.notificationService.error(err.message || 'Failed to fetch full details');
+          this.enriching.set(false);
+          return EMPTY;
+        })
+      )
+      .subscribe((res) => {
+        this.property.set(res.property);
+        this.propertyStore.upsertOne(res.property);
+        this.notificationService.success('Property details updated');
+        this.enriching.set(false);
+      });
   }
 
   toggleFavorite(): void {
