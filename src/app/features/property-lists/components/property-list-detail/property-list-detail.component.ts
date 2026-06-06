@@ -453,6 +453,46 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  runningStage3ForList = signal(false);
+
+  runStage3ForList(): void {
+    const listData = this.list();
+    if (!listData) return;
+
+    const eligibleProperties = listData.properties.filter(
+      (p) => p.state === 'STAGE2_COMPLETE' || p.state === 'STAGE3_COMPLETE'
+    );
+
+    if (eligibleProperties.length === 0) {
+      this.notificationService.error('No rated or context-complete properties to run rating on');
+      return;
+    }
+
+    this.runningStage3ForList.set(true);
+
+    from(eligibleProperties)
+      .pipe(
+        mergeMap((property) =>
+          this.propertyService.runStage3(property.uuid).pipe(
+            catchError(() => {
+              this.notificationService.error(
+                `Failed to start rating for ${property.address_line_1 || property.uuid}`
+              );
+              return EMPTY;
+            })
+          )
+        )
+      )
+      .subscribe({
+        complete: () => {
+          this.notificationService.success(
+            `Rating started for ${eligibleProperties.length} ${eligibleProperties.length === 1 ? 'property' : 'properties'}`
+          );
+          this.runningStage3ForList.set(false);
+        },
+      });
+  }
+
   onContextOptionsSaved() {
     this.showContextOptionsModal.set(false);
     const listData = this.list();
