@@ -16,7 +16,7 @@ P1:
 - ~~Support SavedLocation time calculation~~
 - logging
 - Review all caching strategies
-- Zoopla service
+- ~~Zoopla service~~
 - User settings page: change email, names, delete account
 - ~~Use defined constants for search criteria~~
 - Context report section layout
@@ -36,7 +36,7 @@ P1:
 - ~~Tasklist~~
 - ~~Comments~~
 - Rating override
-- Support dark mode
+- ~~Support dark mode~~
 - ~~Endpoint for user to leave project~~
 - Admin dashboard
 - prices types - per week, per month

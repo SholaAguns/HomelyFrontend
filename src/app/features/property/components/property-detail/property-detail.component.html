@@ -143,6 +143,18 @@
             {{ property()!.state_display }}
           </span>
 
+          @if (propertySource()) {
+            <span
+              [class]="
+                propertySource() === 'Rightmove'
+                  ? 'rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-800 dark:bg-red-900/20 dark:text-red-300'
+                  : 'rounded bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900/20 dark:text-purple-300'
+              "
+            >
+              {{ propertySource() }}
+            </span>
+          }
+
           @if (property()!.external_url) {
             <a
               [href]="property()!.external_url"

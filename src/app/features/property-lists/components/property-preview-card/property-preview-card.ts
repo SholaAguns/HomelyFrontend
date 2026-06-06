@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Property } from '../../../../shared/models/property-models';
@@ -19,6 +19,14 @@ export class PropertyPreviewCard {
   showFavoriteToggle = input<boolean>(false);
   selectionChange = output<void>();
   favoriteToggle = output<string>();
+
+  propertySource = computed((): 'Rightmove' | 'Zoopla' | null => {
+    const externalUrl = this.property().external_url;
+    if (!externalUrl) return null;
+    if (externalUrl.includes('rightmove')) return 'Rightmove';
+    if (externalUrl.includes('zoopla')) return 'Zoopla';
+    return null;
+  });
 
   viewDetails(): void {
     if (!this.selectable()) {

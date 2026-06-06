@@ -60,6 +60,14 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     return p.external_url.includes('zoopla') || p.external_url.includes('rightmove');
   });
 
+  propertySource = computed((): 'Rightmove' | 'Zoopla' | null => {
+    const externalUrl = this.property()?.external_url;
+    if (!externalUrl) return null;
+    if (externalUrl.includes('rightmove')) return 'Rightmove';
+    if (externalUrl.includes('zoopla')) return 'Zoopla';
+    return null;
+  });
+
   enriching = signal(false);
 
   displayedImages = computed(() => {
