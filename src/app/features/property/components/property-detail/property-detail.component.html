@@ -210,7 +210,7 @@
     </div>
 
     <!-- Key Features -->
-    <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+    <div class="my-6 rounded-lg border border-gray-200 bg-white p-6">
       <h2 class="mb-4 text-xl font-semibold">Key Features</h2>
       <div class="grid grid-cols-2 gap-4">
         @if (property()!.property_type) {
@@ -259,17 +259,6 @@
           </div>
         }
       </div>
-
-      @if (property()!.key_features && property()!.key_features.length > 0) {
-        <ul class="mt-4 space-y-1">
-          @for (feature of property()!.key_features; track feature.order) {
-            <li class="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-              <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-500"></span>
-              {{ feature.description }}
-            </li>
-          }
-        </ul>
-      }
     </div>
 
     <!-- Description -->
@@ -286,6 +275,17 @@
     <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6">
       <h2 class="mb-4 text-xl font-semibold">Additional Details</h2>
       <div class="grid grid-cols-2 gap-4">
+        @if (property()!.key_features && property()!.key_features.length > 0) {
+          <ul class="mt-4 space-y-1">
+            @for (feature of property()!.key_features; track feature.order) {
+              <li class="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-500"></span>
+                <span class="text-lg font-medium">{{ feature.description }}</span>
+              </li>
+            }
+          </ul>
+        }
+
         @if (property()!.council_tax_band) {
           <div>
             <span class="text-sm text-gray-600 dark:text-gray-400">Council Tax Band</span>
