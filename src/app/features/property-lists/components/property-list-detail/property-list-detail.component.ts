@@ -77,12 +77,9 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   });
 
   paginatedProperties = computed(() => {
-    const listData = this.list();
-    if (!listData) return [];
-
+    const sorted = this.sortedProperties();
     const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return listData.properties.slice(startIndex, endIndex);
+    return sorted.slice(startIndex, startIndex + this.itemsPerPage);
   });
 
   totalPages = computed(() => {
@@ -340,6 +337,49 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
   isPropertySelected(uuid: string): boolean {
     return this.selectedPropertyUuids().has(uuid);
+  }
+
+  sortBy = signal<'rating' | 'price' | 'title'>('rating');
+  sortDirection = signal<'asc' | 'desc'>('desc');
+
+  sortedProperties = computed(() => {
+    const listData = this.list();
+    if (!listData) return [];
+
+    const properties = [...listData.properties];
+    const sortByValue = this.sortBy();
+    const direction = this.sortDirection();
+
+    return properties.sort((a, b) => {
+      let comparison = 0;
+
+      if (sortByValue === 'rating') {
+        if (a.overall_rating === null && b.overall_rating === null) comparison = 0;
+        else if (a.overall_rating === null) return 1;
+        else if (b.overall_rating === null) return -1;
+        else comparison = a.overall_rating - b.overall_rating;
+      } else if (sortByValue === 'price') {
+        comparison = Number(a.price) - Number(b.price);
+      } else if (sortByValue === 'title') {
+        comparison = a.title.localeCompare(b.title);
+      }
+
+      return direction === 'desc' ? -comparison : comparison;
+    });
+  });
+
+  toggleSortDirection() {
+    this.sortDirection.update((d) => (d === 'asc' ? 'desc' : 'asc'));
+  }
+
+  setSortBy(field: string) {
+    if (this.sortBy() === field) {
+      this.toggleSortDirection();
+    } else {
+      this.sortBy.set(field as 'rating' | 'price' | 'title');
+      this.sortDirection.set(field === 'title' ? 'asc' : 'desc');
+    }
+    this.currentPage.set(1);
   }
 
   enrichingSelected = signal(false);

@@ -192,8 +192,33 @@
         }
 
         <div class="mt-8 border-t border-gray-200 pt-6 dark:border-gray-700">
-          <div class="mb-4 flex items-center justify-between">
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Properties</h2>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500 dark:text-gray-400">Sort:</span>
+              @for (
+                option of [
+                  { label: 'Rating', value: 'rating' },
+                  { label: 'Price', value: 'price' },
+                  { label: 'Title', value: 'title' },
+                ];
+                track option.value
+              ) {
+                <button
+                  (click)="setSortBy(option.value)"
+                  [class]="
+                    sortBy() === option.value
+                      ? 'flex items-center gap-1 rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white'
+                      : 'flex items-center gap-1 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                  "
+                >
+                  {{ option.label }}
+                  @if (sortBy() === option.value) {
+                    <span>{{ sortDirection() === 'desc' ? '↓' : '↑' }}</span>
+                  }
+                </button>
+              }
+            </div>
             @if (canEdit()) {
               <div class="flex gap-2">
                 @if (list()!.properties.length > 0) {
