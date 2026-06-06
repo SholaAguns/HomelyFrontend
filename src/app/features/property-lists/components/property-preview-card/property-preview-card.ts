@@ -22,7 +22,10 @@ export class PropertyPreviewCard {
 
   viewDetails(): void {
     if (!this.selectable()) {
-      this.router.navigate(['/properties', this.property().uuid]);
+      const url = this.router.serializeUrl(
+        this.router.createUrlTree(['/properties', this.property().uuid])
+      );
+      window.open(url, '_blank');
     }
   }
 

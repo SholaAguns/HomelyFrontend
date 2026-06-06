@@ -94,7 +94,13 @@
           View
         </a>
       }
-      @if (!property().is_enriched && property().external_url) {
+      @if (property().is_enriched) {
+        <span
+          class="rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/20 dark:text-green-300"
+        >
+          Full data
+        </span>
+      } @else if (property().external_url) {
         <span
           class="rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/20 dark:text-amber-300"
           title="Limited data — open property to fetch full details"
