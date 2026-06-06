@@ -241,7 +241,9 @@
         @if (property()!.let_available_date) {
           <div>
             <span class="text-sm text-gray-600 dark:text-gray-400">Available From</span>
-            <div class="text-lg font-medium">{{ property()!.let_available_date }}</div>
+            <div class="text-lg font-medium">
+              {{ property()!.let_available_date | date: 'd MMM yyyy' }}
+            </div>
           </div>
         }
       </div>
@@ -303,19 +305,25 @@
         @if (property()!.completion_date) {
           <div>
             <span class="text-sm text-gray-600 dark:text-gray-400">Completion Date</span>
-            <div class="text-lg font-medium">{{ property()!.completion_date }}</div>
+            <div class="text-lg font-medium">
+              {{ property()!.completion_date | date: 'd MMM yyyy' }}
+            </div>
           </div>
         }
         @if (property()!.first_visible_date) {
           <div>
             <span class="text-sm text-gray-600 dark:text-gray-400">First Listed</span>
-            <div class="text-lg font-medium">{{ property()!.first_visible_date }}</div>
+            <div class="text-lg font-medium">
+              {{ property()!.first_visible_date | date: 'd MMM yyyy' }}
+            </div>
           </div>
         }
         @if (property()!.listing_update_date) {
           <div>
             <span class="text-sm text-gray-600 dark:text-gray-400">Last Updated</span>
-            <div class="text-lg font-medium">{{ property()!.listing_update_date }}</div>
+            <div class="text-lg font-medium">
+              {{ property()!.listing_update_date | date: 'd MMM yyyy' }}
+            </div>
           </div>
         }
         @if (property()!.listing_update_reason) {
