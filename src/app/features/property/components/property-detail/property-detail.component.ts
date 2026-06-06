@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, TimeoutError, timeout, catchError, EMPTY } from 'rxjs';
@@ -86,6 +86,30 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     if (!propertyData?.images) return false;
     return propertyData.images.length > 4;
   });
+
+  private readonly stateRank: Record<string, number> = {
+    NEW: 0,
+    STAGE2_IN_PROGRESS: 1,
+    STAGE2_COMPLETE: 2,
+    STAGE3_IN_PROGRESS: 3,
+    STAGE3_COMPLETE: 4,
+  };
+
+  constructor() {
+    effect(() => {
+      const localProperty = this.property();
+      if (!localProperty) return;
+      const storeEntity = this.propertyStore.entities()[localProperty.uuid];
+      if (!storeEntity || storeEntity.state === localProperty.state) return;
+      const storeRank = this.stateRank[storeEntity.state] ?? -1;
+      const localRank = this.stateRank[localProperty.state] ?? -1;
+      if (storeRank > localRank) {
+        this.property.update((current) =>
+          current ? { ...current, state: storeEntity.state } : null
+        );
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.authService.getCurrentUser().subscribe();
@@ -198,7 +222,11 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
         next: (event) => {
           if (event.type === 'connected') {
             this.propertyService.runStage3(propertyValue.uuid).subscribe({
-              next: () => this.notificationService.success('Stage 3 started successfully'),
+              next: () => {
+                this.property.update((current) =>
+                  current ? { ...current, state: 'STAGE3_IN_PROGRESS' } : null
+                );
+              },
               error: (err) => {
                 this.notificationService.error(err.message || 'Failed to run stage 3');
                 this.wsSubscription?.unsubscribe();
