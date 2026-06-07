@@ -472,6 +472,11 @@
                         item.key
                       }}</span>
                       <div class="flex items-center gap-4">
+                        @if (item.value.raw_value !== undefined && item.value.raw_value !== null) {
+                          <span class="text-sm text-gray-500 dark:text-gray-500">
+                            Value: {{ item.value.raw_value }}
+                          </span>
+                        }
                         <span class="text-sm text-gray-600 dark:text-gray-400">
                           Score: {{ item.value.normalized_score.toFixed(2) }}
                         </span>
