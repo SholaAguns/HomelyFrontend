@@ -212,7 +212,7 @@
                 </span>
               }
             </h2>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <span class="text-sm text-gray-500 dark:text-gray-400">Sort:</span>
               @for (
                 option of [
@@ -235,6 +235,40 @@
                     <span>{{ sortDirection() === 'desc' ? '↓' : '↑' }}</span>
                   }
                 </button>
+              }
+              @if (availableCriteria().length > 0) {
+                <div class="flex items-center gap-1">
+                  <button
+                    (click)="setSortBy('criterion')"
+                    [class]="
+                      sortBy() === 'criterion'
+                        ? 'flex items-center gap-1 rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white'
+                        : 'flex items-center gap-1 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                    "
+                  >
+                    Criterion
+                    @if (sortBy() === 'criterion') {
+                      <span>{{ sortDirection() === 'desc' ? '↓' : '↑' }}</span>
+                    }
+                  </button>
+                  @if (sortBy() === 'criterion') {
+                    <select
+                      [value]="sortByCriterion() ?? ''"
+                      (change)="setSortByCriterion($any($event.target).value)"
+                      class="rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    >
+                      @for (criterion of availableCriteria(); track criterion) {
+                        <option [value]="criterion">{{ criterion }}</option>
+                      }
+                    </select>
+                    <button
+                      (click)="toggleSortDirection()"
+                      class="rounded border border-gray-300 px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
+                    >
+                      {{ sortDirection() === 'desc' ? '↓' : '↑' }}
+                    </button>
+                  }
+                </div>
               }
               <button
                 (click)="toggleFilters()"
@@ -278,143 +312,199 @@
 
           @if (showFilters()) {
             <div
-              class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+              class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-900"
             >
-              <div class="flex flex-wrap items-end gap-3">
-                <div class="min-w-[180px] flex-1">
-                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
-                    >Search</label
-                  >
-                  <input
-                    type="text"
-                    [value]="titleSearchDebounced()"
-                    (input)="onTitleSearchInput($any($event.target).value)"
-                    placeholder="Title or address..."
-                    class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
-                    >State</label
-                  >
-                  <div class="flex flex-col gap-1">
-                    @for (
-                      stateOption of [
-                        { label: 'New', value: 'NEW' },
-                        { label: 'Stage 2 In Progress', value: 'STAGE2_IN_PROGRESS' },
-                        { label: 'Stage 2 Complete', value: 'STAGE2_COMPLETE' },
-                        { label: 'Stage 3 In Progress', value: 'STAGE3_IN_PROGRESS' },
-                        { label: 'Stage 3 Complete', value: 'STAGE3_COMPLETE' },
-                      ];
-                      track stateOption.value
-                    ) {
-                      <label
-                        class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-                      >
-                        <input
-                          type="checkbox"
-                          [checked]="filterStates().has(stateOption.value)"
-                          (change)="toggleFilterState(stateOption.value)"
-                          class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
-                        />
-                        {{ stateOption.label }}
-                      </label>
-                    }
+              <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Column 1: Search + State -->
+                <div class="space-y-3">
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >Search</label
+                    >
+                    <input
+                      type="text"
+                      [value]="titleSearchDebounced()"
+                      (input)="onTitleSearchInput($any($event.target).value)"
+                      placeholder="Title or address..."
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >State</label
+                    >
+                    <div class="space-y-1">
+                      @for (
+                        stateOption of [
+                          { label: 'New', value: 'NEW' },
+                          { label: 'Stage 2 In Progress', value: 'STAGE2_IN_PROGRESS' },
+                          { label: 'Stage 2 Complete', value: 'STAGE2_COMPLETE' },
+                          { label: 'Stage 3 In Progress', value: 'STAGE3_IN_PROGRESS' },
+                          { label: 'Stage 3 Complete', value: 'STAGE3_COMPLETE' },
+                        ];
+                        track stateOption.value
+                      ) {
+                        <label
+                          class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+                        >
+                          <input
+                            type="checkbox"
+                            [checked]="filterStates().has(stateOption.value)"
+                            (change)="toggleFilterState(stateOption.value)"
+                            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
+                          />
+                          {{ stateOption.label }}
+                        </label>
+                      }
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
-                    >Source</label
-                  >
-                  <select
-                    [value]="filterSource()"
-                    (change)="setFilterSource($any($event.target).value)"
-                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  >
-                    <option value="">All sources</option>
-                    <option value="Rightmove">Rightmove</option>
-                    <option value="Zoopla">Zoopla</option>
-                    <option value="Manual">Manual</option>
-                  </select>
+                <!-- Column 2: Price range + Let available range -->
+                <div class="space-y-3">
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >Price Range (£)</label
+                    >
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="number"
+                        [value]="filterPriceMin() ?? ''"
+                        (change)="setFilterPriceMin($any($event.target).value)"
+                        placeholder="Min"
+                        min="0"
+                        class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                      />
+                      <span class="text-gray-400">–</span>
+                      <input
+                        type="number"
+                        [value]="filterPriceMax() ?? ''"
+                        (change)="setFilterPriceMax($any($event.target).value)"
+                        placeholder="Max"
+                        min="0"
+                        class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >Let Available</label
+                    >
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="date"
+                        [value]="filterLetAvailableFrom() ?? ''"
+                        (change)="setFilterLetAvailableFrom($any($event.target).value)"
+                        class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                      />
+                      <span class="text-gray-400">–</span>
+                      <input
+                        type="date"
+                        [value]="filterLetAvailableTo() ?? ''"
+                        (change)="setFilterLetAvailableTo($any($event.target).value)"
+                        class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
-                    >Garden</label
-                  >
-                  <select
-                    [value]="filterHasGarden() === null ? '' : filterHasGarden() ? 'true' : 'false'"
-                    (change)="
-                      setFilterHasGarden(
-                        $any($event.target).value === ''
-                          ? null
-                          : $any($event.target).value === 'true'
-                      )
-                    "
-                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  >
-                    <option value="">Any</option>
-                    <option value="true">Has garden</option>
-                    <option value="false">No garden</option>
-                  </select>
+                <!-- Column 3: Dropdowns + toggles -->
+                <div class="space-y-3">
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label
+                        class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                        >Source</label
+                      >
+                      <select
+                        [value]="filterSource()"
+                        (change)="setFilterSource($any($event.target).value)"
+                        class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                      >
+                        <option value="">All</option>
+                        <option value="Rightmove">Rightmove</option>
+                        <option value="Zoopla">Zoopla</option>
+                        <option value="Manual">Manual</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label
+                        class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                        >Garden</label
+                      >
+                      <select
+                        [value]="
+                          filterHasGarden() === null ? '' : filterHasGarden() ? 'true' : 'false'
+                        "
+                        (change)="
+                          setFilterHasGarden(
+                            $any($event.target).value === ''
+                              ? null
+                              : $any($event.target).value === 'true'
+                          )
+                        "
+                        class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                      >
+                        <option value="">Any</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >Disqualified</label
+                    >
+                    <select
+                      [value]="filterDisqualified()"
+                      (change)="setFilterDisqualified($any($event.target).value)"
+                      class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    >
+                      <option value="all">Show all</option>
+                      <option value="hide">Hide disqualified</option>
+                      <option value="only">Only disqualified</option>
+                    </select>
+                  </div>
+                  <div class="space-y-2 pt-1">
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                      <input
+                        type="checkbox"
+                        [checked]="filterFavouritesOnly()"
+                        (change)="setFilterFavouritesOnly($any($event.target).checked)"
+                        class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
+                      />
+                      Favourites only
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                      <input
+                        type="checkbox"
+                        [checked]="filterShortlistedOnly()"
+                        (change)="setFilterShortlistedOnly($any($event.target).checked)"
+                        class="h-4 w-4 rounded border-gray-300 text-yellow-500 focus:ring-2 focus:ring-yellow-400 dark:border-gray-600"
+                      />
+                      Shortlisted only
+                    </label>
+                  </div>
                 </div>
+              </div>
 
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
-                    >Disqualified</label
-                  >
-                  <select
-                    [value]="filterDisqualified()"
-                    (change)="setFilterDisqualified($any($event.target).value)"
-                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  >
-                    <option value="all">Show all</option>
-                    <option value="hide">Hide disqualified</option>
-                    <option value="only">Only disqualified</option>
-                  </select>
-                </div>
-
-                <div class="flex items-center gap-2 self-end pb-1.5">
-                  <input
-                    type="checkbox"
-                    id="filterFavourites"
-                    [checked]="filterFavouritesOnly()"
-                    (change)="setFilterFavouritesOnly($any($event.target).checked)"
-                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
-                  />
-                  <label
-                    for="filterFavourites"
-                    class="text-sm font-medium text-gray-600 dark:text-gray-400"
-                    >Favourites only</label
-                  >
-                </div>
-
-                <div class="flex items-center gap-2 self-end pb-1.5">
-                  <input
-                    type="checkbox"
-                    id="filterShortlisted"
-                    [checked]="filterShortlistedOnly()"
-                    (change)="setFilterShortlistedOnly($any($event.target).checked)"
-                    class="h-4 w-4 rounded border-gray-300 text-yellow-500 focus:ring-2 focus:ring-yellow-400 dark:border-gray-600"
-                  />
-                  <label
-                    for="filterShortlisted"
-                    class="text-sm font-medium text-gray-600 dark:text-gray-400"
-                    >Shortlisted only</label
-                  >
-                </div>
-
-                @if (activeFilterCount() > 0) {
+              @if (activeFilterCount() > 0) {
+                <div
+                  class="mt-4 flex justify-end border-t border-gray-200 pt-3 dark:border-gray-700"
+                >
                   <button
                     (click)="clearFilters()"
                     class="rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
                   >
-                    Clear filters
+                    Clear all filters
                   </button>
-                }
-              </div>
+                </div>
+              }
             </div>
           }
 

@@ -77,6 +77,10 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   filterDisqualified = signal<'all' | 'hide' | 'only'>('all');
   filterFavouritesOnly = signal<boolean>(false);
   filterShortlistedOnly = signal<boolean>(false);
+  filterPriceMin = signal<number | null>(null);
+  filterPriceMax = signal<number | null>(null);
+  filterLetAvailableFrom = signal<string | null>(null);
+  filterLetAvailableTo = signal<string | null>(null);
   titleSearchDebounced = signal<string>('');
   private wsSubscription?: Subscription;
   private scrapeSubscription?: Subscription;
@@ -106,6 +110,8 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     if (this.titleSearchDebounced()) count++;
     if (this.filterFavouritesOnly()) count++;
     if (this.filterShortlistedOnly()) count++;
+    if (this.filterPriceMin() !== null || this.filterPriceMax() !== null) count++;
+    if (this.filterLetAvailableFrom() || this.filterLetAvailableTo()) count++;
     return count;
   });
 
@@ -380,8 +386,20 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     return this.selectedPropertyUuids().has(uuid);
   }
 
-  sortBy = signal<'rating' | 'price' | 'title'>('rating');
+  sortBy = signal<'rating' | 'price' | 'title' | 'criterion'>('rating');
   sortDirection = signal<'asc' | 'desc'>('desc');
+  sortByCriterion = signal<string | null>(null);
+
+  availableCriteria = computed(() => {
+    const properties = this.list()?.properties ?? [];
+    const criterionKeys = new Set<string>();
+    for (const p of properties) {
+      if (p.rating_breakdown) {
+        Object.keys(p.rating_breakdown).forEach((k) => criterionKeys.add(k));
+      }
+    }
+    return Array.from(criterionKeys).sort();
+  });
 
   sortedProperties = computed(() => {
     const listData = this.list();
@@ -394,12 +412,22 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const titleSearch = this.titleSearchDebounced().toLowerCase().trim();
     const favouritesOnly = this.filterFavouritesOnly();
     const shortlistedOnly = this.filterShortlistedOnly();
+    const priceMin = this.filterPriceMin();
+    const priceMax = this.filterPriceMax();
+    const letAvailableFrom = this.filterLetAvailableFrom();
+    const letAvailableTo = this.filterLetAvailableTo();
     const listUuid = listData.uuid;
 
     const filtered = listData.properties.filter((p) => {
       if (stateFilterSet.size > 0 && !stateFilterSet.has(p.state)) return false;
       if (favouritesOnly && !p.is_favorited) return false;
       if (shortlistedOnly && !p.shortlisted_in_lists?.includes(listUuid)) return false;
+      if (priceMin !== null && Number(p.price) < priceMin) return false;
+      if (priceMax !== null && Number(p.price) > priceMax) return false;
+      if (letAvailableFrom && (!p.let_available_date || p.let_available_date < letAvailableFrom))
+        return false;
+      if (letAvailableTo && (!p.let_available_date || p.let_available_date > letAvailableTo))
+        return false;
       if (sourceFilter) {
         const propertySource = p.external_url?.includes('rightmove')
           ? 'Rightmove'
@@ -422,6 +450,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
     const sortByValue = this.sortBy();
     const direction = this.sortDirection();
+    const criterionKey = this.sortByCriterion();
 
     return [...filtered].sort((a, b) => {
       if (a.disqualified && !b.disqualified) return 1;
@@ -438,6 +467,10 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         comparison = Number(a.price) - Number(b.price);
       } else if (sortByValue === 'title') {
         comparison = a.title.localeCompare(b.title);
+      } else if (sortByValue === 'criterion' && criterionKey) {
+        const aScore = a.rating_breakdown?.[criterionKey]?.weighted_score ?? -Infinity;
+        const bScore = b.rating_breakdown?.[criterionKey]?.weighted_score ?? -Infinity;
+        comparison = aScore - bScore;
       }
 
       return direction === 'desc' ? -comparison : comparison;
@@ -449,12 +482,48 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   }
 
   setSortBy(field: string) {
+    if (field === 'criterion') {
+      this.sortBy.set('criterion');
+      if (!this.sortByCriterion() && this.availableCriteria().length > 0) {
+        this.sortByCriterion.set(this.availableCriteria()[0]);
+      }
+      this.sortDirection.set('desc');
+      this.currentPage.set(1);
+      return;
+    }
     if (this.sortBy() === field) {
       this.toggleSortDirection();
     } else {
       this.sortBy.set(field as 'rating' | 'price' | 'title');
       this.sortDirection.set(field === 'title' ? 'asc' : 'desc');
     }
+    this.currentPage.set(1);
+  }
+
+  setSortByCriterion(criterionKey: string): void {
+    this.sortByCriterion.set(criterionKey);
+    this.sortBy.set('criterion');
+    this.sortDirection.set('desc');
+    this.currentPage.set(1);
+  }
+
+  setFilterPriceMin(value: string): void {
+    this.filterPriceMin.set(value ? Number(value) : null);
+    this.currentPage.set(1);
+  }
+
+  setFilterPriceMax(value: string): void {
+    this.filterPriceMax.set(value ? Number(value) : null);
+    this.currentPage.set(1);
+  }
+
+  setFilterLetAvailableFrom(value: string): void {
+    this.filterLetAvailableFrom.set(value || null);
+    this.currentPage.set(1);
+  }
+
+  setFilterLetAvailableTo(value: string): void {
+    this.filterLetAvailableTo.set(value || null);
     this.currentPage.set(1);
   }
 
@@ -511,6 +580,10 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.filterDisqualified.set('all');
     this.filterFavouritesOnly.set(false);
     this.filterShortlistedOnly.set(false);
+    this.filterPriceMin.set(null);
+    this.filterPriceMax.set(null);
+    this.filterLetAvailableFrom.set(null);
+    this.filterLetAvailableTo.set(null);
     this.titleSearchSubject.next('');
     this.titleSearchDebounced.set('');
     this.currentPage.set(1);
