@@ -15,10 +15,12 @@ P0:
 
 P1:
 - Create search criteria without triggering search
-- logging
+- POI data gets caught off
 - Review all caching strategies
 - Export to csv feature
+- prices types - per week, per month
 - poi_search_radius_meters should be in Km or miles?
+- Context service should not return/print api error
 - ~~Support SavedLocation time calculation~~
 - ~~Zoopla service~~
 - ~~User settings page: change email, names, delete account~~
@@ -35,7 +37,6 @@ P1:
 - Admin dashboard
 - Only include options for POI rating criteria that are included in project context options
 - Only include options for Saved Location rating criteria that are included in project context options
-- prices types - per week, per month
 - Site wide toaster use
 - Any
 - Site redesign and renaming
@@ -46,6 +47,7 @@ P1:
 - Keep criterion score when deleting criterion?
 - Record price frequency
 - Social login
+- logging
 - ~~Tasklist~~
 - ~~Comments~~
 - ~~Rating override~~

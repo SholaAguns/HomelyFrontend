@@ -285,17 +285,32 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.editMode.set(false);
   }
 
-  onUpdate(data: any) {
+  onUpdate(formData: any) {
     const list = this.list();
-    if (list) {
-      this.propertyListService.update(list.uuid, data).subscribe({
-        next: (updated) => {
-          this.list.update((current) => (current ? { ...current, ...updated } : null));
+    if (!list) return;
+
+    const titleUpdate$ = this.propertyListService.update(list.uuid, { title: formData.title });
+
+    if (formData.search_criteria) {
+      forkJoin([
+        titleUpdate$,
+        this.propertyListService.updateSearchCriteria(list.uuid, formData.search_criteria),
+      ]).subscribe({
+        next: ([updatedList, updatedCriteria]) => {
+          this.list.update((current) =>
+            current ? { ...current, ...updatedList, search_criteria: updatedCriteria } : null
+          );
           this.editMode.set(false);
         },
-        error: (err) => {
-          this.error.set(err.message);
+        error: (err) => this.error.set(err.message),
+      });
+    } else {
+      titleUpdate$.subscribe({
+        next: (updatedList) => {
+          this.list.update((current) => (current ? { ...current, ...updatedList } : null));
+          this.editMode.set(false);
         },
+        error: (err) => this.error.set(err.message),
       });
     }
   }

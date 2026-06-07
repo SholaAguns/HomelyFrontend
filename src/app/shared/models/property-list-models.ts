@@ -57,3 +57,14 @@ export interface UpdatePropertyListDto {
   viewers?: string[];
   contributors?: string[];
 }
+
+export interface UpdateSearchCriteriaDto {
+  area?: string;
+  bedrooms_min?: number | null;
+  bedrooms_max?: number | null;
+  price_min?: number | null;
+  price_max?: number | null;
+  radius?: number | null;
+  property_types?: string;
+  max_days_since_added?: number | null;
+}

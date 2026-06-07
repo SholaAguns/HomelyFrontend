@@ -7,7 +7,9 @@ import {
   CreatePropertyListDto,
   CreateBlankPropertyListDto,
   UpdatePropertyListDto,
+  UpdateSearchCriteriaDto,
 } from '../../../shared/models/property-list-models';
+import { SearchCriteria } from '../../../shared/models/property-models';
 import { BulkEnrichRequest, PropertyListTask } from '../../../shared/models/property-models';
 
 @Injectable({
@@ -40,6 +42,10 @@ export class PropertyListService {
 
   delete(uuid: string): Observable<void> {
     return this.api.delete<void>(`${this.endpoint}${uuid}/`);
+  }
+
+  updateSearchCriteria(uuid: string, data: UpdateSearchCriteriaDto): Observable<SearchCriteria> {
+    return this.api.patch<SearchCriteria>(`${this.endpoint}${uuid}/search-criteria/`, data);
   }
 
   enrichProperties(listUuid: string, request: BulkEnrichRequest): Observable<PropertyListTask> {
