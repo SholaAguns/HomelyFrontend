@@ -38,13 +38,18 @@
           <div class="service-header" (click)="toggleCollapsed('crime')">
             <h3>Crime Data</h3>
             <div class="header-actions">
-              @if (canEdit() && canRerunServices() && getServiceStatus('crime') === 'COMPLETE') {
+              @if (canEdit() && canRerunServices() && getServiceStatus('crime')) {
                 <button
                   class="btn-rerun"
                   title="Re-run service"
+                  [disabled]="isServiceRunning('crime')"
                   (click)="rerunService('crime'); $event.stopPropagation()"
                 >
-                  <lucide-angular [img]="RefreshCw" class="h-3.5 w-3.5"></lucide-angular>
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('crime')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
                 </button>
               }
               <span class="status-badge" [attr.data-status]="getServiceStatus('crime')">
@@ -88,13 +93,18 @@
           <div class="service-header" (click)="toggleCollapsed('schools')">
             <h3>School Ratings</h3>
             <div class="header-actions">
-              @if (canEdit() && canRerunServices() && getServiceStatus('schools') === 'COMPLETE') {
+              @if (canEdit() && canRerunServices() && getServiceStatus('schools')) {
                 <button
                   class="btn-rerun"
                   title="Re-run service"
+                  [disabled]="isServiceRunning('schools')"
                   (click)="rerunService('schools'); $event.stopPropagation()"
                 >
-                  <lucide-angular [img]="RefreshCw" class="h-3.5 w-3.5"></lucide-angular>
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('schools')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
                 </button>
               }
               <span class="status-badge" [attr.data-status]="getServiceStatus('schools')">
@@ -139,15 +149,18 @@
           <div class="service-header" (click)="toggleCollapsed('broadband')">
             <h3>Broadband Speeds</h3>
             <div class="header-actions">
-              @if (
-                canEdit() && canRerunServices() && getServiceStatus('broadband') === 'COMPLETE'
-              ) {
+              @if (canEdit() && canRerunServices() && getServiceStatus('broadband')) {
                 <button
                   class="btn-rerun"
                   title="Re-run service"
+                  [disabled]="isServiceRunning('broadband')"
                   (click)="rerunService('broadband'); $event.stopPropagation()"
                 >
-                  <lucide-angular [img]="RefreshCw" class="h-3.5 w-3.5"></lucide-angular>
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('broadband')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
                 </button>
               }
               <span class="status-badge" [attr.data-status]="getServiceStatus('broadband')">
@@ -192,13 +205,18 @@
           <div class="service-header" (click)="toggleCollapsed('mobile')">
             <h3>Mobile Coverage</h3>
             <div class="header-actions">
-              @if (canEdit() && canRerunServices() && getServiceStatus('mobile') === 'COMPLETE') {
+              @if (canEdit() && canRerunServices() && getServiceStatus('mobile')) {
                 <button
                   class="btn-rerun"
                   title="Re-run service"
+                  [disabled]="isServiceRunning('mobile')"
                   (click)="rerunService('mobile'); $event.stopPropagation()"
                 >
-                  <lucide-angular [img]="RefreshCw" class="h-3.5 w-3.5"></lucide-angular>
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('mobile')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
                 </button>
               }
               <span class="status-badge" [attr.data-status]="getServiceStatus('mobile')">
@@ -243,15 +261,18 @@
           <div class="service-header" (click)="toggleCollapsed('council_tax')">
             <h3>Council Tax</h3>
             <div class="header-actions">
-              @if (
-                canEdit() && canRerunServices() && getServiceStatus('council_tax') === 'COMPLETE'
-              ) {
+              @if (canEdit() && canRerunServices() && getServiceStatus('council_tax')) {
                 <button
                   class="btn-rerun"
                   title="Re-run service"
+                  [disabled]="isServiceRunning('council_tax')"
                   (click)="rerunService('council_tax'); $event.stopPropagation()"
                 >
-                  <lucide-angular [img]="RefreshCw" class="h-3.5 w-3.5"></lucide-angular>
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('council_tax')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
                 </button>
               }
               <span class="status-badge" [attr.data-status]="getServiceStatus('council_tax')">
@@ -296,13 +317,18 @@
           <div class="service-header" (click)="toggleCollapsed('poi')">
             <h3>Places of Interest</h3>
             <div class="header-actions">
-              @if (canEdit() && canRerunServices() && getServiceStatus('poi') === 'COMPLETE') {
+              @if (canEdit() && canRerunServices() && getServiceStatus('poi')) {
                 <button
                   class="btn-rerun"
                   title="Re-run service"
+                  [disabled]="isServiceRunning('poi')"
                   (click)="rerunService('poi'); $event.stopPropagation()"
                 >
-                  <lucide-angular [img]="RefreshCw" class="h-3.5 w-3.5"></lucide-angular>
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('poi')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
                 </button>
               }
               <span class="status-badge" [attr.data-status]="getServiceStatus('poi')">
@@ -346,17 +372,18 @@
           <div class="service-header" (click)="toggleCollapsed('saved_locations')">
             <h3>Saved Locations</h3>
             <div class="header-actions">
-              @if (
-                canEdit() &&
-                canRerunServices() &&
-                getServiceStatus('saved_locations') === 'COMPLETE'
-              ) {
+              @if (canEdit() && canRerunServices() && getServiceStatus('saved_locations')) {
                 <button
                   class="btn-rerun"
                   title="Re-run service"
+                  [disabled]="isServiceRunning('saved_locations')"
                   (click)="rerunService('saved_locations'); $event.stopPropagation()"
                 >
-                  <lucide-angular [img]="RefreshCw" class="h-3.5 w-3.5"></lucide-angular>
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('saved_locations')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
                 </button>
               }
               <span class="status-badge" [attr.data-status]="getServiceStatus('saved_locations')">

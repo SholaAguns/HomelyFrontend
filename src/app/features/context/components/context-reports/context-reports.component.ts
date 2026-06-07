@@ -198,6 +198,11 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
     return contextData?.status || null;
   }
 
+  isServiceRunning(serviceName: string): boolean {
+    const status = this.getServiceStatus(serviceName);
+    return status === 'PENDING' || status === 'IN_PROGRESS';
+  }
+
   getServiceData<T = unknown>(serviceName: string): T | null {
     const contextData = this.contextData().find((d) => d.service_name === serviceName);
     return contextData?.status === 'COMPLETE' ? (contextData.data as T) : null;
