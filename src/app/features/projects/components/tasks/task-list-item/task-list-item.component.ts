@@ -1,5 +1,6 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { exportToCsv } from '../../../../../shared/utils/csv.util';
 import {
   Task,
   TaskListDetail,
@@ -84,5 +85,18 @@ export class TaskListItemComponent {
 
   onTaskDeleted(event: { uuid: string; taskListUuid: string }) {
     this.taskDeleted.emit(event);
+  }
+
+  exportToCsv(): void {
+    const taskList = this.taskList();
+    const rows = taskList.tasks.map((task) => ({
+      title: task.title,
+      description: task.description ?? '',
+      state: task.status_display,
+      priority: task.priority_display,
+      due_date: task.due_date ?? '',
+      assigned_to: task.assigned_to_email ?? '',
+    }));
+    exportToCsv(`${taskList.title}.csv`, rows);
   }
 }

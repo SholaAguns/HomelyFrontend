@@ -439,6 +439,12 @@
                   }
                   @if (selectedCount() > 0) {
                     <button
+                      (click)="exportSelectedToCsv()"
+                      class="rounded bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+                    >
+                      Export CSV
+                    </button>
+                    <button
                       (click)="runStage2ForSelected()"
                       [disabled]="runningStage2ForSelected()"
                       class="rounded bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
