@@ -27,6 +27,16 @@ export class ContextDataService {
     );
   }
 
+  rerunServices(
+    propertyId: string,
+    services?: string[]
+  ): Observable<{ message: string; state: string }> {
+    return this.httpClient.post<{ message: string; state: string }>(
+      `${this.baseUrl}/${propertyId}/rerun_services/`,
+      services ? { services } : {}
+    );
+  }
+
   retryService(propertyId: string, serviceName: string): Observable<{ message: string }> {
     return this.httpClient.post<{ message: string }>(
       `${this.baseUrl}/${propertyId}/retry-service/${serviceName}/`,

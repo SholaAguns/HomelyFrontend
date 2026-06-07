@@ -65,7 +65,7 @@ export class PropertyEditComponent implements OnInit {
       address_line_1: [propertyData.address_line_1, Validators.required],
       address_line_2: [propertyData.address_line_2 || ''],
       city: [propertyData.city || ''],
-      postcode: [propertyData.postcode, Validators.required],
+      postcode: [propertyData.postcode || ''],
       price: [propertyData.price, [Validators.required, Validators.min(1)]],
       price_frequency: [propertyData.price_frequency || ''],
       description: [propertyData.description || ''],

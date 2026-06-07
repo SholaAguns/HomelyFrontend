@@ -133,6 +133,23 @@ export const ContextDataStore = signalStore(
           });
         },
 
+        rerunServices: rxMethod<{ propertyId: string; services?: string[] }>(
+          pipe(
+            switchMap(({ propertyId, services }) =>
+              contextDataService.rerunServices(propertyId, services).pipe(
+                tap(() => loadMethod(propertyId)),
+                catchError((error: AppError) => {
+                  patchState(store, (state) => ({
+                    error: { ...state.error, [propertyId]: error.message },
+                  }));
+                  notificationService.error('Could not rerun services. Please try again.');
+                  return EMPTY;
+                })
+              )
+            )
+          )
+        ),
+
         retry: rxMethod<{ propertyId: string; service: string }>(
           pipe(
             switchMap(({ propertyId, service: serviceName }) =>

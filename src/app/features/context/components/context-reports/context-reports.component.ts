@@ -9,6 +9,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RefreshCw, LucideAngularModule } from 'lucide-angular';
 import { Subscription, TimeoutError, timeout, catchError, EMPTY } from 'rxjs';
 import { ContextDataStore } from '../../store/context-data.store';
 import { PropertyStore } from '../../../property/store/property.store';
@@ -39,6 +40,7 @@ import { ProjectRole } from '../../../../shared/models/auth-models';
   standalone: true,
   imports: [
     CommonModule,
+    LucideAngularModule,
     CrimeReportComponent,
     SchoolsReportComponent,
     BroadbandReportComponent,
@@ -51,6 +53,7 @@ import { ProjectRole } from '../../../../shared/models/auth-models';
   styleUrl: './context-reports.component.css',
 })
 export class ContextReportsComponent implements OnInit, OnDestroy {
+  readonly RefreshCw = RefreshCw;
   propertyId = input.required<string>();
   projectUuid = input.required<string>();
 
@@ -164,12 +167,30 @@ export class ContextReportsComponent implements OnInit, OnDestroy {
     );
   });
 
+  canRerunServices = computed(() => {
+    const state = this.property()?.state;
+    return (
+      state === 'STAGE2_COMPLETE' || state === 'STAGE3_IN_PROGRESS' || state === 'STAGE3_COMPLETE'
+    );
+  });
+
   triggerStage2(services?: string[]): void {
     const propertyId = this.propertyId();
     this.wsSubscription?.unsubscribe();
-    this.wsSubscription = this.subscribeToPropertyUpdates(propertyId, () => {
-      this.contextDataStore.triggerStage2({ propertyId, services });
-    });
+
+    if (this.canRerunServices()) {
+      this.wsSubscription = this.subscribeToPropertyUpdates(propertyId, () => {
+        this.contextDataStore.rerunServices({ propertyId, services });
+      });
+    } else {
+      this.wsSubscription = this.subscribeToPropertyUpdates(propertyId, () => {
+        this.contextDataStore.triggerStage2({ propertyId, services });
+      });
+    }
+  }
+
+  rerunService(serviceName: string): void {
+    this.triggerStage2([serviceName]);
   }
 
   getServiceStatus(serviceName: string): string | null {

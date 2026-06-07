@@ -69,18 +69,14 @@
 
       <div>
         <label for="postcode" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Postcode <span class="text-red-500">*</span>
+          Postcode
         </label>
         <input
           type="text"
           id="postcode"
           formControlName="postcode"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-          [class.border-red-500]="form.get('postcode')?.invalid && form.get('postcode')?.touched"
         />
-        @if (form.get('postcode')?.invalid && form.get('postcode')?.touched) {
-          <p class="mt-1 text-sm text-red-600">Postcode is required</p>
-        }
       </div>
     </div>
   </div>

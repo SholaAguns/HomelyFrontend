@@ -50,7 +50,7 @@ export class PropertyFormComponent implements OnInit {
       address_line_1: [data.address_line_1 || '', Validators.required],
       address_line_2: [data.address_line_2 || ''],
       city: [data.city || ''],
-      postcode: [data.postcode || '', Validators.required],
+      postcode: [data.postcode || ''],
       latitude: [data.latitude || null],
       longitude: [data.longitude || null],
       price: [data.price || null, [Validators.required, Validators.min(0)]],
