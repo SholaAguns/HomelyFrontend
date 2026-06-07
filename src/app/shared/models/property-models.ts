@@ -133,6 +133,8 @@ export interface CreatePropertyDto {
   floor_level?: number | null;
   child_suitable?: boolean;
   completion_date?: string | null;
+  deposit?: string | null;
+  let_available_date?: string | null;
   external_id?: string;
   external_url?: string;
 }
@@ -161,6 +163,8 @@ export interface UpdatePropertyDto {
   floor_level?: number | null;
   child_suitable?: boolean;
   completion_date?: string | null;
+  deposit?: string | null;
+  let_available_date?: string | null;
   external_id?: string;
   external_url?: string;
 }

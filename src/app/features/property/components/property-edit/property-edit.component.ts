@@ -80,6 +80,8 @@ export class PropertyEditComponent implements OnInit {
       lease_length: [propertyData.lease_length],
       floor_level: [propertyData.floor_level],
       child_suitable: [propertyData.child_suitable],
+      deposit: [propertyData.deposit || ''],
+      let_available_date: [propertyData.let_available_date || null],
       external_id: [propertyData.external_id || ''],
       external_url: [propertyData.external_url || ''],
     });

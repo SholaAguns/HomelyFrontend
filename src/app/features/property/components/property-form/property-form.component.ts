@@ -66,6 +66,8 @@ export class PropertyFormComponent implements OnInit {
       floor_level: [data.floor_level || null],
       child_suitable: [data.child_suitable ?? false],
       completion_date: [data.completion_date || null],
+      deposit: [data.deposit || null],
+      let_available_date: [data.let_available_date || null],
       external_id: [data.external_id || ''],
       external_url: [data.external_url || ''],
     });
