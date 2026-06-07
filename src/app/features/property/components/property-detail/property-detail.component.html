@@ -464,27 +464,27 @@
               <div>
                 <h3 class="mb-3 font-semibold text-gray-900 dark:text-white">Rating Breakdown</h3>
                 <div class="space-y-2">
-                  @for (item of property()!.rating_breakdown | keyvalue; track item.key) {
+                  @for (item of sortedRatingBreakdown(); track item[0]) {
                     <div
                       class="flex items-center justify-between rounded bg-gray-50 px-4 py-2 dark:bg-gray-900"
                     >
                       <span class="font-medium text-gray-700 dark:text-gray-300">{{
-                        item.key
+                        item[0]
                       }}</span>
                       <div class="flex items-center gap-4">
-                        @if (item.value.raw_value !== undefined && item.value.raw_value !== null) {
+                        @if (item[1].raw_value !== undefined && item[1].raw_value !== null) {
                           <span class="text-sm text-gray-500 dark:text-gray-500">
-                            Value: {{ item.value.raw_value }}
+                            Value: {{ item[1].raw_value }}
                           </span>
                         }
                         <span class="text-sm text-gray-600 dark:text-gray-400">
-                          Score: {{ item.value.normalized_score.toFixed(2) }}
+                          Score: {{ item[1].normalized_score.toFixed(2) }}
                         </span>
                         <span class="text-sm text-gray-600 dark:text-gray-400">
-                          Weight: {{ item.value.weight }}
+                          Weight: {{ item[1].weight }}
                         </span>
                         <span class="font-semibold text-purple-600">
-                          {{ item.value.weighted_score.toFixed(2) }}
+                          {{ item[1].weighted_score.toFixed(2) }}
                         </span>
                       </div>
                     </div>

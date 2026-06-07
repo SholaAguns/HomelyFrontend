@@ -90,6 +90,12 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     return propertyData.images.length > 4;
   });
 
+  sortedRatingBreakdown = computed(() => {
+    const breakdown = this.property()?.rating_breakdown;
+    if (!breakdown) return [];
+    return Object.entries(breakdown).sort(([, a], [, b]) => b.weighted_score - a.weighted_score);
+  });
+
   private readonly stateRank: Record<string, number> = {
     NEW: 0,
     STAGE2_IN_PROGRESS: 1,
