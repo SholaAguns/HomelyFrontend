@@ -14,7 +14,7 @@ P0:
 
 
 P1:
-- Create search criteria without triggering search
+- ~~Create search criteria without triggering search~~
 - POI data gets caught off
 - Review all caching strategies
 - Export to csv feature
@@ -36,6 +36,7 @@ P1:
 
 ## P2:
 - Admin dashboard
+- Implement poi_cost_saving_options.md more cost savings
 - Only include options for POI rating criteria that are included in project context options
 - Only include options for Saved Location rating criteria that are included in project context options
 - Site wide toaster use

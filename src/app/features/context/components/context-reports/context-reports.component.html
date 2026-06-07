@@ -311,64 +311,12 @@
         </div>
       }
 
-      <!-- POI -->
-      @if (getServiceStatus('poi')) {
-        <div class="service-card" [attr.data-status]="getServiceStatus('poi')">
-          <div class="service-header" (click)="toggleCollapsed('poi')">
-            <h3>Places of Interest</h3>
-            <div class="header-actions">
-              @if (canEdit() && canRerunServices() && getServiceStatus('poi')) {
-                <button
-                  class="btn-rerun"
-                  title="Re-run service"
-                  [disabled]="isServiceRunning('poi')"
-                  (click)="rerunService('poi'); $event.stopPropagation()"
-                >
-                  <lucide-angular
-                    [img]="RefreshCw"
-                    [class.animate-spin]="isServiceRunning('poi')"
-                    class="h-3.5 w-3.5"
-                  ></lucide-angular>
-                </button>
-              }
-              <span class="status-badge" [attr.data-status]="getServiceStatus('poi')">
-                {{ getServiceStatus('poi') || 'Not Started' }}
-              </span>
-              <span class="toggle-icon">{{ poiCollapsed() ? '▼' : '▲' }}</span>
-            </div>
-          </div>
-
-          @if (!poiCollapsed()) {
-            @if (
-              getServiceStatus('poi') === 'PENDING' || getServiceStatus('poi') === 'IN_PROGRESS'
-            ) {
-              <div class="service-loading">
-                <div class="spinner"></div>
-                <p>Retrieving data...</p>
-              </div>
-            }
-
-            @if (getServiceStatus('poi') === 'FAILED') {
-              <div class="service-error">
-                <p class="error-message">{{ getServiceError('poi') }}</p>
-                @if (canEdit()) {
-                  <button (click)="retryService('poi')" class="btn-retry">Retry</button>
-                }
-              </div>
-            }
-
-            @if (getServiceStatus('poi') === 'COMPLETE' && getPoiData()) {
-              <div class="service-content">
-                <app-poi-report [data]="getPoiData()!" />
-              </div>
-            }
-          }
-        </div>
-      }
-
       <!-- Saved Locations -->
       @if (getServiceStatus('saved_locations')) {
-        <div class="service-card" [attr.data-status]="getServiceStatus('saved_locations')">
+        <div
+          class="service-card service-card--full-width"
+          [attr.data-status]="getServiceStatus('saved_locations')"
+        >
           <div class="service-header" (click)="toggleCollapsed('saved_locations')">
             <h3>Saved Locations</h3>
             <div class="header-actions">
@@ -416,6 +364,64 @@
             @if (getServiceStatus('saved_locations') === 'COMPLETE' && getSavedLocationsData()) {
               <div class="service-content">
                 <app-saved-location-report [data]="getSavedLocationsData()!" />
+              </div>
+            }
+          }
+        </div>
+      }
+
+      <!-- POI -->
+      @if (getServiceStatus('poi')) {
+        <div
+          class="service-card service-card--full-width"
+          [attr.data-status]="getServiceStatus('poi')"
+        >
+          <div class="service-header" (click)="toggleCollapsed('poi')">
+            <h3>Places of Interest</h3>
+            <div class="header-actions">
+              @if (canEdit() && canRerunServices() && getServiceStatus('poi')) {
+                <button
+                  class="btn-rerun"
+                  title="Re-run service"
+                  [disabled]="isServiceRunning('poi')"
+                  (click)="rerunService('poi'); $event.stopPropagation()"
+                >
+                  <lucide-angular
+                    [img]="RefreshCw"
+                    [class.animate-spin]="isServiceRunning('poi')"
+                    class="h-3.5 w-3.5"
+                  ></lucide-angular>
+                </button>
+              }
+              <span class="status-badge" [attr.data-status]="getServiceStatus('poi')">
+                {{ getServiceStatus('poi') || 'Not Started' }}
+              </span>
+              <span class="toggle-icon">{{ poiCollapsed() ? '▼' : '▲' }}</span>
+            </div>
+          </div>
+
+          @if (!poiCollapsed()) {
+            @if (
+              getServiceStatus('poi') === 'PENDING' || getServiceStatus('poi') === 'IN_PROGRESS'
+            ) {
+              <div class="service-loading">
+                <div class="spinner"></div>
+                <p>Retrieving data...</p>
+              </div>
+            }
+
+            @if (getServiceStatus('poi') === 'FAILED') {
+              <div class="service-error">
+                <p class="error-message">{{ getServiceError('poi') }}</p>
+                @if (canEdit()) {
+                  <button (click)="retryService('poi')" class="btn-retry">Retry</button>
+                }
+              </div>
+            }
+
+            @if (getServiceStatus('poi') === 'COMPLETE' && getPoiData()) {
+              <div class="service-content">
+                <app-poi-report [data]="getPoiData()!" />
               </div>
             }
           }
