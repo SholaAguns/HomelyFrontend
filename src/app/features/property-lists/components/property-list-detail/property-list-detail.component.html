@@ -204,7 +204,14 @@
 
         <div class="mt-8 border-t border-gray-200 pt-6 dark:border-gray-700">
           <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Properties</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+              Properties
+              @if (sortedProperties().length !== list()!.properties.length) {
+                <span class="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                  {{ sortedProperties().length }} of {{ list()!.properties.length }}
+                </span>
+              }
+            </h2>
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-500 dark:text-gray-400">Sort:</span>
               @for (
@@ -229,6 +236,21 @@
                   }
                 </button>
               }
+              <button
+                (click)="toggleFilters()"
+                [class]="
+                  showFilters()
+                    ? 'flex items-center gap-1 rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white'
+                    : 'flex items-center gap-1 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                "
+              >
+                Filter
+                @if (activeFilterCount() > 0) {
+                  <span class="rounded-full bg-white px-1.5 text-xs font-bold text-blue-600">
+                    {{ activeFilterCount() }}
+                  </span>
+                }
+              </button>
             </div>
             @if (canEdit()) {
               <div class="flex gap-2">
@@ -253,6 +275,106 @@
               </div>
             }
           </div>
+
+          @if (showFilters()) {
+            <div
+              class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+            >
+              <div class="flex flex-wrap items-end gap-3">
+                <div class="min-w-[180px] flex-1">
+                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Search</label
+                  >
+                  <input
+                    type="text"
+                    [value]="titleSearchDebounced()"
+                    (input)="onTitleSearchInput($any($event.target).value)"
+                    placeholder="Title or address..."
+                    class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >State</label
+                  >
+                  <select
+                    [value]="filterState()"
+                    (change)="setFilterState($any($event.target).value)"
+                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  >
+                    <option value="">All states</option>
+                    <option value="NEW">New</option>
+                    <option value="STAGE2_IN_PROGRESS">Stage 2 In Progress</option>
+                    <option value="STAGE2_COMPLETE">Stage 2 Complete</option>
+                    <option value="STAGE3_IN_PROGRESS">Stage 3 In Progress</option>
+                    <option value="STAGE3_COMPLETE">Stage 3 Complete</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Source</label
+                  >
+                  <select
+                    [value]="filterSource()"
+                    (change)="setFilterSource($any($event.target).value)"
+                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  >
+                    <option value="">All sources</option>
+                    <option value="Rightmove">Rightmove</option>
+                    <option value="Zoopla">Zoopla</option>
+                    <option value="Manual">Manual</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Garden</label
+                  >
+                  <select
+                    [value]="filterHasGarden() === null ? '' : filterHasGarden() ? 'true' : 'false'"
+                    (change)="
+                      setFilterHasGarden(
+                        $any($event.target).value === ''
+                          ? null
+                          : $any($event.target).value === 'true'
+                      )
+                    "
+                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  >
+                    <option value="">Any</option>
+                    <option value="true">Has garden</option>
+                    <option value="false">No garden</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Disqualified</label
+                  >
+                  <select
+                    [value]="filterDisqualified()"
+                    (change)="setFilterDisqualified($any($event.target).value)"
+                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  >
+                    <option value="all">Show all</option>
+                    <option value="hide">Hide disqualified</option>
+                    <option value="only">Only disqualified</option>
+                  </select>
+                </div>
+
+                @if (activeFilterCount() > 0) {
+                  <button
+                    (click)="clearFilters()"
+                    class="rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
+                  >
+                    Clear filters
+                  </button>
+                }
+              </div>
+            </div>
+          }
 
           @if (selectionMode() && list()!.properties.length > 0) {
             <div
@@ -319,6 +441,15 @@
                 No properties yet. Click "Add Properties" to get started.
               </p>
             </div>
+          } @else if (sortedProperties().length === 0) {
+            <div class="rounded-lg bg-gray-50 py-8 text-center dark:bg-gray-900">
+              <p class="text-gray-600 dark:text-gray-400">
+                No properties match the current filters.
+              </p>
+              <button (click)="clearFilters()" class="mt-2 text-sm text-blue-600 hover:underline">
+                Clear filters
+              </button>
+            </div>
           } @else {
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               @for (property of paginatedProperties(); track property.uuid) {
@@ -369,8 +500,8 @@
 
               <div class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                 Showing {{ (currentPage() - 1) * itemsPerPage + 1 }} -
-                {{ Math.min(currentPage() * itemsPerPage, list()!.properties.length) }}
-                of {{ list()!.properties.length }} properties
+                {{ Math.min(currentPage() * itemsPerPage, sortedProperties().length) }}
+                of {{ sortedProperties().length }} properties
               </div>
             }
           }

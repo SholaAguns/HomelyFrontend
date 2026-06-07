@@ -17,12 +17,14 @@ import { InlineModalComponent } from '../../../../shared/components/inline-modal
 import { ContextOptionsFormComponent } from '../context-options-form/context-options-form.component';
 import {
   forkJoin,
+  Subject,
   Subscription,
   from,
   mergeMap,
   TimeoutError,
   timeout,
   catchError,
+  debounceTime,
   EMPTY,
 } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
@@ -67,8 +69,16 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   showContextOptionsModal = signal(false);
   showDropdown = signal(false);
   userRole = signal<ProjectRole>(null);
+  showFilters = signal(false);
+  filterState = signal<string>('');
+  filterSource = signal<string>('');
+  filterHasGarden = signal<boolean | null>(null);
+  filterDisqualified = signal<'all' | 'hide' | 'only'>('all');
+  titleSearchDebounced = signal<string>('');
   private wsSubscription?: Subscription;
   private scrapeSubscription?: Subscription;
+  private titleSearchSubscription?: Subscription;
+  private titleSearchSubject = new Subject<string>();
 
   canEdit = computed(() => {
     const listData = this.list();
@@ -82,10 +92,16 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     return sorted.slice(startIndex, startIndex + this.itemsPerPage);
   });
 
-  totalPages = computed(() => {
-    const listData = this.list();
-    if (!listData) return 0;
-    return Math.ceil(listData.properties.length / this.itemsPerPage);
+  totalPages = computed(() => Math.ceil(this.sortedProperties().length / this.itemsPerPage));
+
+  activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.filterState()) count++;
+    if (this.filterSource()) count++;
+    if (this.filterHasGarden() !== null) count++;
+    if (this.filterDisqualified() !== 'all') count++;
+    if (this.titleSearchDebounced()) count++;
+    return count;
   });
 
   selectedCount = computed(() => this.selectedPropertyUuids().size);
@@ -113,6 +129,13 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.titleSearchSubscription = this.titleSearchSubject
+      .pipe(debounceTime(300))
+      .subscribe((value) => {
+        this.titleSearchDebounced.set(value);
+        this.currentPage.set(1);
+      });
+
     this.authService.getCurrentUser().subscribe();
 
     const uuid = this.route.snapshot.paramMap.get('uuid');
@@ -139,6 +162,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.searchTaskStore.reset();
     this.wsSubscription?.unsubscribe();
     this.scrapeSubscription?.unsubscribe();
+    this.titleSearchSubscription?.unsubscribe();
   }
 
   private subscribeToScrapeEvents(listUuid: string): void {
@@ -346,11 +370,38 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const listData = this.list();
     if (!listData) return [];
 
-    const properties = [...listData.properties];
+    const stateFilter = this.filterState();
+    const sourceFilter = this.filterSource();
+    const gardenFilter = this.filterHasGarden();
+    const disqualifiedFilter = this.filterDisqualified();
+    const titleSearch = this.titleSearchDebounced().toLowerCase().trim();
+
+    const filtered = listData.properties.filter((p) => {
+      if (stateFilter && p.state !== stateFilter) return false;
+      if (sourceFilter) {
+        const propertySource = p.external_url?.includes('rightmove')
+          ? 'Rightmove'
+          : p.external_url?.includes('zoopla')
+            ? 'Zoopla'
+            : 'Manual';
+        if (propertySource !== sourceFilter) return false;
+      }
+      if (gardenFilter !== null && p.garden !== gardenFilter) return false;
+      if (disqualifiedFilter === 'hide' && p.disqualified) return false;
+      if (disqualifiedFilter === 'only' && !p.disqualified) return false;
+      if (
+        titleSearch &&
+        !p.title.toLowerCase().includes(titleSearch) &&
+        !p.address_line_1?.toLowerCase().includes(titleSearch)
+      )
+        return false;
+      return true;
+    });
+
     const sortByValue = this.sortBy();
     const direction = this.sortDirection();
 
-    return properties.sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       if (a.disqualified && !b.disqualified) return 1;
       if (!a.disqualified && b.disqualified) return -1;
 
@@ -382,6 +433,44 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
       this.sortBy.set(field as 'rating' | 'price' | 'title');
       this.sortDirection.set(field === 'title' ? 'asc' : 'desc');
     }
+    this.currentPage.set(1);
+  }
+
+  setFilterState(value: string): void {
+    this.filterState.set(value);
+    this.currentPage.set(1);
+  }
+
+  setFilterSource(value: string): void {
+    this.filterSource.set(value);
+    this.currentPage.set(1);
+  }
+
+  setFilterHasGarden(value: boolean | null): void {
+    this.filterHasGarden.set(value);
+    this.currentPage.set(1);
+  }
+
+  setFilterDisqualified(value: 'all' | 'hide' | 'only'): void {
+    this.filterDisqualified.set(value);
+    this.currentPage.set(1);
+  }
+
+  onTitleSearchInput(value: string): void {
+    this.titleSearchSubject.next(value);
+  }
+
+  toggleFilters(): void {
+    this.showFilters.update((v) => !v);
+  }
+
+  clearFilters(): void {
+    this.filterState.set('');
+    this.filterSource.set('');
+    this.filterHasGarden.set(null);
+    this.filterDisqualified.set('all');
+    this.titleSearchSubject.next('');
+    this.titleSearchDebounced.set('');
     this.currentPage.set(1);
   }
 
