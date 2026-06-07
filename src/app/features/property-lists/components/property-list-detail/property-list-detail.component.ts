@@ -70,10 +70,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   showDropdown = signal(false);
   userRole = signal<ProjectRole>(null);
   showFilters = signal(false);
-  filterState = signal<string>('');
+  filterStates = signal<Set<string>>(new Set());
   filterSource = signal<string>('');
   filterHasGarden = signal<boolean | null>(null);
   filterDisqualified = signal<'all' | 'hide' | 'only'>('all');
+  filterFavouritesOnly = signal<boolean>(false);
   titleSearchDebounced = signal<string>('');
   private wsSubscription?: Subscription;
   private scrapeSubscription?: Subscription;
@@ -96,20 +97,21 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
   activeFilterCount = computed(() => {
     let count = 0;
-    if (this.filterState()) count++;
+    if (this.filterStates().size > 0) count++;
     if (this.filterSource()) count++;
     if (this.filterHasGarden() !== null) count++;
     if (this.filterDisqualified() !== 'all') count++;
     if (this.titleSearchDebounced()) count++;
+    if (this.filterFavouritesOnly()) count++;
     return count;
   });
 
   selectedCount = computed(() => this.selectedPropertyUuids().size);
 
   allSelected = computed(() => {
-    const listData = this.list();
-    if (!listData || listData.properties.length === 0) return false;
-    return this.selectedPropertyUuids().size === listData.properties.length;
+    const filtered = this.sortedProperties();
+    if (filtered.length === 0) return false;
+    return filtered.every((p) => this.selectedPropertyUuids().has(p.uuid));
   });
 
   protected readonly Math = Math;
@@ -335,11 +337,8 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   }
 
   selectAll() {
-    const listData = this.list();
-    if (listData) {
-      const allUuids = new Set(listData.properties.map((p) => p.uuid));
-      this.selectedPropertyUuids.set(allUuids);
-    }
+    const filteredUuids = new Set(this.sortedProperties().map((p) => p.uuid));
+    this.selectedPropertyUuids.set(filteredUuids);
   }
 
   clearSelection() {
@@ -385,14 +384,16 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const listData = this.list();
     if (!listData) return [];
 
-    const stateFilter = this.filterState();
+    const stateFilterSet = this.filterStates();
     const sourceFilter = this.filterSource();
     const gardenFilter = this.filterHasGarden();
     const disqualifiedFilter = this.filterDisqualified();
     const titleSearch = this.titleSearchDebounced().toLowerCase().trim();
+    const favouritesOnly = this.filterFavouritesOnly();
 
     const filtered = listData.properties.filter((p) => {
-      if (stateFilter && p.state !== stateFilter) return false;
+      if (stateFilterSet.size > 0 && !stateFilterSet.has(p.state)) return false;
+      if (favouritesOnly && !p.is_favorited) return false;
       if (sourceFilter) {
         const propertySource = p.external_url?.includes('rightmove')
           ? 'Rightmove'
@@ -451,8 +452,21 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.currentPage.set(1);
   }
 
-  setFilterState(value: string): void {
-    this.filterState.set(value);
+  toggleFilterState(stateValue: string): void {
+    this.filterStates.update((current) => {
+      const next = new Set(current);
+      if (next.has(stateValue)) {
+        next.delete(stateValue);
+      } else {
+        next.add(stateValue);
+      }
+      return next;
+    });
+    this.currentPage.set(1);
+  }
+
+  setFilterFavouritesOnly(value: boolean): void {
+    this.filterFavouritesOnly.set(value);
     this.currentPage.set(1);
   }
 
@@ -480,10 +494,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   }
 
   clearFilters(): void {
-    this.filterState.set('');
+    this.filterStates.set(new Set());
     this.filterSource.set('');
     this.filterHasGarden.set(null);
     this.filterDisqualified.set('all');
+    this.filterFavouritesOnly.set(false);
     this.titleSearchSubject.next('');
     this.titleSearchDebounced.set('');
     this.currentPage.set(1);
@@ -491,6 +506,8 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
   enrichingSelected = signal(false);
   disqualifyingSelected = signal(false);
+  runningStage2ForSelected = signal(false);
+  runningStage3ForSelected = signal(false);
 
   enrichSelected(): void {
     const listData = this.list();
@@ -540,6 +557,100 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
         this.disqualifyingSelected.set(false);
       },
     });
+  }
+
+  runStage2ForSelected(): void {
+    const listData = this.list();
+    if (!listData) return;
+
+    const project = this.projectStore.selectedDetail();
+    if (!project?.context_options) {
+      this.showContextOptionsModal.set(true);
+      return;
+    }
+
+    const selectedUuids = this.selectedPropertyUuids();
+    const propertiesToProcess = listData.properties.filter(
+      (p) => selectedUuids.has(p.uuid) && p.state === 'NEW' && !p.disqualified
+    );
+
+    if (propertiesToProcess.length === 0) {
+      this.notificationService.error('No selected NEW properties to process');
+      return;
+    }
+
+    this.runningStage2ForSelected.set(true);
+    this.subscribeToListEvents(listData.uuid, propertiesToProcess.length, () => {
+      from(propertiesToProcess)
+        .pipe(
+          mergeMap((property) =>
+            this.contextDataService.triggerStage2(property.uuid).pipe(
+              catchError(() => {
+                this.notificationService.error(
+                  `Failed to start context retrieval for ${property.address_line_1 || property.uuid}`
+                );
+                return EMPTY;
+              })
+            )
+          )
+        )
+        .subscribe({
+          complete: () => {
+            this.notificationService.success(
+              `Stage 2 started for ${propertiesToProcess.length} ${propertiesToProcess.length === 1 ? 'property' : 'properties'}`
+            );
+            this.runningStage2ForSelected.set(false);
+            this.clearSelection();
+            this.selectionMode.set(false);
+          },
+        });
+    });
+  }
+
+  runStage3ForSelected(): void {
+    const listData = this.list();
+    if (!listData) return;
+
+    const selectedUuids = this.selectedPropertyUuids();
+    const eligibleProperties = listData.properties.filter(
+      (p) =>
+        selectedUuids.has(p.uuid) &&
+        (p.state === 'STAGE2_COMPLETE' || p.state === 'STAGE3_COMPLETE') &&
+        !p.disqualified
+    );
+
+    if (eligibleProperties.length === 0) {
+      this.notificationService.error(
+        'No selected properties eligible for rating (need Stage 2 Complete)'
+      );
+      return;
+    }
+
+    this.runningStage3ForSelected.set(true);
+
+    from(eligibleProperties)
+      .pipe(
+        mergeMap((property) =>
+          this.propertyService.runStage3(property.uuid).pipe(
+            catchError(() => {
+              this.notificationService.error(
+                `Failed to start rating for ${property.address_line_1 || property.uuid}`
+              );
+              return EMPTY;
+            })
+          )
+        )
+      )
+      .subscribe({
+        complete: () => {
+          this.notificationService.success(
+            `Rating started for ${eligibleProperties.length} ${eligibleProperties.length === 1 ? 'property' : 'properties'}`
+          );
+          this.runningStage3ForSelected.set(false);
+          this.clearSelection();
+          this.selectionMode.set(false);
+        },
+      });
   }
 
   triggerStage2ForList() {

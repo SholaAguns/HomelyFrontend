@@ -298,18 +298,30 @@
                   <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400"
                     >State</label
                   >
-                  <select
-                    [value]="filterState()"
-                    (change)="setFilterState($any($event.target).value)"
-                    class="rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  >
-                    <option value="">All states</option>
-                    <option value="NEW">New</option>
-                    <option value="STAGE2_IN_PROGRESS">Stage 2 In Progress</option>
-                    <option value="STAGE2_COMPLETE">Stage 2 Complete</option>
-                    <option value="STAGE3_IN_PROGRESS">Stage 3 In Progress</option>
-                    <option value="STAGE3_COMPLETE">Stage 3 Complete</option>
-                  </select>
+                  <div class="flex flex-col gap-1">
+                    @for (
+                      stateOption of [
+                        { label: 'New', value: 'NEW' },
+                        { label: 'Stage 2 In Progress', value: 'STAGE2_IN_PROGRESS' },
+                        { label: 'Stage 2 Complete', value: 'STAGE2_COMPLETE' },
+                        { label: 'Stage 3 In Progress', value: 'STAGE3_IN_PROGRESS' },
+                        { label: 'Stage 3 Complete', value: 'STAGE3_COMPLETE' },
+                      ];
+                      track stateOption.value
+                    ) {
+                      <label
+                        class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        <input
+                          type="checkbox"
+                          [checked]="filterStates().has(stateOption.value)"
+                          (change)="toggleFilterState(stateOption.value)"
+                          class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
+                        />
+                        {{ stateOption.label }}
+                      </label>
+                    }
+                  </div>
                 </div>
 
                 <div>
@@ -364,6 +376,21 @@
                   </select>
                 </div>
 
+                <div class="flex items-center gap-2 self-end pb-1.5">
+                  <input
+                    type="checkbox"
+                    id="filterFavourites"
+                    [checked]="filterFavouritesOnly()"
+                    (change)="setFilterFavouritesOnly($any($event.target).checked)"
+                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
+                  />
+                  <label
+                    for="filterFavourites"
+                    class="text-sm font-medium text-gray-600 dark:text-gray-400"
+                    >Favourites only</label
+                  >
+                </div>
+
                 @if (activeFilterCount() > 0) {
                   <button
                     (click)="clearFilters()"
@@ -411,6 +438,20 @@
                     </button>
                   }
                   @if (selectedCount() > 0) {
+                    <button
+                      (click)="runStage2ForSelected()"
+                      [disabled]="runningStage2ForSelected()"
+                      class="rounded bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
+                    >
+                      {{ runningStage2ForSelected() ? 'Starting...' : 'Run Stage 2' }}
+                    </button>
+                    <button
+                      (click)="runStage3ForSelected()"
+                      [disabled]="runningStage3ForSelected()"
+                      class="rounded bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-50"
+                    >
+                      {{ runningStage3ForSelected() ? 'Starting...' : 'Run Stage 3' }}
+                    </button>
                     <button
                       (click)="bulkDisqualify()"
                       [disabled]="disqualifyingSelected()"
