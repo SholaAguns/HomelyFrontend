@@ -224,27 +224,29 @@
     </div>
 
     <!-- Submit Button -->
-    <div
-      class="flex"
-      [class.justify-between]="showCancelButton()"
-      [class.justify-end]="!showCancelButton()"
-    >
-      @if (showCancelButton()) {
-        <button
-          type="button"
-          (click)="onCancel()"
-          class="rounded-lg border border-gray-300 px-6 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-      }
-      <button
-        type="submit"
-        [disabled]="!isFormValid"
-        class="rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400"
+    @if (showSubmitButton()) {
+      <div
+        class="flex"
+        [class.justify-between]="showCancelButton()"
+        [class.justify-end]="!showCancelButton()"
       >
-        {{ submitButtonText() }}
-      </button>
-    </div>
+        @if (showCancelButton()) {
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="rounded-lg border border-gray-300 px-6 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+        }
+        <button
+          type="submit"
+          [disabled]="!isFormValid"
+          class="rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400"
+        >
+          {{ submitButtonText() }}
+        </button>
+      </div>
+    }
   </form>
 </div>

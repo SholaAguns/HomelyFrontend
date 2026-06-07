@@ -19,6 +19,7 @@ P1:
 - Review all caching strategies
 - Export to csv feature
 - prices types - per week, per month
+- Project dashboard
 - poi_search_radius_meters should be in Km or miles?
 - Context service should not return/print api error
 - ~~Support SavedLocation time calculation~~

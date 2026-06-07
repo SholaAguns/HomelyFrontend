@@ -22,6 +22,7 @@ export class SearchCriteriaFormComponent {
   searchCriteria = input<SearchCriteria | null>(null);
   submitButtonText = input<string>('Create List');
   showCancelButton = input<boolean>(true);
+  showSubmitButton = input<boolean>(true);
   searchForm: FormGroup;
   searchSubmit = output<SearchCriteria>();
   cancel = output<void>();

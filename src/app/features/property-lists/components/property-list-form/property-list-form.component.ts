@@ -1,22 +1,17 @@
-import { Component, inject, input, output, effect, signal } from '@angular/core';
+import { Component, inject, input, output, effect, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   PropertyList,
   CreatePropertyListDto,
 } from '../../../../shared/models/property-list-models';
-import {
-  SearchCriteria,
-  SEARCH_CRITERIA_PRICES,
-  SEARCH_CRITERIA_BEDROOMS,
-  SEARCH_CRITERIA_RADII,
-  SEARCH_CRITERIA_DAYS_SINCE_ADDED,
-} from '../../../../shared/models/property-models';
+import { SearchCriteria } from '../../../../shared/models/property-models';
+import { SearchCriteriaFormComponent } from '../../../../shared/components/search-criteria-form/search-criteria-form.component';
 
 @Component({
   selector: 'app-property-list-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SearchCriteriaFormComponent],
   templateUrl: './property-list-form.component.html',
   styleUrl: './property-list-form.component.css',
 })
@@ -27,38 +22,14 @@ export class PropertyListFormComponent {
   submit = output<CreatePropertyListDto>();
   cancel = output<void>();
 
+  searchCriteriaFormRef = viewChild(SearchCriteriaFormComponent);
+
   form: FormGroup = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
   });
 
-  searchCriteriaGroup: FormGroup = this.fb.group({
-    area: [''],
-    bedrooms_min: [null],
-    bedrooms_max: [null],
-    price_min: [null],
-    price_max: [null],
-    radius: [null],
-    property_types: [''],
-    max_days_since_added: [null],
-  });
-
   criteriaExpanded = signal(false);
   isSubmitting = false;
-
-  priceOptions = SEARCH_CRITERIA_PRICES;
-  bedroomOptions = SEARCH_CRITERIA_BEDROOMS;
-  radiusOptions = SEARCH_CRITERIA_RADII;
-  daysSinceAddedOptions = SEARCH_CRITERIA_DAYS_SINCE_ADDED;
-
-  propertyTypes = [
-    { value: '', label: 'Any' },
-    { value: 'house', label: 'House' },
-    { value: 'flat', label: 'Flat/Apartment' },
-    { value: 'bungalow', label: 'Bungalow' },
-    { value: 'land', label: 'Land' },
-    { value: 'commercial-property', label: 'Commercial' },
-    { value: 'other', label: 'Other' },
-  ];
 
   constructor() {
     effect(() => {
@@ -67,16 +38,6 @@ export class PropertyListFormComponent {
         this.form.patchValue({ title: listValue.title });
         if (listValue.search_criteria) {
           this.criteriaExpanded.set(true);
-          this.searchCriteriaGroup.patchValue({
-            area: listValue.search_criteria.area || '',
-            bedrooms_min: listValue.search_criteria.bedrooms_min ?? null,
-            bedrooms_max: listValue.search_criteria.bedrooms_max ?? null,
-            price_min: listValue.search_criteria.price_min ?? null,
-            price_max: listValue.search_criteria.price_max ?? null,
-            radius: listValue.search_criteria.radius ?? null,
-            property_types: listValue.search_criteria.property_types || '',
-            max_days_since_added: listValue.search_criteria.max_days_since_added ?? null,
-          });
         }
       }
     });
@@ -91,9 +52,9 @@ export class PropertyListFormComponent {
       this.isSubmitting = true;
       const formData: CreatePropertyListDto = { title: this.form.value.title };
 
-      const criteriaAreaValue = this.searchCriteriaGroup.get('area')?.value;
-      if (this.criteriaExpanded() && criteriaAreaValue) {
-        const c = this.searchCriteriaGroup.value;
+      const criteriaForm = this.searchCriteriaFormRef()?.searchForm;
+      if (this.criteriaExpanded() && criteriaForm?.get('area')?.value) {
+        const c = criteriaForm.value;
         const searchCriteria: SearchCriteria = {
           area: c.area,
           bedrooms_min: c.bedrooms_min || undefined,
