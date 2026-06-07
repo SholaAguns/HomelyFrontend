@@ -391,6 +391,21 @@
                   >
                 </div>
 
+                <div class="flex items-center gap-2 self-end pb-1.5">
+                  <input
+                    type="checkbox"
+                    id="filterShortlisted"
+                    [checked]="filterShortlistedOnly()"
+                    (change)="setFilterShortlistedOnly($any($event.target).checked)"
+                    class="h-4 w-4 rounded border-gray-300 text-yellow-500 focus:ring-2 focus:ring-yellow-400 dark:border-gray-600"
+                  />
+                  <label
+                    for="filterShortlisted"
+                    class="text-sm font-medium text-gray-600 dark:text-gray-400"
+                    >Shortlisted only</label
+                  >
+                </div>
+
                 @if (activeFilterCount() > 0) {
                   <button
                     (click)="clearFilters()"

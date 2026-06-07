@@ -7,6 +7,7 @@ import { PropertyStore } from '../../store/property.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
+import { ShortlistService } from '../../../../core/services/shortlist-service/shortlist.service';
 import { PropertyDetail, PropertyState } from '../../../../shared/models/property-models';
 import { RatingCompleteData } from '../../../../shared/models/context-data.models';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
@@ -37,6 +38,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   private notificationService = inject(NotificationService);
   private propertySseService = inject(PropertySseService);
   private favoritesService = inject(FavoritesService);
+  private shortlistService = inject(ShortlistService);
   private authService = inject(AuthService);
   private propertyListService = inject(PropertyListService);
 
@@ -68,6 +70,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     return null;
   });
 
+  shortlistingListUuid = signal<string | null>(null);
   enriching = signal(false);
   disqualifying = signal(false);
   showDisqualifyInput = signal(false);
@@ -358,6 +361,40 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
         this.disqualifying.set(false);
         this.notificationService.success('Disqualification removed');
       });
+  }
+
+  toggleShortlist(propertyListUuid: string): void {
+    const propertyValue = this.property();
+    if (!propertyValue) return;
+
+    const isCurrentlyShortlisted =
+      propertyValue.shortlisted_in_lists?.includes(propertyListUuid) ?? false;
+    this.shortlistingListUuid.set(propertyListUuid);
+
+    const action = isCurrentlyShortlisted
+      ? this.shortlistService.removeFromShortlist(propertyListUuid, propertyValue.uuid)
+      : this.shortlistService.addToShortlist(propertyListUuid, propertyValue.uuid);
+
+    action.subscribe({
+      next: () => {
+        this.property.update((current) => {
+          if (!current) return null;
+          const currentLists = current.shortlisted_in_lists ?? [];
+          const updatedLists = isCurrentlyShortlisted
+            ? currentLists.filter((listUuid) => listUuid !== propertyListUuid)
+            : [...currentLists, propertyListUuid];
+          return { ...current, shortlisted_in_lists: updatedLists };
+        });
+        this.notificationService.success(
+          isCurrentlyShortlisted ? 'Removed from shortlist' : 'Added to shortlist'
+        );
+        this.shortlistingListUuid.set(null);
+      },
+      error: () => {
+        this.notificationService.error('Failed to update shortlist');
+        this.shortlistingListUuid.set(null);
+      },
+    });
   }
 
   toggleFavorite(): void {

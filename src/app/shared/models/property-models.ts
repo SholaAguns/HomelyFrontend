@@ -101,6 +101,9 @@ export interface Property {
   // Favorites
   is_favorited: boolean;
 
+  // Shortlists — list UUIDs where this property is shortlisted
+  shortlisted_in_lists?: string[];
+
   // Timestamps
   created_at: string;
   updated_at: string;

@@ -76,6 +76,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   filterHasGarden = signal<boolean | null>(null);
   filterDisqualified = signal<'all' | 'hide' | 'only'>('all');
   filterFavouritesOnly = signal<boolean>(false);
+  filterShortlistedOnly = signal<boolean>(false);
   titleSearchDebounced = signal<string>('');
   private wsSubscription?: Subscription;
   private scrapeSubscription?: Subscription;
@@ -104,6 +105,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     if (this.filterDisqualified() !== 'all') count++;
     if (this.titleSearchDebounced()) count++;
     if (this.filterFavouritesOnly()) count++;
+    if (this.filterShortlistedOnly()) count++;
     return count;
   });
 
@@ -391,10 +393,13 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const disqualifiedFilter = this.filterDisqualified();
     const titleSearch = this.titleSearchDebounced().toLowerCase().trim();
     const favouritesOnly = this.filterFavouritesOnly();
+    const shortlistedOnly = this.filterShortlistedOnly();
+    const listUuid = listData.uuid;
 
     const filtered = listData.properties.filter((p) => {
       if (stateFilterSet.size > 0 && !stateFilterSet.has(p.state)) return false;
       if (favouritesOnly && !p.is_favorited) return false;
+      if (shortlistedOnly && !p.shortlisted_in_lists?.includes(listUuid)) return false;
       if (sourceFilter) {
         const propertySource = p.external_url?.includes('rightmove')
           ? 'Rightmove'
@@ -471,6 +476,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.currentPage.set(1);
   }
 
+  setFilterShortlistedOnly(value: boolean): void {
+    this.filterShortlistedOnly.set(value);
+    this.currentPage.set(1);
+  }
+
   setFilterSource(value: string): void {
     this.filterSource.set(value);
     this.currentPage.set(1);
@@ -500,6 +510,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.filterHasGarden.set(null);
     this.filterDisqualified.set('all');
     this.filterFavouritesOnly.set(false);
+    this.filterShortlistedOnly.set(false);
     this.titleSearchSubject.next('');
     this.titleSearchDebounced.set('');
     this.currentPage.set(1);
