@@ -78,6 +78,20 @@ export class RatingCriteriaFormComponent implements OnInit {
       enabled: false,
       weight: 1.0,
     },
+    {
+      name: 'Parking',
+      source: 'property',
+      field_name: 'parking',
+      enabled: false,
+      weight: 1.0,
+    },
+    {
+      name: 'EPC Rating',
+      source: 'property',
+      field_name: 'epc_rating',
+      enabled: false,
+      weight: 1.0,
+    },
   ]);
 
   // User criteria (configurable) - disabled by default
