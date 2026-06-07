@@ -351,6 +351,9 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const direction = this.sortDirection();
 
     return properties.sort((a, b) => {
+      if (a.disqualified && !b.disqualified) return 1;
+      if (!a.disqualified && b.disqualified) return -1;
+
       let comparison = 0;
 
       if (sortByValue === 'rating') {
@@ -383,6 +386,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   }
 
   enrichingSelected = signal(false);
+  disqualifyingSelected = signal(false);
 
   enrichSelected(): void {
     const listData = this.list();
@@ -403,6 +407,33 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.notificationService.error(err.message || 'Failed to start enrichment');
         this.enrichingSelected.set(false);
+      },
+    });
+  }
+
+  bulkDisqualify(): void {
+    const count = this.selectedCount();
+    if (count === 0) return;
+
+    const confirmMessage = `Disqualify ${count} ${count === 1 ? 'property' : 'properties'}?`;
+    if (!confirm(confirmMessage)) return;
+
+    const uuids = Array.from(this.selectedPropertyUuids());
+    this.disqualifyingSelected.set(true);
+    this.propertyService.bulkDisqualify(uuids, 'Manually disqualified').subscribe({
+      next: (result) => {
+        this.notificationService.success(
+          `${result.updated} ${result.updated === 1 ? 'property' : 'properties'} disqualified`
+        );
+        this.clearSelection();
+        this.selectionMode.set(false);
+        this.disqualifyingSelected.set(false);
+        const listUuid = this.list()?.uuid;
+        if (listUuid) this.loadList(listUuid);
+      },
+      error: (err) => {
+        this.notificationService.error(err.message || 'Failed to disqualify properties');
+        this.disqualifyingSelected.set(false);
       },
     });
   }
@@ -428,7 +459,9 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const listData = this.list();
     if (!listData) return;
 
-    const propertiesToProcess = listData.properties.filter((p) => p.state === 'NEW');
+    const propertiesToProcess = listData.properties.filter(
+      (p) => p.state === 'NEW' && !p.disqualified
+    );
 
     if (propertiesToProcess.length === 0) {
       this.notificationService.error('No new properties to process');
@@ -460,7 +493,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     if (!listData) return;
 
     const eligibleProperties = listData.properties.filter(
-      (p) => p.state === 'STAGE2_COMPLETE' || p.state === 'STAGE3_COMPLETE'
+      (p) => (p.state === 'STAGE2_COMPLETE' || p.state === 'STAGE3_COMPLETE') && !p.disqualified
     );
 
     if (eligibleProperties.length === 0) {

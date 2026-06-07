@@ -61,4 +61,19 @@ export class PropertyService {
   enrich(uuid: string): Observable<EnrichPropertyResponse> {
     return this.api.post<EnrichPropertyResponse>(`${this.endpoint}${uuid}/enrich/`, {});
   }
+
+  disqualify(uuid: string, reason: string): Observable<Property> {
+    return this.api.post<Property>(`${this.endpoint}${uuid}/disqualify/`, { reason });
+  }
+
+  undisqualify(uuid: string): Observable<Property> {
+    return this.api.post<Property>(`${this.endpoint}${uuid}/undisqualify/`, {});
+  }
+
+  bulkDisqualify(uuids: string[], reason: string): Observable<{ updated: number }> {
+    return this.api.post<{ updated: number }>(`${this.endpoint}bulk-disqualify/`, {
+      uuids,
+      reason,
+    });
+  }
 }

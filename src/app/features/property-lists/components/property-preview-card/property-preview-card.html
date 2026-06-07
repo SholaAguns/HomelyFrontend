@@ -1,10 +1,11 @@
 <div
   (click)="viewDetails()"
   [class]="
-    selectable()
+    (property().disqualified ? 'opacity-60 ' : '') +
+    (selectable()
       ? 'relative overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow dark:border-gray-700 dark:bg-gray-800 ' +
         (selected() ? 'ring-2 ring-blue-500' : 'hover:shadow-md')
-      : 'relative cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800'
+      : 'relative cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800')
   "
 >
   @if (selectable()) {
@@ -94,6 +95,13 @@
       >
         {{ property().state_display }}
       </span>
+      @if (property().disqualified) {
+        <span
+          class="rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900/20 dark:text-red-300"
+        >
+          Disqualified
+        </span>
+      }
       @if (property().is_enriched) {
         <span
           class="rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/20 dark:text-green-300"

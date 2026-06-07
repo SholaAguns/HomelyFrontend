@@ -69,6 +69,9 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   });
 
   enriching = signal(false);
+  disqualifying = signal(false);
+  showDisqualifyInput = signal(false);
+  disqualifyReason = signal('');
 
   displayedImages = computed(() => {
     const propertyData = this.property();
@@ -299,6 +302,55 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
         this.propertyStore.upsertOne(res.property);
         this.notificationService.success('Property details updated');
         this.enriching.set(false);
+      });
+  }
+
+  disqualify(): void {
+    const p = this.property();
+    if (!p) return;
+    const reason = this.disqualifyReason() || 'Manually disqualified';
+    this.disqualifying.set(true);
+    this.propertyService
+      .disqualify(p.uuid, reason)
+      .pipe(
+        catchError((err) => {
+          this.notificationService.error(err.message || 'Failed to disqualify property');
+          this.disqualifying.set(false);
+          return EMPTY;
+        })
+      )
+      .subscribe((updatedProperty) => {
+        this.property.update((current) =>
+          current ? { ...current, disqualified: true, disqualification_reason: reason } : null
+        );
+        this.propertyStore.upsertOne(updatedProperty);
+        this.showDisqualifyInput.set(false);
+        this.disqualifyReason.set('');
+        this.disqualifying.set(false);
+        this.notificationService.success('Property disqualified');
+      });
+  }
+
+  undisqualify(): void {
+    const p = this.property();
+    if (!p) return;
+    this.disqualifying.set(true);
+    this.propertyService
+      .undisqualify(p.uuid)
+      .pipe(
+        catchError((err) => {
+          this.notificationService.error(err.message || 'Failed to undo disqualification');
+          this.disqualifying.set(false);
+          return EMPTY;
+        })
+      )
+      .subscribe((updatedProperty) => {
+        this.property.update((current) =>
+          current ? { ...current, disqualified: false, disqualification_reason: null } : null
+        );
+        this.propertyStore.upsertOne(updatedProperty);
+        this.disqualifying.set(false);
+        this.notificationService.success('Disqualification removed');
       });
   }
 

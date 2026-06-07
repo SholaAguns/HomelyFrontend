@@ -8,6 +8,7 @@ P0:
 - ~~Project stats dashboard~~
 - ~~favourites section~~
 - authentication and login/logout issues
+- Separate property data models
 - ~~Improve Property data extraction~~
 
 

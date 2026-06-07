@@ -188,6 +188,55 @@
               {{ enriching() ? 'Fetching details...' : 'Fetch full details' }}
             </button>
           }
+
+          @if (property()!.disqualified) {
+            <span
+              class="rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-800 dark:bg-red-900/20 dark:text-red-300"
+            >
+              Disqualified
+            </span>
+            @if (canEdit()) {
+              <button
+                (click)="undisqualify()"
+                [disabled]="disqualifying()"
+                class="rounded border border-red-300 px-3 py-1 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+              >
+                {{ disqualifying() ? 'Updating...' : 'Undo Disqualification' }}
+              </button>
+            }
+          } @else if (canEdit()) {
+            @if (showDisqualifyInput()) {
+              <div class="flex items-center gap-2">
+                <input
+                  type="text"
+                  [value]="disqualifyReason()"
+                  (input)="disqualifyReason.set($any($event.target).value)"
+                  placeholder="Reason (optional)"
+                  class="rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                />
+                <button
+                  (click)="disqualify()"
+                  [disabled]="disqualifying()"
+                  class="rounded bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                >
+                  {{ disqualifying() ? 'Disqualifying...' : 'Confirm' }}
+                </button>
+                <button
+                  (click)="showDisqualifyInput.set(false)"
+                  class="rounded border border-gray-300 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300"
+                >
+                  Cancel
+                </button>
+              </div>
+            } @else {
+              <button
+                (click)="showDisqualifyInput.set(true)"
+                class="rounded border border-red-300 px-3 py-1 text-sm font-medium text-red-700 hover:bg-red-50"
+              >
+                Disqualify
+              </button>
+            }
+          }
         </div>
 
         <!-- Property Lists -->

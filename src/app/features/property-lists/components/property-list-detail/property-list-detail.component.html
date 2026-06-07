@@ -290,6 +290,13 @@
                   }
                   @if (selectedCount() > 0) {
                     <button
+                      (click)="bulkDisqualify()"
+                      [disabled]="disqualifyingSelected()"
+                      class="rounded bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700 disabled:opacity-50"
+                    >
+                      {{ disqualifyingSelected() ? 'Disqualifying...' : 'Disqualify Selected' }}
+                    </button>
+                    <button
                       (click)="deleteSelected()"
                       class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
                     >
