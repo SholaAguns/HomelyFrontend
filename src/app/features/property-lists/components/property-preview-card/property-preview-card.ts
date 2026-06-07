@@ -17,8 +17,15 @@ export class PropertyPreviewCard {
   selectable = input<boolean>(false);
   selected = input<boolean>(false);
   showFavoriteToggle = input<boolean>(false);
+  currentListUuid = input<string | null>(null);
   selectionChange = output<void>();
   favoriteToggle = output<string>();
+
+  isShortlisted = computed(() => {
+    const listUuid = this.currentListUuid();
+    if (!listUuid) return false;
+    return this.property().shortlisted_in_lists?.includes(listUuid) ?? false;
+  });
 
   propertySource = computed((): 'Rightmove' | 'Zoopla' | null => {
     const externalUrl = this.property().external_url;

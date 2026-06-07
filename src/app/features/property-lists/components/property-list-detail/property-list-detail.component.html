@@ -520,6 +520,7 @@
                   [selectable]="selectionMode()"
                   [selected]="isPropertySelected(property.uuid)"
                   [showFavoriteToggle]="!selectionMode()"
+                  [currentListUuid]="list()?.uuid ?? null"
                   (selectionChange)="togglePropertySelection(property.uuid)"
                   (favoriteToggle)="onFavoriteToggle($event)"
                 />
