@@ -14,6 +14,7 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { SharingService } from '../../../../core/services/sharing-service/sharing.service';
 import { Property } from '../../../../shared/models/property-models';
 import { ProjectRole } from '../../../../shared/models/auth-models';
+import { exportToCsv } from '../../../../shared/utils/csv.util';
 
 @Component({
   selector: 'app-project-detail',
@@ -121,6 +122,27 @@ export class ProjectDetailComponent implements OnInit {
         this.notificationService.error('Failed to update favorite');
       },
     });
+  }
+
+  exportFavouritesToCsv(): void {
+    const projectTitle = this.projectStore.selectedDetail()?.title ?? 'project';
+    const rows = this.projectFavorites().map((p) => ({
+      title: p.title,
+      summary: p.summary ?? '',
+      overall_rating: p.overall_rating ?? '',
+      price: p.price,
+      bathrooms: p.bathrooms,
+      bedrooms: p.bedrooms,
+      address_line_1: p.address_line_1 ?? '',
+      address_line_2: p.address_line_2 ?? '',
+      city: p.city ?? '',
+      postcode: p.postcode ?? '',
+      council_tax_band: p.council_tax_band ?? '',
+      external_url: p.external_url ?? '',
+      garden: p.garden ?? '',
+      parking: p.parking ?? '',
+    }));
+    exportToCsv(`favourites-${projectTitle}.csv`, rows);
   }
 
   navigateToSettings() {

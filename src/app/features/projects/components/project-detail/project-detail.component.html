@@ -75,14 +75,22 @@
               >({{ favoritesCount() }})</span
             >
           </h2>
-          @if (favoritesCount() >= 6) {
+          <div class="flex items-center gap-3">
             <button
-              (click)="toggleFavoritesSection()"
-              class="font-medium text-blue-600 hover:text-blue-700"
+              (click)="exportFavouritesToCsv()"
+              class="rounded-lg bg-green-600 px-4 py-2 font-medium text-white transition-colors hover:bg-green-700"
             >
-              {{ favoritesExpanded() ? 'Show Less' : 'Show All' }}
+              Export CSV
             </button>
-          }
+            @if (favoritesCount() >= 6) {
+              <button
+                (click)="toggleFavoritesSection()"
+                class="font-medium text-blue-600 hover:text-blue-700"
+              >
+                {{ favoritesExpanded() ? 'Show Less' : 'Show All' }}
+              </button>
+            }
+          </div>
         </div>
 
         @if (favoritesExpanded()) {
