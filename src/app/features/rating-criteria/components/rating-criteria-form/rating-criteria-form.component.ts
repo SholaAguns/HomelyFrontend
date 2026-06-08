@@ -99,7 +99,7 @@ export class RatingCriteriaFormComponent implements OnInit {
     {
       name: 'Council Tax Band',
       source: 'context_report',
-      field_name: 'council_tax',
+      field_name: 'council_tax_band',
       enabled: true,
       weight: 0.5,
     },

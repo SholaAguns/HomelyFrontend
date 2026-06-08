@@ -356,6 +356,12 @@
           </ul>
         }
 
+        @if (property()!.deposit) {
+          <div>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Deposit</span>
+            <div class="text-lg font-medium">{{ property()!.deposit }}</div>
+          </div>
+        }
         @if (property()!.council_tax_band) {
           <div>
             <span class="text-sm text-gray-600 dark:text-gray-400">Council Tax Band</span>
@@ -412,6 +418,12 @@
           <div>
             <span class="text-sm text-gray-600 dark:text-gray-400">Update Reason</span>
             <div class="text-lg font-medium">{{ property()!.listing_update_reason }}</div>
+          </div>
+        }
+        @if (property()!.external_id) {
+          <div>
+            <span class="text-sm text-gray-600 dark:text-gray-400">External ID</span>
+            <div class="text-lg font-medium">{{ property()!.external_id }}</div>
           </div>
         }
       </div>
