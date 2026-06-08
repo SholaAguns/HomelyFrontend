@@ -656,11 +656,11 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
 
     const selectedUuids = this.selectedPropertyUuids();
     const propertiesToProcess = listData.properties.filter(
-      (p) => selectedUuids.has(p.uuid) && p.state === 'NEW' && !p.disqualified
+      (p) => selectedUuids.has(p.uuid) && !p.disqualified
     );
 
     if (propertiesToProcess.length === 0) {
-      this.notificationService.error('No selected NEW properties to process');
+      this.notificationService.error('No eligible selected properties to process');
       return;
     }
 
@@ -759,12 +759,10 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const listData = this.list();
     if (!listData) return;
 
-    const propertiesToProcess = listData.properties.filter(
-      (p) => p.state === 'NEW' && !p.disqualified
-    );
+    const propertiesToProcess = listData.properties.filter((p) => !p.disqualified);
 
     if (propertiesToProcess.length === 0) {
-      this.notificationService.error('No new properties to process');
+      this.notificationService.error('No eligible properties to process');
       return;
     }
 
