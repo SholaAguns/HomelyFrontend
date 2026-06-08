@@ -74,6 +74,13 @@
                 </a>
               }
               <button
+                (click)="exportToHtml()"
+                title="Export property as HTML"
+                class="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              >
+                Export
+              </button>
+              <button
                 (click)="toggleFavorite()"
                 class="rounded-full p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
                 [title]="property()!.is_favorited ? 'Remove from favorites' : 'Add to favorites'"
