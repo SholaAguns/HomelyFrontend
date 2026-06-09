@@ -596,7 +596,8 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     const objectUrl = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = objectUrl;
-    anchor.download = `${p.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+    const filenameParts = [p.title, p.address_line_1].filter(Boolean).join(' ');
+    anchor.download = `${filenameParts.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
     anchor.click();
     URL.revokeObjectURL(objectUrl);
   }
@@ -757,13 +758,13 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
             .slice(0, 5)
             .map(
               (place) =>
-                `<tr style="${trBorder}"><td style="${tdStyle}">${place.google_maps_url ? `<a href="${place.google_maps_url}" target="_blank">${place.name}</a>` : place.name}</td><td style="${tdStyle}">${place.address || '-'}</td><td style="${tdStyle};text-align:right;">${place.distance_km.toFixed(2)} km</td><td style="${tdStyle};text-align:right;">${place.walking_time_min != null ? place.walking_time_min + ' min' : '-'}</td></tr>`
+                `<tr style="${trBorder}"><td style="${tdStyle}">${place.google_maps_url ? `<a href="${place.google_maps_url}" target="_blank">${place.name}</a>` : place.name}</td><td style="${tdStyle}">${place.address || '-'}</td><td style="${tdStyle};text-align:right;">${place.distance_km.toFixed(2)} km</td><td style="${tdStyle};text-align:right;">${place.driving_time_min != null ? place.driving_time_min + ' min' : '-'}</td><td style="${tdStyle};text-align:right;">${place.walking_time_min != null ? place.walking_time_min + ' min' : '-'}</td></tr>`
             )
             .join('');
           return `<div style="margin-bottom:16px;">
           <h4 style="font-size:15px;font-weight:600;margin:0 0 8px;text-transform:capitalize;">${category} (${places.length})</h4>
           <table style="width:100%;border-collapse:collapse;">
-            ${tableHead(['Name', 'Address', 'Distance', 'Walk'])}
+            ${tableHead(['Name', 'Address', 'Distance', 'Drive', 'Walk'])}
             <tbody>${placesHtml}</tbody>
           </table>
           ${places.length > 5 ? `<p style="font-size:12px;color:#9ca3af;margin-top:4px;">Showing 5 of ${places.length}</p>` : ''}

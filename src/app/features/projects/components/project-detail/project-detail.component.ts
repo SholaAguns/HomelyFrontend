@@ -128,7 +128,6 @@ export class ProjectDetailComponent implements OnInit {
     const projectTitle = this.projectStore.selectedDetail()?.title ?? 'project';
     const rows = this.projectFavorites().map((p) => ({
       title: p.title,
-      summary: p.summary ?? '',
       overall_rating: p.overall_rating ?? '',
       price: p.price,
       bathrooms: p.bathrooms,
@@ -141,6 +140,7 @@ export class ProjectDetailComponent implements OnInit {
       external_url: p.external_url ?? '',
       garden: p.garden ?? '',
       parking: p.parking ?? '',
+      summary: p.summary ?? '',
     }));
     exportToCsv(`favourites-${projectTitle}.csv`, rows);
   }
