@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, TimeoutError, timeout, catchError, EMPTY } from 'rxjs';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { PropertyStore } from '../../store/property.store';
+import { ContextDataStore } from '../../../context/store/context-data.store';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { PropertySseService } from '../../../../core/services/property-sse-service/property-sse.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
@@ -52,6 +53,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   private shortlistService = inject(ShortlistService);
   private authService = inject(AuthService);
   private propertyListService = inject(PropertyListService);
+  private contextDataStore = inject(ContextDataStore);
 
   property = signal<PropertyDetail | null>(null);
   loading = signal(true);
@@ -488,7 +490,9 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
         ? `<ul style="list-style:disc;padding-left:20px;margin:0 0 16px;">${p.key_features.map((f) => `<li>${f.description}</li>`).join('')}</ul>`
         : '';
 
-    const contextReportsHtml = this.buildContextReportsHtml(p.context_data || []);
+    const contextReportsHtml = this.buildContextReportsHtml(
+      this.contextDataStore.forProperty()(p.uuid)
+    );
 
     const ratingHtml =
       p.overall_rating != null && p.rating_breakdown
