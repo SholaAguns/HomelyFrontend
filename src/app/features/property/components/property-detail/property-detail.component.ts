@@ -85,6 +85,10 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
 
   shortlistingListUuid = signal<string | null>(null);
   enriching = signal(false);
+  showParseHtmlModal = signal(false);
+  parsingFromHtml = signal(false);
+  parseHtmlSource = signal<'auto' | 'rightmove' | 'zoopla'>('auto');
+  parseHtmlInput = signal('');
   disqualifying = signal(false);
   showDisqualifyInput = signal(false);
   disqualifyReason = signal('');
@@ -324,6 +328,32 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
         this.propertyStore.upsertOne(res.property);
         this.notificationService.success('Property details updated');
         this.enriching.set(false);
+      });
+  }
+
+  parseFromHtml(): void {
+    const p = this.property();
+    const htmlContent = this.parseHtmlInput().trim();
+    if (!p || !htmlContent) return;
+    this.parsingFromHtml.set(true);
+    const selectedSource = this.parseHtmlSource();
+    const source = selectedSource === 'auto' ? undefined : selectedSource;
+    this.propertyService
+      .enrichFromHtml(p.uuid, htmlContent, source)
+      .pipe(
+        catchError((err) => {
+          this.notificationService.error(err.error?.error || err.message || 'Failed to parse HTML');
+          this.parsingFromHtml.set(false);
+          return EMPTY;
+        })
+      )
+      .subscribe((res) => {
+        this.property.set(res.property);
+        this.propertyStore.upsertOne(res.property);
+        this.notificationService.success('Property updated from HTML');
+        this.parsingFromHtml.set(false);
+        this.showParseHtmlModal.set(false);
+        this.parseHtmlInput.set('');
       });
   }
 

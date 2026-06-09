@@ -2,10 +2,11 @@
 P0:
 - authentication and login/logout issues
 - Separate property data models
-- Improve export to html to include context reports
+- ~~Improve export to html to include context reports~~
 - Personal rating
 - Manual fetch full data
-- Refresh properties async
+- Disqualification dropdown
+- ~~Refresh properties async~~
 - ~~Updates when running stage 2 (SSE?)~~
 - ~~Updates when running stage 3~~
 - ~~error handling~~

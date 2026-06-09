@@ -62,6 +62,17 @@ export class PropertyService {
     return this.api.post<EnrichPropertyResponse>(`${this.endpoint}${uuid}/enrich/`, {});
   }
 
+  enrichFromHtml(
+    uuid: string,
+    html: string,
+    source?: 'rightmove' | 'zoopla'
+  ): Observable<EnrichPropertyResponse> {
+    return this.api.post<EnrichPropertyResponse>(`${this.endpoint}${uuid}/enrich-from-html/`, {
+      html,
+      ...(source ? { source } : {}),
+    });
+  }
+
   disqualify(uuid: string, reason: string): Observable<Property> {
     return this.api.post<Property>(`${this.endpoint}${uuid}/disqualify/`, { reason });
   }
