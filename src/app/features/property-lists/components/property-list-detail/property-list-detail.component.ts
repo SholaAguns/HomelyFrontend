@@ -82,6 +82,7 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   filterLetAvailableFrom = signal<string | null>(null);
   filterLetAvailableTo = signal<string | null>(null);
   titleSearchDebounced = signal<string>('');
+  refreshing = signal(false);
   private wsSubscription?: Subscription;
   private scrapeSubscription?: Subscription;
   private titleSearchSubscription?: Subscription;
@@ -256,6 +257,22 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.error.set(err.message);
         this.loading.set(false);
+      },
+    });
+  }
+
+  refreshProperties() {
+    const listData = this.list();
+    if (!listData || this.refreshing()) return;
+    this.refreshing.set(true);
+    this.propertyService.getAll(listData.uuid).subscribe({
+      next: (properties) => {
+        this.list.update((current) => (current ? { ...current, properties } : current));
+        this.refreshing.set(false);
+      },
+      error: () => {
+        this.notificationService.error('Failed to refresh properties');
+        this.refreshing.set(false);
       },
     });
   }

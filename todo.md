@@ -2,6 +2,10 @@
 P0:
 - authentication and login/logout issues
 - Separate property data models
+- Improve export to html to include context reports
+- Personal rating
+- Manual fetch full data
+- Refresh properties async
 - ~~Updates when running stage 2 (SSE?)~~
 - ~~Updates when running stage 3~~
 - ~~error handling~~
@@ -15,9 +19,9 @@ P0:
 
 P1:
 - ~~Create search criteria without triggering search~~
-- POI data gets caught off
+- ~~POI data gets caught off~~
 - Review all caching strategies
-- Export to csv feature
+- ~~Export to csv feature~~
 - prices types - per week, per month
 - Project dashboard
 - poi_search_radius_meters should be in Km or miles?
