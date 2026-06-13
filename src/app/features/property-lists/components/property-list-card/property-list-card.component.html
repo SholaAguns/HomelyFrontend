@@ -49,4 +49,17 @@
       }}</span>
     </div>
   </div>
+
+  <div class="mt-4 flex gap-4 text-sm">
+    <span class="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
+      <span>★</span>
+      <span class="font-medium">{{ list().shortlisted_count }}</span>
+      <span class="text-gray-500 dark:text-gray-400">shortlisted</span>
+    </span>
+    <span class="flex items-center gap-1 text-red-500 dark:text-red-400">
+      <span>♥</span>
+      <span class="font-medium">{{ list().favourited_count }}</span>
+      <span class="text-gray-500 dark:text-gray-400">favourited</span>
+    </span>
+  </div>
 </div>

@@ -16,6 +16,8 @@ export interface PropertyList {
   contributors?: string[];
   properties_count: number;
   status_summary: PropertyListStatusSummary;
+  shortlisted_count: number;
+  favourited_count: number;
   average_price?: number | null;
   highest_price?: number | null;
   lowest_price?: number | null;

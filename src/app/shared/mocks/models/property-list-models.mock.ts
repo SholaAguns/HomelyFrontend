@@ -30,6 +30,8 @@ export const mockPropertyList: PropertyList = {
   contributors: [],
   properties_count: 5,
   status_summary: mockStatusSummary,
+  shortlisted_count: 0,
+  favourited_count: 0,
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
 };
