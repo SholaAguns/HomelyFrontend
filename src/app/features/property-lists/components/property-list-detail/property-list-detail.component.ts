@@ -457,9 +457,9 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
       if (bedroomsMax !== null && p.bedrooms > bedroomsMax) return false;
       if (bathroomsMin !== null && p.bathrooms < bathroomsMin) return false;
       if (bathroomsMax !== null && p.bathrooms > bathroomsMax) return false;
-      if (letAvailableFrom && (!p.let_available_date || p.let_available_date < letAvailableFrom))
+      if (letAvailableFrom && p.let_available_date && p.let_available_date < letAvailableFrom)
         return false;
-      if (letAvailableTo && (!p.let_available_date || p.let_available_date > letAvailableTo))
+      if (letAvailableTo && p.let_available_date && p.let_available_date > letAvailableTo)
         return false;
       if (sourceFilter) {
         const propertySource = p.external_url?.includes('rightmove')
