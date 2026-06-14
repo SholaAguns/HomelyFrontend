@@ -337,6 +337,37 @@
                     Favourites only
                   </label>
                 </div>
+                @if (savedLocations().length > 0) {
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >Driving Time</label
+                    >
+                    <select
+                      [value]="filterSavedLocationUuid()"
+                      (change)="setFilterSavedLocationUuid($any($event.target).value)"
+                      class="mb-2 w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    >
+                      <option value="">Select location...</option>
+                      @for (loc of savedLocations(); track loc.uuid) {
+                        <option [value]="loc.uuid">{{ loc.name }}</option>
+                      }
+                    </select>
+                    @if (filterSavedLocationUuid()) {
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="number"
+                          [value]="filterMaxDrivingTimeMins() ?? ''"
+                          (change)="setFilterMaxDrivingTimeMins($any($event.target).value)"
+                          placeholder="Max mins"
+                          min="1"
+                          class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                        />
+                        <span class="shrink-0 text-xs text-gray-500">min drive</span>
+                      </div>
+                    }
+                  </div>
+                }
               </div>
             </div>
 

@@ -1,3 +1,5 @@
+import { SavedLocationDistance } from './context-data.models';
+
 export interface CriterionScoreBreakdown {
   normalized_score: number;
   weight: number;
@@ -103,6 +105,9 @@ export interface Property {
 
   // Shortlists — list UUIDs where this property is shortlisted
   shortlisted_in_lists?: string[];
+
+  // Stage 2 context — saved location driving/walking distances
+  saved_locations_distances?: SavedLocationDistance[];
 
   // Timestamps
   created_at: string;

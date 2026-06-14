@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { PropertyService } from '../../../../core/services/property-service/property.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { SavedLocationService } from '../../../../core/services/saved-location.service';
 import { PropertyPreviewCard } from '../../../property-lists/components/property-preview-card/property-preview-card';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { Property } from '../../../../shared/models/property-models';
+import { SavedLocation } from '../../../../shared/models/saved-location-models';
 import { Subject, Subscription, debounceTime } from 'rxjs';
 
 @Component({
@@ -18,11 +20,13 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
   private propertyService = inject(PropertyService);
   private favoritesService = inject(FavoritesService);
   private notificationService = inject(NotificationService);
+  private savedLocationService = inject(SavedLocationService);
 
   private titleSearchSubject = new Subject<string>();
   private titleSearchSubscription?: Subscription;
 
   properties = signal<Property[]>([]);
+  savedLocations = signal<SavedLocation[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
 
@@ -44,6 +48,8 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
   filterBathroomsMax = signal<number | null>(null);
   filterLetAvailableFrom = signal<string | null>(null);
   filterLetAvailableTo = signal<string | null>(null);
+  filterSavedLocationUuid = signal<string>('');
+  filterMaxDrivingTimeMins = signal<number | null>(null);
   titleSearchDebounced = signal<string>('');
 
   sortBy = signal<'rating' | 'price' | 'title' | 'criterion'>('rating');
@@ -65,6 +71,7 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
     if (this.filterBedroomsMin() !== null || this.filterBedroomsMax() !== null) count++;
     if (this.filterBathroomsMin() !== null || this.filterBathroomsMax() !== null) count++;
     if (this.filterLetAvailableFrom() || this.filterLetAvailableTo()) count++;
+    if (this.filterSavedLocationUuid() && this.filterMaxDrivingTimeMins() !== null) count++;
     return count;
   });
 
@@ -94,6 +101,8 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
     const bathroomsMax = this.filterBathroomsMax();
     const letAvailableFrom = this.filterLetAvailableFrom();
     const letAvailableTo = this.filterLetAvailableTo();
+    const savedLocationUuid = this.filterSavedLocationUuid();
+    const maxDrivingTimeMins = this.filterMaxDrivingTimeMins();
 
     const filtered = this.properties().filter((p) => {
       if (stateFilterSet.size > 0 && !stateFilterSet.has(p.state)) return false;
@@ -110,6 +119,17 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
         return false;
       if (letAvailableTo && p.let_available_date && p.let_available_date > letAvailableTo)
         return false;
+      if (savedLocationUuid && maxDrivingTimeMins !== null) {
+        const distance = p.saved_locations_distances?.find(
+          (d) => d.location_uuid === savedLocationUuid
+        );
+        if (
+          !distance ||
+          distance.driving_time_mins == null ||
+          distance.driving_time_mins > maxDrivingTimeMins
+        )
+          return false;
+      }
       if (sourceFilter) {
         const propertySource = p.external_url?.includes('rightmove')
           ? 'Rightmove'
@@ -176,10 +196,18 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
       });
 
     this.loadProperties();
+    this.loadSavedLocations();
   }
 
   ngOnDestroy(): void {
     this.titleSearchSubscription?.unsubscribe();
+  }
+
+  loadSavedLocations(): void {
+    this.savedLocationService.getAll().subscribe({
+      next: (locations) => this.savedLocations.set(locations),
+      error: () => {},
+    });
   }
 
   loadProperties(): void {
@@ -254,6 +282,8 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
     this.filterBathroomsMax.set(null);
     this.filterLetAvailableFrom.set(null);
     this.filterLetAvailableTo.set(null);
+    this.filterSavedLocationUuid.set('');
+    this.filterMaxDrivingTimeMins.set(null);
     this.titleSearchSubject.next('');
     this.titleSearchDebounced.set('');
     this.currentPage.set(1);
@@ -334,6 +364,16 @@ export class AllPropertiesComponent implements OnInit, OnDestroy {
 
   setFilterLetAvailableTo(value: string): void {
     this.filterLetAvailableTo.set(value || null);
+    this.currentPage.set(1);
+  }
+
+  setFilterSavedLocationUuid(value: string): void {
+    this.filterSavedLocationUuid.set(value);
+    this.currentPage.set(1);
+  }
+
+  setFilterMaxDrivingTimeMins(value: string): void {
+    this.filterMaxDrivingTimeMins.set(value ? Number(value) : null);
     this.currentPage.set(1);
   }
 
