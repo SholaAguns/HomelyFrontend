@@ -10,6 +10,7 @@ import { TaskPanelComponent } from '../tasks/task-panel/task-panel.component';
 import { CommentPanelComponent } from '../comments/comment-panel/comment-panel.component';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { FavoritesService } from '../../../../core/services/favorites-service/favorites.service';
+import { ShortlistService } from '../../../../core/services/shortlist-service/shortlist.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { SharingService } from '../../../../core/services/sharing-service/sharing.service';
 import { Property } from '../../../../shared/models/property-models';
@@ -35,6 +36,7 @@ export class ProjectDetailComponent implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
   private favoritesService = inject(FavoritesService);
+  private shortlistService = inject(ShortlistService);
   private notificationService = inject(NotificationService);
   private sharingService = inject(SharingService);
   readonly projectStore = inject(ProjectStore);
@@ -46,6 +48,8 @@ export class ProjectDetailComponent implements OnInit {
   userRole = signal<ProjectRole>(null);
   projectFavorites = signal<Property[]>([]);
   favoritesExpanded = signal(false);
+  projectShortlisted = signal<Property[]>([]);
+  shortlistedExpanded = signal(false);
   showActionsMenu = signal(false);
   showLeaveModal = signal(false);
   leavingProject = signal(false);
@@ -56,6 +60,8 @@ export class ProjectDetailComponent implements OnInit {
   canLeave = computed(() => !this.isOwner() && this.userRole() !== null);
   favoritesCount = computed(() => this.projectFavorites().length);
   shouldExpandFavorites = computed(() => this.favoritesCount() < 6);
+  shortlistedCount = computed(() => this.projectShortlisted().length);
+  shouldExpandShortlisted = computed(() => this.shortlistedCount() < 6);
 
   ngOnInit() {
     this.projectUuid = this.route.snapshot.paramMap.get('uuid') || '';
@@ -74,6 +80,7 @@ export class ProjectDetailComponent implements OnInit {
       this.projectStore.loadStats(this.projectUuid);
       this.listStore.load(this.projectUuid);
       this.loadProjectFavorites();
+      this.loadProjectShortlisted();
 
       setTimeout(() => {
         this.loading.set(false);
@@ -93,8 +100,24 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
+  loadProjectShortlisted(): void {
+    this.shortlistService.getProjectShortlisted(this.projectUuid).subscribe({
+      next: (properties) => {
+        this.projectShortlisted.set(properties);
+        this.shortlistedExpanded.set(this.shouldExpandShortlisted());
+      },
+      error: () => {
+        this.projectShortlisted.set([]);
+      },
+    });
+  }
+
   toggleFavoritesSection(): void {
     this.favoritesExpanded.set(!this.favoritesExpanded());
+  }
+
+  toggleShortlistedSection(): void {
+    this.shortlistedExpanded.set(!this.shortlistedExpanded());
   }
 
   onFavoriteToggle(propertyUuid: string): void {

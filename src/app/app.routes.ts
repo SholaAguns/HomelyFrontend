@@ -42,6 +42,14 @@ export const routes: Routes = [
       import('./features/property-lists/property-lists.routes').then((m) => m.PROPERTY_LIST_ROUTES),
   },
   {
+    path: 'properties',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/property/components/all-properties/all-properties.component').then(
+        (m) => m.AllPropertiesComponent
+      ),
+  },
+  {
     path: 'properties/:uuid',
     canActivate: [authGuard],
     loadComponent: () =>

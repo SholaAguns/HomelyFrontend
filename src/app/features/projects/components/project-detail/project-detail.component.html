@@ -111,6 +111,40 @@
       </div>
     }
 
+    <!-- Shortlisted Section -->
+    @if (shortlistedCount() > 0) {
+      <div class="mb-8">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
+            Shortlisted
+            <span class="ml-2 text-lg text-gray-500 dark:text-gray-400"
+              >({{ shortlistedCount() }})</span
+            >
+          </h2>
+          @if (shortlistedCount() >= 6) {
+            <button
+              (click)="toggleShortlistedSection()"
+              class="font-medium text-blue-600 hover:text-blue-700"
+            >
+              {{ shortlistedExpanded() ? 'Show Less' : 'Show All' }}
+            </button>
+          }
+        </div>
+
+        @if (shortlistedExpanded()) {
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            @for (property of projectShortlisted(); track property.uuid) {
+              <app-property-preview-card [property]="property" />
+            }
+          </div>
+        } @else {
+          <p class="text-gray-600 italic dark:text-gray-400">
+            Click "Show All" to view {{ shortlistedCount() }} shortlisted properties in this project
+          </p>
+        }
+      </div>
+    }
+
     <div class="mb-8">
       <div class="mb-4 flex items-center justify-between">
         <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Property Lists</h2>

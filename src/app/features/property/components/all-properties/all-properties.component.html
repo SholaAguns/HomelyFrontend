@@ -1,0 +1,423 @@
+<div class="container mx-auto px-4 py-8">
+  @if (loading()) {
+    <app-loading-spinner message="Loading properties..." />
+  } @else if (error()) {
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+    >
+      <h3 class="mb-2 font-semibold">Error loading properties</h3>
+      <p>{{ error() }}</p>
+      <button (click)="loadProperties()" class="mt-4 text-blue-600 hover:underline">Retry</button>
+    </div>
+  } @else {
+    <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+      <div class="mb-6">
+        <h1 class="mb-1 text-3xl font-bold text-gray-900 dark:text-white">All Properties</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ properties().length }}
+          {{ properties().length === 1 ? 'property' : 'properties' }} across all your lists
+        </p>
+      </div>
+
+      <div class="border-t border-gray-200 pt-6 dark:border-gray-700">
+        <!-- Toolbar -->
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Properties
+            @if (sortedProperties().length !== properties().length) {
+              <span class="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                {{ sortedProperties().length }} of {{ properties().length }}
+              </span>
+            }
+          </h2>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Sort:</span>
+            @for (
+              option of [
+                { label: 'Rating', value: 'rating' },
+                { label: 'Price', value: 'price' },
+                { label: 'Title', value: 'title' },
+              ];
+              track option.value
+            ) {
+              <button
+                (click)="setSortBy(option.value)"
+                [class]="
+                  sortBy() === option.value
+                    ? 'flex items-center gap-1 rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white'
+                    : 'flex items-center gap-1 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                "
+              >
+                {{ option.label }}
+                @if (sortBy() === option.value) {
+                  <span>{{ sortDirection() === 'desc' ? '↓' : '↑' }}</span>
+                }
+              </button>
+            }
+            @if (availableCriteria().length > 0) {
+              <div class="flex items-center gap-1">
+                <button
+                  (click)="setSortBy('criterion')"
+                  [class]="
+                    sortBy() === 'criterion'
+                      ? 'flex items-center gap-1 rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white'
+                      : 'flex items-center gap-1 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                  "
+                >
+                  Criterion
+                  @if (sortBy() === 'criterion') {
+                    <span>{{ sortDirection() === 'desc' ? '↓' : '↑' }}</span>
+                  }
+                </button>
+                @if (sortBy() === 'criterion') {
+                  <select
+                    [value]="sortByCriterion() ?? ''"
+                    (change)="setSortByCriterion($any($event.target).value)"
+                    class="rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  >
+                    @for (criterion of availableCriteria(); track criterion) {
+                      <option [value]="criterion">{{ criterion }}</option>
+                    }
+                  </select>
+                }
+              </div>
+            }
+            <button
+              (click)="toggleFilters()"
+              [class]="
+                showFilters()
+                  ? 'flex items-center gap-1 rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white'
+                  : 'flex items-center gap-1 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+              "
+            >
+              Filter
+              @if (activeFilterCount() > 0) {
+                <span class="rounded-full bg-white px-1.5 text-xs font-bold text-blue-600">
+                  {{ activeFilterCount() }}
+                </span>
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters Panel -->
+        @if (showFilters()) {
+          <div
+            class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-900"
+          >
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <!-- Column 1: Search + State -->
+              <div class="space-y-3">
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >Search</label
+                  >
+                  <input
+                    type="text"
+                    [value]="titleSearchDebounced()"
+                    (input)="onTitleSearchInput($any($event.target).value)"
+                    placeholder="Title or address..."
+                    class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >State</label
+                  >
+                  <div class="space-y-1">
+                    @for (
+                      stateOption of [
+                        { label: 'New', value: 'NEW' },
+                        { label: 'Stage 2 In Progress', value: 'STAGE2_IN_PROGRESS' },
+                        { label: 'Stage 2 Complete', value: 'STAGE2_COMPLETE' },
+                        { label: 'Stage 3 In Progress', value: 'STAGE3_IN_PROGRESS' },
+                        { label: 'Stage 3 Complete', value: 'STAGE3_COMPLETE' },
+                      ];
+                      track stateOption.value
+                    ) {
+                      <label
+                        class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        <input
+                          type="checkbox"
+                          [checked]="filterStates().has(stateOption.value)"
+                          (change)="toggleFilterState(stateOption.value)"
+                          class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
+                        />
+                        {{ stateOption.label }}
+                      </label>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 2: Price + Beds + Baths + Let Available -->
+              <div class="space-y-3">
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >Price Range (£)</label
+                  >
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="number"
+                      [value]="filterPriceMin() ?? ''"
+                      (change)="setFilterPriceMin($any($event.target).value)"
+                      placeholder="Min"
+                      min="0"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                    <span class="text-gray-400">–</span>
+                    <input
+                      type="number"
+                      [value]="filterPriceMax() ?? ''"
+                      (change)="setFilterPriceMax($any($event.target).value)"
+                      placeholder="Max"
+                      min="0"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >Bedrooms</label
+                  >
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="number"
+                      [value]="filterBedroomsMin() ?? ''"
+                      (change)="setFilterBedroomsMin($any($event.target).value)"
+                      placeholder="Min"
+                      min="0"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                    <span class="text-gray-400">–</span>
+                    <input
+                      type="number"
+                      [value]="filterBedroomsMax() ?? ''"
+                      (change)="setFilterBedroomsMax($any($event.target).value)"
+                      placeholder="Max"
+                      min="0"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >Bathrooms</label
+                  >
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="number"
+                      [value]="filterBathroomsMin() ?? ''"
+                      (change)="setFilterBathroomsMin($any($event.target).value)"
+                      placeholder="Min"
+                      min="0"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                    <span class="text-gray-400">–</span>
+                    <input
+                      type="number"
+                      [value]="filterBathroomsMax() ?? ''"
+                      (change)="setFilterBathroomsMax($any($event.target).value)"
+                      placeholder="Max"
+                      min="0"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >Let Available</label
+                  >
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="date"
+                      [value]="filterLetAvailableFrom() ?? ''"
+                      (change)="setFilterLetAvailableFrom($any($event.target).value)"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                    <span class="text-gray-400">–</span>
+                    <input
+                      type="date"
+                      [value]="filterLetAvailableTo() ?? ''"
+                      (change)="setFilterLetAvailableTo($any($event.target).value)"
+                      class="w-full rounded border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 3: Dropdowns + toggles -->
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >Source</label
+                    >
+                    <select
+                      [value]="filterSource()"
+                      (change)="setFilterSource($any($event.target).value)"
+                      class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    >
+                      <option value="">All</option>
+                      <option value="Rightmove">Rightmove</option>
+                      <option value="Zoopla">Zoopla</option>
+                      <option value="Manual">Manual</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label
+                      class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                      >Garden</label
+                    >
+                    <select
+                      [value]="
+                        filterHasGarden() === null ? '' : filterHasGarden() ? 'true' : 'false'
+                      "
+                      (change)="
+                        setFilterHasGarden(
+                          $any($event.target).value === ''
+                            ? null
+                            : $any($event.target).value === 'true'
+                        )
+                      "
+                      class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    >
+                      <option value="">Any</option>
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >Disqualified</label
+                  >
+                  <select
+                    [value]="filterDisqualified()"
+                    (change)="setFilterDisqualified($any($event.target).value)"
+                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  >
+                    <option value="all">Show all</option>
+                    <option value="hide">Hide disqualified</option>
+                    <option value="only">Only disqualified</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    class="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
+                    >Shortlisted</label
+                  >
+                  <select
+                    [value]="filterShortlisted()"
+                    (change)="setFilterShortlisted($any($event.target).value)"
+                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  >
+                    <option value="all">Show all</option>
+                    <option value="only">Shortlisted only</option>
+                    <option value="exclude">Not shortlisted</option>
+                  </select>
+                </div>
+                <div class="pt-1">
+                  <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                    <input
+                      type="checkbox"
+                      [checked]="filterFavouritesOnly()"
+                      (change)="setFilterFavouritesOnly($any($event.target).checked)"
+                      class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600"
+                    />
+                    Favourites only
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            @if (activeFilterCount() > 0) {
+              <div class="mt-4 flex justify-end border-t border-gray-200 pt-3 dark:border-gray-700">
+                <button
+                  (click)="clearFilters()"
+                  class="rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
+                >
+                  Clear all filters
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Property Grid -->
+        @if (properties().length === 0) {
+          <div class="rounded-lg bg-gray-50 py-12 text-center dark:bg-gray-900">
+            <p class="text-gray-600 dark:text-gray-400">No properties found.</p>
+          </div>
+        } @else if (sortedProperties().length === 0) {
+          <div class="rounded-lg bg-gray-50 py-8 text-center dark:bg-gray-900">
+            <p class="text-gray-600 dark:text-gray-400">No properties match the current filters.</p>
+            <button (click)="clearFilters()" class="mt-2 text-sm text-blue-600 hover:underline">
+              Clear filters
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            @for (property of paginatedProperties(); track property.uuid) {
+              <app-property-preview-card
+                [property]="property"
+                [showFavoriteToggle]="true"
+                (favoriteToggle)="onFavoriteToggle($event)"
+              />
+            }
+          </div>
+
+          @if (totalPages() > 1) {
+            <div class="mt-6 flex items-center justify-center gap-2">
+              <button
+                (click)="previousPage()"
+                [disabled]="currentPage() === 1"
+                class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              >
+                Previous
+              </button>
+
+              <div class="flex gap-1">
+                @for (pageNum of [].constructor(totalPages()); track $index; let i = $index) {
+                  <button
+                    (click)="goToPage(i + 1)"
+                    [class]="
+                      currentPage() === i + 1
+                        ? 'rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white'
+                        : 'rounded bg-gray-200 px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+                    "
+                  >
+                    {{ i + 1 }}
+                  </button>
+                }
+              </div>
+
+              <button
+                (click)="nextPage()"
+                [disabled]="currentPage() === totalPages()"
+                class="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              >
+                Next
+              </button>
+            </div>
+
+            <div class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+              Showing {{ (currentPage() - 1) * itemsPerPage + 1 }} –
+              {{ Math.min(currentPage() * itemsPerPage, sortedProperties().length) }}
+              of {{ sortedProperties().length }} properties
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

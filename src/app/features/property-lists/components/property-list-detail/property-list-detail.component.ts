@@ -76,9 +76,13 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
   filterHasGarden = signal<boolean | null>(null);
   filterDisqualified = signal<'all' | 'hide' | 'only'>('all');
   filterFavouritesOnly = signal<boolean>(false);
-  filterShortlistedOnly = signal<boolean>(false);
+  filterShortlisted = signal<'all' | 'only' | 'exclude'>('all');
   filterPriceMin = signal<number | null>(null);
   filterPriceMax = signal<number | null>(null);
+  filterBedroomsMin = signal<number | null>(null);
+  filterBedroomsMax = signal<number | null>(null);
+  filterBathroomsMin = signal<number | null>(null);
+  filterBathroomsMax = signal<number | null>(null);
   filterLetAvailableFrom = signal<string | null>(null);
   filterLetAvailableTo = signal<string | null>(null);
   titleSearchDebounced = signal<string>('');
@@ -110,8 +114,10 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     if (this.filterDisqualified() !== 'all') count++;
     if (this.titleSearchDebounced()) count++;
     if (this.filterFavouritesOnly()) count++;
-    if (this.filterShortlistedOnly()) count++;
+    if (this.filterShortlisted() !== 'all') count++;
     if (this.filterPriceMin() !== null || this.filterPriceMax() !== null) count++;
+    if (this.filterBedroomsMin() !== null || this.filterBedroomsMax() !== null) count++;
+    if (this.filterBathroomsMin() !== null || this.filterBathroomsMax() !== null) count++;
     if (this.filterLetAvailableFrom() || this.filterLetAvailableTo()) count++;
     return count;
   });
@@ -428,9 +434,13 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const disqualifiedFilter = this.filterDisqualified();
     const titleSearch = this.titleSearchDebounced().toLowerCase().trim();
     const favouritesOnly = this.filterFavouritesOnly();
-    const shortlistedOnly = this.filterShortlistedOnly();
+    const shortlistedFilter = this.filterShortlisted();
     const priceMin = this.filterPriceMin();
     const priceMax = this.filterPriceMax();
+    const bedroomsMin = this.filterBedroomsMin();
+    const bedroomsMax = this.filterBedroomsMax();
+    const bathroomsMin = this.filterBathroomsMin();
+    const bathroomsMax = this.filterBathroomsMax();
     const letAvailableFrom = this.filterLetAvailableFrom();
     const letAvailableTo = this.filterLetAvailableTo();
     const listUuid = listData.uuid;
@@ -438,9 +448,15 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     const filtered = listData.properties.filter((p) => {
       if (stateFilterSet.size > 0 && !stateFilterSet.has(p.state)) return false;
       if (favouritesOnly && !p.is_favorited) return false;
-      if (shortlistedOnly && !p.shortlisted_in_lists?.includes(listUuid)) return false;
+      if (shortlistedFilter === 'only' && !p.shortlisted_in_lists?.includes(listUuid)) return false;
+      if (shortlistedFilter === 'exclude' && p.shortlisted_in_lists?.includes(listUuid))
+        return false;
       if (priceMin !== null && Number(p.price) < priceMin) return false;
       if (priceMax !== null && Number(p.price) > priceMax) return false;
+      if (bedroomsMin !== null && p.bedrooms < bedroomsMin) return false;
+      if (bedroomsMax !== null && p.bedrooms > bedroomsMax) return false;
+      if (bathroomsMin !== null && p.bathrooms < bathroomsMin) return false;
+      if (bathroomsMax !== null && p.bathrooms > bathroomsMax) return false;
       if (letAvailableFrom && (!p.let_available_date || p.let_available_date < letAvailableFrom))
         return false;
       if (letAvailableTo && (!p.let_available_date || p.let_available_date > letAvailableTo))
@@ -562,8 +578,28 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.currentPage.set(1);
   }
 
-  setFilterShortlistedOnly(value: boolean): void {
-    this.filterShortlistedOnly.set(value);
+  setFilterShortlisted(value: 'all' | 'only' | 'exclude'): void {
+    this.filterShortlisted.set(value);
+    this.currentPage.set(1);
+  }
+
+  setFilterBedroomsMin(value: string): void {
+    this.filterBedroomsMin.set(value ? Number(value) : null);
+    this.currentPage.set(1);
+  }
+
+  setFilterBedroomsMax(value: string): void {
+    this.filterBedroomsMax.set(value ? Number(value) : null);
+    this.currentPage.set(1);
+  }
+
+  setFilterBathroomsMin(value: string): void {
+    this.filterBathroomsMin.set(value ? Number(value) : null);
+    this.currentPage.set(1);
+  }
+
+  setFilterBathroomsMax(value: string): void {
+    this.filterBathroomsMax.set(value ? Number(value) : null);
     this.currentPage.set(1);
   }
 
@@ -596,9 +632,13 @@ export class PropertyListDetailComponent implements OnInit, OnDestroy {
     this.filterHasGarden.set(null);
     this.filterDisqualified.set('all');
     this.filterFavouritesOnly.set(false);
-    this.filterShortlistedOnly.set(false);
+    this.filterShortlisted.set('all');
     this.filterPriceMin.set(null);
     this.filterPriceMax.set(null);
+    this.filterBedroomsMin.set(null);
+    this.filterBedroomsMax.set(null);
+    this.filterBathroomsMin.set(null);
+    this.filterBathroomsMax.set(null);
     this.filterLetAvailableFrom.set(null);
     this.filterLetAvailableTo.set(null);
     this.titleSearchSubject.next('');
